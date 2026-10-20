@@ -1,0 +1,302 @@
+package com.ratv.app.ui.screens
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ratv.app.data.Channel
+import com.ratv.app.data.Keys
+import com.ratv.app.data.Programme
+import com.ratv.app.data.current
+import com.ratv.app.data.forChannel
+import com.ratv.app.data.progress
+import com.ratv.app.ui.LocalRepo
+import com.ratv.app.ui.Navigator
+import com.ratv.app.ui.components.ChannelLogo
+import com.ratv.app.ui.components.Chip
+import com.ratv.app.ui.components.CircleIconButton
+import com.ratv.app.ui.components.EmptyState
+import com.ratv.app.ui.components.LiveBadge
+import com.ratv.app.ui.components.ProgressLine
+import com.ratv.app.ui.components.QualityBadge
+import com.ratv.app.ui.components.RIcons
+import com.ratv.app.ui.components.RingsArt
+import com.ratv.app.ui.components.ScreenHeader
+import com.ratv.app.ui.components.hm
+import com.ratv.app.ui.theme.RColors
+import com.ratv.app.ui.theme.T
+
+private const val ALL = "__all__"
+private const val FAV = "__fav__"
+
+@Composable
+fun LiveScreen(nav: Navigator) {
+    val repo = LocalRepo.current
+    val channels by repo.channels.collectAsStateWithLifecycle()
+    val categories by repo.liveCategories.collectAsStateWithLifecycle()
+    val favorites by repo.favorites.collectAsStateWithLifecycle()
+    val epg by repo.epg.collectAsStateWithLifecycle()
+    val now = rememberNow()
+    var selected by rememberSaveable { mutableStateOf(ALL) }
+
+    val visible = remember(channels, favorites, selected) {
+        when (selected) {
+            ALL -> channels
+            FAV -> channels.filter { Keys.live(it.id) in favorites }
+            else -> channels.filter { it.categoryId == selected }
+        }
+    }
+    val featured = remember(channels) {
+        val last = repo.prefs.lastChannelId
+        channels.firstOrNull { it.id == last } ?: channels.firstOrNull()
+    }
+
+    LazyColumn(
+        Modifier
+            .fillMaxSize()
+            .background(RColors.Ink),
+        contentPadding = PaddingValues(bottom = 16.dp)
+    ) {
+        item {
+            ScreenHeader("البث المباشر", Modifier.statusBarsPadding()) {
+                CircleIconButton(RIcons.Search, "بحث في القنوات", { nav.search() })
+                CircleIconButton(RIcons.Calendar, "دليل البرامج", { nav.guide() })
+            }
+        }
+
+        if (featured != null) {
+            item {
+                val programme = epg.forChannel(featured).current(now)
+                PreviewCard(
+                    channel = featured,
+                    programme = programme,
+                    now = now,
+                    onClick = { nav.playLive(featured.id) },
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 16.dp)
+                )
+            }
+        }
+
+        item {
+            LazyRow(
+                Modifier.padding(top = 10.dp),
+                contentPadding = PaddingValues(horizontal = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                item { Chip("الكل", selected == ALL, { selected = ALL }) }
+                item { Chip("المفضلة", selected == FAV, { selected = FAV }) }
+                items(categories, key = { it.id }) { cat ->
+                    Chip(cat.name, selected == cat.id, { selected = cat.id })
+                }
+            }
+        }
+
+        if (visible.isEmpty()) {
+            item {
+                if (selected == FAV) {
+                    EmptyState(RIcons.Star, "لا توجد قنوات مفضلة", "اضغط على النجمة بجانب أي قناة لإضافتها هنا.")
+                } else {
+                    EmptyState(RIcons.Tv, "لا توجد قنوات", "لم نجد قنوات في هذه الفئة.")
+                }
+            }
+        }
+
+        items(visible, key = { it.id }) { ch ->
+            val programme = epg.forChannel(ch).current(now)
+            ChannelRow(
+                channel = ch,
+                programme = programme,
+                categoryName = if (selected == ALL || selected == FAV) repo.liveCategoryName(ch.categoryId) else null,
+                now = now,
+                favorite = Keys.live(ch.id) in favorites,
+                active = ch.id == featured?.id,
+                onOpen = { nav.playLive(ch.id) },
+                onToggleFavorite = { repo.toggleFavorite(Keys.live(ch.id)) }
+            )
+        }
+    }
+}
+
+@Composable
+fun ChannelRow(
+    channel: Channel,
+    programme: Programme?,
+    categoryName: String?,
+    now: Long,
+    favorite: Boolean,
+    active: Boolean,
+    onOpen: () -> Unit,
+    onToggleFavorite: () -> Unit
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .height(70.dp)
+            .background(if (active) RColors.Surface else Color.Transparent)
+            .padding(start = 20.dp, end = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            Modifier
+                .weight(1f)
+                .height(70.dp)
+                .clickable(role = Role.Button, onClick = onOpen),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                channel.num.toString(),
+                style = T.body(12.sp, FontWeight.Medium, if (active) RColors.Saffron else RColors.Text3),
+                modifier = Modifier.width(30.dp),
+                maxLines = 1
+            )
+            ChannelLogo(channel.name, channel.logo, 46.dp, corner = 13.dp)
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        channel.name,
+                        style = T.body(15.sp, FontWeight.Bold),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false)
+                    )
+                    channel.quality?.let { QualityBadge(it) }
+                }
+                Text(
+                    programme?.title ?: categoryName ?: "بث مباشر",
+                    style = T.body(13.sp, color = RColors.Text2),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                if (programme != null) {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        ProgressLine(programme.progress(now), Modifier.weight(1f))
+                        Text("${hm(programme.start)} – ${hm(programme.end)}", style = T.small)
+                    }
+                }
+            }
+        }
+        Box(
+            Modifier
+                .size(44.dp)
+                .clip(CircleShape)
+                .clickable(role = Role.Button, onClick = onToggleFavorite),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                if (favorite) RIcons.StarFilled else RIcons.Star,
+                contentDescription = if (favorite) "إزالة من المفضلة" else "إضافة إلى المفضلة",
+                tint = if (favorite) RColors.Saffron else RColors.Text3,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun PreviewCard(
+    channel: Channel,
+    programme: Programme?,
+    now: Long,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier
+            .fillMaxWidth()
+            .height(180.dp)
+            .clip(RoundedCornerShape(18.dp))
+            .background(Brush.verticalGradient(listOf(Color(0xFF172028), RColors.Surface)))
+            .clickable(role = Role.Button, onClickLabel = "تشغيل ${channel.name}", onClick = onClick)
+    ) {
+        RingsArt(Modifier.fillMaxSize())
+        ChannelLogo(
+            channel.name,
+            channel.logo,
+            76.dp,
+            Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = 24.dp, bottom = 36.dp),
+            corner = 18.dp
+        )
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xE6080A0D))))
+        )
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            LiveBadge()
+            Box(
+                Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(RColors.Saffron),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(RIcons.Play, contentDescription = null, tint = RColors.OnSaffron, modifier = Modifier.size(18.dp))
+            }
+        }
+        Column(
+            Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text("${channel.num} · ${channel.name}", style = T.body(12.sp, FontWeight.Medium, Color(0xFFD9D4CC)), maxLines = 1)
+                channel.quality?.let { QualityBadge(it, color = Color(0xFFD9D4CC)) }
+            }
+            Text(programme?.title ?: channel.name, style = T.display(16.sp), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            if (programme != null) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    ProgressLine(programme.progress(now), Modifier.weight(1f), track = Color(0x33FFFFFF))
+                    Text("${hm(programme.start)} – ${hm(programme.end)}", style = T.body(11.sp, color = Color(0xFFD9D4CC)))
+                }
+            } else {
+                Spacer(Modifier.height(2.dp))
+            }
+        }
+    }
+}
