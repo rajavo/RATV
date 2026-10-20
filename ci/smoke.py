@@ -119,14 +119,14 @@ def matches(n, text=None, contains=None, cls=None):
     return x2 > x1 and y2 > y1
 
 
-def find(root, **kw):
-    for n in nodes(root):
-        if matches(n, **kw):
-            return n
-    return None
+def find(root, bottom=False, **kw):
+    found = [n for n in nodes(root) if matches(n, **kw)]
+    if not found:
+        return None
+    return max(found, key=lambda n: bounds(n)[1]) if bottom else found[0]
 
 
-def wait_for(timeout=30, save=None, **kw):
+def wait_for(timeout=30, save=None, **kw):  # kw: text/contains/cls/bottom
     end = time.time() + timeout
     root = None
     while time.time() < end:
@@ -165,14 +165,7 @@ def type_text(s):
     time.sleep(0.6)
 
 
-def hide_ime():
-    if "mInputShown=true" in shell("dumpsys input_method"):
-        shell("input keyevent 4")
-        time.sleep(0.8)
-
-
 def back():
-    hide_ime()
     shell("input keyevent 4")
     time.sleep(1.8)
 
@@ -189,7 +182,6 @@ def fill_fields(values):
             raise RuntimeError("only %d text fields" % len(edits))
         tap_node(edits[idx])
         type_text(value)
-    hide_ime()
 
 
 def step(name, fn):
@@ -257,10 +249,9 @@ def s_xtream_login():
     for _ in range(8):
         shell("input keyevent 67")  # delete "wrong"
     type_text("test")
-    hide_ime()
     shot("login-filled")
     tap_where(text="دخول")
-    _, n = wait_for(timeout=90, text="الرئيسية", save="home")
+    _, n = wait_for(timeout=90, text="الرئيسية", bottom=True, save="home")
     if n is None:
         raise RuntimeError("home not reached")
     time.sleep(6)
@@ -269,7 +260,7 @@ def s_xtream_login():
 
 
 def s_live():
-    tap_where(text="مباشر")
+    tap_where(text="مباشر", bottom=True)
     _, n = wait_for(timeout=20, contains="RATV News HD", save="live")
     shot("live")
     if n is None:
@@ -320,7 +311,7 @@ def s_guide():
 
 
 def s_movies():
-    tap_where(text="أفلام")
+    tap_where(text="أفلام", bottom=True)
     _, n = wait_for(timeout=30, contains="Desert Night", save="movies")
     shot("movies")
     if n is None:
@@ -346,7 +337,7 @@ def s_movies():
 
 
 def s_series():
-    tap_where(text="مسلسلات")
+    tap_where(text="مسلسلات", bottom=True)
     _, n = wait_for(timeout=30, contains="Sands of Time", save="series")
     shot("series")
     if n is None:
@@ -375,7 +366,7 @@ def s_series():
 
 
 def s_home_after():
-    tap_where(text="الرئيسية")
+    tap_where(text="الرئيسية", bottom=True)
     _, n = wait_for(timeout=15, text="تابع المشاهدة", save="home-after")
     shot("home-after")
     if n is None:
@@ -387,14 +378,13 @@ def s_search():
     time.sleep(1.5)
     type_text("sport")
     time.sleep(2.5)
-    hide_ime()
     dump("search")
     shot("search")
     back()
 
 
 def s_settings():
-    tap_where(text="حسابي")
+    tap_where(text="حسابي", bottom=True)
     time.sleep(2)
     dump("settings")
     shot("settings")
@@ -411,7 +401,7 @@ def s_parental():
 
 
 def s_switch_to_m3u():
-    tap_where(text="حسابي")
+    tap_where(text="حسابي", bottom=True)
     time.sleep(1.5)
     tap_where(text="تبديل القائمة")
     time.sleep(1)
@@ -432,7 +422,7 @@ def s_switch_to_m3u():
 
 
 def s_m3u_content():
-    tap_where(text="مباشر")
+    tap_where(text="مباشر", bottom=True)
     _, n = wait_for(timeout=20, contains="Sport 1 HD", save="live-m3u")
     shot("live-m3u")
     if n is None:
@@ -441,7 +431,7 @@ def s_m3u_content():
     time.sleep(12)
     shot("player-m3u")
     back()
-    tap_where(text="مسلسلات")
+    tap_where(text="مسلسلات", bottom=True)
     _, n = wait_for(timeout=20, contains="City Lights", save="series-m3u")
     shot("series-m3u")
     if n is None:
