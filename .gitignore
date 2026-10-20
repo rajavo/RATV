@@ -12,3 +12,4 @@
 *.aab
 *.keystore
 *.jks
+!app/ratv-release.jks

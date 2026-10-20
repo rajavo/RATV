@@ -8,13 +8,27 @@ android {
     namespace = "com.ratv.app"
     compileSdk = 35
 
+    // رقم البناء على GitHub يزيد مع كل نسخة جديدة.
+    val buildNumber = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 1
+
     defaultConfig {
         applicationId = "com.ratv.app"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = buildNumber
+        versionName = "1.0.$buildNumber"
         vectorDrawables { useSupportLibrary = true }
+    }
+
+    // مفتاح توقيع ثابت حتى تُثبَّت كل نسخة جديدة فوق القديمة دون حذفها.
+    // هذا المفتاح للتثبيت الشخصي فقط: أنشئ مفتاحاً خاصاً وسرياً قبل النشر على Google Play.
+    signingConfigs {
+        create("ratv") {
+            storeFile = file("ratv-release.jks")
+            storePassword = "kWNpud2bRYzxflZVErXBxIi1"
+            keyAlias = "ratv"
+            keyPassword = "kWNpud2bRYzxflZVErXBxIi1"
+        }
     }
 
     buildTypes {
@@ -25,9 +39,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // يُوقَّع بمفتاح التطوير حتى يمكن تثبيته مباشرة.
-            // استبدله بمفتاحك الخاص قبل النشر على Google Play.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("ratv")
+        }
+        debug {
+            signingConfig = signingConfigs.getByName("ratv")
         }
     }
 
