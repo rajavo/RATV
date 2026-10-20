@@ -47,7 +47,30 @@ def shot(name):
     return w, h
 
 
-def dump(save=None, tries=3):
+SYSTEM_DIALOGS = ("isn't responding", "keeps stopping", "has stopped")
+notes = []
+
+
+def dismiss_system_dialog(root):
+    """Closes Android's "app isn't responding" dialogs (slow emulator) and notes them."""
+    if root is None:
+        return False
+    texts = " | ".join((n.get("text") or "") for n in root.iter("node"))
+    if not any(m in texts for m in SYSTEM_DIALOGS):
+        return False
+    log("system dialog: " + texts[:200])
+    notes.append(texts[:200])
+    for label in ("Wait", "Close app", "Close", "OK"):
+        for n in root.iter("node"):
+            if (n.get("text") or "") == label:
+                x1, y1, x2, y2 = bounds(n)
+                shell("input tap %d %d" % ((x1 + x2) // 2, (y1 + y2) // 2))
+                time.sleep(2)
+                return True
+    return False
+
+
+def dump(save=None, tries=3, depth=0):
     for _ in range(tries):
         shell("rm -f /sdcard/ui.xml")
         shell("uiautomator dump /sdcard/ui.xml", timeout=45)
@@ -56,12 +79,15 @@ def dump(save=None, tries=3):
         if i >= 0:
             try:
                 root = ET.fromstring(xml[i:])
+            except ET.ParseError:
+                root = None
+            if root is not None:
+                if depth < 4 and dismiss_system_dialog(root):
+                    return dump(save, tries, depth + 1)
                 if save:
                     with open(os.path.join(OUT, save + ".xml"), "w", encoding="utf-8") as f:
                         f.write(xml[i:])
                 return root
-            except ET.ParseError:
-                pass
         time.sleep(1.5)
     return None
 
@@ -193,6 +219,14 @@ def step(name, fn):
 # ------------------------------------------------------------------- steps
 
 def s_launch():
+    # Let the freshly booted emulator settle; its launcher is slow at first.
+    shell("settings put global hide_error_dialogs 1")
+    for _ in range(6):
+        time.sleep(5)
+        dump()
+    shell("input keyevent 3")
+    time.sleep(3)
+    dump()
     adb("logcat", "-b", "all", "-c")
     log(shell("am start -W -n %s/.MainActivity" % PKG).strip())
     time.sleep(1.5)
@@ -447,6 +481,8 @@ def finish():
         f.write(crash)
     summary = {
         "results": results,
+        "system_dialogs": notes,
+        "anr": [l for l in logcat.splitlines() if "ANR in" in l][:20],
         "pids": sorted(pids),
         "crash_buffer_lines": len(crash.splitlines()),
         "fatal": [l for l in keep if "FATAL" in l or "AndroidRuntime" in l][:100],
