@@ -1,0 +1,482 @@
+#!/usr/bin/env python3
+"""Drives the RATV app on an emulator against the mock provider and records
+screenshots, UI dumps and logs into smoke-results/ (CI only)."""
+import gzip
+import json
+import os
+import re
+import struct
+import subprocess
+import time
+import xml.etree.ElementTree as ET
+
+OUT = os.path.abspath("smoke-results")
+os.makedirs(OUT, exist_ok=True)
+PKG = "com.ratv.app"
+results = []
+pids = set()
+counter = [0]
+
+
+def log(msg):
+    print(msg, flush=True)
+    with open(os.path.join(OUT, "steps.log"), "a", encoding="utf-8") as f:
+        f.write(time.strftime("%H:%M:%S ") + msg + "\n")
+
+
+def adb(*args, timeout=60, binary=False):
+    try:
+        r = subprocess.run(["adb", *args], capture_output=True, timeout=timeout)
+    except subprocess.TimeoutExpired:
+        return b"" if binary else ""
+    return r.stdout if binary else r.stdout.decode("utf-8", "replace")
+
+
+def shell(cmd, timeout=60):
+    return adb("shell", cmd, timeout=timeout)
+
+
+def shot(name):
+    counter[0] += 1
+    data = adb("exec-out", "screencap", "-p", binary=True, timeout=30)
+    path = os.path.join(OUT, "%02d-%s.png" % (counter[0], name))
+    with open(path, "wb") as f:
+        f.write(data)
+    w, h = (struct.unpack(">II", data[16:24]) if data[:8] == b"\x89PNG\r\n\x1a\n" else (1080, 2400))
+    log("screenshot %s %dx%d" % (os.path.basename(path), w, h))
+    return w, h
+
+
+def dump(save=None, tries=3):
+    for _ in range(tries):
+        shell("rm -f /sdcard/ui.xml")
+        shell("uiautomator dump /sdcard/ui.xml", timeout=45)
+        xml = adb("exec-out", "cat", "/sdcard/ui.xml", timeout=20)
+        i = xml.find("<hierarchy")
+        if i >= 0:
+            try:
+                root = ET.fromstring(xml[i:])
+                if save:
+                    with open(os.path.join(OUT, save + ".xml"), "w", encoding="utf-8") as f:
+                        f.write(xml[i:])
+                return root
+            except ET.ParseError:
+                pass
+        time.sleep(1.5)
+    return None
+
+
+def nodes(root):
+    return list(root.iter("node")) if root is not None else []
+
+
+def bounds(n):
+    m = re.match(r"\[(-?\d+),(-?\d+)\]\[(-?\d+),(-?\d+)\]", n.get("bounds", ""))
+    return tuple(map(int, m.groups())) if m else (0, 0, 0, 0)
+
+
+def center(n):
+    x1, y1, x2, y2 = bounds(n)
+    return (x1 + x2) // 2, (y1 + y2) // 2
+
+
+def matches(n, text=None, contains=None, cls=None):
+    t = n.get("text") or ""
+    d = n.get("content-desc") or ""
+    if cls and n.get("class") != cls:
+        return False
+    if text is not None and text not in (t, d):
+        return False
+    if contains is not None and contains not in t and contains not in d:
+        return False
+    x1, y1, x2, y2 = bounds(n)
+    return x2 > x1 and y2 > y1
+
+
+def find(root, **kw):
+    for n in nodes(root):
+        if matches(n, **kw):
+            return n
+    return None
+
+
+def wait_for(timeout=30, save=None, **kw):
+    end = time.time() + timeout
+    root = None
+    while time.time() < end:
+        root = dump()
+        n = find(root, **kw)
+        if n is not None:
+            if save:
+                dump(save)
+            return root, n
+        time.sleep(1.5)
+    if save:
+        dump(save + "-timeout")
+    return root, None
+
+
+def tap(x, y):
+    shell("input tap %d %d" % (x, y))
+    time.sleep(0.8)
+
+
+def tap_node(n):
+    x, y = center(n)
+    tap(x, y)
+
+
+def tap_where(timeout=20, **kw):
+    _, n = wait_for(timeout=timeout, **kw)
+    if n is None:
+        raise RuntimeError("not found: %s" % kw)
+    tap_node(n)
+    return n
+
+
+def type_text(s):
+    shell("input text '%s'" % s.replace(" ", "%s"))
+    time.sleep(0.6)
+
+
+def hide_ime():
+    if "mInputShown=true" in shell("dumpsys input_method"):
+        shell("input keyevent 4")
+        time.sleep(0.8)
+
+
+def back():
+    hide_ime()
+    shell("input keyevent 4")
+    time.sleep(1.8)
+
+
+def app_pid():
+    return shell("pidof %s" % PKG).strip()
+
+
+def fill_fields(values):
+    for idx, value in values:
+        root = dump()
+        edits = [n for n in nodes(root) if n.get("class") == "android.widget.EditText"]
+        if len(edits) <= idx:
+            raise RuntimeError("only %d text fields" % len(edits))
+        tap_node(edits[idx])
+        type_text(value)
+    hide_ime()
+
+
+def step(name, fn):
+    log("== " + name)
+    ok, err = True, ""
+    try:
+        fn()
+    except Exception as e:  # keep going so later screens are still checked
+        ok, err = False, repr(e)
+        log("!! " + err)
+        try:
+            shot("fail-" + name)
+        except Exception:
+            pass
+    pid = app_pid()
+    if pid:
+        pids.update(pid.split())
+    else:
+        ok = False
+        err = (err + " " if err else "") + "APP NOT RUNNING"
+        log("!! app is not running")
+        shell("am start -W -n %s/.MainActivity" % PKG)
+        time.sleep(4)
+    results.append({"step": name, "ok": ok, "error": err})
+
+
+# ------------------------------------------------------------------- steps
+
+def s_launch():
+    adb("logcat", "-b", "all", "-c")
+    log(shell("am start -W -n %s/.MainActivity" % PKG).strip())
+    time.sleep(1.5)
+    shot("splash")
+
+
+def s_login_screen():
+    _, n = wait_for(timeout=40, text="أضف اشتراكك", save="login")
+    if n is None:
+        raise RuntimeError("login screen not shown")
+    shot("login")
+
+
+def s_wrong_password():
+    fill_fields([(1, "http://10.0.2.2:8000"), (2, "test"), (3, "wrong")])
+    tap_where(text="دخول")
+    _, n = wait_for(timeout=40, contains="غير صحيحة", save="login-error")
+    shot("login-error")
+    if n is None:
+        raise RuntimeError("no error for a wrong password")
+
+
+def s_xtream_login():
+    root = dump()
+    edits = [n for n in nodes(root) if n.get("class") == "android.widget.EditText"]
+    tap_node(edits[3])
+    shell("input keyevent 123")  # move to end
+    for _ in range(8):
+        shell("input keyevent 67")  # delete "wrong"
+    type_text("test")
+    hide_ime()
+    shot("login-filled")
+    tap_where(text="دخول")
+    _, n = wait_for(timeout=90, text="الرئيسية", save="home")
+    if n is None:
+        raise RuntimeError("home not reached")
+    time.sleep(6)
+    dump("home")
+    shot("home")
+
+
+def s_live():
+    tap_where(text="مباشر")
+    _, n = wait_for(timeout=20, contains="RATV News HD", save="live")
+    shot("live")
+    if n is None:
+        raise RuntimeError("channel list missing")
+
+
+def s_live_category():
+    tap_where(text="رياضة")
+    time.sleep(1.5)
+    dump("live-sport")
+    shot("live-sport")
+    tap_where(text="الكل")
+
+
+def s_favorite():
+    _, n = wait_for(timeout=10, text="إضافة إلى المفضلة")
+    if n is None:
+        raise RuntimeError("star button missing")
+    tap_node(n)
+    time.sleep(1)
+    tap_where(text="المفضلة")
+    time.sleep(1.5)
+    shot("live-favorites")
+    tap_where(text="الكل")
+
+
+def s_play_live():
+    _, n = wait_for(timeout=10, contains="Gulf 24 FHD")
+    if n is None:
+        raise RuntimeError("channel row missing")
+    tap_node(n)
+    time.sleep(12)
+    w, h = shot("player-live")
+    tap(w // 2, h // 3)
+    time.sleep(1)
+    shot("player-live-controls")
+    back()
+    time.sleep(2)
+    shot("after-live-player")
+
+
+def s_guide():
+    tap_where(text="دليل البرامج")
+    time.sleep(4)
+    dump("guide")
+    shot("guide")
+    back()
+
+
+def s_movies():
+    tap_where(text="أفلام")
+    _, n = wait_for(timeout=30, contains="Desert Night", save="movies")
+    shot("movies")
+    if n is None:
+        raise RuntimeError("movies missing")
+    tap_node(n)
+    _, n = wait_for(timeout=20, text="تشغيل", save="movie-detail")
+    time.sleep(2)
+    shot("movie-detail")
+    if n is None:
+        raise RuntimeError("play button missing")
+    tap_node(n)
+    time.sleep(25)
+    w, h = shot("player-movie")
+    tap(w // 2, h // 3)
+    time.sleep(1)
+    shot("player-movie-controls")
+    back()
+    _, n = wait_for(timeout=15, contains="متابعة من", save="movie-detail-resume")
+    shot("movie-detail-resume")
+    back()
+    if n is None:
+        raise RuntimeError("resume point not saved")
+
+
+def s_series():
+    tap_where(text="مسلسلات")
+    _, n = wait_for(timeout=30, contains="Sands of Time", save="series")
+    shot("series")
+    if n is None:
+        raise RuntimeError("series missing")
+    tap_node(n)
+    _, n = wait_for(timeout=25, contains="الحلقة 1", save="series-detail")
+    time.sleep(1.5)
+    shot("series-detail")
+    if n is None:
+        raise RuntimeError("episodes missing")
+    _, s2 = wait_for(timeout=5, text="الموسم 2")
+    if s2 is not None:
+        tap_node(s2)
+        time.sleep(1.5)
+        shot("series-season2")
+        tap_where(text="الموسم 1")
+    _, n = wait_for(timeout=10, contains="الحلقة 2")
+    tap_node(n)
+    time.sleep(14)
+    shot("player-episode")
+    back()
+    time.sleep(2)
+    dump("series-detail-after")
+    shot("series-detail-after")
+    back()
+
+
+def s_home_after():
+    tap_where(text="الرئيسية")
+    _, n = wait_for(timeout=15, text="تابع المشاهدة", save="home-after")
+    shot("home-after")
+    if n is None:
+        raise RuntimeError("continue watching missing")
+
+
+def s_search():
+    tap_where(text="بحث")
+    time.sleep(1.5)
+    type_text("sport")
+    time.sleep(2.5)
+    hide_ime()
+    dump("search")
+    shot("search")
+    back()
+
+
+def s_settings():
+    tap_where(text="حسابي")
+    time.sleep(2)
+    dump("settings")
+    shot("settings")
+
+
+def s_parental():
+    tap_where(contains="إخفاء محتوى البالغين")
+    time.sleep(1.5)
+    fill_fields([(0, "1234")])
+    shot("pin-dialog")
+    tap_where(text="تأكيد")
+    time.sleep(1)
+    shot("settings-parental-on")
+
+
+def s_switch_to_m3u():
+    tap_where(text="حسابي")
+    time.sleep(1.5)
+    tap_where(text="تبديل القائمة")
+    time.sleep(1)
+    shot("switch-dialog")
+    tap_where(text="تبديل")
+    _, n = wait_for(timeout=20, text="أضف اشتراكك")
+    if n is None:
+        raise RuntimeError("login screen not shown after switching")
+    tap_where(text="رابط M3U")
+    fill_fields([(1, "http://10.0.2.2:8000/playlist.m3u")])
+    shot("login-m3u")
+    tap_where(text="إضافة القائمة")
+    _, n = wait_for(timeout=90, text="الرئيسية", save="home-m3u")
+    if n is None:
+        raise RuntimeError("home not reached with M3U")
+    time.sleep(6)
+    shot("home-m3u")
+
+
+def s_m3u_content():
+    tap_where(text="مباشر")
+    _, n = wait_for(timeout=20, contains="Sport 1 HD", save="live-m3u")
+    shot("live-m3u")
+    if n is None:
+        raise RuntimeError("M3U channels missing")
+    tap_node(n)
+    time.sleep(12)
+    shot("player-m3u")
+    back()
+    tap_where(text="مسلسلات")
+    _, n = wait_for(timeout=20, contains="City Lights", save="series-m3u")
+    shot("series-m3u")
+    if n is None:
+        raise RuntimeError("M3U series missing")
+    tap_node(n)
+    time.sleep(3)
+    dump("series-detail-m3u")
+    shot("series-detail-m3u")
+    back()
+
+
+def s_relaunch():
+    shell("am force-stop %s" % PKG)
+    time.sleep(1)
+    shell("am start -W -n %s/.MainActivity" % PKG)
+    _, n = wait_for(timeout=40, text="الرئيسية", save="relaunch")
+    shot("relaunch")
+    if n is None:
+        raise RuntimeError("saved playlist not restored after restart")
+
+
+def finish():
+    logcat = adb("logcat", "-d", "-v", "threadtime", timeout=90)
+    with gzip.open(os.path.join(OUT, "logcat-full.txt.gz"), "wt", encoding="utf-8") as f:
+        f.write(logcat)
+    keep = []
+    for line in logcat.splitlines():
+        parts = line.split()
+        if len(parts) > 3 and parts[2] in pids:
+            keep.append(line)
+        elif "AndroidRuntime" in line or "FATAL" in line or ("ActivityManager" in line and PKG in line):
+            keep.append(line)
+    with open(os.path.join(OUT, "logcat-app.txt"), "w", encoding="utf-8") as f:
+        f.write("\n".join(keep))
+    crash = adb("logcat", "-d", "-b", "crash", timeout=30)
+    with open(os.path.join(OUT, "crash.txt"), "w", encoding="utf-8") as f:
+        f.write(crash)
+    summary = {
+        "results": results,
+        "pids": sorted(pids),
+        "crash_buffer_lines": len(crash.splitlines()),
+        "fatal": [l for l in keep if "FATAL" in l or "AndroidRuntime" in l][:100],
+    }
+    with open(os.path.join(OUT, "summary.json"), "w", encoding="utf-8") as f:
+        json.dump(summary, f, ensure_ascii=False, indent=1)
+    for r in results:
+        print("::%s title=%s::%s" % ("notice" if r["ok"] else "error", r["step"], r["error"] or "ok"), flush=True)
+
+
+if __name__ == "__main__":
+    for name, fn in [
+        ("launch", s_launch),
+        ("login-screen", s_login_screen),
+        ("wrong-password", s_wrong_password),
+        ("xtream-login", s_xtream_login),
+        ("live", s_live),
+        ("live-category", s_live_category),
+        ("favorite", s_favorite),
+        ("play-live", s_play_live),
+        ("guide", s_guide),
+        ("movies", s_movies),
+        ("series", s_series),
+        ("home-after", s_home_after),
+        ("search", s_search),
+        ("settings", s_settings),
+        ("parental", s_parental),
+        ("relaunch", s_relaunch),
+        ("switch-to-m3u", s_switch_to_m3u),
+        ("m3u-content", s_m3u_content),
+    ]:
+        step(name, fn)
+    finish()
