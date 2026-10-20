@@ -47,7 +47,7 @@ def shot(name):
     return w, h
 
 
-SYSTEM_DIALOGS = ("isn't responding", "keeps stopping", "has stopped")
+SYSTEM_DIALOGS = ("isn't responding", "keeps stopping", "has stopped", "Viewing full screen")
 notes = []
 
 
@@ -60,7 +60,7 @@ def dismiss_system_dialog(root):
         return False
     log("system dialog: " + texts[:200])
     notes.append(texts[:200])
-    for label in ("Wait", "Close app", "Close", "OK"):
+    for label in ("Wait", "Got it", "Close app", "Close", "OK"):
         for n in root.iter("node"):
             if (n.get("text") or "") == label:
                 x1, y1, x2, y2 = bounds(n)
@@ -213,6 +213,7 @@ def step(name, fn):
 def s_launch():
     # Let the freshly booted emulator settle; its launcher is slow at first.
     shell("settings put global hide_error_dialogs 1")
+    shell("settings put secure immersive_mode_confirmations confirmed")
     for _ in range(6):
         time.sleep(5)
         dump()
