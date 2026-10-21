@@ -53,18 +53,21 @@ def expect(cond, message):
 
 
 def go_tab(label):
-    """Moves to the side bar with the remote and opens a section."""
-    for _ in range(5):
+    """Moves up to the top bar with the remote and opens a section."""
+    f = None
+    for _ in range(15):
         _, f = log_focus("nav-search")
         if f in NAV:
             break
-        key("DPAD_RIGHT")
+        # Up reaches the bar; from the search box, right goes back to the sections.
+        key("DPAD_RIGHT" if f and "ابحث" in f else "DPAD_UP")
     _, f = log_focus("nav-start")
-    expect(f in NAV, "side bar not reached (focus: %s)" % f)
+    expect(f in NAV, "top bar not reached (focus: %s)" % f)
     step = NAV.index(label) - NAV.index(f)
-    key("DPAD_DOWN" if step > 0 else "DPAD_UP", abs(step))
+    if step:
+        key("DPAD_LEFT" if step > 0 else "DPAD_RIGHT", abs(step))
     _, f = log_focus("nav-target")
-    expect(f == label, "side bar item %s not focused (focus: %s)" % (label, f))
+    expect(f == label, "top bar item %s not focused (focus: %s)" % (label, f))
     key("DPAD_CENTER", pause=2.0)
 
 
