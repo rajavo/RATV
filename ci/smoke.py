@@ -633,12 +633,14 @@ def s_search():
 
 
 def scroll_to(text, tries=6):
-    for _ in range(tries):
-        _, n = wait_for(timeout=3, contains=text)
-        if n is not None:
-            return n
-        shell("input swipe 540 1700 540 900 400")
-        time.sleep(1.2)
+    """Finds a row on a long screen: looks down the page first, then back up."""
+    for swipe in ("540 1700 540 900", "540 900 540 1700"):
+        for _ in range(tries):
+            _, n = wait_for(timeout=3, contains=text)
+            if n is not None:
+                return n
+            shell("input swipe %s 400" % swipe)
+            time.sleep(1.2)
     return None
 
 
