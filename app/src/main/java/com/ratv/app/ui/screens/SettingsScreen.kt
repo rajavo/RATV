@@ -71,7 +71,12 @@ import com.ratv.app.ui.components.relativeTime
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 
-private val bufferLabels = linkedMapOf("small" to "صغير (أسرع بدءاً)", "medium" to "متوسط", "large" to "كبير (أكثر ثباتاً)")
+private val bufferLabels = linkedMapOf(
+    "small" to "صغير (أسرع بدءاً)",
+    "medium" to "متوسط",
+    "large" to "كبير (موصى به)",
+    "max" to "أقل تقطيع (يبدأ أبطأ قليلاً)"
+)
 
 @Composable
 fun SettingsScreen(nav: Navigator) {
@@ -88,6 +93,7 @@ fun SettingsScreen(nav: Navigator) {
 
     var bufferMode by remember { mutableStateOf(repo.prefs.bufferMode) }
     var autoplay by remember { mutableStateOf(repo.prefs.autoplayLast) }
+    var bestQuality by remember { mutableStateOf(repo.prefs.bestQuality) }
     var epgAuto by remember { mutableStateOf(repo.prefs.epgAuto) }
     var showBuffer by remember { mutableStateOf(false) }
     var showAbout by remember { mutableStateOf(false) }
@@ -185,7 +191,12 @@ fun SettingsScreen(nav: Navigator) {
 
         GroupTitle("المشغّل")
         Group {
-            ValueRow("حجم التخزين المؤقت", bufferLabels[bufferMode] ?: "متوسط") { showBuffer = true }
+            ValueRow("التخزين المؤقت ضد التقطيع", bufferLabels[bufferMode] ?: "كبير (موصى به)") { showBuffer = true }
+            Divider()
+            ToggleRow("أعلى جودة متاحة دائماً", "يختار أعلى جودة يرسلها المزوّد للبث", bestQuality) {
+                bestQuality = it
+                repo.prefs.bestQuality = it
+            }
             Divider()
             ToggleRow("فتح آخر قناة عند التشغيل", null, autoplay) {
                 autoplay = it
@@ -238,7 +249,7 @@ fun SettingsScreen(nav: Navigator) {
         AlertDialog(
             onDismissRequest = { showBuffer = false },
             confirmButton = { TextButton(onClick = { showBuffer = false }) { Text("تم", color = RColors.Saffron) } },
-            title = { Text("حجم التخزين المؤقت", style = T.h2) },
+            title = { Text("التخزين المؤقت ضد التقطيع", style = T.h2) },
             text = {
                 Column {
                     bufferLabels.forEach { (key, label) ->
@@ -262,7 +273,10 @@ fun SettingsScreen(nav: Navigator) {
                             Text(label, style = T.body(15.sp))
                         }
                     }
-                    Text("يُطبَّق عند تشغيل القناة التالية.", style = T.caption)
+                    Text(
+                        "كلما كبر التخزين قلّ التقطيع في الشبكات الضعيفة، لكن بدء القناة يأخذ ثواني أكثر. يُطبَّق عند تشغيل القناة التالية.",
+                        style = T.caption
+                    )
                 }
             },
             containerColor = RColors.Surface

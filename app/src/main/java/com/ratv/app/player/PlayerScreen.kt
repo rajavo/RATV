@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -93,6 +94,7 @@ import androidx.media3.common.MimeTypes
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Tracks
+import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
@@ -125,6 +127,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
 private val Glass = Color(0x1FFFFFFF)
+private const val MAX_RECONNECTS = 5
 private val SoftText = Color(0xFFD9D4CC)
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -165,12 +168,18 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     var showTracks by remember { mutableStateOf(false) }
     var resizeIndex by remember { mutableIntStateOf(0) }
     var banner by remember { mutableStateOf<Channel?>(null) }
+    var sourcesOpen by remember { mutableStateOf(false) }
+    var audioVersion by remember { mutableIntStateOf(0) }
+    var audioTracks by remember { mutableIntStateOf(0) }
+    var videoHeight by remember { mutableIntStateOf(0) }
+    var reconnectAttempts by remember { mutableIntStateOf(0) }
+    var reconnecting by remember { mutableStateOf(false) }
     val isTv = rememberIsTv()
     val rootFocus = remember { FocusRequester() }
     val playPauseFocus = remember { FocusRequester() }
     val retryFocus = remember { FocusRequester() }
 
-    val player = remember { createPlayer(context, repo.prefs.bufferMode) }
+    val player = remember { createPlayer(context, repo.prefs.bufferMode, repo.prefs.bestQuality) }
     val inPip = rememberIsInPictureInPicture(activity)
     val canPip = remember {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
@@ -207,6 +216,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         saveProgress()
         current = item
         panelOpen = false
+        sourcesOpen = false
+        reconnectAttempts = 0
+        reconnecting = false
+        videoHeight = 0
         controlsVisible = showControls
         touch()
     }
@@ -245,23 +258,40 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             override fun onPlaybackStateChanged(playbackState: Int) {
                 buffering = playbackState == Player.STATE_BUFFERING
                 ended = playbackState == Player.STATE_ENDED
-                if (playbackState == Player.STATE_READY) playerError = null
+                if (playbackState == Player.STATE_READY) {
+                    playerError = null
+                    reconnectAttempts = 0
+                }
             }
 
             override fun onPlayerError(error: PlaybackException) {
-                if (error.errorCode == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW) {
-                    player.seekToDefaultPosition()
-                    player.prepare()
-                } else {
-                    playerError = describeError(error)
-                    controlsVisible = true
+                when {
+                    error.errorCode == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW -> {
+                        player.seekToDefaultPosition()
+                        player.prepare()
+                    }
+                    isRetryable(error) && reconnectAttempts < MAX_RECONNECTS -> {
+                        reconnectAttempts++
+                        reconnecting = true
+                    }
+                    else -> {
+                        reconnecting = false
+                        playerError = describeError(error)
+                        controlsVisible = true
+                    }
                 }
+            }
+
+            override fun onVideoSizeChanged(videoSize: VideoSize) {
+                if (videoSize.height > 0) videoHeight = videoSize.height
             }
 
             override fun onTracksChanged(tracks: Tracks) {
                 val audio = tracks.groups.filter { it.type == C.TRACK_TYPE_AUDIO }.sumOf { it.length }
                 val text = tracks.groups.count { it.type == C.TRACK_TYPE_TEXT }
+                audioTracks = audio
                 hasTrackChoice = audio > 1 || text > 0
+                audioVersion++
             }
         }
         player.addListener(listener)
@@ -270,6 +300,17 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             saveProgress()
             player.release()
         }
+    }
+
+    // Reconnect by itself after a network drop instead of stopping with an error.
+    LaunchedEffect(reconnectAttempts, reconnecting) {
+        if (!reconnecting) return@LaunchedEffect
+        delay(1_500L * reconnectAttempts)
+        val playing = current ?: return@LaunchedEffect
+        if (playing.isLive) player.seekToDefaultPosition()
+        player.prepare()
+        player.playWhenReady = true
+        reconnecting = false
     }
 
     // ---------------------------------------------------- position tick
@@ -323,8 +364,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // ------------------------------------------------------- behaviour
-    LaunchedEffect(controlsVisible, isPlaying, lastTouch, panelOpen, showTracks) {
-        if (controlsVisible && isPlaying && !panelOpen && !showTracks) {
+    LaunchedEffect(controlsVisible, isPlaying, lastTouch, panelOpen, showTracks, sourcesOpen) {
+        if (controlsVisible && isPlaying && !panelOpen && !showTracks && !sourcesOpen) {
             delay(4_000L)
             controlsVisible = false
         }
@@ -355,9 +396,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     BackHandler(enabled = locked) { locked = false }
-    BackHandler(enabled = !locked && (panelOpen || showTracks)) {
+    BackHandler(enabled = !locked && (panelOpen || showTracks || sourcesOpen)) {
         panelOpen = false
         showTracks = false
+        sourcesOpen = false
     }
 
     val zapList = remember(item?.channel?.categoryId, channels) {
@@ -367,6 +409,11 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val programmes = item?.channel?.let { epg.forChannel(it) }.orEmpty()
     val programme = programmes.current(now)
     val nextProgramme = programmes.next(now)
+    val siblings = remember(item?.channel?.id, channels) {
+        item?.channel?.let { repo.siblings(it) }.orEmpty()
+    }
+    val fourK = siblings.firstOrNull { it.quality == "4K" }?.takeIf { item?.channel?.quality != "4K" }
+    val audioOptions = remember(audioVersion, sourcesOpen) { trackOptions(player, C.TRACK_TYPE_AUDIO) }
 
     fun zap(step: Int) {
         val ch = item?.channel ?: return
@@ -435,7 +482,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             showControls()
             return true
         }
-        if (panelOpen || showTracks || playerError != null || notFound) return false
+        if (panelOpen || sourcesOpen || showTracks || playerError != null || notFound) return false
         if (controlsVisible) {
             touch()
             return false
@@ -482,11 +529,11 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // Keep the remote's focus somewhere useful as the controls come and go.
-    LaunchedEffect(controlsVisible, locked, panelOpen, showTracks) {
+    LaunchedEffect(controlsVisible, locked, panelOpen, showTracks, sourcesOpen) {
         delay(80L)
-        if (controlsVisible && !locked && !panelOpen && !showTracks) {
+        if (controlsVisible && !locked && !panelOpen && !showTracks && !sourcesOpen) {
             if (isTv) runCatching { playPauseFocus.requestFocus() }
-        } else if (!panelOpen && !showTracks) {
+        } else if (!panelOpen && !showTracks && !sourcesOpen) {
             runCatching { rootFocus.requestFocus() }
         }
     }
@@ -499,7 +546,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // On TV the first Back only hides the controls.
-    BackHandler(enabled = isTv && controlsVisible && !locked && !panelOpen && !showTracks) {
+    BackHandler(enabled = isTv && controlsVisible && !locked && !panelOpen && !showTracks && !sourcesOpen) {
         controlsVisible = false
     }
 
@@ -565,6 +612,25 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             )
         }
 
+        if (reconnecting || (reconnectAttempts > 0 && buffering)) {
+            Row(
+                Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 24.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color(0xD90B0C10))
+                    .padding(horizontal = 14.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(RIcons.Refresh, contentDescription = null, tint = RColors.Saffron, modifier = Modifier.size(16.dp))
+                Text(
+                    "انقطع البث، جارٍ إعادة الاتصال… ($reconnectAttempts/$MAX_RECONNECTS)",
+                    style = T.body(13.sp, FontWeight.Medium)
+                )
+            }
+        }
+
         val zapped = banner
         if (zapped != null && !controlsVisible && !inPip) {
             Row(
@@ -611,7 +677,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 }
             } else {
                 AnimatedVisibility(
-                    visible = controlsVisible && !panelOpen && item != null,
+                    visible = controlsVisible && !panelOpen && !sourcesOpen && item != null,
                     enter = fadeIn(),
                     exit = fadeOut(),
                     modifier = Modifier.fillMaxSize()
@@ -633,6 +699,14 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                             canPip = canPip,
                             resizeLabel = resizeModes[resizeIndex].second,
                             hasNextEpisode = nextEpisode != null,
+                            resolution = resolutionLabel(videoHeight),
+                            fourKName = fourK?.name,
+                            onFourK = { fourK?.let { play(liveToPlayable(it)) } },
+                            showSources = item.isLive && (audioTracks > 1 || siblings.isNotEmpty()),
+                            onSources = {
+                                touch()
+                                sourcesOpen = true
+                            },
                             playPauseFocus = playPauseFocus,
                             onBack = { navigator.back() },
                             onPlayPause = { togglePlay() },
@@ -691,10 +765,30 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                         tv = isTv
                     )
                 }
+
+                AnimatedVisibility(
+                    visible = sourcesOpen,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    SourcesPanel(
+                        audio = audioOptions,
+                        siblings = siblings,
+                        epgLookup = { ch -> epg.forChannel(ch).current(now)?.title },
+                        onPickAudio = { option ->
+                            selectTrack(player, C.TRACK_TYPE_AUDIO, option)
+                            audioVersion++
+                        },
+                        onPickChannel = { ch -> play(liveToPlayable(ch)) },
+                        onClose = { sourcesOpen = false },
+                        tv = isTv
+                    )
+                }
             }
 
             val error = playerError
-            if (error != null && !panelOpen) {
+            if (error != null && !panelOpen && !sourcesOpen) {
                 Column(
                     Modifier
                         .align(Alignment.Center)
@@ -764,6 +858,11 @@ private fun Controls(
     canPip: Boolean,
     resizeLabel: String,
     hasNextEpisode: Boolean,
+    resolution: String?,
+    fourKName: String?,
+    onFourK: () -> Unit,
+    showSources: Boolean,
+    onSources: () -> Unit,
     playPauseFocus: FocusRequester,
     onBack: () -> Unit,
     onPlayPause: () -> Unit,
@@ -816,7 +915,9 @@ private fun Controls(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f, fill = false)
                     )
-                    channel?.quality?.let { QualityBadge(it, color = SoftText) }
+                    // The real resolution of the picture when known, otherwise what the name says.
+                    val badge = resolution ?: channel?.quality
+                    if (badge != null) QualityBadge(badge, color = if (resolution != null) RColors.SaffronLight else SoftText)
                     if (item.isLive) LiveBadge()
                 }
                 val sub = if (item.isLive) programmeTitle else item.subtitle
@@ -825,6 +926,20 @@ private fun Controls(
                 }
             }
             Spacer(Modifier.width(8.dp))
+            if (fourKName != null) {
+                Row(
+                    Modifier
+                        .height(40.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(RColors.Saffron)
+                        .tvClickable(RoundedCornerShape(20.dp), onClickLabel = "شاهد $fourKName", ringColor = Color.White, onClick = onFourK)
+                        .padding(horizontal = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("4K متاح", style = T.body(13.sp, FontWeight.Bold, RColors.OnSaffron))
+                }
+                Spacer(Modifier.width(8.dp))
+            }
             if (hasTrackChoice) GlassIcon(RIcons.Captions, "الصوت والترجمة", onTracks)
             if (canPip) GlassIcon(RIcons.Pip, "صورة داخل صورة", onPip)
             GlassIcon(RIcons.Aspect, "حجم الصورة: $resizeLabel", onResize)
@@ -911,6 +1026,7 @@ private fun Controls(
                 if (item.isLive) {
                     PillButton(RIcons.ListIcon, "القنوات", onChannels)
                     PillButton(RIcons.Calendar, "الدليل", onGuide)
+                    if (showSources) PillButton(RIcons.Mic, "المعلق والجودة", onSources)
                     if (nextLabel != null) {
                         Text(
                             nextLabel,
@@ -1059,6 +1175,127 @@ private fun ChannelPanel(
                 }
             }
         }
+    }
+}
+
+/** Commentators of this stream and other versions of the same channel (quality, language). */
+@Composable
+private fun SourcesPanel(
+    audio: List<TrackOption>,
+    siblings: List<Channel>,
+    epgLookup: (Channel) -> String?,
+    onPickAudio: (TrackOption) -> Unit,
+    onPickChannel: (Channel) -> Unit,
+    onClose: () -> Unit,
+    tv: Boolean
+) {
+    val firstFocus = remember { FocusRequester() }
+    LaunchedEffect(Unit) {
+        if (tv) {
+            delay(120L)
+            runCatching { firstFocus.requestFocus() }
+        }
+    }
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color(0x66000000))
+            .pointerInput(Unit) { detectTapGestures(onTap = { onClose() }) }
+    ) {
+        Column(
+            Modifier
+                .align(Alignment.CenterStart)
+                .width(360.dp)
+                .fillMaxHeight()
+                .background(Color(0xF00B0C10))
+                .pointerInput(Unit) { detectTapGestures { } }
+                .padding(start = 12.dp, end = 12.dp, top = 16.dp)
+        ) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Text("المعلق والجودة", style = T.display(17.sp))
+                    Text("اختر المعلق أو نسخة أخرى من القناة", style = T.caption, maxLines = 1)
+                }
+                CircleIconButton(RIcons.Close, "إغلاق", onClose, background = RColors.Surface2, size = 40.dp, iconSize = 20.dp)
+            }
+            Spacer(Modifier.height(8.dp))
+            LazyColumn(contentPadding = PaddingValues(bottom = 16.dp)) {
+                if (audio.size > 1) {
+                    item { PanelHeader("المعلق في هذا البث") }
+                    itemsIndexed(audio) { index, option ->
+                        SourceRow(
+                            title = option.label,
+                            subtitle = null,
+                            badge = null,
+                            selected = option.selected,
+                            icon = RIcons.Mic,
+                            modifier = if (index == 0) Modifier.focusRequester(firstFocus) else Modifier,
+                            onClick = { onPickAudio(option) }
+                        )
+                    }
+                }
+                if (siblings.isNotEmpty()) {
+                    item { PanelHeader("نسخ أخرى من القناة") }
+                    itemsIndexed(siblings, key = { _, ch -> ch.id }) { index, ch ->
+                        SourceRow(
+                            title = ch.name,
+                            subtitle = epgLookup(ch),
+                            badge = ch.quality,
+                            selected = false,
+                            icon = RIcons.Tv,
+                            modifier = if (index == 0 && audio.size <= 1) Modifier.focusRequester(firstFocus) else Modifier,
+                            onClick = { onPickChannel(ch) }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PanelHeader(text: String) {
+    Text(text, style = T.label, modifier = Modifier.padding(start = 8.dp, top = 14.dp, bottom = 6.dp))
+}
+
+@Composable
+private fun SourceRow(
+    title: String,
+    subtitle: String?,
+    badge: String?,
+    selected: Boolean,
+    icon: ImageVector,
+    modifier: Modifier,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier
+            .fillMaxWidth()
+            .heightIn(min = 56.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(if (selected) RColors.Surface2 else Color.Transparent)
+            .tvClickable(RoundedCornerShape(14.dp), onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Icon(icon, contentDescription = null, tint = if (selected) RColors.Saffron else RColors.Text2, modifier = Modifier.size(20.dp))
+        Column(Modifier.weight(1f)) {
+            Text(
+                title,
+                style = T.body(14.sp, FontWeight.Bold, if (selected) RColors.Saffron else RColors.Text),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            if (subtitle != null) Text(subtitle, style = T.caption, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        }
+        if (badge != null) QualityBadge(badge, color = if (badge == "4K") RColors.SaffronLight else RColors.Text2)
+        if (selected) Icon(RIcons.Check, contentDescription = "المختار", tint = RColors.Saffron, modifier = Modifier.size(18.dp))
     }
 }
 
