@@ -1637,7 +1637,7 @@ private fun StatsPanel(
             "الشاشة" to (if (refresh > 0f) "${refresh.toInt()} هرتز" else "—"),
             "الترميز" to "${codec(video)} · صوت ${codec(audio)}",
             "فك الترميز" to (decoder ?: "—"),
-            "سرعة الاتصال" to (if (bandwidthBps > 0) String.format(java.util.Locale.US, "%.1f ميجابت", bandwidthBps / 1_000_000.0) else "—"),
+            "سرعة الاتصال" to (if (bandwidthBps > 0 && bandwidthBps != 12_000_000L) String.format(java.util.Locale.US, "%.1f ميجابت", bandwidthBps / 1_000_000.0) else "—"),
             "الاحتياطي" to "${reserveMs / 1000L} ث",
             "التوقفات" to "$stalls",
             "إطارات ساقطة" to "$dropped"
