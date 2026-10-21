@@ -534,6 +534,9 @@ val navItems = listOf(
     NavItem("settings", "حسابي", RIcons.User)
 )
 
+/** The TV top bar also has the match schedule. */
+val tvNavItems: List<NavItem> = navItems.toMutableList().apply { add(2, NavItem("matches", "المباريات", RIcons.Trophy)) }
+
 @Composable
 private fun NavEntry(item: NavItem, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
     val source = remember { MutableInteractionSource() }

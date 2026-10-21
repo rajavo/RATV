@@ -35,6 +35,7 @@ import com.ratv.app.ui.screens.GuideScreen
 import com.ratv.app.ui.screens.HomeScreen
 import com.ratv.app.ui.screens.LiveScreen
 import com.ratv.app.ui.screens.LoginScreen
+import com.ratv.app.ui.screens.MatchesScreen
 import com.ratv.app.ui.screens.MovieDetailScreen
 import com.ratv.app.ui.screens.MoviesScreen
 import com.ratv.app.ui.screens.SearchScreen
@@ -85,6 +86,7 @@ class Navigator(private val nav: NavHostController) {
         }
     }
 
+    fun matches() = nav.navigate("matches") { launchSingleTop = true }
     fun search() = nav.navigate("search")
     fun guide() = nav.navigate("guide") { launchSingleTop = true }
     fun movie(id: String) = nav.navigate("movie/${Uri.encode(id)}")
@@ -96,7 +98,7 @@ class Navigator(private val nav: NavHostController) {
     fun resume(key: String) = nav.navigate("player/resume/${Uri.encode(key)}")
 }
 
-private val barRoutes = setOf("home", "live", "movies", "series", "settings", "guide")
+private val barRoutes = setOf("home", "live", "matches", "movies", "series", "settings", "guide")
 
 @Composable
 fun RatvRoot() {
@@ -155,6 +157,7 @@ fun RatvRoot() {
             composable("home") { HomeScreen(navigator) }
             composable("live") { LiveScreen(navigator) }
             composable("guide") { GuideScreen(navigator) }
+            composable("matches") { MatchesScreen(navigator) }
             composable("movies") { MoviesScreen(navigator) }
             composable("series") { SeriesScreen(navigator) }
             composable("settings") { SettingsScreen(navigator) }

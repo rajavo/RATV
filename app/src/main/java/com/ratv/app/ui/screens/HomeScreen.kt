@@ -1,5 +1,10 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.data.MatchEvent
+import com.ratv.app.data.Updater
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -82,6 +87,9 @@ fun rememberNow(intervalMs: Long = 30_000L): Long {
 fun HomeScreen(nav: Navigator) {
     val repo = LocalRepo.current
     val wide = rememberIsWide()
+    val update by Updater.available.collectAsStateWithLifecycle()
+    var showUpdate by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { Updater.checkIfDue() }
     val channels by repo.channels.collectAsStateWithLifecycle()
     val movies by repo.movies.collectAsStateWithLifecycle()
     val series by repo.series.collectAsStateWithLifecycle()
@@ -101,12 +109,41 @@ fun HomeScreen(nav: Navigator) {
     val heroFocus = remember { FocusRequester() }
     TvInitialFocus(heroFocus, key = featured?.id)
 
+    val todayMatches by produceState(emptyList<MatchEvent>(), epg, channels) {
+        val t = System.currentTimeMillis()
+        value = repo.matchSchedule(t, startOfDay(t) + 24L * 60L * 60L * 1000L).filter { it.end > t }
+    }
+    update?.let { info -> if (showUpdate) UpdateDialog(info) { showUpdate = false } }
+
     LazyColumn(
         Modifier
             .fillMaxSize()
             .background(RColors.Ink),
         contentPadding = PaddingValues(bottom = 24.dp)
     ) {
+        update?.let { info ->
+            item {
+                Row(
+                    Modifier
+                        .padding(start = 20.dp, end = 20.dp, top = 12.dp)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(RColors.Saffron)
+                        .tvClickable(RoundedCornerShape(16.dp)) { showUpdate = true }
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Icon(RIcons.Refresh, contentDescription = null, tint = RColors.OnSaffron, modifier = Modifier.size(20.dp))
+                    Text(
+                        "تحديث جديد متاح (${info.versionName}) — اضغط للتحديث",
+                        style = T.body(14.sp, FontWeight.Bold, RColors.OnSaffron),
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+        }
+
         // On TV and wide screens the top bar already has the logo, search and account.
         if (!wide) item {
             Row(
@@ -217,6 +254,20 @@ fun HomeScreen(nav: Navigator) {
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
+                        }
+                    }
+                }
+            }
+        }
+
+        if (todayMatches.isNotEmpty()) {
+            item {
+                Column {
+                    Spacer(Modifier.height(20.dp))
+                    SectionHeader("مباريات اليوم", action = "الجدول", onAction = { if (wide) nav.tab("matches") else nav.matches() })
+                    Column(Modifier.padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        todayMatches.take(3).forEach { m ->
+                            MatchCard(m, now, { repo.liveCategoryName(it) }, compact = true) { ch -> nav.playLive(ch.id) }
                         }
                     }
                 }

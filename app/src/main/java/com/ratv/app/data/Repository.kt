@@ -503,6 +503,11 @@ class Repository(private val context: Context, val prefs: Prefs) {
         return channels.value.filter { it.id != exceptId && (it.categoryId in sportCats || looksSports(it.name)) }
     }
 
+    /** Games in the programme guide between [from] and [to], with every channel showing them. */
+    suspend fun matchSchedule(from: Long, to: Long): List<MatchEvent> = withContext(Dispatchers.Default) {
+        buildMatches(sportsChannels(null), _epg.value, from, to)
+    }
+
     fun isSportsChannel(ch: Channel): Boolean =
         looksSports(ch.name) || looksSports(liveCategoryName(ch.categoryId).orEmpty())
 
