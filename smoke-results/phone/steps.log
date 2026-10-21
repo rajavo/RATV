@@ -1,0 +1,115 @@
+21:02:03 == launch
+21:02:58 debug.ratv.subs=http://10.0.2.2:8000
+21:03:00 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 1947
+WaitTime: 1950
+Complete
+21:03:03 screenshot 01-splash.png 1080x2400
+21:03:03 == login-screen
+21:03:08 screenshot 02-login.png 1080x2400
+21:03:08 == wrong-password
+21:03:30 screenshot 03-login-error.png 1080x2400
+21:03:30 == xtream-login
+21:03:36 screenshot 04-login-filled.png 1080x2400
+21:03:55 screenshot 05-home.png 1080x2400
+21:03:56 == live
+21:04:03 screenshot 06-live.png 1080x2400
+21:04:03 == live-category
+21:04:10 screenshot 07-live-sport.png 1080x2400
+21:04:13 == favorite
+21:04:22 screenshot 08-live-favorites.png 1080x2400
+21:04:25 == play-live
+21:04:41 screenshot 09-player-live.png 2400x1080
+21:04:47 screenshot 10-player-live-controls.png 2400x1080
+21:05:07 screenshot 11-stats.png 2400x1080
+21:05:07 stats:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | معلومات البث | الصيغة | TS | الصورة | 1280×720 · 25 إطار/ث | الشاشة | 60 هرتز | الترميز | AVC · صوت MP4A-LATM | فك الترميز | c2.goldfish.h264.decoder | سرعة الاتصال | — | الاحتياطي | 33 ث | التوقفات | 0 | إطارات ساقطة | 0 | البث 25 إطار والشاشة 60 هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات.
+21:05:11 screenshot 12-after-live-player.png 1080x2400
+21:05:11 == offline
+21:05:45 screenshot 13-offline.png 2400x1080
+21:05:45 offline:  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+21:05:56 screenshot 14-back-online.png 2400x1080
+21:06:00 == unstable
+21:07:06 screenshot 15-unstable-playing.png 2400x1080
+21:07:25 screenshot 16-unstable-stats.png 2400x1080
+21:07:25 unstable:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | معلومات البث | الصيغة | TS | الصورة | 1280×720 · 23.98 إطار/ث | الشاشة | 60 هرتز | الترميز | AVC · صوت MP4A-LATM | فك الترميز | c2.goldfish.h264.decoder | سرعة الاتصال | 1.5 ميجابت | الاحتياطي | 5 ث | التوقفات | 0 | إطارات ساقطة | 0 | البث 23.98 إطار والشاشة 60 هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات.
+21:07:29 == matches
+21:07:37 screenshot 17-matches.png 1080x2400
+21:07:39 matches:  |  |  |  |  |  |  |  |  |  | جدول المباريات | من دليل البرامج في اشتراكك، مع كل القنوات الناقلة لكل مباراة | الآن | اليوم | غداً | 20:30 – 22:30 | مباشر الآن | 4 قناة ناقلة | الدوري الإسباني: ريال مدريد × برشلونة | 📺 قنوات أخرى |  | Sport 1 4K |  |  | Sport 1 HD |  |  | Sport 1 EN |  |  | Sky Sports Main |  |  | الرئيسية |  |  | مباشر |  |  | أفلام |  |  | مسلسلات |  |  | حسابي | 
+21:07:51 screenshot 18-matches-play.png 2400x1080
+21:07:58 == commentator
+21:08:18 screenshot 19-player-sport1.png 2400x1080
+21:08:24 screenshot 20-player-sport1-controls.png 2400x1080
+21:08:33 screenshot 21-sources-panel.png 2400x1080
+21:08:36 sources:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | الاحتياطي ضد انقطاع النت: 41 ث | المعلق والجودة | اختر المعلق، أو اسمع معلق قناة أخرى على هذه الصورة |  |  |  |  | المعلق في هذا البث |  | العربية |  |  | الإنجليزية |  |  | تنقل نفس المباراة الآن | S | Sky Sports Main | LaLiga: Real Madrid v Barcelona |  | سماع معلقها |  |  | انتقال |  | نسخ أخرى من القناة | Sport 1 4K | 4K | الدوري الإسباني: ريال مدري
+21:08:40 screenshot 22-sources-second-commentator.png 2400x1080
+21:08:55 screenshot 23-player-sport1-4k.png 2400x1080
+21:09:02 == commentary-mix
+21:09:22 screenshot 24-mix-player.png 2400x1080
+21:09:38 screenshot 25-mix-panel.png 2400x1080
+21:09:38 mix panel:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | الاحتياطي ضد انقطاع النت: 43 ث | المعلق والجودة | اختر المعلق، أو اسمع معلق قناة أخرى على هذه الصورة |  |  |  |  | المعلق في هذا البث |  | العربية |  |  | الإنجليزية |  |  | تنقل نفس المباراة الآن | S | Sky Sports Main | LaLiga: Real Madrid v Barcelona |  | سماع معلقها |  |  | انتقال |  | نسخ أخرى من القناة | Sport 1 4K | 4K | الدوري الإسباني: ريال مدريد × برشلونة |  | سماع معلقها |  |  | انتقال |  |  |  |  | 
+21:09:50 screenshot 26-mix-on.png 2400x1080
+21:10:02 screenshot 27-mix-shifted.png 2400x1080
+21:10:14 screenshot 28-mix-playing.png 2400x1080
+21:10:21 == guide
+21:10:30 screenshot 29-guide.png 1080x2400
+21:10:32 == movies
+21:10:39 screenshot 30-movies.png 1080x2400
+21:10:47 screenshot 31-movie-detail.png 1080x2400
+21:10:49 4K copy offered: True
+21:11:15 screenshot 32-player-movie.png 2400x1080
+21:11:18 screenshot 33-player-movie-controls.png 2400x1080
+21:11:25 screenshot 34-movie-detail-resume.png 1080x2400
+21:11:27 == subtitles
+21:11:53 screenshot 35-subs-player.png 2400x1080
+21:12:09 screenshot 36-subs-panel.png 2400x1080
+21:12:09 subtitles panel:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | الاحتياطي ضد انقطاع النت: 60 من 60 ث | الترجمة | ترجمة الفيلم أو الحلقة بأي لغة، وتُترجم آلياً إذا لم تتوفر بلغتك |  |  |  |  | لغة الترجمة |  | العربية | اضغط لتغيير اللغة |  | ترجمات متاحة |  | Silent.Sea.2019.AR | العربية · 10 تنزيل |  |  | Silent.Sea.2019.1080p.WEB | الإنجليزية · تُترجم آلياً إلى العربية · 100 تنزيل |  | حجم الخط |  | صغير |  |  | متوسط |  |  | كبير |  |  | كبير جداً |  | التوقيت |  |  |  |  |  | 
+21:12:14 screenshot 37-subs-chosen.png 2400x1080
+21:12:41 screenshot 38-subs-on-screen.png 2400x1080
+21:12:41 subtitle on screen: 'الماء هادئ الليلة'
+21:12:41 == subtitles-translated
+21:12:45 screenshot 39-subs-translated.png 2400x1080
+21:12:45 translated line: 'مرحبا بكم في البحر الصامت'
+21:12:52 == series
+21:13:00 screenshot 40-series.png 1080x2400
+21:13:06 screenshot 41-series-detail.png 1080x2400
+21:13:11 screenshot 42-series-season2.png 1080x2400
+21:13:31 screenshot 43-player-episode.png 2400x1080
+21:13:38 screenshot 44-series-detail-after.png 1080x2400
+21:13:40 == home-after
+21:13:47 screenshot 45-home-after.png 1080x2400
+21:13:47 == search
+21:13:57 screenshot 46-search.png 1080x2400
+21:13:59 == settings
+21:14:06 screenshot 47-settings.png 1080x2400
+21:14:06 == parental
+21:14:27 screenshot 48-pin-dialog.png 1080x2400
+21:14:31 screenshot 49-settings-parental-on.png 1080x2400
+21:14:31 == adult-hidden
+21:14:45 screenshot 50-search-adult.png 1080x2400
+21:14:47 == speed-test
+21:15:13 screenshot 51-speed-test.png 1080x2400
+21:15:13 speed:  |  |  |  |  |  |  |  | قياس سرعة النت | 31.2 | ميجابت في الثانية | ممتاز: يكفي لبث 4K | زمن الاستجابة | 3 ملي ثانية | استجابة سيرفر الاشتراك | 4 ملي ثانية |  | إغلاق |  |  | إعادة القياس | 
+21:15:16 == clear-history
+21:15:41 screenshot 52-clear-history-dialog.png 1080x2400
+21:15:53 screenshot 53-home-history-cleared.png 1080x2400
+21:15:53 == update
+21:16:08 screenshot 54-update-dialog.png 1080x2400
+21:16:24 screenshot 55-update-installer.png 1080x2400
+21:16:24 after update: mCurrentFocus=Window{f8ed29d u0 com.android.settings/com.android.settings.spa.SpaActivity}
+21:16:31 == relaunch
+21:16:39 screenshot 56-relaunch.png 1080x2400
+21:16:39 == switch-to-m3u
+21:17:05 screenshot 57-login-m3u-bad.png 1080x2400
+21:17:12 screenshot 58-login-m3u.png 1080x2400
+21:17:26 screenshot 59-home-m3u.png 1080x2400
+21:17:26 == m3u-content
+21:17:33 screenshot 60-live-m3u.png 1080x2400
+21:17:47 screenshot 61-player-m3u.png 2400x1080
+21:17:56 screenshot 62-series-m3u.png 1080x2400
+21:18:02 screenshot 63-series-detail-m3u.png 1080x2400
+21:18:04 == users
+21:18:12 screenshot 64-users.png 1080x2400
+21:18:34 screenshot 65-user1-favorites.png 1080x2400
