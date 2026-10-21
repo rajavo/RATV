@@ -78,10 +78,10 @@ import com.ratv.app.ui.theme.T
 private val subtitleSizeLabels = listOf("صغير", "متوسط", "كبير", "كبير جداً")
 
 private val bufferLabels = linkedMapOf(
-    "5" to "5 ثوانٍ (تبدأ القناة أسرع)",
-    "10" to "10 ثوانٍ (موصى به)",
-    "20" to "20 ثانية (للنت الضعيف)",
-    "30" to "30 ثانية (أقل تقطيع)"
+    "30" to "يكمل 30 ثانية بدون إنترنت",
+    "60" to "يكمل دقيقة بدون إنترنت (موصى به)",
+    "120" to "يكمل دقيقتين بدون إنترنت",
+    "180" to "يكمل 3 دقائق بدون إنترنت"
 )
 
 private val liveFormatLabels = linkedMapOf(
@@ -237,7 +237,7 @@ fun SettingsScreen(nav: Navigator) {
         Group {
             ValueRow("قياس سرعة النت", "") { showSpeed = true }
             Divider()
-            ValueRow("التخزين المؤقت ضد التقطيع", bufferLabels[bufferMode] ?: "10 ثوانٍ (موصى به)") { showBuffer = true }
+            ValueRow("الاحتياطي ضد انقطاع النت", bufferLabels[bufferMode] ?: "يكمل دقيقة بدون إنترنت") { showBuffer = true }
             Divider()
             ValueRow("صيغة البث المباشر", liveFormatLabels[liveFormat] ?: "تلقائي") { showFormat = true }
             Divider()
@@ -399,7 +399,7 @@ fun SettingsScreen(nav: Navigator) {
         AlertDialog(
             onDismissRequest = { showBuffer = false },
             confirmButton = { TextButton(onClick = { showBuffer = false }) { Text("تم", color = RColors.Saffron) } },
-            title = { Text("التخزين المؤقت ضد التقطيع", style = T.h2) },
+            title = { Text("الاحتياطي ضد انقطاع النت", style = T.h2) },
             text = {
                 Column {
                     bufferLabels.forEach { (key, label) ->
@@ -424,7 +424,7 @@ fun SettingsScreen(nav: Navigator) {
                         }
                     }
                     Text(
-                        "يخزّن التطبيق هذه المدة من القناة قبل عرضها ويبقى متأخراً عن البث المباشر بنفس المدة، فإذا ضعف النت أو انقطع لثوانٍ تكمل الصورة من المخزَّن بدون تقطيع. كلما زادت المدة قلّ التقطيع، وتأخذ القناة وقتاً أطول لتبدأ. يُطبَّق عند تشغيل القناة التالية.",
+                        "طول المشاهدة يخزّن التطبيق احتياطياً من البث، وإذا ضعف النت أو انقطع تكمل الصورة منه حتى يعود الإنترنت، فالمدة المختارة هي أقصى وقت يكمل فيه بدون نت. الأفلام والمسلسلات يمتلئ احتياطيها خلال ثوانٍ. القنوات المباشرة يمتلئ احتياطيها فوراً إذا كان السيرفر يدعم HLS، وإلا يتجمّع أثناء المشاهدة (تُعرض القناة أبطأ بـ5% لا تُلاحظ حتى يمتلئ). الاحتياطي في ذاكرة الجهاز، فقد يكون أقصر في قنوات 4K والأجهزة ذات الذاكرة الصغيرة. يُطبَّق عند تشغيل القناة التالية.",
                         style = T.caption
                     )
                 }

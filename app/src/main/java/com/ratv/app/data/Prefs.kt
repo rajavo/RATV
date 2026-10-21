@@ -198,14 +198,15 @@ class Prefs(context: Context) {
     // ---------------------------------------------------- shared settings
 
     /**
-     * Seconds of a live channel kept in memory before it plays ("5", "10", "20", "30"):
-     * the player stays that far behind live, so short network drops do not stop the picture.
+     * Seconds of reserve the player builds up while watching ("30", "60", "120", "180"): when the
+     * internet weakens or drops, the picture goes on from it until the connection is back.
      */
     var bufferMode: String
-        get() = when (val v = sp.getString("buffer", "10") ?: "10") {
-            "small" -> "5"
-            "medium", "large" -> "10"
-            "max" -> "20"
+        get() = when (val v = sp.getString("buffer", "60") ?: "60") {
+            "small" -> "30"
+            "5", "10", "medium", "large" -> "60"
+            "20", "max" -> "120"
+            "30" -> "180"
             else -> v
         }
         set(value) = sp.edit().putString("buffer", value).apply()

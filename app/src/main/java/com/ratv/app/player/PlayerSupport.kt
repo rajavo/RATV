@@ -30,6 +30,7 @@ import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.upstream.DefaultLoadErrorHandlingPolicy
+import androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy
 import com.ratv.app.data.Channel
 import com.ratv.app.data.Episode
 import com.ratv.app.data.Http
@@ -151,8 +152,23 @@ fun mediaItemFor(url: String, liveOffsetMs: Long? = null): MediaItem {
     return builder.build()
 }
 
-/** The cache ("buffer") setting in milliseconds: 5, 10, 20 or 30 seconds. */
-fun cushionMs(bufferMode: String): Long = (bufferMode.toIntOrNull() ?: 10).coerceIn(1, 60) * 1000L
+/** The reserve setting in milliseconds (30 s to 3 min). */
+fun cushionMs(bufferMode: String): Long = (bufferMode.toIntOrNull() ?: 60).coerceIn(1, 300) * 1000L
+
+/**
+ * Network trouble never stops playback: loads are retried every two seconds for as long as it
+ * takes, while the reserve keeps the picture going. A real refusal (4xx, broken file) still fails.
+ */
+@androidx.annotation.OptIn(UnstableApi::class)
+private class PatientLoadErrorPolicy : DefaultLoadErrorHandlingPolicy() {
+    override fun getRetryDelayMsFor(loadErrorInfo: LoadErrorHandlingPolicy.LoadErrorInfo): Long {
+        val e = loadErrorInfo.exception
+        if (e is HttpDataSource.InvalidResponseCodeException && e.responseCode in 400..499) return C.TIME_UNSET
+        return if (super.getRetryDelayMsFor(loadErrorInfo) == C.TIME_UNSET) C.TIME_UNSET else 2_000L
+    }
+
+    override fun getMinimumLoadableRetryCount(dataType: Int): Int = Int.MAX_VALUE
+}
 
 private val XTREAM_LIVE_TS = Regex("""^(https?://[^/]+)/live/([^/]+)/([^/]+)/(\d+)\.ts$""", RegexOption.IGNORE_CASE)
 private val XTREAM_LIVE_BARE = Regex("""^(https?://[^/]+)/([^/]+)/([^/]+)/(\d+)$""")
@@ -200,10 +216,11 @@ fun episodePlayable(ep: Episode, seriesId: String, seriesName: String?, cover: S
 
 @androidx.annotation.OptIn(UnstableApi::class)
 fun createPlayer(context: Context, bufferMode: String, bestQuality: Boolean, handleAudioFocus: Boolean = true): ExoPlayer {
-    // The player waits until this much is stored before it starts or resumes, and keeps
-    // filling well beyond it, so a drop shorter than the cushion is never seen on screen.
-    val cushion = cushionMs(bufferMode).toInt()
-    val durations = intArrayOf(maxOf(cushion + 20_000, 30_000), maxOf(cushion + 60_000, 90_000), cushion, cushion)
+    // Starts after 3 s, then keeps loading until the reserve is full, as far as memory allows
+    // (films fill it in seconds; live channels build it while playing, see PlayerScreen).
+    val reserve = maxOf(cushionMs(bufferMode).toInt(), 15_000)
+    val durations = intArrayOf(reserve, reserve + 30_000, 3_000, 5_000)
+    val memoryCap = (Runtime.getRuntime().maxMemory() * 0.45).toLong().coerceIn(32L shl 20, 220L shl 20).toInt()
     val http = DefaultHttpDataSource.Factory()
         .setUserAgent(Http.USER_AGENT)
         .setAllowCrossProtocolRedirects(true)
@@ -212,8 +229,8 @@ fun createPlayer(context: Context, bufferMode: String, bestQuality: Boolean, han
     val dataSourceFactory = DefaultDataSource.Factory(context, http)
     val loadControl = DefaultLoadControl.Builder()
         .setBufferDurationsMs(durations[0], durations[1], durations[2], durations[3])
-        // Keep the time-based cache even for 4K streams, whose size would otherwise cut it short.
-        .setPrioritizeTimeOverSizeThresholds(true)
+        .setTargetBufferBytes(memoryCap)
+        .setPrioritizeTimeOverSizeThresholds(false)
         .build()
     val audioAttributes = AudioAttributes.Builder()
         .setUsage(C.USAGE_MEDIA)
@@ -221,7 +238,7 @@ fun createPlayer(context: Context, bufferMode: String, bestQuality: Boolean, han
         .build()
     // Retry failed downloads several times before giving up, so short network drops do not stop playback.
     val mediaSourceFactory = DefaultMediaSourceFactory(dataSourceFactory)
-        .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(8))
+        .setLoadErrorHandlingPolicy(PatientLoadErrorPolicy())
     // Live streams keep normal speed instead of rushing back to the live edge after a stall:
     // fewer stalls, and two streams stay in step when one gives the picture and the other the commentary.
     val liveSpeed = DefaultLivePlaybackSpeedControl.Builder()
