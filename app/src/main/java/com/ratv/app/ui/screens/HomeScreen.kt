@@ -55,6 +55,7 @@ import com.ratv.app.ui.components.PosterImage
 import com.ratv.app.ui.components.ProgressLine
 import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.components.RatvLogo
+import com.ratv.app.ui.components.rememberIsWide
 import com.ratv.app.ui.components.RingsArt
 import com.ratv.app.ui.components.SectionHeader
 import com.ratv.app.ui.components.TvInitialFocus
@@ -80,6 +81,7 @@ fun rememberNow(intervalMs: Long = 30_000L): Long {
 @Composable
 fun HomeScreen(nav: Navigator) {
     val repo = LocalRepo.current
+    val wide = rememberIsWide()
     val channels by repo.channels.collectAsStateWithLifecycle()
     val movies by repo.movies.collectAsStateWithLifecycle()
     val series by repo.series.collectAsStateWithLifecycle()
@@ -105,7 +107,8 @@ fun HomeScreen(nav: Navigator) {
             .background(RColors.Ink),
         contentPadding = PaddingValues(bottom = 24.dp)
     ) {
-        item {
+        // On TV and wide screens the top bar already has the logo, search and account.
+        if (!wide) item {
             Row(
                 Modifier
                     .fillMaxWidth()
