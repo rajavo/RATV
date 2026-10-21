@@ -1,0 +1,60 @@
+03:44:34 == launch
+03:45:26 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 1800
+WaitTime: 1802
+Complete
+03:45:29 screenshot 01-splash.png 1080x2400
+03:45:29 == login-screen
+03:45:33 screenshot 02-login.png 1080x2400
+03:45:33 == wrong-password
+03:45:54 screenshot 03-login-error.png 1080x2400
+03:45:54 == xtream-login
+03:45:59 screenshot 04-login-filled.png 1080x2400
+03:46:14 screenshot 05-home.png 1080x2400
+03:46:14 == live
+03:46:22 screenshot 06-live.png 1080x2400
+03:46:22 == live-category
+03:46:28 screenshot 07-live-sport.png 1080x2400
+03:46:31 == favorite
+03:46:40 screenshot 08-live-favorites.png 1080x2400
+03:46:43 == play-live
+03:46:58 screenshot 09-player-live.png 2400x1080
+03:47:01 screenshot 10-player-live-controls.png 2400x1080
+03:47:05 screenshot 11-after-live-player.png 1080x2400
+03:47:05 == guide
+03:47:14 screenshot 12-guide.png 1080x2400
+03:47:16 == movies
+03:47:24 screenshot 13-movies.png 1080x2400
+03:47:31 screenshot 14-movie-detail.png 1080x2400
+03:47:57 screenshot 15-player-movie.png 2400x1080
+03:48:00 screenshot 16-player-movie-controls.png 2400x1080
+03:48:06 screenshot 17-movie-detail-resume.png 1080x2400
+03:48:08 == series
+03:48:15 screenshot 18-series.png 1080x2400
+03:48:22 screenshot 19-series-detail.png 1080x2400
+03:48:26 screenshot 20-series-season2.png 1080x2400
+03:48:46 screenshot 21-player-episode.png 2400x1080
+03:48:53 screenshot 22-series-detail-after.png 1080x2400
+03:48:54 == home-after
+03:49:02 screenshot 23-home-after.png 1080x2400
+03:49:02 == search
+03:49:11 screenshot 24-search.png 1080x2400
+03:49:13 == settings
+03:49:20 screenshot 25-settings.png 1080x2400
+03:49:20 == parental
+03:49:29 screenshot 26-pin-dialog.png 1080x2400
+03:49:33 screenshot 27-settings-parental-on.png 1080x2400
+03:49:33 == relaunch
+03:49:40 screenshot 28-relaunch.png 1080x2400
+03:49:40 == switch-to-m3u
+03:49:49 screenshot 29-switch-dialog.png 1080x2400
+03:50:01 screenshot 30-login-m3u.png 1080x2400
+03:50:15 screenshot 31-home-m3u.png 1080x2400
+03:50:15 == m3u-content
+03:50:22 screenshot 32-live-m3u.png 1080x2400
+03:50:35 screenshot 33-player-m3u.png 2400x1080
+03:50:44 screenshot 34-series-m3u.png 1080x2400
+03:50:51 screenshot 35-series-detail-m3u.png 1080x2400
