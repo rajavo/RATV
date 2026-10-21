@@ -121,8 +121,10 @@ fun HomeScreen(nav: Navigator) {
             .background(RColors.Ink),
         contentPadding = PaddingValues(bottom = 24.dp)
     ) {
-        update?.let { info ->
-            item {
+        // Always an item (empty without an update), so the banner appearing later does not move
+        // the other rows and the remote keeps its place on the TV.
+        item {
+            update?.let { info ->
                 Row(
                     Modifier
                         .padding(start = 20.dp, end = 20.dp, top = 12.dp)
