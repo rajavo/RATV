@@ -1,0 +1,88 @@
+10:58:01 == launch
+10:58:10 system dialog:  |  |  |  |  |  | Pixel Launcher isn't responding |  |  |  | Close app | Wait
+10:58:58 debug.ratv.subs=http://10.0.2.2:8000
+10:59:00 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 1956
+WaitTime: 1964
+Complete
+10:59:02 screenshot 01-splash.png 1080x2400
+10:59:02 == login-screen
+10:59:07 screenshot 02-login.png 1080x2400
+10:59:07 == wrong-password
+10:59:30 screenshot 03-login-error.png 1080x2400
+10:59:30 == xtream-login
+10:59:35 screenshot 04-login-filled.png 1080x2400
+10:59:51 screenshot 05-home.png 1080x2400
+10:59:51 == live
+10:59:59 screenshot 06-live.png 1080x2400
+10:59:59 == live-category
+11:00:06 screenshot 07-live-sport.png 1080x2400
+11:00:09 == favorite
+11:00:18 screenshot 08-live-favorites.png 1080x2400
+11:00:21 == play-live
+11:00:37 screenshot 09-player-live.png 2400x1080
+11:00:40 screenshot 10-player-live-controls.png 2400x1080
+11:00:44 screenshot 11-after-live-player.png 1080x2400
+11:00:44 == commentator
+11:01:04 screenshot 12-player-sport1.png 2400x1080
+11:01:10 screenshot 13-player-sport1-controls.png 2400x1080
+11:01:19 screenshot 14-sources-panel.png 2400x1080
+11:01:22 sources:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | المعلق والجودة | اختر المعلق، أو اسمع معلق قناة أخرى على هذه الصورة |  |  |  |  | المعلق في هذا البث |  | العربية |  |  | الإنجليزية |  |  | تنقل نفس المباراة الآن | S | Sky Sports Main | LaLiga: Real Madrid v Barcelona |  | سماع معلقها |  |  | انتقال |  | نسخ أخرى من القناة | Sport 1 4K | 4K | الدوري الإسباني: ريال مدريد × برشلونة |  | سماع معلقها |  |
+11:01:35 !! RuntimeError('missing in panel: Sport 1 EN')
+11:01:35 screenshot 15-fail-commentator.png 1080x2400
+11:01:35 == commentary-mix
+11:01:55 screenshot 16-mix-player.png 2400x1080
+11:02:10 screenshot 17-mix-panel.png 2400x1080
+11:02:10 mix panel:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | المعلق والجودة | اختر المعلق، أو اسمع معلق قناة أخرى على هذه الصورة |  |  |  |  | المعلق في هذا البث |  | العربية |  |  | الإنجليزية |  |  | تنقل نفس المباراة الآن | S | Sky Sports Main | LaLiga: Real Madrid v Barcelona |  | سماع معلقها |  |  | انتقال |  | نسخ أخرى من القناة | Sport 1 4K | 4K | الدوري الإسباني: ريال مدريد × برشلونة |  | سماع معلقها |  |  | انتقال |  |  |  |  | 
+11:02:23 screenshot 18-mix-on.png 2400x1080
+11:02:34 screenshot 19-mix-shifted.png 2400x1080
+11:02:45 screenshot 20-mix-playing.png 2400x1080
+11:02:52 == guide
+11:03:02 screenshot 21-guide.png 1080x2400
+11:03:03 == movies
+11:03:11 screenshot 22-movies.png 1080x2400
+11:03:18 screenshot 23-movie-detail.png 1080x2400
+11:03:20 4K copy offered: True
+11:03:47 screenshot 24-player-movie.png 2400x1080
+11:03:50 screenshot 25-player-movie-controls.png 2400x1080
+11:03:56 screenshot 26-movie-detail-resume.png 1080x2400
+11:03:58 == subtitles
+11:04:25 screenshot 27-subs-player.png 2400x1080
+11:04:40 screenshot 28-subs-panel.png 2400x1080
+11:04:40 subtitles panel:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | الترجمة | ترجمة الفيلم أو الحلقة بأي لغة، وتُترجم آلياً إذا لم تتوفر بلغتك |  |  |  |  | لغة الترجمة |  | العربية | اضغط لتغيير اللغة |  | ترجمات متاحة |  | Silent.Sea.2019.AR | العربية · 10 تنزيل |  |  | Silent.Sea.2019.1080p.WEB | الإنجليزية · تُترجم آلياً إلى العربية · 100 تنزيل |  | حجم الخط |  | صغير |  |  | متوسط |  |  | كبير |  |  | كبير جداً |  | التوقيت |  |  |  |  |  | 
+11:04:45 screenshot 29-subs-chosen.png 2400x1080
+11:04:54 screenshot 30-subs-on-screen.png 2400x1080
+11:04:54 subtitle on screen: 'The water is calm tonight'
+11:04:54 == subtitles-translated
+11:05:06 screenshot 31-subs-translated.png 2400x1080
+11:05:06 translated line: 'نحن تبحرون في الفجر'
+11:05:13 == series
+11:05:21 screenshot 32-series.png 1080x2400
+11:05:27 screenshot 33-series-detail.png 1080x2400
+11:05:32 screenshot 34-series-season2.png 1080x2400
+11:05:53 screenshot 35-player-episode.png 2400x1080
+11:05:59 screenshot 36-series-detail-after.png 1080x2400
+11:06:01 == home-after
+11:06:08 screenshot 37-home-after.png 1080x2400
+11:06:08 == search
+11:06:18 screenshot 38-search.png 1080x2400
+11:06:20 == settings
+11:06:27 screenshot 39-settings.png 1080x2400
+11:06:27 == parental
+11:06:48 !! RuntimeError("not found: {'contains': 'إخفاء محتوى البالغين'}")
+11:06:49 screenshot 40-fail-parental.png 1080x2400
+11:06:49 == relaunch
+11:07:00 screenshot 41-relaunch.png 1080x2400
+11:07:00 == switch-to-m3u
+11:07:09 screenshot 42-switch-dialog.png 1080x2400
+11:07:29 screenshot 43-login-m3u-bad.png 1080x2400
+11:07:35 screenshot 44-login-m3u.png 1080x2400
+11:07:49 screenshot 45-home-m3u.png 1080x2400
+11:07:49 == m3u-content
+11:07:56 screenshot 46-live-m3u.png 1080x2400
+11:08:10 screenshot 47-player-m3u.png 2400x1080
+11:08:19 screenshot 48-series-m3u.png 1080x2400
+11:08:25 screenshot 49-series-detail-m3u.png 1080x2400
