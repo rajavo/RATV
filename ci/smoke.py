@@ -344,16 +344,46 @@ def s_play_live():
     if n is None:
         raise RuntimeError("channel row missing")
     tap_node(n)
-    _, c = wait_for(timeout=8, contains="جارٍ التخزين المؤقت")
-    log("cache countdown seen: %s" % (c is not None))
-    time.sleep(10)
+    time.sleep(12)
     w, h = shot("player-live")
     tap(w // 2, h // 3)
     time.sleep(1)
+    root = dump("player-live-controls")
     shot("player-live-controls")
+    if find(root, contains="الاحتياطي ضد انقطاع النت") is None:
+        raise RuntimeError("reserve not shown with the controls")
     back()
     time.sleep(2)
     shot("after-live-player")
+
+
+def s_offline():
+    """The internet drops for a while: the channel keeps playing from the reserve."""
+    _, n = wait_for(timeout=10, contains="Gulf 24 FHD")
+    if n is None:
+        raise RuntimeError("channel row missing")
+    tap_node(n)
+    try:
+        time.sleep(15)
+        shell("svc wifi disable; svc data disable")
+        time.sleep(4)
+        a = adb("exec-out", "screencap", "-p", binary=True, timeout=30)
+        time.sleep(6)
+        b = adb("exec-out", "screencap", "-p", binary=True, timeout=30)
+        root = dump("offline")
+        shot("offline")
+        texts = all_texts(root)
+        log("offline: " + texts[:300])
+        if "تعذّر" in texts or "انقطع البث" in texts:
+            raise RuntimeError("playback stopped while offline: " + texts[:200])
+        if a == b:
+            raise RuntimeError("picture froze while offline")
+    finally:
+        shell("svc wifi enable; svc data enable")
+    time.sleep(10)
+    shot("back-online")
+    back()
+    time.sleep(2)
 
 
 def s_commentator():
@@ -860,6 +890,7 @@ if __name__ == "__main__":
         ("live-category", s_live_category),
         ("favorite", s_favorite),
         ("play-live", s_play_live),
+        ("offline", s_offline),
         ("commentator", s_commentator),
         ("commentary-mix", s_commentary_mix),
         ("guide", s_guide),
