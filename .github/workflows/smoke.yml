@@ -111,6 +111,9 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: |
             adb install -r apk/apk/release/app-release.apk || adb install -r apk/app-release.apk
+            mkdir -p smoke-results/${{ matrix.device }}
+            adb logcat -v threadtime > smoke-results/${{ matrix.device }}/logcat-live.txt 2>&1 &
+            (while sleep 5; do echo "$(date +%T) $(free -m | awk '/Mem/{print "host used " $3 " MB of " $2}') $(adb shell cat /proc/meminfo 2>/dev/null | awk '/MemAvailable/{print "guest avail " int($2/1024) " MB"}')"; done) > smoke-results/${{ matrix.device }}/memory.txt 2>&1 &
             python3 ${{ matrix.script }}
 
       - name: Save results to the branch
