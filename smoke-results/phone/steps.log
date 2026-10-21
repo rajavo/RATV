@@ -1,0 +1,111 @@
+18:39:42 == launch
+18:39:51 system dialog:  |  |  |  |  |  | Pixel Launcher isn't responding |  |  |  | Close app | Wait
+18:40:39 debug.ratv.subs=http://10.0.2.2:8000
+18:40:41 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 2142
+WaitTime: 2147
+Complete
+18:40:44 screenshot 01-splash.png 1080x2400
+18:40:44 == login-screen
+18:40:49 screenshot 02-login.png 1080x2400
+18:40:49 == wrong-password
+18:41:10 screenshot 03-login-error.png 1080x2400
+18:41:10 == xtream-login
+18:41:15 screenshot 04-login-filled.png 1080x2400
+18:41:31 screenshot 05-home.png 1080x2400
+18:41:31 == live
+18:41:38 screenshot 06-live.png 1080x2400
+18:41:38 == live-category
+18:41:45 screenshot 07-live-sport.png 1080x2400
+18:41:48 == favorite
+18:41:56 screenshot 08-live-favorites.png 1080x2400
+18:41:59 == play-live
+18:42:16 screenshot 09-player-live.png 2400x1080
+18:42:22 screenshot 10-player-live-controls.png 2400x1080
+18:42:26 screenshot 11-after-live-player.png 1080x2400
+18:42:26 == offline
+18:43:00 screenshot 12-offline.png 2400x1080
+18:43:00 offline:  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+18:43:11 screenshot 13-back-online.png 2400x1080
+18:43:15 == matches
+18:43:22 screenshot 14-matches.png 1080x2400
+18:43:24 matches:  |  |  |  |  |  |  |  |  |  | جدول المباريات | من دليل البرامج في اشتراكك، مع كل القنوات الناقلة لكل مباراة | الآن | اليوم | غداً | 18:00 – 20:00 | مباشر الآن | 4 قناة ناقلة | الدوري الإسباني: ريال مدريد × برشلونة | 📺 قنوات أخرى |  | Sport 1 4K |  |  | Sport 1 HD |  |  | Sport 1 EN |  |  | Sky Sports Main |  |  | الرئيسية |  |  | مباشر |  |  | أفلام |  |  | مسلسلات |  |  | حسابي | 
+18:43:36 screenshot 15-matches-play.png 2400x1080
+18:43:44 == commentator
+18:44:04 screenshot 16-player-sport1.png 2400x1080
+18:44:10 screenshot 17-player-sport1-controls.png 2400x1080
+18:44:19 screenshot 18-sources-panel.png 2400x1080
+18:44:21 sources:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | الاحتياطي ضد انقطاع النت: 60 من 60 ث | المعلق والجودة | اختر المعلق، أو اسمع معلق قناة أخرى على هذه الصورة |  |  |  |  | المعلق في هذا البث |  | العربية |  |  | الإنجليزية |  |  | تنقل نفس المباراة الآن | S | Sky Sports Main | LaLiga: Real Madrid v Barcelona |  | سماع معلقها |  |  | انتقال |  | نسخ أخرى من القناة | Sport 1 4K | 4K | الدوري الإسباني: ريا
+18:44:25 screenshot 19-sources-second-commentator.png 2400x1080
+18:44:39 screenshot 20-player-sport1-4k.png 2400x1080
+18:44:46 == commentary-mix
+18:45:06 screenshot 21-mix-player.png 2400x1080
+18:45:19 screenshot 22-mix-panel.png 2400x1080
+18:45:19 mix panel:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | الاحتياطي ضد انقطاع النت: 60 من 60 ث | المعلق والجودة | اختر المعلق، أو اسمع معلق قناة أخرى على هذه الصورة |  |  |  |  | المعلق في هذا البث |  | العربية |  |  | الإنجليزية |  |  | تنقل نفس المباراة الآن | S | Sky Sports Main | LaLiga: Real Madrid v Barcelona |  | سماع معلقها |  |  | انتقال |  | نسخ أخرى من القناة | Sport 1 4K | 4K | الدوري الإسباني: ريال مدريد × برشلونة |  | سماع معلقها |  |  | انتقال |  |  |  |  | 
+18:45:28 screenshot 23-mix-on.png 2400x1080
+18:45:37 screenshot 24-mix-shifted.png 2400x1080
+18:45:47 screenshot 25-mix-playing.png 2400x1080
+18:45:54 == guide
+18:46:03 screenshot 26-guide.png 1080x2400
+18:46:05 == movies
+18:46:12 screenshot 27-movies.png 1080x2400
+18:46:20 screenshot 28-movie-detail.png 1080x2400
+18:46:22 4K copy offered: True
+18:46:48 screenshot 29-player-movie.png 2400x1080
+18:46:51 screenshot 30-player-movie-controls.png 2400x1080
+18:46:58 screenshot 31-movie-detail-resume.png 1080x2400
+18:47:00 == subtitles
+18:47:26 screenshot 32-subs-player.png 2400x1080
+18:47:42 screenshot 33-subs-panel.png 2400x1080
+18:47:42 subtitles panel:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | الاحتياطي ضد انقطاع النت: 60 من 60 ث | الترجمة | ترجمة الفيلم أو الحلقة بأي لغة، وتُترجم آلياً إذا لم تتوفر بلغتك |  |  |  |  | لغة الترجمة |  | العربية | اضغط لتغيير اللغة |  | ترجمات متاحة |  | Silent.Sea.2019.AR | العربية · 10 تنزيل |  |  | Silent.Sea.2019.1080p.WEB | الإنجليزية · تُترجم آلياً إلى العربية · 100 تنزيل |  | حجم الخط |  | صغير |  |  | متوسط |  |  | كبير |  |  | كبير جداً |  | التوقيت |  |  |  |  |  | 
+18:47:47 screenshot 34-subs-chosen.png 2400x1080
+18:47:56 screenshot 35-subs-on-screen.png 2400x1080
+18:47:56 subtitle on screen: 'The water is calm tonight'
+18:47:56 == subtitles-translated
+18:48:08 screenshot 36-subs-translated.png 2400x1080
+18:48:08 translated line: 'نحن تبحرون في الفجر'
+18:48:16 == series
+18:48:23 screenshot 37-series.png 1080x2400
+18:48:30 screenshot 38-series-detail.png 1080x2400
+18:48:35 screenshot 39-series-season2.png 1080x2400
+18:48:55 screenshot 40-player-episode.png 2400x1080
+18:49:01 screenshot 41-series-detail-after.png 1080x2400
+18:49:03 == home-after
+18:49:11 screenshot 42-home-after.png 1080x2400
+18:49:11 == search
+18:49:20 screenshot 43-search.png 1080x2400
+18:49:22 == settings
+18:49:29 screenshot 44-settings.png 1080x2400
+18:49:29 == parental
+18:49:50 screenshot 45-pin-dialog.png 1080x2400
+18:49:54 screenshot 46-settings-parental-on.png 1080x2400
+18:49:54 == adult-hidden
+18:50:08 screenshot 47-search-adult.png 1080x2400
+18:50:10 == speed-test
+18:50:36 screenshot 48-speed-test.png 1080x2400
+18:50:36 speed:  |  |  |  |  |  |  |  | قياس سرعة النت | 30.2 | ميجابت في الثانية | ممتاز: يكفي لبث 4K | زمن الاستجابة | 37 ملي ثانية | استجابة سيرفر الاشتراك | 36 ملي ثانية |  | إغلاق |  |  | إعادة القياس | 
+18:50:39 == clear-history
+18:51:05 screenshot 49-clear-history-dialog.png 1080x2400
+18:51:17 screenshot 50-home-history-cleared.png 1080x2400
+18:51:17 == update
+18:51:31 screenshot 51-update-dialog.png 1080x2400
+18:51:47 screenshot 52-update-installer.png 1080x2400
+18:51:47 after update: mCurrentFocus=Window{ee16ebc u0 com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity}
+  mCurrentFocus=Window{1fa5a5 u0 com.android.settings/com.android.set
+18:51:53 == relaunch
+18:52:01 screenshot 53-relaunch.png 1080x2400
+18:52:01 == switch-to-m3u
+18:52:27 screenshot 54-login-m3u-bad.png 1080x2400
+18:52:32 screenshot 55-login-m3u.png 1080x2400
+18:52:46 screenshot 56-home-m3u.png 1080x2400
+18:52:46 == m3u-content
+18:52:53 screenshot 57-live-m3u.png 1080x2400
+18:53:07 screenshot 58-player-m3u.png 2400x1080
+18:53:16 screenshot 59-series-m3u.png 1080x2400
+18:53:22 screenshot 60-series-detail-m3u.png 1080x2400
+18:53:24 == users
+18:53:31 screenshot 61-users.png 1080x2400
+18:53:54 screenshot 62-user1-favorites.png 1080x2400
