@@ -1,0 +1,97 @@
+15:58:00 == launch
+15:58:53 debug.ratv.subs=http://10.0.2.2:8000
+15:58:55 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 2490
+WaitTime: 2499
+Complete
+15:58:58 screenshot 01-splash.png 1080x2400
+15:58:58 == login-screen
+15:59:03 screenshot 02-login.png 1080x2400
+15:59:03 == wrong-password
+15:59:26 screenshot 03-login-error.png 1080x2400
+15:59:26 == xtream-login
+15:59:31 screenshot 04-login-filled.png 1080x2400
+15:59:48 screenshot 05-home.png 1080x2400
+15:59:48 == live
+15:59:55 screenshot 06-live.png 1080x2400
+15:59:55 == live-category
+16:00:02 screenshot 07-live-sport.png 1080x2400
+16:00:05 == favorite
+16:00:14 screenshot 08-live-favorites.png 1080x2400
+16:00:17 == play-live
+16:00:33 screenshot 09-player-live.png 2400x1080
+16:00:37 screenshot 10-player-live-controls.png 2400x1080
+16:00:41 screenshot 11-after-live-player.png 1080x2400
+16:00:41 == commentator
+16:01:01 screenshot 12-player-sport1.png 2400x1080
+16:01:07 screenshot 13-player-sport1-controls.png 2400x1080
+16:01:16 screenshot 14-sources-panel.png 2400x1080
+16:01:18 sources:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | المعلق والجودة | اختر المعلق، أو اسمع معلق قناة أخرى على هذه الصورة |  |  |  |  | المعلق في هذا البث |  | العربية |  |  | الإنجليزية |  |  | تنقل نفس المباراة الآن | S | Sky Sports Main | LaLiga: Real Madrid v Barcelona |  | سماع معلقها |  |  | انتقال |  | نسخ أخرى من القناة | Sport 1 4K | 4K | الدوري الإسباني: ريال مدريد × برشلونة |  | سماع معلقها |  |
+16:01:22 screenshot 15-sources-second-commentator.png 2400x1080
+16:01:37 screenshot 16-player-sport1-4k.png 2400x1080
+16:01:44 == commentary-mix
+16:02:04 screenshot 17-mix-player.png 2400x1080
+16:02:19 screenshot 18-mix-panel.png 2400x1080
+16:02:19 mix panel:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | المعلق والجودة | اختر المعلق، أو اسمع معلق قناة أخرى على هذه الصورة |  |  |  |  | المعلق في هذا البث |  | العربية |  |  | الإنجليزية |  |  | تنقل نفس المباراة الآن | S | Sky Sports Main | LaLiga: Real Madrid v Barcelona |  | سماع معلقها |  |  | انتقال |  | نسخ أخرى من القناة | Sport 1 4K | 4K | الدوري الإسباني: ريال مدريد × برشلونة |  | سماع معلقها |  |  | انتقال |  |  |  |  | 
+16:02:30 screenshot 19-mix-on.png 2400x1080
+16:02:41 screenshot 20-mix-shifted.png 2400x1080
+16:02:53 screenshot 21-mix-playing.png 2400x1080
+16:03:00 == guide
+16:03:09 screenshot 22-guide.png 1080x2400
+16:03:11 == movies
+16:03:18 screenshot 23-movies.png 1080x2400
+16:03:26 screenshot 24-movie-detail.png 1080x2400
+16:03:28 4K copy offered: True
+16:03:54 screenshot 25-player-movie.png 2400x1080
+16:03:58 screenshot 26-player-movie-controls.png 2400x1080
+16:04:04 screenshot 27-movie-detail-resume.png 1080x2400
+16:04:06 == subtitles
+16:04:32 screenshot 28-subs-player.png 2400x1080
+16:04:48 screenshot 29-subs-panel.png 2400x1080
+16:04:48 subtitles panel:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | الترجمة | ترجمة الفيلم أو الحلقة بأي لغة، وتُترجم آلياً إذا لم تتوفر بلغتك |  |  |  |  | لغة الترجمة |  | العربية | اضغط لتغيير اللغة |  | ترجمات متاحة |  | Silent.Sea.2019.AR | العربية · 10 تنزيل |  |  | Silent.Sea.2019.1080p.WEB | الإنجليزية · تُترجم آلياً إلى العربية · 100 تنزيل |  | حجم الخط |  | صغير |  |  | متوسط |  |  | كبير |  |  | كبير جداً |  | التوقيت |  |  |  |  |  | 
+16:04:53 screenshot 30-subs-chosen.png 2400x1080
+16:05:02 screenshot 31-subs-on-screen.png 2400x1080
+16:05:02 subtitle on screen: 'The water is calm tonight'
+16:05:02 == subtitles-translated
+16:05:15 screenshot 32-subs-translated.png 2400x1080
+16:05:15 translated line: 'نحن تبحرون في الفجر'
+16:05:22 == series
+16:05:29 screenshot 33-series.png 1080x2400
+16:05:36 screenshot 34-series-detail.png 1080x2400
+16:05:41 screenshot 35-series-season2.png 1080x2400
+16:06:01 screenshot 36-player-episode.png 2400x1080
+16:06:07 screenshot 37-series-detail-after.png 1080x2400
+16:06:09 == home-after
+16:06:17 screenshot 38-home-after.png 1080x2400
+16:06:17 == search
+16:06:27 screenshot 39-search.png 1080x2400
+16:06:28 == settings
+16:06:36 screenshot 40-settings.png 1080x2400
+16:06:36 == parental
+16:06:57 screenshot 41-pin-dialog.png 1080x2400
+16:07:01 screenshot 42-settings-parental-on.png 1080x2400
+16:07:01 == adult-hidden
+16:07:15 screenshot 43-search-adult.png 1080x2400
+16:07:17 == speed-test
+16:07:43 screenshot 44-speed-test.png 1080x2400
+16:07:43 speed:  |  |  |  |  |  |  |  | قياس سرعة النت | 30.6 | ميجابت في الثانية | ممتاز: يكفي لبث 4K | زمن الاستجابة | 26 ملي ثانية | استجابة سيرفر الاشتراك | 2 ملي ثانية |  | إغلاق |  |  | إعادة القياس | 
+16:07:46 == clear-history
+16:08:05 screenshot 45-clear-history-dialog.png 1080x2400
+16:08:18 screenshot 46-home-history-cleared.png 1080x2400
+16:08:18 == relaunch
+16:08:26 screenshot 47-relaunch.png 1080x2400
+16:08:26 == switch-to-m3u
+16:08:51 screenshot 48-login-m3u-bad.png 1080x2400
+16:08:58 screenshot 49-login-m3u.png 1080x2400
+16:09:12 screenshot 50-home-m3u.png 1080x2400
+16:09:12 == m3u-content
+16:09:19 screenshot 51-live-m3u.png 1080x2400
+16:09:32 screenshot 52-player-m3u.png 2400x1080
+16:09:42 screenshot 53-series-m3u.png 1080x2400
+16:09:48 screenshot 54-series-detail-m3u.png 1080x2400
+16:09:50 == users
+16:09:57 screenshot 55-users.png 1080x2400
+16:10:19 screenshot 56-user1-favorites.png 1080x2400
