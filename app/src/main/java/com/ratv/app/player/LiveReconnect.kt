@@ -32,6 +32,13 @@ import java.util.concurrent.TimeUnit
  * wait much longer than this server's usual pauses (3 s for a steady stream, up to 8 s for
  * servers that send in chunks) cuts the connection and opens a new one, before the store runs
  * out. A channel that takes a while to start is given its time: the watch begins with the data.
+ *
+ * A new connection starts with a burst of the last seconds the server holds, part of which the
+ * player already has. Passed on as it is, the picture would jump back or freeze for those seconds,
+ * so the new stream is joined where the old one ended: everything up to the last picture already
+ * delivered is skipped, and it resumes at the next key frame (the next picture at most, if the
+ * server does not mark key frames or one is long in coming).
+ *
  * Only live streams (no known length, not HLS) are handled this way.
  */
 @UnstableApi
@@ -45,8 +52,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         context,
         OkHttpDataSource.Factory(object : Call.Factory {
             override fun newCall(request: Request): Call = client.newCall(request).also { call = it }
-        })
-            .setUserAgent(userAgent)
+        }).setUserAgent(userAgent)
     )
     private val listeners = ArrayList<TransferListener>()
     private var current: DataSource? = null
@@ -75,6 +81,22 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
     private var previousMax = 0L
     private var windowStart = 0L
 
+    // Joining a new connection to the old one (MPEG-TS packets of 188 bytes).
+    private val delivered = ByteArray(TS_PACKET)
+    private var deliveredFill = 0
+    private var lastVideoPts = -1L
+    private var keyFramesMarked = false
+    private var splicing = false
+    private var spliceStartedAt = 0L
+    private var spliceDropped = 0L
+    private val incoming = ByteArray(TS_PACKET)
+    private var incomingFill = 0
+    private val spliceBuffer = ByteArray(64 * 1024)
+    private var pending: ByteArray? = null
+    private var pendingOffset = 0
+    private var foundPts = 0L
+    private var foundKey = false
+
     override fun addTransferListener(transferListener: TransferListener) {
         listeners.add(transferListener)
     }
@@ -84,6 +106,12 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
     override fun open(dataSpec: DataSpec): Long {
         closed = false
         spec = dataSpec
+        pending = null
+        splicing = false
+        deliveredFill = 0
+        incomingFill = 0
+        lastVideoPts = -1L
+        keyFramesMarked = false
         val source = newSource()
         val length = source.open(dataSpec)
         current = source
@@ -104,14 +132,23 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
 
     override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
         if (length == 0) return 0
+        pending?.let { p ->
+            val n = minOf(length, p.size - pendingOffset)
+            System.arraycopy(p, pendingOffset, buffer, offset, n)
+            pendingOffset += n
+            if (pendingOffset >= p.size) pending = null
+            track(buffer, offset, n)
+            return n
+        }
         var failures = 0
         while (true) {
             val source = current
             if (source != null) {
+                val joining = splicing
                 val started = SystemClock.elapsedRealtime()
                 waitingSince = started
                 val n = try {
-                    source.read(buffer, offset, length)
+                    if (joining) source.read(spliceBuffer, 0, spliceBuffer.size) else source.read(buffer, offset, length)
                 } catch (e: IOException) {
                     waitingSince = 0L
                     if (!live || closed) throw e
@@ -119,13 +156,29 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
                 }
                 waitingSince = 0L
                 if (n > 0) {
-                    if (live) noteWait(SystemClock.elapsedRealtime() - started)
-                    return n
+                    if (!live) return n
+                    noteWait(SystemClock.elapsedRealtime() - started)
+                    if (!joining) {
+                        track(buffer, offset, n)
+                        return n
+                    }
+                    val out = join(n) ?: continue // still in what the player already has
+                    splicing = false
+                    if (out.isEmpty()) continue
+                    val k = minOf(length, out.size)
+                    System.arraycopy(out, 0, buffer, offset, k)
+                    if (k < out.size) {
+                        pending = out
+                        pendingOffset = k
+                    }
+                    track(buffer, offset, k)
+                    return k
                 }
                 if (n != LOST && (n != C.RESULT_END_OF_INPUT || !live)) return n
                 receiving = false
                 runCatching { source.close() }
                 current = null
+                deliveredFill = 0 // a packet cut short by the break is dropped
             }
             if (closed) throw InterruptedIOException("Closed")
             failures++
@@ -139,11 +192,102 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
             try {
                 again.open(spec ?: throw IOException("Not opened"))
                 current = again
+                splicing = lastVideoPts >= 0L
+                spliceStartedAt = SystemClock.elapsedRealtime()
+                spliceDropped = 0L
+                incomingFill = 0
                 Log.i(TAG, "reconnected")
             } catch (e: IOException) {
                 runCatching { again.close() }
             }
         }
+    }
+
+    /** Follows the packets passed to the player: time of the last picture, and whether key frames are marked. */
+    private fun track(buf: ByteArray, off: Int, n: Int) {
+        if (!live) return
+        var i = off
+        val end = off + n
+        while (i < end) {
+            if (deliveredFill == 0 && buf[i] != SYNC) {
+                i++
+                continue
+            }
+            val k = minOf(TS_PACKET - deliveredFill, end - i)
+            System.arraycopy(buf, i, delivered, deliveredFill, k)
+            deliveredFill += k
+            i += k
+            if (deliveredFill == TS_PACKET) {
+                deliveredFill = 0
+                if (videoPesStart(delivered)) {
+                    lastVideoPts = foundPts
+                    if (foundKey) keyFramesMarked = true
+                }
+            }
+        }
+    }
+
+    /**
+     * Reads [n] new bytes of a new connection: null while they are still what the player already has,
+     * else what to pass on (from the first new picture at a key frame; empty when giving up on joining).
+     */
+    private fun join(n: Int): ByteArray? {
+        var i = 0
+        while (i < n) {
+            if (incomingFill == 0 && spliceBuffer[i] != SYNC) {
+                i++
+                continue
+            }
+            val k = minOf(TS_PACKET - incomingFill, n - i)
+            System.arraycopy(spliceBuffer, i, incoming, incomingFill, k)
+            incomingFill += k
+            i += k
+            if (incomingFill < TS_PACKET) break
+            incomingFill = 0
+            if (videoPesStart(incoming) && newer(foundPts, lastVideoPts)) {
+                val waitForKey = keyFramesMarked && SystemClock.elapsedRealtime() - spliceStartedAt < KEY_WAIT_MS
+                if (foundKey || !waitForKey) {
+                    Log.i(TAG, "joined the new connection after skipping $spliceDropped bytes")
+                    val out = ByteArray(TS_PACKET + (n - i))
+                    System.arraycopy(incoming, 0, out, 0, TS_PACKET)
+                    System.arraycopy(spliceBuffer, i, out, TS_PACKET, n - i)
+                    return out
+                }
+            }
+            spliceDropped += TS_PACKET
+        }
+        if (spliceDropped > GIVE_UP_BYTES || SystemClock.elapsedRealtime() - spliceStartedAt > GIVE_UP_MS) {
+            // The server restarted the channel on another timeline: carry on from here.
+            Log.i(TAG, "could not join the new connection after $spliceDropped bytes: carrying on")
+            return ByteArray(0)
+        }
+        return null
+    }
+
+    /** True when [p] starts a video PES with a time stamp; fills [foundPts] and [foundKey]. */
+    private fun videoPesStart(p: ByteArray): Boolean {
+        if (p[0] != SYNC || (p[1].toInt() and 0x40) == 0) return false
+        val adaptation = (p[3].toInt() ushr 4) and 0x3
+        if (adaptation == 0 || adaptation == 2) return false
+        var i = 4
+        var key = false
+        if (adaptation == 3) {
+            val len = p[4].toInt() and 0xFF
+            if (len > 0) key = (p[5].toInt() and 0x40) != 0
+            i = 5 + len
+        }
+        if (i + 14 > TS_PACKET) return false
+        if (p[i].toInt() != 0 || p[i + 1].toInt() != 0 || p[i + 2].toInt() != 1) return false
+        if ((p[i + 3].toInt() and 0xF0) != 0xE0) return false // not video
+        if ((p[i + 7].toInt() and 0x80) == 0) return false // no time stamp
+        val b = i + 9
+        foundPts = ((p[b].toLong() and 0x0E) shl 29) or
+            ((p[b + 1].toLong() and 0xFF) shl 22) or
+            ((p[b + 2].toLong() and 0xFE) shl 14) or
+            ((p[b + 3].toLong() and 0xFF) shl 7) or
+            ((p[b + 4].toLong() and 0xFE) ushr 1)
+        foundKey = key
+        return true
     }
 
     private fun noteWait(waited: Long) {
@@ -185,6 +329,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         closed = true
         WATCHED.remove(this)
         waitingSince = 0L
+        pending = null
         val source = current
         current = null
         source?.close()
@@ -195,15 +340,27 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         override fun createDataSource(): DataSource = LiveReconnectingDataSource(context.applicationContext, client, userAgent)
     }
 
-    private companion object {
-        const val TAG = "RATVLive"
-        const val LOST = Int.MIN_VALUE
-        const val MAX_RECONNECTS = 25
-        const val STALL_MIN_MS = 3_000L
-        const val STALL_MAX_MS = 8_000L
-        const val LEARN_MS = 12_000L
-        val RETRY_DELAYS_MS = longArrayOf(0L, 250L, 500L, 1_000L, 1_000L, 2_000L)
-        val WATCHED: MutableSet<LiveReconnectingDataSource> = CopyOnWriteArraySet()
+    companion object {
+        private const val TAG = "RATVLive"
+        private const val LOST = Int.MIN_VALUE
+        private const val MAX_RECONNECTS = 25
+        private const val STALL_MIN_MS = 3_000L
+        private const val STALL_MAX_MS = 8_000L
+        private const val LEARN_MS = 12_000L
+        private const val KEY_WAIT_MS = 1_500L
+        private const val GIVE_UP_MS = 5_000L
+        private const val GIVE_UP_BYTES = 16L shl 20
+        private const val TS_PACKET = 188
+        private const val SYNC: Byte = 0x47
+        private val RETRY_DELAYS_MS = longArrayOf(0L, 250L, 500L, 1_000L, 1_000L, 2_000L)
+        private val WATCHED: MutableSet<LiveReconnectingDataSource> = CopyOnWriteArraySet()
+
+        /** True when the 33-bit time stamp [pts] comes after [last]. */
+        fun newer(pts: Long, last: Long): Boolean {
+            if (last < 0L) return true
+            val d = (pts - last) and 0x1FFFFFFFFL
+            return d in 1L until 0x100000000L
+        }
 
         init {
             Executors.newSingleThreadScheduledExecutor { r -> Thread(r, "ratv-live-watch").apply { isDaemon = true } }

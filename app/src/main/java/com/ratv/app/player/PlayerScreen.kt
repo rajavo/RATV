@@ -484,8 +484,19 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         var lastBuffered = player.bufferedPosition
         var lastFrames = -1L
         var lastFramesAt = 0L
+        var lastPos = -1L
+        var lastPosAt = 0L
         while (true) {
             if (player.isPlaying || player.playbackState == Player.STATE_BUFFERING) Playback.markActive()
+            // Jumps of the picture's clock (for the emulator checks): a joined reconnect shows none.
+            val pos = player.currentPosition
+            val posAt = SystemClock.elapsedRealtime()
+            if (lastPos >= 0 && player.isPlaying) {
+                if (pos < lastPos - 500L) Log.i("RATVPlayback", "position went back ${lastPos - pos} ms")
+                else if (pos > lastPos + (posAt - lastPosAt) + 1_500L) Log.i("RATVPlayback", "position jumped ahead ${pos - lastPos - (posAt - lastPosAt)} ms")
+            }
+            lastPos = pos
+            lastPosAt = posAt
             reserveMs = player.totalBufferedDuration
             val grew = player.bufferedPosition > lastBuffered + 200L
             lastBuffered = player.bufferedPosition
