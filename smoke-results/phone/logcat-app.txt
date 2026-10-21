@@ -1,0 +1,1602 @@
+10-21 04:26:34.428   534   566 I ActivityManager: Start proc 5549:com.ratv.app/u0a192 for next-top-activity {com.ratv.app/com.ratv.app.MainActivity}
+10-21 04:26:34.794  5549  5549 I com.ratv.app: Using CollectorTypeCC GC.
+10-21 04:26:34.795  5549  5549 W com.ratv.app: Unexpected CPU variant for x86: x86_64.
+10-21 04:26:34.795  5549  5549 W com.ratv.app: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, tremont, kabylake, default
+10-21 04:26:34.808  5549  5549 E com.ratv.app: Not starting debugger since process cannot load the jdwp agent.
+10-21 04:26:34.895  5549  5549 D CompatibilityChangeReporter: Compat change id reported: 171979766; UID 10192; state: ENABLED
+10-21 04:26:34.895  5549  5549 D CompatibilityChangeReporter: Compat change id reported: 242716250; UID 10192; state: ENABLED
+10-21 04:26:35.254  5549  5549 D nativeloader: Configuring clns-6 for other apk /data/app/~~Zun5UYaqyPRVPc3lsBFZIg==/com.ratv.app-ie1rM0sKokwb82sCfPjIQQ==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~Zun5UYaqyPRVPc3lsBFZIg==/com.ratv.app-ie1rM0sKokwb82sCfPjIQQ==/lib/x86_64:/data/app/~~Zun5UYaqyPRVPc3lsBFZIg==/com.ratv.app-ie1rM0sKokwb82sCfPjIQQ==/base.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.ratv.app
+10-21 04:26:35.404  5549  5549 V GraphicsEnvironment: Currently set values for:
+10-21 04:26:35.404  5549  5549 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+10-21 04:26:35.404  5549  5549 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+10-21 04:26:35.405  5549  5549 V GraphicsEnvironment: ANGLE GameManagerService for com.ratv.app: false
+10-21 04:26:35.405  5549  5549 V GraphicsEnvironment: com.ratv.app is not listed in per-application setting
+10-21 04:26:35.406  5549  5549 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+10-21 04:26:35.468  5549  5579 D libEGL  : loaded /vendor/lib64/egl/libEGL_emulation.so
+10-21 04:26:35.470  5549  5579 D libEGL  : loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+10-21 04:26:35.480  5549  5579 D libEGL  : loaded /vendor/lib64/egl/libGLESv2_emulation.so
+10-21 04:26:35.529  5549  5549 D CompatibilityChangeReporter: Compat change id reported: 237531167; UID 10192; state: DISABLED
+10-21 04:26:35.531  5549  5549 W OpenGLRenderer: Unknown dataspace 0
+10-21 04:26:35.758  5549  5577 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-21 04:26:35.804  5549  5577 I Gralloc4: mapper 4.x is not supported
+10-21 04:26:36.801  5549  5587 E SurfaceSyncGroup: Failed to receive transaction ready in 1000ms. Marking SurfaceSyncGroup(wmsSync-VRI[MainActivity]#0) as ready
+10-21 04:26:36.801  5549  5587 E SurfaceSyncGroup: Failed to receive transaction ready in 1000ms. Marking SurfaceSyncGroup(VRI[MainActivity]#1) as ready
+10-21 04:26:36.843  5549  5561 I OpenGLRenderer: Davey! duration=1404ms; Flags=1, FrameTimelineVsyncId=8965, IntendedVsync=93403660484, Vsync=93503660480, InputEventId=0, HandleInputStart=93521261232, AnimationStart=93521261522, PerformTraversalsStart=93521335912, DrawStart=93820079036, FrameDeadline=93420327150, FrameInterval=93519057300, FrameStartTime=16666666, SyncQueued=93826907093, SyncStart=93827290477, IssueDrawCommandsStart=93832699688, SwapBuffers=94620357026, FrameCompleted=94808829946, DequeueBufferDuration=3325, QueueBufferDuration=171926, GpuCompleted=94808829946, SwapBuffersCompleted=94787537299, DisplayPresentTime=0, CommandSubmissionCompleted=94620357026, 
+10-21 04:26:36.848  5549  5549 I Choreographer: Skipped 76 frames!  The application may be doing too much work on its main thread.
+10-21 04:26:37.808  5549  5549 D CompatibilityChangeReporter: Compat change id reported: 289878283; UID 10192; state: ENABLED
+10-21 04:26:38.096  5549  5577 D EGL_emulation: app_time_stats: avg=134.85ms min=17.24ms max=268.89ms count=9
+10-21 04:26:39.372  5549  5577 D EGL_emulation: app_time_stats: avg=1276.57ms min=1276.57ms max=1276.57ms count=1
+10-21 04:26:39.373  5549  5549 I Choreographer: Skipped 75 frames!  The application may be doing too much work on its main thread.
+10-21 04:26:39.442  5549  5561 I OpenGLRenderer: Davey! duration=1648ms; Flags=0, FrameTimelineVsyncId=9312, IntendedVsync=95670327060, Vsync=95986993676, InputEventId=0, HandleInputStart=96015967766, AnimationStart=96015967916, PerformTraversalsStart=96039437439, DrawStart=96039482085, FrameDeadline=96103660376, FrameInterval=95995183224, FrameStartTime=16666664, SyncQueued=96044055425, SyncStart=96077884954, IssueDrawCommandsStart=96081917020, SwapBuffers=97214577190, FrameCompleted=97352729688, DequeueBufferDuration=4457, QueueBufferDuration=900006, GpuCompleted=97352599375, SwapBuffersCompleted=97352729688, DisplayPresentTime=0, CommandSubmissionCompleted=97214577190, 
+10-21 04:26:39.598  5549  5561 I OpenGLRenderer: Davey! duration=1411ms; Flags=0, FrameTimelineVsyncId=9380, IntendedVsync=96086993710, Vsync=97336993660, InputEventId=0, HandleInputStart=97357350819, AnimationStart=97357351720, PerformTraversalsStart=97358557551, DrawStart=97358597660, FrameDeadline=97470326988, FrameInterval=97353368487, FrameStartTime=16666666, SyncQueued=97359157291, SyncStart=97423357789, IssueDrawCommandsStart=97423457146, SwapBuffers=97442749994, FrameCompleted=97562927942, DequeueBufferDuration=345713, QueueBufferDuration=133909, GpuCompleted=97562493898, SwapBuffersCompleted=97562927942, DisplayPresentTime=0, CommandSubmissionCompleted=97442749994, 
+10-21 04:26:40.046  5654  5654 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:26:40.052  5654  5654 I AndroidRuntime: Using default boot image
+10-21 04:26:40.052  5654  5654 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:26:40.187  5654  5654 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:26:41.082  5549  5686 D ProfileInstaller: Installing profile for com.ratv.app
+10-21 04:26:41.271  5549  5577 D EGL_emulation: app_time_stats: avg=379.11ms min=42.70ms max=1597.44ms count=5
+10-21 04:26:41.347  5654  5654 D AndroidRuntime: Shutting down VM
+10-21 04:26:42.331  5694  5694 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:26:42.334  5694  5694 I AndroidRuntime: Using default boot image
+10-21 04:26:42.334  5694  5694 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:26:42.428  5694  5694 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:26:43.466  5694  5694 D AndroidRuntime: Shutting down VM
+10-21 04:26:44.866  5740  5740 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:26:44.869  5740  5740 I AndroidRuntime: Using default boot image
+10-21 04:26:44.869  5740  5740 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:26:44.962  5740  5740 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:26:45.997  5740  5740 D AndroidRuntime: Shutting down VM
+10-21 04:26:46.966  5549  5549 I ImeTracker: com.ratv.app:5d67db45: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT_BY_INSETS_API
+10-21 04:26:46.966  5549  5549 D InsetsController: show(ime(), fromIme=false)
+10-21 04:26:46.966  5549  5549 D InputMethodManager: showSoftInput() view=u0.u{db6411a VFED..... .F....ID 0,0-1080,2400 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT_BY_INSETS_API
+10-21 04:26:46.983  5549  5577 D EGL_emulation: app_time_stats: avg=5712.38ms min=5712.38ms max=5712.38ms count=1
+10-21 04:26:47.018  5549  5549 I ImeTracker: com.ratv.app:2f405e01: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT
+10-21 04:26:47.018  5549  5549 D InputMethodManager: showSoftInput() view=u0.u{db6411a VFED..... .F...... 0,0-1080,2400 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+10-21 04:26:47.951  5549  5549 D InsetsController: show(ime(), fromIme=true)
+10-21 04:26:48.070  5549  5577 D EGL_emulation: app_time_stats: avg=172.50ms min=35.21ms max=509.74ms count=6
+10-21 04:26:48.329  5549  5549 I ImeTracker: com.ratv.app:2f405e01: onShown
+10-21 04:26:49.104  5549  5577 D EGL_emulation: app_time_stats: avg=105.42ms min=42.59ms max=215.72ms count=9
+10-21 04:26:50.156  5549  5577 D EGL_emulation: app_time_stats: avg=110.97ms min=53.01ms max=183.89ms count=8
+10-21 04:26:51.454  5549  5577 D EGL_emulation: app_time_stats: avg=87.43ms min=42.48ms max=375.16ms count=13
+10-21 04:26:51.788  5838  5838 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:26:51.796  5838  5838 I AndroidRuntime: Using default boot image
+10-21 04:26:51.796  5838  5838 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:26:51.951  5838  5838 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:26:52.964  5549  5577 D EGL_emulation: app_time_stats: avg=503.20ms min=489.91ms max=509.87ms count=3
+10-21 04:26:53.076  5838  5838 D AndroidRuntime: Shutting down VM
+10-21 04:26:54.129  5549  5549 I ImeTracker: com.ratv.app:fec51936: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT_BY_INSETS_API
+10-21 04:26:54.129  5549  5549 D InsetsController: show(ime(), fromIme=false)
+10-21 04:26:54.129  5549  5549 I ImeTracker: com.ratv.app:fec51936: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-21 04:26:54.157  5549  5577 D EGL_emulation: app_time_stats: avg=397.64ms min=196.11ms max=499.49ms count=3
+10-21 04:26:54.213  5549  5549 I ImeTracker: com.ratv.app:7017706c: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT
+10-21 04:26:54.217  5549  5549 D InputMethodManager: showSoftInput() view=u0.u{db6411a VFED..... .F...... 0,0-1080,2400 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+10-21 04:26:54.399  5549  5549 D InsetsController: show(ime(), fromIme=true)
+10-21 04:26:54.399  5549  5549 I ImeTracker: com.ratv.app:7017706c: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-21 04:26:55.166  5549  5577 D EGL_emulation: app_time_stats: avg=111.00ms min=41.82ms max=316.43ms count=9
+10-21 04:26:56.149  6155  6155 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:26:56.155  6155  6155 I AndroidRuntime: Using default boot image
+10-21 04:26:56.155  6155  6155 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:26:56.284  6155  6155 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:26:56.514  5549  5577 D EGL_emulation: app_time_stats: avg=186.24ms min=42.68ms max=603.22ms count=7
+10-21 04:26:57.390  6155  6155 D AndroidRuntime: Shutting down VM
+10-21 04:26:57.960  5549  5577 D EGL_emulation: app_time_stats: avg=482.00ms min=441.98ms max=519.90ms count=3
+10-21 04:26:58.282  5549  5549 I ImeTracker: com.ratv.app:583833e9: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT_BY_INSETS_API
+10-21 04:26:58.282  5549  5549 D InsetsController: show(ime(), fromIme=false)
+10-21 04:26:58.282  5549  5549 I ImeTracker: com.ratv.app:583833e9: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-21 04:26:58.287  5549  5549 I ImeTracker: com.ratv.app:8e3b881c: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT
+10-21 04:26:58.287  5549  5549 D InputMethodManager: showSoftInput() view=u0.u{db6411a VFED..... .F....ID 0,0-1080,2400 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+10-21 04:26:58.456  5549  5549 D InsetsController: show(ime(), fromIme=true)
+10-21 04:26:58.456  5549  5549 I ImeTracker: com.ratv.app:c4b44cad: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-21 04:26:58.456  5549  5549 D InsetsController: show(ime(), fromIme=true)
+10-21 04:26:58.456  5549  5549 I ImeTracker: com.ratv.app:8e3b881c: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-21 04:26:58.816  5549  5549 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:26:59.140  5549  5577 D EGL_emulation: app_time_stats: avg=143.80ms min=43.23ms max=376.32ms count=8
+10-21 04:26:59.859  6233  6233 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:26:59.864  6233  6233 I AndroidRuntime: Using default boot image
+10-21 04:26:59.865  6233  6233 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:26:59.972  6233  6233 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:00.142  5549  5577 D EGL_emulation: app_time_stats: avg=247.44ms min=31.27ms max=504.54ms count=4
+10-21 04:27:01.005  6233  6233 D AndroidRuntime: Shutting down VM
+10-21 04:27:01.145  5549  5577 D EGL_emulation: app_time_stats: avg=501.50ms min=493.76ms max=509.23ms count=2
+10-21 04:27:01.886  5549  5581 D TrafficStats: tagSocket(95) with statsTag=0xffffffff, statsUid=-1
+10-21 04:27:02.197  5549  5577 D EGL_emulation: app_time_stats: avg=525.86ms min=489.10ms max=562.62ms count=2
+10-21 04:27:03.170  6262  6262 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:27:03.175  6262  6262 I AndroidRuntime: Using default boot image
+10-21 04:27:03.175  6262  6262 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:27:03.232  5549  5577 D EGL_emulation: app_time_stats: avg=74.76ms min=32.62ms max=173.22ms count=13
+10-21 04:27:03.357  6262  6262 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:04.241  5549  5577 D EGL_emulation: app_time_stats: avg=503.95ms min=487.51ms max=520.40ms count=2
+10-21 04:27:04.395  6262  6262 D AndroidRuntime: Shutting down VM
+10-21 04:27:05.243  5549  5577 D EGL_emulation: app_time_stats: avg=501.16ms min=500.81ms max=501.51ms count=2
+10-21 04:27:05.520  6304  6304 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:27:05.528  6304  6304 I AndroidRuntime: Using default boot image
+10-21 04:27:05.528  6304  6304 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:27:05.705  6304  6304 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:06.246  5549  5577 D EGL_emulation: app_time_stats: avg=501.71ms min=468.97ms max=534.44ms count=2
+10-21 04:27:06.818  6304  6304 D AndroidRuntime: Shutting down VM
+10-21 04:27:07.747  5549  5577 D EGL_emulation: app_time_stats: avg=499.58ms min=487.67ms max=509.40ms count=3
+10-21 04:27:08.485  6356  6356 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:27:08.491  6356  6356 I AndroidRuntime: Using default boot image
+10-21 04:27:08.491  6356  6356 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:27:08.627  6356  6356 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:08.757  5549  5577 D EGL_emulation: app_time_stats: avg=505.00ms min=501.19ms max=508.82ms count=2
+10-21 04:27:09.709  6356  6356 D AndroidRuntime: Shutting down VM
+10-21 04:27:09.766  5549  5577 D EGL_emulation: app_time_stats: avg=504.11ms min=485.37ms max=522.86ms count=2
+10-21 04:27:10.679  5549  5549 I ImeTracker: com.ratv.app:e4cb0bc4: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT_BY_INSETS_API
+10-21 04:27:10.679  5549  5549 D InsetsController: show(ime(), fromIme=false)
+10-21 04:27:10.679  5549  5549 I ImeTracker: com.ratv.app:e4cb0bc4: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-21 04:27:10.687  5549  5549 I ImeTracker: com.ratv.app:4efcd2e0: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT
+10-21 04:27:10.688  5549  5549 D InputMethodManager: showSoftInput() view=u0.u{db6411a VFED..... .F....ID 0,0-1080,2400 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+10-21 04:27:10.742  5549  5549 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-21 04:27:10.742  5549  5549 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-21 04:27:10.994  5549  5549 D InsetsController: show(ime(), fromIme=true)
+10-21 04:27:10.994  5549  5549 I ImeTracker: com.ratv.app:4efcd2e0: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-21 04:27:11.267  5549  5577 D EGL_emulation: app_time_stats: avg=374.11ms min=51.77ms max=502.18ms count=4
+10-21 04:27:11.740  5549  5549 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@7bb4b6a
+10-21 04:27:12.318  5549  5577 D EGL_emulation: app_time_stats: avg=128.51ms min=51.69ms max=343.27ms count=8
+10-21 04:27:13.347  5549  5577 D EGL_emulation: app_time_stats: avg=86.36ms min=29.18ms max=175.25ms count=11
+10-21 04:27:14.351  6552  6552 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:27:14.360  6552  6552 I AndroidRuntime: Using default boot image
+10-21 04:27:14.360  6552  6552 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:27:14.484  6552  6552 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:14.796  5549  5577 D EGL_emulation: app_time_stats: avg=353.95ms min=38.14ms max=503.44ms count=4
+10-21 04:27:15.524  5549  5557 W com.ratv.app: Cleared Reference was only reachable from finalizer (only reported once)
+10-21 04:27:15.527  5549  5559 W System  : A resource failed to call release. 
+10-21 04:27:15.540  6552  6552 D AndroidRuntime: Shutting down VM
+10-21 04:27:16.292  5549  5577 D EGL_emulation: app_time_stats: avg=498.48ms min=491.57ms max=505.16ms count=3
+10-21 04:27:16.620  5549  5582 D TrafficStats: tagSocket(6) with statsTag=0xffffffff, statsUid=-1
+10-21 04:27:17.304  5549  5577 D EGL_emulation: app_time_stats: avg=89.57ms min=51.42ms max=194.18ms count=11
+10-21 04:27:17.354  5549  5549 I Choreographer: Skipped 31 frames!  The application may be doing too much work on its main thread.
+10-21 04:27:17.363  5549  6587 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-21 04:27:17.535  6590  6590 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:27:17.547  6590  6590 I AndroidRuntime: Using default boot image
+10-21 04:27:17.547  6590  6590 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:27:17.721  6590  6590 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:18.431  5549  5561 I OpenGLRenderer: Davey! duration=733ms; Flags=0, FrameTimelineVsyncId=12593, IntendedVsync=134687003268, Vsync=134787003258, InputEventId=0, HandleInputStart=134801251343, AnimationStart=134801251884, PerformTraversalsStart=134817781624, DrawStart=134817812240, FrameDeadline=135336992140, FrameInterval=134801140358, FrameStartTime=16666666, SyncQueued=135254698022, SyncStart=135311386363, IssueDrawCommandsStart=135335343770, SwapBuffers=135393091483, FrameCompleted=135477687646, DequeueBufferDuration=3395, QueueBufferDuration=399664, GpuCompleted=135477687646, SwapBuffersCompleted=135467006338, DisplayPresentTime=0, CommandSubmissionCompleted=135393091483, 
+10-21 04:27:18.472  5549  5577 D EGL_emulation: app_time_stats: avg=583.15ms min=181.31ms max=984.98ms count=2
+10-21 04:27:18.476  5549  5549 I Choreographer: Skipped 59 frames!  The application may be doing too much work on its main thread.
+10-21 04:27:18.570  5549  5561 I OpenGLRenderer: Davey! duration=1569ms; Flags=0, FrameTimelineVsyncId=12628, IntendedVsync=134803658828, Vsync=135320325474, InputEventId=0, HandleInputStart=135340541567, AnimationStart=135340542078, PerformTraversalsStart=135355195793, DrawStart=135355257544, FrameDeadline=135503669896, FrameInterval=135334334201, FrameStartTime=16666666, SyncQueued=135386360180, SyncStart=135467129131, IssueDrawCommandsStart=135467752867, SwapBuffers=136410679660, FrameCompleted=136453793047, DequeueBufferDuration=3846, QueueBufferDuration=147238, GpuCompleted=136453793047, SwapBuffersCompleted=136452025453, DisplayPresentTime=0, CommandSubmissionCompleted=136410679660, 
+10-21 04:27:18.828  5549  5549 I ImeTracker: com.ratv.app:7809b156: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+10-21 04:27:18.828  5549  5549 I ImeTracker: com.ratv.app:717560f4: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+10-21 04:27:18.946  5549  5549 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=ImeCallback=ImeOnBackInvokedCallback@54495751 Callback=android.window.IOnBackInvokedCallback$Stub$Proxy@678d003
+10-21 04:27:18.949  5549  5549 I ImeTracker: com.ratv.app:717560f4: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-21 04:27:19.280  5549  5549 I ImeTracker: com.ratv.app:ea375a15: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+10-21 04:27:19.280  5549  5549 I ImeTracker: com.ratv.app:7809b156: onHidden
+10-21 04:27:19.799  6590  6590 D AndroidRuntime: Shutting down VM
+10-21 04:27:20.773  6658  6658 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:27:20.778  6658  6658 I AndroidRuntime: Using default boot image
+10-21 04:27:20.778  6658  6658 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:27:20.886  6658  6658 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:21.992  6658  6658 D AndroidRuntime: Shutting down VM
+10-21 04:27:28.995  6696  6696 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:27:29.001  6696  6696 I AndroidRuntime: Using default boot image
+10-21 04:27:29.001  6696  6696 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:27:29.113  6696  6696 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:29.564  5549  5549 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:27:29.565  5549  5549 W FrameTracker: Missed App frame:UNKNOWN: 74, 12800, 0, CUJ=J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:27:29.565  5549  5549 W FrameTracker: Missed SF frame:UNKNOWN: 74, 12800, 0, CUJ=J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:27:29.565  5549  5549 W FrameTracker: Missed App frame:UNKNOWN: 74, 12845, 0, CUJ=J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:27:29.565  5549  5549 W FrameTracker: Missed SF frame:UNKNOWN: 74, 12845, 0, CUJ=J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:27:29.565  5549  5549 W FrameTracker: Missed App frame:UNKNOWN: 74, 12860, 0, CUJ=J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:27:29.565  5549  5549 W FrameTracker: Missed SF frame:UNKNOWN: 74, 12860, 0, CUJ=J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:27:29.565  5549  5818 V PerfettoTrigger: Not triggering com.android.telemetry.interaction-jank-monitor-69 - not enough time since last trigger
+10-21 04:27:30.165  6696  6696 D AndroidRuntime: Shutting down VM
+10-21 04:27:31.395  6727  6727 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:27:31.398  6727  6727 I AndroidRuntime: Using default boot image
+10-21 04:27:31.398  6727  6727 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:27:31.480  6727  6727 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:32.538  6727  6727 D AndroidRuntime: Shutting down VM
+10-21 04:27:33.444  5549  5549 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-21 04:27:33.444  5549  5549 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-21 04:27:33.474  5549  5577 D EGL_emulation: app_time_stats: avg=1490.53ms min=69.54ms max=14020.14ms count=10
+10-21 04:27:34.450  6767  6767 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:27:34.456  6767  6767 I AndroidRuntime: Using default boot image
+10-21 04:27:34.456  6767  6767 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:27:34.540  6767  6767 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:35.624  6767  6767 D AndroidRuntime: Shutting down VM
+10-21 04:27:36.579  6789  6789 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:27:36.582  6789  6789 I AndroidRuntime: Using default boot image
+10-21 04:27:36.583  6789  6789 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:27:36.664  6789  6789 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:37.757  6789  6789 D AndroidRuntime: Shutting down VM
+10-21 04:27:38.989  6817  6817 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:27:38.992  6817  6817 I AndroidRuntime: Using default boot image
+10-21 04:27:38.992  6817  6817 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:27:39.074  6817  6817 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:40.134  6817  6817 D AndroidRuntime: Shutting down VM
+10-21 04:27:41.043  5549  5577 D EGL_emulation: app_time_stats: avg=626.03ms min=33.80ms max=6636.41ms count=12
+10-21 04:27:43.399  6848  6848 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:27:43.403  6848  6848 I AndroidRuntime: Using default boot image
+10-21 04:27:43.403  6848  6848 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:27:43.487  6848  6848 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:44.551  6848  6848 D AndroidRuntime: Shutting down VM
+10-21 04:27:45.891  6874  6874 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:27:45.895  6874  6874 I AndroidRuntime: Using default boot image
+10-21 04:27:45.895  6874  6874 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:27:45.976  6874  6874 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:47.021  6874  6874 D AndroidRuntime: Shutting down VM
+10-21 04:27:47.947  5549  5577 D EGL_emulation: app_time_stats: avg=6903.05ms min=6903.05ms max=6903.05ms count=1
+10-21 04:27:48.814  6915  6915 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:27:48.818  6915  6915 I AndroidRuntime: Using default boot image
+10-21 04:27:48.818  6915  6915 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:27:48.900  6915  6915 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:49.980  6915  6915 D AndroidRuntime: Shutting down VM
+10-21 04:27:50.968  5549  5577 D EGL_emulation: app_time_stats: avg=1495.98ms min=37.93ms max=2954.04ms count=2
+10-21 04:27:52.742  6942  6942 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:27:52.745  6942  6942 I AndroidRuntime: Using default boot image
+10-21 04:27:52.745  6942  6942 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:27:52.827  6942  6942 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:53.914  6942  6942 D AndroidRuntime: Shutting down VM
+10-21 04:27:54.817  5549  5577 D EGL_emulation: app_time_stats: avg=222.23ms min=38.18ms max=2925.40ms count=17
+10-21 04:27:57.460  7041  7041 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:27:57.464  7041  7041 I AndroidRuntime: Using default boot image
+10-21 04:27:57.464  7041  7041 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:27:57.545  7041  7041 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:27:58.596  7041  7041 D AndroidRuntime: Shutting down VM
+10-21 04:27:59.518  5549  5577 D EGL_emulation: app_time_stats: avg=4701.12ms min=4701.12ms max=4701.12ms count=1
+10-21 04:28:00.370  7071  7071 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:28:00.374  7071  7071 I AndroidRuntime: Using default boot image
+10-21 04:28:00.374  7071  7071 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:28:00.455  7071  7071 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:28:01.529  7071  7071 D AndroidRuntime: Shutting down VM
+10-21 04:28:02.410  5549  5549 I ExoPlayerImpl: Init 9f9c803 [AndroidXMedia3/1.5.1] [emu64xa, sdk_gphone64_x86_64, Google, 34]
+10-21 04:28:02.426  5549  5577 D EGL_emulation: app_time_stats: avg=964.34ms min=42.82ms max=2802.39ms count=3
+10-21 04:28:02.453  5549  5549 D CompatibilityChangeReporter: Compat change id reported: 210923482; UID 10192; state: ENABLED
+10-21 04:28:02.483  5549  5549 D CompatibilityChangeReporter: Compat change id reported: 171228096; UID 10192; state: ENABLED
+10-21 04:28:02.985  5549  7101 D TrafficStats: tagSocket(98) with statsTag=0xffffffff, statsUid=-1
+10-21 04:28:02.991  5549  5549 I Choreographer: Skipped 34 frames!  The application may be doing too much work on its main thread.
+10-21 04:28:03.296  5549  7106 D TrafficStats: tagSocket(98) with statsTag=0xffffffff, statsUid=-1
+10-21 04:28:03.434  5549  5577 D EGL_emulation: app_time_stats: avg=85.05ms min=48.35ms max=230.85ms count=11
+10-21 04:28:03.460  5549  5564 I OpenGLRenderer: Davey! duration=980ms; Flags=0, FrameTimelineVsyncId=13813, IntendedVsync=180403657004, Vsync=180970323648, InputEventId=0, HandleInputStart=181014379227, AnimationStart=181014410964, PerformTraversalsStart=181041227366, DrawStart=181124102164, FrameDeadline=181220323638, FrameInterval=180970939316, FrameStartTime=16666666, SyncQueued=181178192517, SyncStart=181220499521, IssueDrawCommandsStart=181220944171, SwapBuffers=181383112875, FrameCompleted=181426940126, DequeueBufferDuration=4947, QueueBufferDuration=266485, GpuCompleted=181426940126, SwapBuffersCompleted=181415201003, DisplayPresentTime=0, CommandSubmissionCompleted=181383112875, 
+10-21 04:28:03.929  5549  7106 D TrafficStats: tagSocket(88) with statsTag=0xffffffff, statsUid=-1
+10-21 04:28:04.018  5549  5549 I Choreographer: Skipped 31 frames!  The application may be doing too much work on its main thread.
+10-21 04:28:04.030  5549  5564 I OpenGLRenderer: Davey! duration=711ms; Flags=0, FrameTimelineVsyncId=14176, IntendedVsync=181286990302, Vsync=181470323628, InputEventId=0, HandleInputStart=181474194356, AnimationStart=181474194766, PerformTraversalsStart=181487850270, DrawStart=181488145718, FrameDeadline=181503656960, FrameInterval=181473155824, FrameStartTime=16666666, SyncQueued=181488787000, SyncStart=181488829624, IssueDrawCommandsStart=181488993206, SwapBuffers=181946140985, FrameCompleted=181998434821, DequeueBufferDuration=12508871, QueueBufferDuration=252014, GpuCompleted=181993062505, SwapBuffersCompleted=181998434821, DisplayPresentTime=0, CommandSubmissionCompleted=181946140985, 
+10-21 04:28:04.641  5549  7098 I DMCodecAdapterFactory: Creating an asynchronous MediaCodec adapter for track type video
+10-21 04:28:04.710  5549  7128 D CCodec  : allocate(c2.goldfish.h264.decoder)
+10-21 04:28:04.710  5549  7128 I Codec2Client: Available Codec2 services: "default" "software"
+10-21 04:28:04.711  5549  7128 I CCodec  : setting up 'default' as default (vendor) store
+10-21 04:28:04.757  5549  7128 I CCodec  : Created component [c2.goldfish.h264.decoder]
+10-21 04:28:04.757  5549  7128 D CCodecConfig: read media type: video/avc
+10-21 04:28:04.764  5549  7128 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.max-count.values
+10-21 04:28:04.764  5549  7128 D ReflectedParamUpdater: extent() != 1 for single value type: output.subscribed-indices.values
+10-21 04:28:04.769  5549  7128 D ReflectedParamUpdater: extent() != 1 for single value type: input.buffers.allocator-ids.values
+10-21 04:28:04.769  5549  7128 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.allocator-ids.values
+10-21 04:28:04.770  5549  7128 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.allocator-ids.values
+10-21 04:28:04.770  5549  7128 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.pool-ids.values
+10-21 04:28:04.770  5549  7128 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.pool-ids.values
+10-21 04:28:04.772  5549  7128 D ReflectedParamUpdater: ignored struct field coded.color-format.locations
+10-21 04:28:04.772  5549  7128 D CCodecConfig: ignoring local param raw.size (0xd2001800) as it is already supported
+10-21 04:28:04.772  5549  7128 D CCodecConfig: ignoring local param default.color (0x5200180b) as it is already supported
+10-21 04:28:04.772  5549  7128 D ReflectedParamUpdater: ignored struct field raw.hdr-static-info.mastering
+10-21 04:28:04.776  5549  7128 I CCodecConfig: query failed after returning 12 values (BAD_INDEX)
+10-21 04:28:04.776  5549  7128 D CCodecConfig: c2 config diff is Dict {
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 coded.pl.level = 20496
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 coded.pl.profile = 20481
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 coded.vui.color.matrix = 0
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 coded.vui.color.primaries = 0
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 coded.vui.color.range = 2
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 coded.vui.color.transfer = 0
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 default.color.matrix = 0
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 default.color.primaries = 0
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 default.color.range = 0
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 default.color.transfer = 0
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 input.buffers.max-size.value = 6291456
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 input.delay.value = 0
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   string input.media-type.value = "video/avc"
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 output.delay.value = 8
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   string output.media-type.value = "video/raw"
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 raw.color.matrix = 0
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 raw.color.primaries = 0
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 raw.color.range = 2
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 raw.color.transfer = 0
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 raw.max-size.height = 240
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 raw.max-size.width = 320
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 raw.pixel-format.value = 35
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::i32 raw.rotation.flip = 0
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::i32 raw.rotation.value = 0
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 raw.sar.height = 1
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 raw.sar.width = 1
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 raw.size.height = 240
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2::u32 raw.size.width = 320
+10-21 04:28:04.776  5549  7128 D CCodecConfig:   c2:
+10-21 04:28:04.777  5549  7128 W ColorUtils: expected specified color aspects (2:0:0:0)
+10-21 04:28:04.782  5549  7127 I MediaCodec: MediaCodec will operate in async mode
+10-21 04:28:04.785  5549  7127 D MediaCodec: flushMediametrics
+10-21 04:28:04.785  5549  7127 D SurfaceUtils: connecting to surface 0x78eff323d8e0, reason connectToSurface
+10-21 04:28:04.785  5549  7127 I MediaCodec: [c2.goldfish.h264.decoder] setting surface generation to 5682177
+10-21 04:28:04.785  5549  7127 D SurfaceUtils: disconnecting from surface 0x78eff323d8e0, reason connectToSurface(reconnect)
+10-21 04:28:04.785  5549  7127 D SurfaceUtils: connecting to surface 0x78eff323d8e0, reason connectToSurface(reconnect)
+10-21 04:28:04.787  5549  7128 I CCodecBufferChannel: Using latch times for frame rendered signals - present fences not supported
+10-21 04:28:04.787  5549  7128 D CCodec  : [c2.goldfish.h264.decoder] buffers are bound to CCodec for this session
+10-21 04:28:04.789  5549  7128 D CCodecConfig: no c2 equivalents for csd-1
+10-21 04:28:04.789  5549  7128 D CCodecConfig: no c2 equivalents for log-session-id
+10-21 04:28:04.789  5549  7128 D CCodecConfig: no c2 equivalents for native-window
+10-21 04:28:04.789  5549  7128 D CCodecConfig: no c2 equivalents for flags
+10-21 04:28:04.789  5549  7128 D CCodecConfig: config failed => CORRUPTED
+10-21 04:28:04.790  5549  7128 D CCodecConfig: c2 config diff is   c2::u32 raw.max-size.height = 720
+10-21 04:28:04.790  5549  7128 D CCodecConfig:   c2::u32 raw.max-size.width = 1280
+10-21 04:28:04.790  5549  7128 D CCodecConfig:   c2::u32 raw.size.height = 720
+10-21 04:28:04.790  5549  7128 D CCodecConfig:   c2::u32 raw.size.width = 1280
+10-21 04:28:04.790  5549  7128 W Codec2Client: query -- param skipped: index = 1107298332.
+10-21 04:28:04.790  5549  7128 D CCodec  : client requested max input size 691200, which is smaller than what component recommended (6291456); overriding with component recommendation.
+10-21 04:28:04.790  5549  7128 W CCodec  : This behavior is subject to change. It is recommended that app developers double check whether the requested max input size is in reasonable range.
+10-21 04:28:04.790  5549  7128 D CCodec  : encoding statistics level = 0
+10-21 04:28:04.790  5549  7128 D CCodec  : setup formats input: AMessage(what = 0x00000000) = {
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t height = 720
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t level = 65536
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t max-input-size = 6291456
+10-21 04:28:04.790  5549  7128 D CCodec  :   string mime = "video/avc"
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t profile = 65536
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t width = 1280
+10-21 04:28:04.790  5549  7128 D CCodec  :   Rect crop(0, 0, 1279, 719)
+10-21 04:28:04.790  5549  7128 D CCodec  : }
+10-21 04:28:04.790  5549  7128 D CCodec  : setup formats output: AMessage(what = 0x00000000) = {
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t android._color-format = 2135033992
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t android._video-scaling = 1
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t rotation-degrees = 0
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t color-standard = 1
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t color-range = 2
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t color-transfer = 3
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t sar-height = 1
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t sar-width = 1
+10-21 04:28:04.790  5549  7128 D CCodec  :   Rect crop(0, 0, 1279, 719)
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t width = 1280
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t height = 720
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t max-height = 720
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t max-width = 1280
+10-21 04:28:04.790  5549  7128 D CCodec  :   string mime = "video/raw"
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t android._dataspace = 260
+10-21 04:28:04.790  5549  7128 D CCodec  :   int32_t color-format = 2130708361
+10-21 04:28:04.790  5549  7128 D CCodec  : }
+10-21 04:28:04.792  5549  7128 I CCodecConfig: query failed after returning 12 values (BAD_INDEX)
+10-21 04:28:04.793  5549  7098 D MediaCodec: keep callback message for reclaim
+10-21 04:28:04.795  5549  7128 W Codec2Client: query -- param skipped: index = 1342179345.
+10-21 04:28:04.795  5549  7128 W Codec2Client: query -- param skipped: index = 2415921170.
+10-21 04:28:04.795  5549  7128 W Codec2Client: query -- param skipped: index = 1610614798.
+10-21 04:28:04.795  5549  7128 W Codec2Client: query -- param skipped: index = 2684356609.
+10-21 04:28:04.795  5549  7128 D C2Store : Using DMABUF Heaps
+10-21 04:28:04.796  5549  7128 D CCodecBufferChannel: [c2.goldfish.h264.decoder#392] Created input block pool with allocatorID 16 => poolID 17 - OK (0)
+10-21 04:28:04.796  5549  7128 D CCodecBufferChannel: [c2.goldfish.h264.decoder#392] Query output surface allocator returned 0 params => BAD_INDEX (6)
+10-21 04:28:04.796  5549  7128 I CCodecBufferChannel: [c2.goldfish.h264.decoder#392] Created output block pool with allocatorID 18 => poolID 17 - OK
+10-21 04:28:04.796  5549  7128 D CCodecBufferChannel: [c2.goldfish.h264.decoder#392] Configured output block pool ids 17 => OK
+10-21 04:28:04.796  5549  7128 D Codec2-OutputBufferQueue: remote graphic buffer migration 0/0
+10-21 04:28:04.796  5549  7128 D Codec2Client: setOutputSurface -- failed to set consumer usage (6/BAD_INDEX)
+10-21 04:28:04.796  5549  7128 D Codec2Client: setOutputSurface -- generation=5682177 consumer usage=0x900
+10-21 04:28:04.997  5549  7128 D Codec2Client: Surface configure completed
+10-21 04:28:05.016  5549  7128 I DMABUFHEAPS: Using DMA-BUF heap named: system
+10-21 04:28:05.040  5549  5577 D EGL_emulation: app_time_stats: avg=106.48ms min=52.23ms max=514.83ms count=14
+10-21 04:28:05.044  5549  7098 I DMCodecAdapterFactory: Creating an asynchronous MediaCodec adapter for track type audio
+10-21 04:28:05.096  5549  7136 D CCodec  : allocate(c2.android.aac.decoder)
+10-21 04:28:05.106  5549  7136 I CCodec  : setting up 'default' as default (vendor) store
+10-21 04:28:05.149  5549  5557 I com.ratv.app: Background young concurrent copying GC freed 42084(2597KB) AllocSpace objects, 12(776KB) LOS objects, 24% free, 10MB/13MB, paused 37us,18us total 280.556ms
+10-21 04:28:05.207  5549  7136 I CCodec  : Created component [c2.android.aac.decoder]
+10-21 04:28:05.223  5549  7136 D CCodecConfig: read media type: audio/mp4a-latm
+10-21 04:28:05.224  5549  7136 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.max-count.values
+10-21 04:28:05.224  5549  7136 D ReflectedParamUpdater: extent() != 1 for single value type: output.subscribed-indices.values
+10-21 04:28:05.224  5549  7136 D ReflectedParamUpdater: extent() != 1 for single value type: input.buffers.allocator-ids.values
+10-21 04:28:05.224  5549  7136 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.allocator-ids.values
+10-21 04:28:05.224  5549  7136 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.allocator-ids.values
+10-21 04:28:05.224  5549  7136 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.pool-ids.values
+10-21 04:28:05.224  5549  7136 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.pool-ids.values
+10-21 04:28:05.225  5549  7136 I CCodecConfig: query failed after returning 20 values (BAD_INDEX)
+10-21 04:28:05.225  5549  7136 D CCodecConfig: c2 config diff is Dict {
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::u32 coded.aac-packaging.value = 0
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::u32 coded.bitrate.value = 64000
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::u32 coded.pl.level = 0
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::u32 coded.pl.profile = 8192
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::i32 coding.drc.album-mode.value = 0
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::float coding.drc.attenuation-factor.value = 1
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::float coding.drc.boost-factor.value = 1
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::i32 coding.drc.compression-mode.value = 3
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::i32 coding.drc.effect-type.value = 3
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::float coding.drc.encoded-level.value = 0.25
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::float coding.drc.reference-level.value = -16
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::u32 input.buffers.max-size.value = 8192
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::u32 input.delay.value = 0
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   string input.media-type.value = "audio/mp4a-latm"
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::u32 output.delay.value = 2
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::float output.drc.output-loudness.value = 0.25
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   string output.media-type.value = "audio/raw"
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::u32 raw.channel-count.value = 1
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::u32 raw.channel-mask.value = 0
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::u32 raw.max-channel-count.value = 8
+10-21 04:28:05.225  5549  7136 D CCodecConfig:   c2::u32 raw.sample-rate.value = 44100
+10-21 04:28:05.225  5549  7136 D CCodecConfig: }
+10-21 04:28:05.243  5549  7136 I MediaCodec: MediaCodec will operate in async mode
+10-21 04:28:05.244  5549  7136 D MediaCodec: flushMediametrics
+10-21 04:28:05.244  5549  7136 D CCodec  : [c2.android.aac.decoder] buffers are bound to CCodec for this session
+10-21 04:28:05.244  5549  7136 D CCodecConfig: no c2 equivalents for log-session-id
+10-21 04:28:05.244  5549  7136 D CCodecConfig: no c2 equivalents for flags
+10-21 04:28:05.244  5549  7136 D CCodecConfig: c2 config diff is   c2::u32 raw.sample-rate.value = 48000
+10-21 04:28:05.245  5549  7136 W Codec2Client: query -- param skipped: index = 1107298332.
+10-21 04:28:05.245  5549  7136 D CCodec  : encoding statistics level = 0
+10-21 04:28:05.245  5549  7136 D CCodec  : setup formats input: AMessage(what = 0x00000000) = {
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t aac-drc-album-mode = 0
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t aac-drc-boost-level = 127
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t aac-drc-cut-level = 127
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t aac-drc-effect-type = 3
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t aac-encoded-target-level = -1
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t aac-max-output-channel_count = 8
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t aac-target-ref-level = 64
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t bitrate = 64000
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t channel-count = 1
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t channel-mask = 0
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t level = 0
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t max-input-size = 8192
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t max-output-channel-count = 8
+10-21 04:28:05.245  5549  7136 D CCodec  :   string mime = "audio/mp4a-latm"
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t profile = 2
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t sample-rate = 48000
+10-21 04:28:05.245  5549  7136 D CCodec  : }
+10-21 04:28:05.245  5549  7136 D CCodec  : setup formats output: AMessage(what = 0x00000000) = {
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t aac-drc-album-mode = 0
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t aac-drc-boost-level = 127
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t aac-drc-cut-level = 127
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t aac-drc-effect-type = 3
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t aac-drc-output-loudness = -1
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t aac-encoded-target-level = -1
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t aac-max-output-channel_count = 8
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t aac-target-ref-level = 64
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t channel-count = 1
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t channel-mask = 0
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t max-output-channel-count = 8
+10-21 04:28:05.245  5549  7136 D CCodec  :   string mime = "audio/raw"
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t sample-rate = 48000
+10-21 04:28:05.245  5549  7136 D CCodec  :   int32_t android._config-pcm-encoding = 2
+10-21 04:28:05.245  5549  7136 D CCodec  : }
+10-21 04:28:05.245  5549  7136 I CCodecConfig: query failed after returning 20 values (BAD_INDEX)
+10-21 04:28:05.251  5549  7098 D MediaCodec: keep callback message for reclaim
+10-21 04:28:05.336  5549  7136 W Codec2Client: query -- param skipped: index = 1342179345.
+10-21 04:28:05.336  5549  7136 W Codec2Client: query -- param skipped: index = 2415921170.
+10-21 04:28:05.336  5549  7136 W Codec2Client: query -- param skipped: index = 1610614798.
+10-21 04:28:05.336  5549  7136 D CCodecBufferChannel: [c2.android.aac.decoder#860] Created input block pool with allocatorID 16 => poolID 18 - OK (0)
+10-21 04:28:05.341  5549  7136 I CCodecBufferChannel: [c2.android.aac.decoder#860] Created output block pool with allocatorID 16 => poolID 27 - OK
+10-21 04:28:05.356  5549  7136 D CCodecBufferChannel: [c2.android.aac.decoder#860] Configured output block pool ids 27 => OK
+10-21 04:28:05.453  5549  7136 D CCodecConfig: c2 config diff is   c2::u32 raw.channel-mask.value = 4
+10-21 04:28:05.453  5549  7136 D CCodecBuffers: [c2.android.aac.decoder#860:Output[N]] popFromStashAndRegister: at 1000000058666us, output format changed to AMessage(what = 0x00000000) = {
+10-21 04:28:05.453  5549  7136 D CCodecBuffers:   int32_t aac-drc-album-mode = 0
+10-21 04:28:05.453  5549  7136 D CCodecBuffers:   int32_t aac-drc-boost-level = 127
+10-21 04:28:05.453  5549  7136 D CCodecBuffers:   int32_t aac-drc-cut-level = 127
+10-21 04:28:05.453  5549  7136 D CCodecBuffers:   int32_t aac-drc-effect-type = 3
+10-21 04:28:05.453  5549  7136 D CCodecBuffers:   int32_t aac-drc-output-loudness = -1
+10-21 04:28:05.453  5549  7136 D CCodecBuffers:   int32_t aac-encoded-target-level = -1
+10-21 04:28:05.453  5549  7136 D CCodecBuffers:   int32_t aac-max-output-channel_count = 8
+10-21 04:28:05.453  5549  7136 D CCodecBuffers:   int32_t aac-target-ref-level = 64
+10-21 04:28:05.453  5549  7136 D CCodecBuffers:   int32_t channel-count = 1
+10-21 04:28:05.453  5549  7136 D CCodecBuffers:   int32_t channel-mask = 4
+10-21 04:28:05.453  5549  7136 D CCodecBuffers:   int32_t max-output-channel-count = 8
+10-21 04:28:05.453  5549  7136 D CCodecBuffers:   string mime = "audio/raw"
+10-21 04:28:05.453  5549  7136 D CCodecBuffers:   int32_t sample-rate = 48000
+10-21 04:28:05.453  5549  7136 D CCodecBuffers:   int32_t android._config-pcm-encoding = 2
+10-21 04:28:05.453  5549  7136 D CCodecBuffers: }
+10-21 04:28:05.592  5549  7128 D CCodecConfig: c2 config diff is   c2::u32 raw.crop.height = 720
+10-21 04:28:05.592  5549  7128 D CCodecConfig:   c2::u32 raw.crop.left = 0
+10-21 04:28:05.592  5549  7128 D CCodecConfig:   c2::u32 raw.crop.top = 0
+10-21 04:28:05.592  5549  7128 D CCodecConfig:   c2::u32 raw.crop.width = 1280
+10-21 04:28:06.303  5549  5577 D EGL_emulation: app_time_stats: avg=135.85ms min=54.36ms max=411.83ms count=9
+10-21 04:28:06.426  5549  7098 D AudioTrack: getTimestamp_l(16): device stall time corrected using current time 184406145736
+10-21 04:28:07.890  5549  5557 I com.ratv.app: Background concurrent copying GC freed 52772(2371KB) AllocSpace objects, 0(0B) LOS objects, 49% free, 11MB/23MB, paused 45us,18us total 163.486ms
+10-21 04:28:10.077  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532670d8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 106/111 (recycle/alloc) - 5/110 (fetch/transfer)
+10-21 04:28:10.495  5549  5577 D EGL_emulation: app_time_stats: avg=1338.54ms min=86.20ms max=3828.81ms count=3
+10-21 04:28:10.672  5549  7136 D BufferPoolAccessor2.0: bufferpool2 0x78f0532980c8 : 5(40960 size) total buffers - 4(32768 size) used buffers - 202/207 (recycle/alloc) - 5/204 (fetch/transfer)
+10-21 04:28:15.196  5549  5549 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:28:15.251  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532670d8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 235/240 (recycle/alloc) - 5/239 (fetch/transfer)
+10-21 04:28:16.055  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532980c8 : 5(40960 size) total buffers - 5(40960 size) used buffers - 455/460 (recycle/alloc) - 5/458 (fetch/transfer)
+10-21 04:28:17.157  5549  5577 D EGL_emulation: app_time_stats: avg=1313.12ms min=63.28ms max=6159.49ms count=5
+10-21 04:28:18.229  5549  5577 D EGL_emulation: app_time_stats: avg=113.89ms min=31.13ms max=451.41ms count=9
+10-21 04:28:20.561  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532670d8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 356/361 (recycle/alloc) - 5/360 (fetch/transfer)
+10-21 04:28:21.314  5549  5577 D EGL_emulation: app_time_stats: avg=3084.36ms min=3084.36ms max=3084.36ms count=1
+10-21 04:28:21.667  5549  5557 I com.ratv.app: Background young concurrent copying GC freed 29073(1288KB) AllocSpace objects, 3(72KB) LOS objects, 4% free, 22MB/23MB, paused 38.284ms,1.440ms total 112.074ms
+10-21 04:28:21.952  5549  5557 I com.ratv.app: Background concurrent copying GC freed 9754(526KB) AllocSpace objects, 11(224KB) LOS objects, 49% free, 22MB/44MB, paused 18.466ms,15us total 192.511ms
+10-21 04:28:22.144  5549  7181 E EGL_emulation: eglQueryContext 32c0  EGL_BAD_ATTRIBUTE
+10-21 04:28:22.144  5549  7181 E EGL_emulation: tid 7181: eglQueryContext(2146): error 0x3004 (EGL_BAD_ATTRIBUTE)
+10-21 04:28:22.145  5549  7127 D SurfaceUtils: connecting to surface 0x78eff326c640, reason connectToSurface
+10-21 04:28:22.146  5549  7127 I MediaCodec: [c2.goldfish.h264.decoder] setting surface generation to 5682178
+10-21 04:28:22.146  5549  7127 D SurfaceUtils: disconnecting from surface 0x78eff326c640, reason connectToSurface(reconnect)
+10-21 04:28:22.146  5549  7127 D SurfaceUtils: connecting to surface 0x78eff326c640, reason connectToSurface(reconnect)
+10-21 04:28:22.146  5549  7127 D Codec2-OutputBufferQueue: remote graphic buffer migration 15/15
+10-21 04:28:22.146  5549  7127 D Codec2Client: setOutputSurface -- failed to set consumer usage (6/BAD_INDEX)
+10-21 04:28:22.146  5549  7127 D Codec2Client: setOutputSurface -- generation=5682178 consumer usage=0x900
+10-21 04:28:22.149  5549  7127 D Codec2Client: Surface configure completed
+10-21 04:28:22.149  5549  7127 D SurfaceUtils: disconnecting from surface 0x78eff323d8e0, reason disconnectFromSurface
+10-21 04:28:22.151  5549  7136 D BufferPoolAccessor2.0: bufferpool2 0x78f0532980c8 : 5(40960 size) total buffers - 2(16384 size) used buffers - 690/695 (recycle/alloc) - 5/694 (fetch/transfer)
+10-21 04:28:22.473  5549  5549 I ExoPlayerImpl: Release 9f9c803 [AndroidXMedia3/1.5.1] [emu64xa, sdk_gphone64_x86_64, Google, 34] [media3.common, media3.exoplayer, media3.decoder, media3.ui, media3.datasource, media3.extractor]
+10-21 04:28:22.487  5549  7132 D CCodecBufferChannel: [c2.goldfish.h264.decoder#392] Ignoring stale input buffer done callback: last flush index = 377, frameIndex = 374
+10-21 04:28:22.488  5549  7098 D MediaCodec: keep callback message for reclaim
+10-21 04:28:22.488  5549  7128 D CCodecBufferChannel: [c2.goldfish.h264.decoder#392] flushed work; ignored.
+10-21 04:28:22.488  5549  7128 D CCodecBufferChannel: [c2.goldfish.h264.decoder#392] Discard frames from previous generation.
+10-21 04:28:22.502  5549  7127 I CCodecConfig: query failed after returning 12 values (BAD_INDEX)
+10-21 04:28:22.505  5549  7127 W Codec2Client: query -- param skipped: index = 1342179345.
+10-21 04:28:22.505  5549  7127 W Codec2Client: query -- param skipped: index = 2415921170.
+10-21 04:28:22.505  5549  7127 W Codec2Client: query -- param skipped: index = 1610614798.
+10-21 04:28:22.508  5549  7136 D CCodecBuffers: [c2.android.aac.decoder#860:1D-Output.Impl[N]] Client returned a buffer it does not own according to our record: 0
+10-21 04:28:22.508  5549  7136 D CCodecBuffers: [c2.android.aac.decoder#860:1D-Output.Impl[N]] Client returned a buffer it does not own according to our record: 1
+10-21 04:28:22.508  5549  7136 D CCodecBuffers: [c2.android.aac.decoder#860:1D-Output.Impl[N]] Client returned a buffer it does not own according to our record: 2
+10-21 04:28:22.508  5549  7136 D CCodecBuffers: [c2.android.aac.decoder#860:1D-Output.Impl[N]] Client returned a buffer it does not own according to our record: 3
+10-21 04:28:22.508  5549  7136 D CCodecBuffers: [c2.android.aac.decoder#860:1D-Output.Impl[N]] Client returned a buffer it does not own according to our record: 4
+10-21 04:28:22.508  5549  7098 D MediaCodec: keep callback message for reclaim
+10-21 04:28:22.508  5549  7136 I CCodecConfig: query failed after returning 20 values (BAD_INDEX)
+10-21 04:28:22.508  5549  7136 W Codec2Client: query -- param skipped: index = 1342179345.
+10-21 04:28:22.508  5549  7136 W Codec2Client: query -- param skipped: index = 2415921170.
+10-21 04:28:22.508  5549  7136 W Codec2Client: query -- param skipped: index = 1610614798.
+10-21 04:28:22.509  5549  7127 D SurfaceUtils: connecting to surface 0x78eff3268220, reason connectToSurface
+10-21 04:28:22.509  5549  7127 I MediaCodec: [c2.goldfish.h264.decoder] setting surface generation to 5682179
+10-21 04:28:22.509  5549  7127 D SurfaceUtils: disconnecting from surface 0x78eff3268220, reason connectToSurface(reconnect)
+10-21 04:28:22.509  5549  7127 D SurfaceUtils: connecting to surface 0x78eff3268220, reason connectToSurface(reconnect)
+10-21 04:28:22.509  5549  7127 D Codec2-OutputBufferQueue: remote graphic buffer migration 0/0
+10-21 04:28:22.509  5549  7127 D Codec2Client: setOutputSurface -- failed to set consumer usage (6/BAD_INDEX)
+10-21 04:28:22.509  5549  7127 D Codec2Client: setOutputSurface -- generation=5682179 consumer usage=0x900
+10-21 04:28:22.511  5549  7127 D Codec2Client: Surface configure completed
+10-21 04:28:22.511  5549  7127 D SurfaceUtils: disconnecting from surface 0x78eff326c640, reason disconnectFromSurface
+10-21 04:28:22.514  5549  7127 D CCodecBufferChannel: [c2.goldfish.h264.decoder#392] MediaCodec discarded an unknown buffer
+10-21 04:28:22.514  5549  7127 D CCodecBufferChannel: [c2.goldfish.h264.decoder#392] MediaCodec discarded an unknown buffer
+10-21 04:28:22.514  5549  7127 D CCodecBufferChannel: [c2.goldfish.h264.decoder#392] MediaCodec discarded an unknown buffer
+10-21 04:28:22.514  5549  7127 D CCodecBufferChannel: [c2.goldfish.h264.decoder#392] MediaCodec discarded an unknown buffer
+10-21 04:28:22.515  5549  7136 D CCodecBufferChannel: [c2.android.aac.decoder#860] MediaCodec discarded an unknown buffer
+10-21 04:28:22.515  5549  7136 D CCodecBufferChannel: [c2.android.aac.decoder#860] MediaCodec discarded an unknown buffer
+10-21 04:28:22.515  5549  7136 D CCodecBufferChannel: [c2.android.aac.decoder#860] MediaCodec discarded an unknown buffer
+10-21 04:28:22.515  5549  7136 D CCodecBufferChannel: [c2.android.aac.decoder#860] MediaCodec discarded an unknown buffer
+10-21 04:28:22.543  5549  7127 D SurfaceUtils: disconnecting from surface 0x78eff3268220, reason disconnectFromSurface
+10-21 04:28:22.543  5549  7128 I hw-BpHwBinder: onLastStrongRef automatically unlinking death recipients
+10-21 04:28:22.567  5549  7136 I hw-BpHwBinder: onLastStrongRef automatically unlinking death recipients
+10-21 04:28:22.570  5549  7127 D MediaCodec: flushMediametrics
+10-21 04:28:22.571  5549  7127 D MediaCodec: flushMediametrics
+10-21 04:28:22.571  5549  7127 W MediaCodec: no metrics handle found
+10-21 04:28:22.581  5549  7136 D MediaCodec: flushMediametrics
+10-21 04:28:22.581  5549  7136 D MediaCodec: flushMediametrics
+10-21 04:28:22.581  5549  7136 W MediaCodec: no metrics handle found
+10-21 04:28:22.625  5549  5577 D EGL_emulation: app_time_stats: avg=128.31ms min=47.39ms max=539.67ms count=10
+10-21 04:28:22.629  5549  5549 I Choreographer: Skipped 31 frames!  The application may be doing too much work on its main thread.
+10-21 04:28:22.769  5549  6764 D TrafficStats: tagSocket(97) with statsTag=0xffffffff, statsUid=-1
+10-21 04:28:25.321  7195  7195 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:28:25.325  7195  7195 I AndroidRuntime: Using default boot image
+10-21 04:28:25.325  7195  7195 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:28:25.409  7195  7195 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:28:26.474  7195  7195 D AndroidRuntime: Shutting down VM
+10-21 04:28:27.371  5549  5577 D EGL_emulation: app_time_stats: avg=637.42ms min=39.12ms max=3979.41ms count=7
+10-21 04:28:28.033  5549  7131 D BufferPoolAccessor2.0: bufferpool2 0x78f0532980c8 : 0(0 size) total buffers - 0(0 size) used buffers - 695/700 (recycle/alloc) - 5/695 (fetch/transfer)
+10-21 04:28:28.033  5549  7131 D BufferPoolAccessor2.0: bufferpool2 0x78f0532670d8 : 0(0 size) total buffers - 0(0 size) used buffers - 377/382 (recycle/alloc) - 7/379 (fetch/transfer)
+10-21 04:28:28.033  5549  7131 D BufferPoolAccessor2.0: evictor expired: 2, evicted: 2
+10-21 04:28:29.730  7225  7225 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:28:29.734  7225  7225 I AndroidRuntime: Using default boot image
+10-21 04:28:29.734  7225  7225 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:28:29.815  7225  7225 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:28:30.882  7225  7225 D AndroidRuntime: Shutting down VM
+10-21 04:28:31.776  5549  5549 I ExoPlayerImpl: Init c4fc88c [AndroidXMedia3/1.5.1] [emu64xa, sdk_gphone64_x86_64, Google, 34]
+10-21 04:28:31.783  5549  5577 D EGL_emulation: app_time_stats: avg=4412.04ms min=4412.04ms max=4412.04ms count=1
+10-21 04:28:32.137  5549  7254 D TrafficStats: tagSocket(117) with statsTag=0xffffffff, statsUid=-1
+10-21 04:28:32.163  5549  7255 D TrafficStats: tagSocket(132) with statsTag=0xffffffff, statsUid=-1
+10-21 04:28:32.771  5549  7255 D TrafficStats: tagSocket(6) with statsTag=0xffffffff, statsUid=-1
+10-21 04:28:32.944  5549  5556 I com.ratv.app: Compiler allocated 7363KB to compile void h3.o0.f(java.lang.String, java.lang.String, java.lang.String, i3.g, J.p, int)
+10-21 04:28:33.413  5549  5549 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:28:33.598  5549  7253 I DMCodecAdapterFactory: Creating an asynchronous MediaCodec adapter for track type video
+10-21 04:28:33.600  5549  7258 D CCodec  : allocate(c2.goldfish.h264.decoder)
+10-21 04:28:33.601  5549  7258 I CCodec  : setting up 'default' as default (vendor) store
+10-21 04:28:33.606  5549  7258 I CCodec  : Created component [c2.goldfish.h264.decoder]
+10-21 04:28:33.608  5549  7258 D CCodecConfig: read media type: video/avc
+10-21 04:28:33.619  5549  7258 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.max-count.values
+10-21 04:28:33.623  5549  7258 D ReflectedParamUpdater: extent() != 1 for single value type: output.subscribed-indices.values
+10-21 04:28:33.623  5549  7258 D ReflectedParamUpdater: extent() != 1 for single value type: input.buffers.allocator-ids.values
+10-21 04:28:33.623  5549  7258 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.allocator-ids.values
+10-21 04:28:33.624  5549  7258 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.allocator-ids.values
+10-21 04:28:33.624  5549  7258 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.pool-ids.values
+10-21 04:28:33.624  5549  7258 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.pool-ids.values
+10-21 04:28:33.625  5549  7258 D ReflectedParamUpdater: ignored struct field coded.color-format.locations
+10-21 04:28:33.625  5549  7258 D CCodecConfig: ignoring local param raw.size (0xd2001800) as it is already supported
+10-21 04:28:33.625  5549  7258 D CCodecConfig: ignoring local param default.color (0x5200180b) as it is already supported
+10-21 04:28:33.625  5549  7258 D ReflectedParamUpdater: ignored struct field raw.hdr-static-info.mastering
+10-21 04:28:33.626  5549  7258 I CCodecConfig: query failed after returning 12 values (BAD_INDEX)
+10-21 04:28:33.626  5549  7258 D CCodecConfig: c2 config diff is Dict {
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 coded.pl.level = 20496
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 coded.pl.profile = 20481
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 coded.vui.color.matrix = 0
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 coded.vui.color.primaries = 0
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 coded.vui.color.range = 2
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 coded.vui.color.transfer = 0
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 default.color.matrix = 0
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 default.color.primaries = 0
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 default.color.range = 0
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 default.color.transfer = 0
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 input.buffers.max-size.value = 6291456
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 input.delay.value = 0
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   string input.media-type.value = "video/avc"
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 output.delay.value = 8
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   string output.media-type.value = "video/raw"
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 raw.color.matrix = 0
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 raw.color.primaries = 0
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 raw.color.range = 2
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 raw.color.transfer = 0
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 raw.max-size.height = 240
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 raw.max-size.width = 320
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 raw.pixel-format.value = 35
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::i32 raw.rotation.flip = 0
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::i32 raw.rotation.value = 0
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 raw.sar.height = 1
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 raw.sar.width = 1
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 raw.size.height = 240
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2::u32 raw.size.width = 320
+10-21 04:28:33.626  5549  7258 D CCodecConfig:   c2:
+10-21 04:28:33.626  5549  7258 W ColorUtils: expected specified color aspects (2:0:0:0)
+10-21 04:28:33.636  5549  7257 I MediaCodec: MediaCodec will operate in async mode
+10-21 04:28:33.636  5549  7257 D MediaCodec: flushMediametrics
+10-21 04:28:33.637  5549  7257 D SurfaceUtils: connecting to surface 0x78eff3268220, reason connectToSurface
+10-21 04:28:33.637  5549  7257 I MediaCodec: [c2.goldfish.h264.decoder] setting surface generation to 5682180
+10-21 04:28:33.637  5549  7257 D SurfaceUtils: disconnecting from surface 0x78eff3268220, reason connectToSurface(reconnect)
+10-21 04:28:33.637  5549  7257 D SurfaceUtils: connecting to surface 0x78eff3268220, reason connectToSurface(reconnect)
+10-21 04:28:33.637  5549  7258 I CCodecBufferChannel: Using latch times for frame rendered signals - present fences not supported
+10-21 04:28:33.637  5549  7258 D CCodec  : [c2.goldfish.h264.decoder] buffers are bound to CCodec for this session
+10-21 04:28:33.637  5549  7258 D CCodecConfig: no c2 equivalents for csd-1
+10-21 04:28:33.637  5549  7258 D CCodecConfig: no c2 equivalents for log-session-id
+10-21 04:28:33.637  5549  7258 D CCodecConfig: no c2 equivalents for native-window
+10-21 04:28:33.637  5549  7258 D CCodecConfig: no c2 equivalents for flags
+10-21 04:28:33.637  5549  7258 D CCodecConfig: config failed => CORRUPTED
+10-21 04:28:33.638  5549  7258 D CCodecConfig: c2 config diff is   c2::u32 raw.max-size.height = 720
+10-21 04:28:33.638  5549  7258 D CCodecConfig:   c2::u32 raw.max-size.width = 1280
+10-21 04:28:33.638  5549  7258 D CCodecConfig:   c2::u32 raw.size.height = 720
+10-21 04:28:33.638  5549  7258 D CCodecConfig:   c2::u32 raw.size.width = 1280
+10-21 04:28:33.638  5549  7258 W Codec2Client: query -- param skipped: index = 1107298332.
+10-21 04:28:33.638  5549  7258 D CCodec  : client requested max input size 691200, which is smaller than what component recommended (6291456); overriding with component recommendation.
+10-21 04:28:33.638  5549  7258 W CCodec  : This behavior is subject to change. It is recommended that app developers double check whether the requested max input size is in reasonable range.
+10-21 04:28:33.638  5549  7258 D CCodec  : encoding statistics level = 0
+10-21 04:28:33.638  5549  7258 D CCodec  : setup formats input: AMessage(what = 0x00000000) = {
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t height = 720
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t level = 65536
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t max-input-size = 6291456
+10-21 04:28:33.638  5549  7258 D CCodec  :   string mime = "video/avc"
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t profile = 65536
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t width = 1280
+10-21 04:28:33.638  5549  7258 D CCodec  :   Rect crop(0, 0, 1279, 719)
+10-21 04:28:33.638  5549  7258 D CCodec  : }
+10-21 04:28:33.638  5549  7258 D CCodec  : setup formats output: AMessage(what = 0x00000000) = {
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t android._color-format = 2135033992
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t android._video-scaling = 1
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t rotation-degrees = 0
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t color-standard = 1
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t color-range = 2
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t color-transfer = 3
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t sar-height = 1
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t sar-width = 1
+10-21 04:28:33.638  5549  7258 D CCodec  :   Rect crop(0, 0, 1279, 719)
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t width = 1280
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t height = 720
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t max-height = 720
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t max-width = 1280
+10-21 04:28:33.638  5549  7258 D CCodec  :   string mime = "video/raw"
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t android._dataspace = 260
+10-21 04:28:33.638  5549  7258 D CCodec  :   int32_t color-format = 2130708361
+10-21 04:28:33.638  5549  7258 D CCodec  : }
+10-21 04:28:33.638  5549  7258 I CCodecConfig: query failed after returning 12 values (BAD_INDEX)
+10-21 04:28:33.642  5549  7253 D MediaCodec: keep callback message for reclaim
+10-21 04:28:33.642  5549  7258 W Codec2Client: query -- param skipped: index = 1342179345.
+10-21 04:28:33.642  5549  7258 W Codec2Client: query -- param skipped: index = 2415921170.
+10-21 04:28:33.642  5549  7258 W Codec2Client: query -- param skipped: index = 1610614798.
+10-21 04:28:33.642  5549  7258 W Codec2Client: query -- param skipped: index = 2684356609.
+10-21 04:28:33.642  5549  7258 D CCodecBufferChannel: [c2.goldfish.h264.decoder#996] Created input block pool with allocatorID 16 => poolID 19 - OK (0)
+10-21 04:28:33.643  5549  7258 D CCodecBufferChannel: [c2.goldfish.h264.decoder#996] Query output surface allocator returned 0 params => BAD_INDEX (6)
+10-21 04:28:33.643  5549  7258 I CCodecBufferChannel: [c2.goldfish.h264.decoder#996] Created output block pool with allocatorID 18 => poolID 18 - OK
+10-21 04:28:33.643  5549  7258 D CCodecBufferChannel: [c2.goldfish.h264.decoder#996] Configured output block pool ids 18 => OK
+10-21 04:28:33.643  5549  7258 D Codec2-OutputBufferQueue: remote graphic buffer migration 0/0
+10-21 04:28:33.643  5549  7258 D Codec2Client: setOutputSurface -- failed to set consumer usage (6/BAD_INDEX)
+10-21 04:28:33.643  5549  7258 D Codec2Client: setOutputSurface -- generation=5682180 consumer usage=0x900
+10-21 04:28:33.685  5549  5577 D EGL_emulation: app_time_stats: avg=81.82ms min=40.60ms max=260.08ms count=15
+10-21 04:28:33.687  5549  7258 D Codec2Client: Surface configure completed
+10-21 04:28:33.692  5549  7253 I DMCodecAdapterFactory: Creating an asynchronous MediaCodec adapter for track type audio
+10-21 04:28:33.697  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532670d8 : 0(0 size) total buffers - 0(0 size) used buffers - 377/382 (recycle/alloc) - 7/379 (fetch/transfer)
+10-21 04:28:33.697  5549  7132 D BufferPoolAccessor2.0: Destruction - bufferpool2 0x78f0532670d8 cached: 0/0M, 0/0% in use; allocs: 382, 99% recycled; transfers: 379, 98% unfetched
+10-21 04:28:33.704  5549  7262 D CCodec  : allocate(c2.android.aac.decoder)
+10-21 04:28:33.735  5549  7262 I CCodec  : setting up 'default' as default (vendor) store
+10-21 04:28:33.739  5549  7262 I CCodec  : Created component [c2.android.aac.decoder]
+10-21 04:28:33.739  5549  7262 D CCodecConfig: read media type: audio/mp4a-latm
+10-21 04:28:33.740  5549  7262 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.max-count.values
+10-21 04:28:33.740  5549  7262 D ReflectedParamUpdater: extent() != 1 for single value type: output.subscribed-indices.values
+10-21 04:28:33.740  5549  7262 D ReflectedParamUpdater: extent() != 1 for single value type: input.buffers.allocator-ids.values
+10-21 04:28:33.740  5549  7262 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.allocator-ids.values
+10-21 04:28:33.740  5549  7262 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.allocator-ids.values
+10-21 04:28:33.745  5549  7262 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.pool-ids.values
+10-21 04:28:33.745  5549  7262 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.pool-ids.values
+10-21 04:28:33.747  5549  7262 I CCodecConfig: query failed after returning 20 values (BAD_INDEX)
+10-21 04:28:33.747  5549  7262 D CCodecConfig: c2 config diff is Dict {
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::u32 coded.aac-packaging.value = 0
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::u32 coded.bitrate.value = 64000
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::u32 coded.pl.level = 0
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::u32 coded.pl.profile = 8192
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::i32 coding.drc.album-mode.value = 0
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::float coding.drc.attenuation-factor.value = 1
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::float coding.drc.boost-factor.value = 1
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::i32 coding.drc.compression-mode.value = 3
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::i32 coding.drc.effect-type.value = 3
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::float coding.drc.encoded-level.value = 0.25
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::float coding.drc.reference-level.value = -16
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::u32 input.buffers.max-size.value = 8192
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::u32 input.delay.value = 0
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   string input.media-type.value = "audio/mp4a-latm"
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::u32 output.delay.value = 2
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::float output.drc.output-loudness.value = 0.25
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   string output.media-type.value = "audio/raw"
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::u32 raw.channel-count.value = 1
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::u32 raw.channel-mask.value = 0
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::u32 raw.max-channel-count.value = 8
+10-21 04:28:33.747  5549  7262 D CCodecConfig:   c2::u32 raw.sample-rate.value = 44100
+10-21 04:28:33.747  5549  7262 D CCodecConfig: }
+10-21 04:28:33.764  5549  7132 D CCodecBufferChannel: [c2.goldfish.h264.decoder#996] Ignoring stale input buffer done callback: last flush index = 0, frameIndex = 0
+10-21 04:28:33.766  5549  7262 I MediaCodec: MediaCodec will operate in async mode
+10-21 04:28:33.766  5549  7262 D MediaCodec: flushMediametrics
+10-21 04:28:33.766  5549  7262 D CCodec  : [c2.android.aac.decoder] buffers are bound to CCodec for this session
+10-21 04:28:33.766  5549  7262 D CCodecConfig: no c2 equivalents for log-session-id
+10-21 04:28:33.766  5549  7262 D CCodecConfig: no c2 equivalents for flags
+10-21 04:28:33.767  5549  7262 D CCodecConfig: c2 config diff is   c2::u32 raw.sample-rate.value = 48000
+10-21 04:28:33.767  5549  7262 W Codec2Client: query -- param skipped: index = 1107298332.
+10-21 04:28:33.767  5549  7262 D CCodec  : encoding statistics level = 0
+10-21 04:28:33.767  5549  7262 D CCodec  : setup formats input: AMessage(what = 0x00000000) = {
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t aac-drc-album-mode = 0
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t aac-drc-boost-level = 127
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t aac-drc-cut-level = 127
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t aac-drc-effect-type = 3
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t aac-encoded-target-level = -1
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t aac-max-output-channel_count = 8
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t aac-target-ref-level = 64
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t bitrate = 64000
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t channel-count = 1
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t channel-mask = 0
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t level = 0
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t max-input-size = 8192
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t max-output-channel-count = 8
+10-21 04:28:33.767  5549  7262 D CCodec  :   string mime = "audio/mp4a-latm"
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t profile = 2
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t sample-rate = 48000
+10-21 04:28:33.767  5549  7262 D CCodec  : }
+10-21 04:28:33.767  5549  7262 D CCodec  : setup formats output: AMessage(what = 0x00000000) = {
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t aac-drc-album-mode = 0
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t aac-drc-boost-level = 127
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t aac-drc-cut-level = 127
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t aac-drc-effect-type = 3
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t aac-drc-output-loudness = -1
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t aac-encoded-target-level = -1
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t aac-max-output-channel_count = 8
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t aac-target-ref-level = 64
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t channel-count = 1
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t channel-mask = 0
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t max-output-channel-count = 8
+10-21 04:28:33.767  5549  7262 D CCodec  :   string mime = "audio/raw"
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t sample-rate = 48000
+10-21 04:28:33.767  5549  7262 D CCodec  :   int32_t android._config-pcm-encoding = 2
+10-21 04:28:33.767  5549  7262 D CCodec  : }
+10-21 04:28:33.767  5549  7262 I CCodecConfig: query failed after returning 20 values (BAD_INDEX)
+10-21 04:28:33.777  5549  7253 D MediaCodec: keep callback message for reclaim
+10-21 04:28:33.778  5549  7262 W Codec2Client: query -- param skipped: index = 1342179345.
+10-21 04:28:33.778  5549  7262 W Codec2Client: query -- param skipped: index = 2415921170.
+10-21 04:28:33.778  5549  7262 W Codec2Client: query -- param skipped: index = 1610614798.
+10-21 04:28:33.787  5549  7262 D CCodecBufferChannel: [c2.android.aac.decoder#232] Created input block pool with allocatorID 16 => poolID 20 - OK (0)
+10-21 04:28:33.798  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532980c8 : 0(0 size) total buffers - 0(0 size) used buffers - 695/700 (recycle/alloc) - 5/695 (fetch/transfer)
+10-21 04:28:33.800  5549  7132 D BufferPoolAccessor2.0: Destruction - bufferpool2 0x78f0532980c8 cached: 0/0M, 0/0% in use; allocs: 700, 99% recycled; transfers: 695, 99% unfetched
+10-21 04:28:33.806  5549  7262 I CCodecBufferChannel: [c2.android.aac.decoder#232] Created output block pool with allocatorID 16 => poolID 28 - OK
+10-21 04:28:33.807  5549  7262 D CCodecBufferChannel: [c2.android.aac.decoder#232] Configured output block pool ids 28 => OK
+10-21 04:28:33.955  5549  7258 D CCodecConfig: c2 config diff is   c2::u32 raw.crop.height = 720
+10-21 04:28:33.955  5549  7258 D CCodecConfig:   c2::u32 raw.crop.left = 0
+10-21 04:28:33.955  5549  7258 D CCodecConfig:   c2::u32 raw.crop.top = 0
+10-21 04:28:33.955  5549  7258 D CCodecConfig:   c2::u32 raw.crop.width = 1280
+10-21 04:28:33.961  5549  7262 D CCodecConfig: c2 config diff is   c2::u32 raw.channel-mask.value = 4
+10-21 04:28:33.961  5549  7262 D CCodecBuffers: [c2.android.aac.decoder#232:Output[N]] popFromStashAndRegister: at 1000000058666us, output format changed to AMessage(what = 0x00000000) = {
+10-21 04:28:33.961  5549  7262 D CCodecBuffers:   int32_t aac-drc-album-mode = 0
+10-21 04:28:33.961  5549  7262 D CCodecBuffers:   int32_t aac-drc-boost-level = 127
+10-21 04:28:33.961  5549  7262 D CCodecBuffers:   int32_t aac-drc-cut-level = 127
+10-21 04:28:33.961  5549  7262 D CCodecBuffers:   int32_t aac-drc-effect-type = 3
+10-21 04:28:33.961  5549  7262 D CCodecBuffers:   int32_t aac-drc-output-loudness = -1
+10-21 04:28:33.961  5549  7262 D CCodecBuffers:   int32_t aac-encoded-target-level = -1
+10-21 04:28:33.961  5549  7262 D CCodecBuffers:   int32_t aac-max-output-channel_count = 8
+10-21 04:28:33.961  5549  7262 D CCodecBuffers:   int32_t aac-target-ref-level = 64
+10-21 04:28:33.961  5549  7262 D CCodecBuffers:   int32_t channel-count = 1
+10-21 04:28:33.961  5549  7262 D CCodecBuffers:   int32_t channel-mask = 4
+10-21 04:28:33.961  5549  7262 D CCodecBuffers:   int32_t max-output-channel-count = 8
+10-21 04:28:33.961  5549  7262 D CCodecBuffers:   string mime = "audio/raw"
+10-21 04:28:33.961  5549  7262 D CCodecBuffers:   int32_t sample-rate = 48000
+10-21 04:28:33.961  5549  7262 D CCodecBuffers:   int32_t android._config-pcm-encoding = 2
+10-21 04:28:33.961  5549  7262 D CCodecBuffers: }
+10-21 04:28:34.740  5549  5577 D EGL_emulation: app_time_stats: avg=106.42ms min=41.73ms max=185.22ms count=9
+10-21 04:28:34.818  5549  7253 D AudioTrack: getTimestamp_l(17): device stall time corrected using current time 212797826311
+10-21 04:28:34.897  5549  7253 D AudioTrack: getTimestamp_l(17): device stall time corrected using current time 212877736066
+10-21 04:28:38.744  5549  7131 D BufferPoolAccessor2.0: evictor expired: 1, evicted: 0
+10-21 04:28:38.808  5549  5577 D EGL_emulation: app_time_stats: avg=4068.43ms min=4068.43ms max=4068.43ms count=1
+10-21 04:28:39.084  5549  7257 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 4(25165824 size) used buffers - 119/124 (recycle/alloc) - 5/121 (fetch/transfer)
+10-21 04:28:39.199  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 4(32768 size) used buffers - 226/231 (recycle/alloc) - 5/228 (fetch/transfer)
+10-21 04:28:39.747  5549  7131 D BufferPoolAccessor2.0: evictor expired: 1, evicted: 0
+10-21 04:28:43.212  5549  5549 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:28:44.291  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 252/257 (recycle/alloc) - 5/255 (fetch/transfer)
+10-21 04:28:44.541  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 474/479 (recycle/alloc) - 5/478 (fetch/transfer)
+10-21 04:28:46.769  5549  5577 D EGL_emulation: app_time_stats: avg=1319.87ms min=50.01ms max=7457.49ms count=6
+10-21 04:28:48.593  7279  7279 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:28:48.669  7279  7279 I AndroidRuntime: Using default boot image
+10-21 04:28:48.670  7279  7279 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:28:48.927  7279  7279 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:28:49.380  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 377/382 (recycle/alloc) - 5/381 (fetch/transfer)
+10-21 04:28:49.939  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 2(16384 size) used buffers - 727/732 (recycle/alloc) - 5/732 (fetch/transfer)
+10-21 04:28:50.433  7279  7279 D AndroidRuntime: Shutting down VM
+10-21 04:28:50.858  5549  5577 D EGL_emulation: app_time_stats: avg=497.96ms min=30.13ms max=3470.32ms count=8
+10-21 04:28:53.478  5549  5577 D EGL_emulation: app_time_stats: avg=425.39ms min=56.99ms max=2135.60ms count=6
+10-21 04:28:54.588  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 507/512 (recycle/alloc) - 5/511 (fetch/transfer)
+10-21 04:28:55.139  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 964/969 (recycle/alloc) - 5/968 (fetch/transfer)
+10-21 04:28:55.668  7325  7325 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:28:55.692  7325  7325 I AndroidRuntime: Using default boot image
+10-21 04:28:55.692  7325  7325 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:28:55.981  7325  7325 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:28:57.540  5549  5577 D EGL_emulation: app_time_stats: avg=564.59ms min=64.72ms max=3427.33ms count=7
+10-21 04:28:58.147  7325  7325 D AndroidRuntime: Shutting down VM
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: FATAL EXCEPTION: main
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: PID: 7325
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.CharSequence android.view.accessibility.AccessibilityNodeInfo.getContentDescription()' on a null object reference
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: 	at com.android.uiautomator.core.AccessibilityNodeInfoDumper.childNafCheck(AccessibilityNodeInfoDumper.java:296)
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: 	at com.android.uiautomator.core.AccessibilityNodeInfoDumper.nafCheck(AccessibilityNodeInfoDumper.java:276)
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: 	at com.android.uiautomator.core.AccessibilityNodeInfoDumper.dumpNodeRec(AccessibilityNodeInfoDumper.java:200)
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: 	at com.android.uiautomator.core.AccessibilityNodeInfoDumper.dumpNodeRec(AccessibilityNodeInfoDumper.java:225)
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: 	at com.android.uiautomator.core.AccessibilityNodeInfoDumper.dumpNodeRec(AccessibilityNodeInfoDumper.java:225)
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: 	at com.android.uiautomator.core.AccessibilityNodeInfoDumper.dumpNodeRec(AccessibilityNodeInfoDumper.java:225)
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: 	at com.android.uiautomator.core.AccessibilityNodeInfoDumper.dumpNodeRec(AccessibilityNodeInfoDumper.java:225)
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: 	at com.android.uiautomator.core.AccessibilityNodeInfoDumper.dumpNodeRec(AccessibilityNodeInfoDumper.java:225)
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: 	at com.android.uiautomator.core.AccessibilityNodeInfoDumper.dumpNodeRec(AccessibilityNodeInfoDumper.java:225)
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: 	at com.android.uiautomator.core.AccessibilityNodeInfoDumper.dumpNodeRec(AccessibilityNodeInfoDumper.java:225)
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: 	at com.android.uiautomator.core.AccessibilityNodeInfoDumper.dumpWindowToFile(AccessibilityNodeInfoDumper.java:96)
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: 	at com.android.commands.uiautomator.DumpCommand.run(DumpCommand.java:111)
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: 	at com.android.commands.uiautomator.Launcher.main(Launcher.java:83)
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: 	at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
+10-21 04:28:58.148  7325  7325 E AndroidRuntime: 	at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:359)
+10-21 04:28:58.150  7325  7325 E AndroidRuntime: Error reporting crash
+10-21 04:28:58.150  7325  7325 E AndroidRuntime: java.lang.RuntimeException: Bad file descriptor
+10-21 04:28:58.150  7325  7325 E AndroidRuntime: 	at android.os.BinderProxy.transactNative(Native Method)
+10-21 04:28:58.150  7325  7325 E AndroidRuntime: 	at android.os.BinderProxy.transact(BinderProxy.java:584)
+10-21 04:28:58.150  7325  7325 E AndroidRuntime: 	at android.os.IServiceManager$Stub$Proxy.checkService(IServiceManager.java:443)
+10-21 04:28:58.150  7325  7325 E AndroidRuntime: 	at android.os.ServiceManagerProxy.getService(ServiceManagerNative.java:63)
+10-21 04:28:58.150  7325  7325 E AndroidRuntime: 	at android.os.ServiceManager.rawGetService(ServiceManager.java:378)
+10-21 04:28:58.150  7325  7325 E AndroidRuntime: 	at android.os.ServiceManager.getService(ServiceManager.java:147)
+10-21 04:28:58.150  7325  7325 E AndroidRuntime: 	at android.app.ActivityManager$3.create(ActivityManager.java:5214)
+10-21 04:28:58.150  7325  7325 E AndroidRuntime: 	at android.app.ActivityManager$3.create(ActivityManager.java:5211)
+10-21 04:28:58.150  7325  7325 E AndroidRuntime: 	at android.util.Singleton.get(Singleton.java:43)
+10-21 04:28:58.150  7325  7325 E AndroidRuntime: 	at android.app.ActivityManager.getService(ActivityManager.java:5202)
+10-21 04:28:58.150  7325  7325 E AndroidRuntime: 	at com.android.internal.os.RuntimeInit$KillApplicationHandler.uncaughtException(RuntimeInit.java:160)
+10-21 04:28:58.150  7325  7325 E AndroidRuntime: 	at java.lang.ThreadGroup.uncaughtException(ThreadGroup.java:1071)
+10-21 04:28:58.150  7325  7325 E AndroidRuntime: 	at java.lang.ThreadGroup.uncaughtException(ThreadGroup.java:1066)
+10-21 04:28:58.150  7325  7325 E AndroidRuntime: 	at java.lang.Thread.dispatchUncaughtException(Thread.java:2306)
+10-21 04:28:59.900  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 637/642 (recycle/alloc) - 5/641 (fetch/transfer)
+10-21 04:29:00.193  7356  7356 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:29:00.202  7356  7356 I AndroidRuntime: Using default boot image
+10-21 04:29:00.202  7356  7356 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:29:00.407  7356  7356 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:29:00.628  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 1220/1225 (recycle/alloc) - 5/1224 (fetch/transfer)
+10-21 04:29:01.598  7356  7356 D AndroidRuntime: Shutting down VM
+10-21 04:29:05.005  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 764/769 (recycle/alloc) - 5/768 (fetch/transfer)
+10-21 04:29:05.808  7388  7388 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:29:05.820  7388  7388 I AndroidRuntime: Using default boot image
+10-21 04:29:05.820  7388  7388 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:29:05.963  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 4(32768 size) used buffers - 1467/1472 (recycle/alloc) - 5/1470 (fetch/transfer)
+10-21 04:29:06.039  7388  7388 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:29:07.176  7388  7388 D AndroidRuntime: Shutting down VM
+10-21 04:29:10.059  7413  7413 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:29:10.085  7413  7413 I AndroidRuntime: Using default boot image
+10-21 04:29:10.085  7413  7413 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:29:10.214  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 890/895 (recycle/alloc) - 5/894 (fetch/transfer)
+10-21 04:29:10.376  7413  7413 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:29:11.447  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 1715/1720 (recycle/alloc) - 5/1719 (fetch/transfer)
+10-21 04:29:11.733  7413  7413 D AndroidRuntime: Shutting down VM
+10-21 04:29:12.024  5549  7132 D PipelineWatcher: onInputBufferReleased: frameIndex not found (1746); ignored
+10-21 04:29:14.622  7438  7438 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:29:14.631  7438  7438 I AndroidRuntime: Using default boot image
+10-21 04:29:14.631  7438  7438 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:29:14.886  7438  7438 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:29:15.388  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 1016/1021 (recycle/alloc) - 5/1020 (fetch/transfer)
+10-21 04:29:16.118  7438  7438 D AndroidRuntime: Shutting down VM
+10-21 04:29:16.767  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 1965/1970 (recycle/alloc) - 5/1969 (fetch/transfer)
+10-21 04:29:18.968  7463  7463 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:29:18.973  7463  7463 I AndroidRuntime: Using default boot image
+10-21 04:29:18.991  7463  7463 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:29:19.321  7463  7463 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:29:20.577  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 1146/1151 (recycle/alloc) - 5/1150 (fetch/transfer)
+10-21 04:29:20.586  7463  7463 D AndroidRuntime: Shutting down VM
+10-21 04:29:22.264  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 2220/2225 (recycle/alloc) - 5/2224 (fetch/transfer)
+10-21 04:29:23.462  7496  7496 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:29:23.466  7496  7496 I AndroidRuntime: Using default boot image
+10-21 04:29:23.466  7496  7496 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:29:23.777  7496  7496 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:29:25.060  7496  7496 D AndroidRuntime: Shutting down VM
+10-21 04:29:25.750  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 1273/1278 (recycle/alloc) - 5/1277 (fetch/transfer)
+10-21 04:29:27.311  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 2451/2456 (recycle/alloc) - 5/2455 (fetch/transfer)
+10-21 04:29:29.489  7525  7525 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:29:29.495  7525  7525 I AndroidRuntime: Using default boot image
+10-21 04:29:29.495  7525  7525 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:29:29.782  7525  7525 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:29:30.978  7525  7525 D AndroidRuntime: Shutting down VM
+10-21 04:29:30.982  5549  7257 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 4(25165824 size) used buffers - 1403/1408 (recycle/alloc) - 5/1408 (fetch/transfer)
+10-21 04:29:32.645  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 3(24576 size) used buffers - 2705/2710 (recycle/alloc) - 5/2708 (fetch/transfer)
+10-21 04:29:33.827  7549  7549 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:29:33.839  7549  7549 I AndroidRuntime: Using default boot image
+10-21 04:29:33.839  7549  7549 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:29:34.141  7549  7549 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:29:35.315  7549  7549 D AndroidRuntime: Shutting down VM
+10-21 04:29:36.159  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 1532/1537 (recycle/alloc) - 5/1536 (fetch/transfer)
+10-21 04:29:38.040  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 2949/2954 (recycle/alloc) - 5/2953 (fetch/transfer)
+10-21 04:29:38.240  7571  7571 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:29:38.284  7571  7571 I AndroidRuntime: Using default boot image
+10-21 04:29:38.287  7571  7571 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:29:38.509  7571  7571 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:29:39.682  7571  7571 D AndroidRuntime: Shutting down VM
+10-21 04:29:41.288  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 1659/1664 (recycle/alloc) - 5/1663 (fetch/transfer)
+10-21 04:29:42.530  7595  7595 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:29:42.572  7595  7595 I AndroidRuntime: Using default boot image
+10-21 04:29:42.572  7595  7595 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:29:42.742  7595  7595 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:29:43.407  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 5(40960 size) used buffers - 3195/3200 (recycle/alloc) - 5/3197 (fetch/transfer)
+10-21 04:29:43.911  7595  7595 D AndroidRuntime: Shutting down VM
+10-21 04:29:46.568  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 1784/1789 (recycle/alloc) - 5/1788 (fetch/transfer)
+10-21 04:29:46.950  7617  7617 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:29:46.957  7617  7617 I AndroidRuntime: Using default boot image
+10-21 04:29:46.957  7617  7617 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:29:47.176  7617  7617 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:29:48.545  7617  7617 D AndroidRuntime: Shutting down VM
+10-21 04:29:48.741  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 3430/3435 (recycle/alloc) - 5/3434 (fetch/transfer)
+10-21 04:29:51.757  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 1911/1916 (recycle/alloc) - 5/1914 (fetch/transfer)
+10-21 04:29:53.610  7645  7645 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:29:53.631  7645  7645 I AndroidRuntime: Using default boot image
+10-21 04:29:53.631  7645  7645 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:29:53.923  7645  7645 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:29:54.161  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 2(16384 size) used buffers - 3672/3677 (recycle/alloc) - 5/3677 (fetch/transfer)
+10-21 04:29:55.082  7645  7645 D AndroidRuntime: Shutting down VM
+10-21 04:29:57.003  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 2033/2038 (recycle/alloc) - 5/2037 (fetch/transfer)
+10-21 04:29:57.830  7668  7668 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:29:57.842  7668  7668 I AndroidRuntime: Using default boot image
+10-21 04:29:57.842  7668  7668 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:29:58.151  7668  7668 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:29:59.373  7668  7668 D AndroidRuntime: Shutting down VM
+10-21 04:29:59.523  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 3919/3924 (recycle/alloc) - 5/3924 (fetch/transfer)
+10-21 04:30:02.174  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 2162/2167 (recycle/alloc) - 5/2166 (fetch/transfer)
+10-21 04:30:02.244  7710  7710 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:30:02.257  7710  7710 I AndroidRuntime: Using default boot image
+10-21 04:30:02.258  7710  7710 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:30:02.496  7710  7710 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:30:03.648  7710  7710 D AndroidRuntime: Shutting down VM
+10-21 04:30:04.748  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 3(24576 size) used buffers - 4161/4166 (recycle/alloc) - 5/4165 (fetch/transfer)
+10-21 04:30:06.576  7733  7733 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:30:06.661  7733  7733 I AndroidRuntime: Using default boot image
+10-21 04:30:06.661  7733  7733 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:30:06.914  7733  7733 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:30:07.347  5549  7257 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 4(25165824 size) used buffers - 2287/2292 (recycle/alloc) - 5/2292 (fetch/transfer)
+10-21 04:30:08.165  7733  7733 D AndroidRuntime: Shutting down VM
+10-21 04:30:10.226  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 4(32768 size) used buffers - 4419/4424 (recycle/alloc) - 5/4422 (fetch/transfer)
+10-21 04:30:11.287  7755  7755 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:30:11.300  7755  7755 I AndroidRuntime: Using default boot image
+10-21 04:30:11.300  7755  7755 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:30:11.492  7755  7755 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:30:12.485  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 2415/2420 (recycle/alloc) - 5/2419 (fetch/transfer)
+10-21 04:30:12.757  7755  7755 D AndroidRuntime: Shutting down VM
+10-21 04:30:15.547  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 4651/4656 (recycle/alloc) - 5/4655 (fetch/transfer)
+10-21 04:30:16.996  7783  7783 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:30:17.002  7783  7783 I AndroidRuntime: Using default boot image
+10-21 04:30:17.002  7783  7783 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:30:17.293  7783  7783 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:30:17.683  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 2538/2543 (recycle/alloc) - 5/2542 (fetch/transfer)
+10-21 04:30:18.531  7783  7783 D AndroidRuntime: Shutting down VM
+10-21 04:30:20.948  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 4(32768 size) used buffers - 4897/4902 (recycle/alloc) - 5/4901 (fetch/transfer)
+10-21 04:30:21.409  7806  7806 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:30:21.415  7806  7806 I AndroidRuntime: Using default boot image
+10-21 04:30:21.415  7806  7806 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:30:21.570  7806  7806 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:30:22.844  7806  7806 D AndroidRuntime: Shutting down VM
+10-21 04:30:22.899  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 2668/2673 (recycle/alloc) - 5/2672 (fetch/transfer)
+10-21 04:30:25.503  7830  7830 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:30:25.510  7830  7830 I AndroidRuntime: Using default boot image
+10-21 04:30:25.510  7830  7830 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:30:25.670  7830  7830 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:30:26.258  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 5136/5141 (recycle/alloc) - 5/5140 (fetch/transfer)
+10-21 04:30:26.838  7830  7830 D AndroidRuntime: Shutting down VM
+10-21 04:30:28.105  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 2790/2795 (recycle/alloc) - 5/2794 (fetch/transfer)
+10-21 04:30:29.691  7853  7853 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:30:29.717  7853  7853 I AndroidRuntime: Using default boot image
+10-21 04:30:29.717  7853  7853 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:30:29.937  7853  7853 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:30:31.247  7853  7853 D AndroidRuntime: Shutting down VM
+10-21 04:30:31.591  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 5375/5380 (recycle/alloc) - 5/5379 (fetch/transfer)
+10-21 04:30:33.363  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 2921/2926 (recycle/alloc) - 5/2925 (fetch/transfer)
+10-21 04:30:34.281  7885  7885 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:30:34.310  7885  7885 I AndroidRuntime: Using default boot image
+10-21 04:30:34.310  7885  7885 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:30:34.540  7885  7885 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:30:35.801  7885  7885 D AndroidRuntime: Shutting down VM
+10-21 04:30:36.879  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 5624/5629 (recycle/alloc) - 5/5628 (fetch/transfer)
+10-21 04:30:38.527  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 3043/3048 (recycle/alloc) - 5/3047 (fetch/transfer)
+10-21 04:30:40.452  7912  7912 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:30:40.458  7912  7912 I AndroidRuntime: Using default boot image
+10-21 04:30:40.463  7912  7912 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:30:40.713  7912  7912 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:30:42.050  7912  7912 D AndroidRuntime: Shutting down VM
+10-21 04:30:42.282  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 5876/5881 (recycle/alloc) - 5/5880 (fetch/transfer)
+10-21 04:30:43.690  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 3174/3179 (recycle/alloc) - 5/3178 (fetch/transfer)
+10-21 04:30:44.940  7934  7934 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:30:44.968  7934  7934 I AndroidRuntime: Using default boot image
+10-21 04:30:44.968  7934  7934 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:30:44.972  5549  7253 D AudioTrack: getTimestamp_l(17): device stall time corrected using current time 342952439717
+10-21 04:30:45.196  7934  7934 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:30:46.383  7934  7934 D AndroidRuntime: Shutting down VM
+10-21 04:30:47.633  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 6126/6131 (recycle/alloc) - 5/6130 (fetch/transfer)
+10-21 04:30:48.878  5549  7257 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 4(25165824 size) used buffers - 3301/3306 (recycle/alloc) - 5/3306 (fetch/transfer)
+10-21 04:30:49.405  7959  7959 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:30:49.417  7959  7959 I AndroidRuntime: Using default boot image
+10-21 04:30:49.417  7959  7959 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:30:49.770  7959  7959 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:30:50.970  7959  7959 D AndroidRuntime: Shutting down VM
+10-21 04:30:52.953  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 6375/6380 (recycle/alloc) - 5/6379 (fetch/transfer)
+10-21 04:30:53.845  7989  7989 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:30:53.851  7989  7989 I AndroidRuntime: Using default boot image
+10-21 04:30:53.851  7989  7989 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:30:54.025  5549  7257 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 4(25165824 size) used buffers - 3430/3435 (recycle/alloc) - 5/3434 (fetch/transfer)
+10-21 04:30:54.156  7989  7989 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:30:55.341  7989  7989 D AndroidRuntime: Shutting down VM
+10-21 04:30:58.311  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 4(32768 size) used buffers - 6626/6631 (recycle/alloc) - 5/6629 (fetch/transfer)
+10-21 04:30:58.378  8011  8011 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:30:58.388  8011  8011 I AndroidRuntime: Using default boot image
+10-21 04:30:58.388  8011  8011 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:30:58.628  8011  8011 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:30:59.255  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 3560/3565 (recycle/alloc) - 5/3564 (fetch/transfer)
+10-21 04:30:59.973  8011  8011 D AndroidRuntime: Shutting down VM
+10-21 04:31:03.573  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 3(24576 size) used buffers - 6862/6867 (recycle/alloc) - 5/6864 (fetch/transfer)
+10-21 04:31:04.396  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 3689/3694 (recycle/alloc) - 5/3692 (fetch/transfer)
+10-21 04:31:04.931  8048  8048 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:31:04.952  8048  8048 I AndroidRuntime: Using default boot image
+10-21 04:31:04.952  8048  8048 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:31:05.161  8048  8048 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:31:06.272  8048  8048 D AndroidRuntime: Shutting down VM
+10-21 04:31:09.005  8072  8072 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:31:09.012  8072  8072 I AndroidRuntime: Using default boot image
+10-21 04:31:09.038  8072  8072 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:31:09.094  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 7118/7123 (recycle/alloc) - 5/7123 (fetch/transfer)
+10-21 04:31:09.229  8072  8072 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:31:09.582  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 3812/3817 (recycle/alloc) - 5/3815 (fetch/transfer)
+10-21 04:31:10.464  8072  8072 D AndroidRuntime: Shutting down VM
+10-21 04:31:13.296  8097  8097 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:31:13.329  8097  8097 I AndroidRuntime: Using default boot image
+10-21 04:31:13.329  8097  8097 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:31:13.568  8097  8097 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:31:14.535  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 7371/7376 (recycle/alloc) - 5/7376 (fetch/transfer)
+10-21 04:31:14.703  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 3940/3945 (recycle/alloc) - 5/3942 (fetch/transfer)
+10-21 04:31:14.709  8097  8097 D AndroidRuntime: Shutting down VM
+10-21 04:31:17.683  8119  8119 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:31:17.715  8119  8119 I AndroidRuntime: Using default boot image
+10-21 04:31:17.715  8119  8119 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:31:18.042  8119  8119 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:31:19.188  8119  8119 D AndroidRuntime: Shutting down VM
+10-21 04:31:19.834  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 7614/7619 (recycle/alloc) - 5/7618 (fetch/transfer)
+10-21 04:31:19.918  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 4068/4073 (recycle/alloc) - 5/4072 (fetch/transfer)
+10-21 04:31:22.118  8142  8142 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:31:22.147  8142  8142 I AndroidRuntime: Using default boot image
+10-21 04:31:22.147  8142  8142 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:31:22.349  8142  8142 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:31:23.483  8142  8142 D AndroidRuntime: Shutting down VM
+10-21 04:31:24.992  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 3(24576 size) used buffers - 7855/7860 (recycle/alloc) - 5/7858 (fetch/transfer)
+10-21 04:31:25.056  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 4197/4202 (recycle/alloc) - 5/4201 (fetch/transfer)
+10-21 04:31:28.698  8186  8186 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:31:28.730  8186  8186 I AndroidRuntime: Using default boot image
+10-21 04:31:28.731  8186  8186 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:31:28.926  8186  8186 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:31:30.192  5549  7257 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 4(25165824 size) used buffers - 4321/4326 (recycle/alloc) - 5/4324 (fetch/transfer)
+10-21 04:31:30.200  8186  8186 D AndroidRuntime: Shutting down VM
+10-21 04:31:30.306  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 5(40960 size) used buffers - 8089/8094 (recycle/alloc) - 5/8090 (fetch/transfer)
+10-21 04:31:33.199  8210  8210 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:31:33.211  8210  8210 I AndroidRuntime: Using default boot image
+10-21 04:31:33.212  8210  8210 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:31:33.465  8210  8210 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:31:34.812  8210  8210 D AndroidRuntime: Shutting down VM
+10-21 04:31:35.409  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 4446/4451 (recycle/alloc) - 5/4450 (fetch/transfer)
+10-21 04:31:35.416  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 8328/8333 (recycle/alloc) - 5/8332 (fetch/transfer)
+10-21 04:31:37.499  8234  8234 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:31:37.510  8234  8234 I AndroidRuntime: Using default boot image
+10-21 04:31:37.513  8234  8234 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:31:37.794  8234  8234 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:31:39.008  8234  8234 D AndroidRuntime: Shutting down VM
+10-21 04:31:40.561  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 4573/4578 (recycle/alloc) - 5/4577 (fetch/transfer)
+10-21 04:31:40.727  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 4(32768 size) used buffers - 8578/8583 (recycle/alloc) - 5/8580 (fetch/transfer)
+10-21 04:31:41.897  8258  8258 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:31:41.904  8258  8258 I AndroidRuntime: Using default boot image
+10-21 04:31:41.904  8258  8258 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:31:42.244  8258  8258 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:31:43.484  8258  8258 D AndroidRuntime: Shutting down VM
+10-21 04:31:45.775  5549  7258 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 4703/4708 (recycle/alloc) - 5/4707 (fetch/transfer)
+10-21 04:31:46.098  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 8824/8829 (recycle/alloc) - 5/8828 (fetch/transfer)
+10-21 04:31:46.364  8281  8281 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:31:46.382  8281  8281 I AndroidRuntime: Using default boot image
+10-21 04:31:46.382  8281  8281 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:31:46.630  8281  8281 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:31:47.790  8281  8281 D AndroidRuntime: Shutting down VM
+10-21 04:31:50.907  5549  7132 D BufferPoolAccessor2.0: bufferpool2 0x78f0532841a8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 4829/4834 (recycle/alloc) - 5/4832 (fetch/transfer)
+10-21 04:31:51.304  5549  7262 D BufferPoolAccessor2.0: bufferpool2 0x78f0532a2058 : 5(40960 size) total buffers - 1(8192 size) used buffers - 9062/9067 (recycle/alloc) - 5/9066 (fetch/transfer)
+10-21 04:31:51.870   534   940 I ActivityManager: Force stopping com.ratv.app appid=10192 user=0: from pid 8309
+10-21 04:31:51.873   534   940 I ActivityManager: Killing 5549:com.ratv.app/u0a192 (adj 0): stop com.ratv.app due to from pid 8309
+10-21 04:31:51.970   534  2029 V ActivityManager: Got obituary of 5549:com.ratv.app
+10-21 04:31:53.197   534   566 I ActivityManager: Start proc 8327:com.ratv.app/u0a192 for next-top-activity {com.ratv.app/com.ratv.app.MainActivity}
+10-21 04:31:53.237  8327  8327 I com.ratv.app: Using CollectorTypeCC GC.
+10-21 04:31:53.239  8327  8327 W com.ratv.app: Unexpected CPU variant for x86: x86_64.
+10-21 04:31:53.239  8327  8327 W com.ratv.app: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, tremont, kabylake, default
+10-21 04:31:53.241  8327  8327 E com.ratv.app: Not starting debugger since process cannot load the jdwp agent.
+10-21 04:31:53.316  8327  8327 D CompatibilityChangeReporter: Compat change id reported: 171979766; UID 10192; state: ENABLED
+10-21 04:31:53.316  8327  8327 D CompatibilityChangeReporter: Compat change id reported: 242716250; UID 10192; state: ENABLED
+10-21 04:31:53.373  8327  8327 D nativeloader: Configuring clns-6 for other apk /data/app/~~Zun5UYaqyPRVPc3lsBFZIg==/com.ratv.app-ie1rM0sKokwb82sCfPjIQQ==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~Zun5UYaqyPRVPc3lsBFZIg==/com.ratv.app-ie1rM0sKokwb82sCfPjIQQ==/lib/x86_64:/data/app/~~Zun5UYaqyPRVPc3lsBFZIg==/com.ratv.app-ie1rM0sKokwb82sCfPjIQQ==/base.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.ratv.app
+10-21 04:31:53.414  8327  8327 V GraphicsEnvironment: Currently set values for:
+10-21 04:31:53.414  8327  8327 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+10-21 04:31:53.416  8327  8327 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+10-21 04:31:53.417  8327  8327 V GraphicsEnvironment: ANGLE GameManagerService for com.ratv.app: false
+10-21 04:31:53.417  8327  8327 V GraphicsEnvironment: com.ratv.app is not listed in per-application setting
+10-21 04:31:53.417  8327  8327 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+10-21 04:31:53.448  8327  8327 D CompatibilityChangeReporter: Compat change id reported: 237531167; UID 10192; state: DISABLED
+10-21 04:31:53.448  8327  8327 W OpenGLRenderer: Unknown dataspace 0
+10-21 04:31:53.480  8327  8365 D libEGL  : loaded /vendor/lib64/egl/libEGL_emulation.so
+10-21 04:31:53.493  8327  8365 D libEGL  : loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+10-21 04:31:53.512  8327  8365 D libEGL  : loaded /vendor/lib64/egl/libGLESv2_emulation.so
+10-21 04:31:54.095  8327  8354 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-21 04:31:54.198  8327  8354 I Gralloc4: mapper 4.x is not supported
+10-21 04:31:54.977  8327  8367 E SurfaceSyncGroup: Failed to receive transaction ready in 1000ms. Marking SurfaceSyncGroup(wmsSync-VRI[MainActivity]#0) as ready
+10-21 04:31:54.980  8327  8367 E SurfaceSyncGroup: Failed to receive transaction ready in 1000ms. Marking SurfaceSyncGroup(VRI[MainActivity]#1) as ready
+10-21 04:31:55.653  8379  8379 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:31:55.658  8379  8379 I AndroidRuntime: Using default boot image
+10-21 04:31:55.658  8379  8379 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:31:55.776  8379  8379 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:31:56.156  8327  8327 I Choreographer: Skipped 156 frames!  The application may be doing too much work on its main thread.
+10-21 04:31:56.172  8327  8340 I OpenGLRenderer: Davey! duration=2729ms; Flags=1, FrameTimelineVsyncId=32370, IntendedVsync=411403647764, Vsync=411486981094, InputEventId=0, HandleInputStart=411499172509, AnimationStart=411499173009, PerformTraversalsStart=411499212107, DrawStart=412269677622, FrameDeadline=411420314430, FrameInterval=411499162354, FrameStartTime=16666666, SyncQueued=412271792782, SyncStart=412272104820, IssueDrawCommandsStart=412500071659, SwapBuffers=413955169053, FrameCompleted=414133064500, DequeueBufferDuration=3405, QueueBufferDuration=206416, GpuCompleted=414133007916, SwapBuffersCompleted=414133064500, DisplayPresentTime=0, CommandSubmissionCompleted=413955169053, 
+10-21 04:31:56.192  8327  8364 D TrafficStats: tagSocket(92) with statsTag=0xffffffff, statsUid=-1
+10-21 04:31:56.262  8327  8339 I OpenGLRenderer: Davey! duration=2689ms; Flags=0, FrameTimelineVsyncId=32428, IntendedVsync=411520314426, Vsync=414120314322, InputEventId=0, HandleInputStart=414151039140, AnimationStart=414151040042, PerformTraversalsStart=414153324143, DrawStart=414153373316, FrameDeadline=414153647654, FrameInterval=414136121969, FrameStartTime=16666666, SyncQueued=414162447017, SyncStart=414172978933, IssueDrawCommandsStart=414173225368, SwapBuffers=414179754952, FrameCompleted=414220567848, DequeueBufferDuration=3065, QueueBufferDuration=113038, GpuCompleted=414220567848, SwapBuffersCompleted=414197858920, DisplayPresentTime=0, CommandSubmissionCompleted=414179754952, 
+10-21 04:31:57.232  8327  8354 D EGL_emulation: app_time_stats: avg=37.36ms min=14.54ms max=91.39ms count=24
+10-21 04:31:57.657  8327  8432 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-21 04:31:58.696  8327  8354 D EGL_emulation: app_time_stats: avg=455.69ms min=39.97ms max=940.84ms count=3
+10-21 04:31:58.705  8327  8327 I Choreographer: Skipped 55 frames!  The application may be doing too much work on its main thread.
+10-21 04:31:58.783  8327  8408 I OpenGLRenderer: Davey! duration=1428ms; Flags=0, FrameTimelineVsyncId=33512, IntendedVsync=415220319828, Vsync=415703653113, InputEventId=0, HandleInputStart=415704925013, AnimationStart=415704925664, PerformTraversalsStart=415706425030, DrawStart=415707619043, FrameDeadline=415636980928, FrameInterval=415704696414, FrameStartTime=16666665, SyncQueued=415708029522, SyncStart=415735133682, IssueDrawCommandsStart=415737150416, SwapBuffers=416611699234, FrameCompleted=416675924754, DequeueBufferDuration=4317, QueueBufferDuration=366043, GpuCompleted=416675798677, SwapBuffersCompleted=416675924754, DisplayPresentTime=0, CommandSubmissionCompleted=416611699234, 
+10-21 04:31:58.882  8327  8480 D ProfileInstaller: Skipping profile installation for com.ratv.app
+10-21 04:31:58.904  8327  8408 I OpenGLRenderer: Davey! duration=993ms; Flags=0, FrameTimelineVsyncId=33534, IntendedVsync=415753647590, Vsync=416670314220, InputEventId=0, HandleInputStart=416686094282, AnimationStart=416686094773, PerformTraversalsStart=416686985455, DrawStart=416687016051, FrameDeadline=416770314216, FrameInterval=416685760737, FrameStartTime=16666666, SyncQueued=416687406741, SyncStart=416763293107, IssueDrawCommandsStart=416763440106, SwapBuffers=416772725461, FrameCompleted=416822600932, DequeueBufferDuration=3214, QueueBufferDuration=119818, GpuCompleted=416822600932, SwapBuffersCompleted=416816166560, DisplayPresentTime=0, CommandSubmissionCompleted=416772725461, 
+10-21 04:31:59.124  8379  8379 D AndroidRuntime: Shutting down VM
+10-21 04:32:00.147  8509  8509 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:32:00.151  8509  8509 I AndroidRuntime: Using default boot image
+10-21 04:32:00.151  8509  8509 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:32:00.232  8509  8509 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:32:01.277  8509  8509 D AndroidRuntime: Shutting down VM
+10-21 04:32:02.506  8542  8542 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:32:02.510  8542  8542 I AndroidRuntime: Using default boot image
+10-21 04:32:02.510  8542  8542 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:32:02.591  8542  8542 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:32:03.628  8542  8542 D AndroidRuntime: Shutting down VM
+10-21 04:32:04.511  8327  8327 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-21 04:32:04.511  8327  8327 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-21 04:32:04.540  8327  8354 D EGL_emulation: app_time_stats: avg=967.96ms min=51.66ms max=5382.82ms count=6
+10-21 04:32:06.888  8568  8568 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:32:06.891  8568  8568 I AndroidRuntime: Using default boot image
+10-21 04:32:06.891  8568  8568 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:32:06.971  8568  8568 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:32:08.013  8568  8568 D AndroidRuntime: Shutting down VM
+10-21 04:32:08.896  8327  8327 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-21 04:32:08.896  8327  8327 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-21 04:32:09.100  8327  8354 D EGL_emulation: app_time_stats: avg=322.13ms min=29.06ms max=3621.18ms count=14
+10-21 04:32:11.068  8606  8606 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:32:11.071  8606  8606 I AndroidRuntime: Using default boot image
+10-21 04:32:11.071  8606  8606 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:32:11.152  8606  8606 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:32:12.213  8327  8354 D EGL_emulation: app_time_stats: avg=1515.71ms min=121.45ms max=2909.97ms count=2
+10-21 04:32:12.218  8606  8606 D AndroidRuntime: Shutting down VM
+10-21 04:32:13.093  8327  8327 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@90c68d1
+10-21 04:32:13.118  8327  8327 D CompatibilityChangeReporter: Compat change id reported: 289878283; UID 10192; state: ENABLED
+10-21 04:32:13.123  8327  8354 D EGL_emulation: app_time_stats: avg=304.01ms min=48.96ms max=3144.67ms count=13
+10-21 04:32:14.108  8641  8641 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:32:14.112  8641  8641 I AndroidRuntime: Using default boot image
+10-21 04:32:14.112  8641  8641 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:32:14.195  8641  8641 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:32:15.214  8641  8641 D AndroidRuntime: Shutting down VM
+10-21 04:32:16.145  8663  8663 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:32:16.149  8663  8663 I AndroidRuntime: Using default boot image
+10-21 04:32:16.149  8663  8663 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:32:16.232  8663  8663 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:32:17.266  8663  8663 D AndroidRuntime: Shutting down VM
+10-21 04:32:18.259  8327  8354 D EGL_emulation: app_time_stats: avg=390.22ms min=28.38ms max=4254.24ms count=13
+10-21 04:32:19.166  8690  8690 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:32:19.183  8690  8690 I AndroidRuntime: Using default boot image
+10-21 04:32:19.183  8690  8690 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:32:19.275  8690  8690 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:32:20.309  8690  8690 D AndroidRuntime: Shutting down VM
+10-21 04:32:20.317  8327  8334 W com.ratv.app: Cleared Reference was only reachable from finalizer (only reported once)
+10-21 04:32:21.181  8327  8327 I ImeTracker: com.ratv.app:2bb65b0f: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT_BY_INSETS_API
+10-21 04:32:21.181  8327  8327 D InsetsController: show(ime(), fromIme=false)
+10-21 04:32:21.182  8327  8327 D InputMethodManager: showSoftInput() view=u0.u{28bd44b VFED..... .F....ID 0,0-1080,2400 aid=1073741825} flags=0 reason=SHOW_SOFT_INPUT_BY_INSETS_API
+10-21 04:32:21.186  8327  8327 I ImeTracker: com.ratv.app:b9f78ec3: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT
+10-21 04:32:21.186  8327  8327 D InputMethodManager: showSoftInput() view=u0.u{28bd44b VFED..... .F....ID 0,0-1080,2400 aid=1073741825} flags=0 reason=SHOW_SOFT_INPUT
+10-21 04:32:21.195  8327  8354 D EGL_emulation: app_time_stats: avg=148.69ms min=26.48ms max=2040.89ms count=19
+10-21 04:32:21.519  8327  8327 D InsetsController: show(ime(), fromIme=true)
+10-21 04:32:21.520  8327  8327 D InsetsController: show(ime(), fromIme=true)
+10-21 04:32:21.520  8327  8327 I ImeTracker: com.ratv.app:b9f78ec3: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-21 04:32:21.874  8327  8327 I ImeTracker: com.ratv.app:2bb65b0f: onShown
+10-21 04:32:22.260  8327  8354 D EGL_emulation: app_time_stats: avg=58.71ms min=29.64ms max=186.18ms count=16
+10-21 04:32:23.293  8327  8354 D EGL_emulation: app_time_stats: avg=59.94ms min=37.70ms max=75.55ms count=15
+10-21 04:32:24.452  8327  8354 D EGL_emulation: app_time_stats: avg=86.14ms min=33.11ms max=376.17ms count=12
+10-21 04:32:24.875  8730  8730 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:32:24.879  8730  8730 I AndroidRuntime: Using default boot image
+10-21 04:32:24.879  8730  8730 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:32:24.978  8730  8730 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:32:25.952  8327  8354 D EGL_emulation: app_time_stats: avg=500.07ms min=495.35ms max=503.74ms count=3
+10-21 04:32:26.015  8730  8730 D AndroidRuntime: Shutting down VM
+10-21 04:32:26.987  8327  8354 D EGL_emulation: app_time_stats: avg=517.47ms min=499.09ms max=535.85ms count=2
+10-21 04:32:27.104  8327  8334 I com.ratv.app: Background concurrent copying GC freed 98831(4197KB) AllocSpace objects, 12(548KB) LOS objects, 49% free, 5498KB/10MB, paused 88us,13us total 143.591ms
+10-21 04:32:27.121  8327  8336 W System  : A resource failed to call release. 
+10-21 04:32:27.894  8327  8327 I ImeTracker: com.ratv.app:8378ef25: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+10-21 04:32:27.947  8327  8327 I ImeTracker: com.ratv.app:4b7f0c3a: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+10-21 04:32:28.023  8327  8354 D EGL_emulation: app_time_stats: avg=101.02ms min=52.51ms max=296.65ms count=10
+10-21 04:32:28.024  8327  8327 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=ImeCallback=ImeOnBackInvokedCallback@54495751 Callback=android.window.IOnBackInvokedCallback$Stub$Proxy@bea35a2
+10-21 04:32:28.106  8757  8757 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:32:28.108  8327  8327 I ImeTracker: com.ratv.app:4b7f0c3a: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-21 04:32:28.116  8757  8757 I AndroidRuntime: Using default boot image
+10-21 04:32:28.117  8757  8757 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:32:28.199  8327  8327 W FrameTracker: Missed App frame:UNKNOWN: 74, 35156, 0, CUJ=J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:32:28.199  8327  8327 W FrameTracker: Missed SF frame:UNKNOWN: 74, 35156, 0, CUJ=J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:32:28.199  8327  8327 W FrameTracker: Missed App frame:UNKNOWN: 74, 35171, 0, CUJ=J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:32:28.199  8327  8327 W FrameTracker: Missed SF frame:UNKNOWN: 74, 35171, 0, CUJ=J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:32:28.199  8327  8327 W FrameTracker: Missed App frame:UNKNOWN: 74, 35187, 0, CUJ=J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:32:28.199  8327  8327 W FrameTracker: Missed SF frame:UNKNOWN: 74, 35187, 0, CUJ=J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:32:28.199  8327  8327 W FrameTracker: Missed App frame:UNKNOWN: 74, 35195, 0, CUJ=J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:32:28.199  8327  8327 W FrameTracker: Missed SF frame:UNKNOWN: 74, 35195, 0, CUJ=J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:32:28.199  8327  8327 W FrameTracker: Missed App frame:UNKNOWN: 74, 35203, 0, CUJ=J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:32:28.199  8327  8327 W FrameTracker: Missed SF frame:UNKNOWN: 74, 35203, 0, CUJ=J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:32:28.199  8327  8327 W FrameTracker: Missed App frame:UNKNOWN: 74, 35211, 0, CUJ=J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:32:28.199  8327  8327 W FrameTracker: Missed SF frame:UNKNOWN: 74, 35211, 0, CUJ=J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:32:28.199  8327  8327 W FrameTracker: Missed App frame:UNKNOWN: 74, 35219, 0, CUJ=J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:32:28.199  8327  8327 W FrameTracker: Missed SF frame:UNKNOWN: 74, 35219, 0, CUJ=J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:32:28.199  8327  8327 W FrameTracker: Missed App frame:UNKNOWN: 74, 35228, 0, CUJ=J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:32:28.199  8327  8327 W FrameTracker: Missed SF frame:UNKNOWN: 74, 35228, 0, CUJ=J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:32:28.204  8327  8717 V PerfettoTrigger: Triggering /system/bin/trigger_perfetto com.android.telemetry.interaction-jank-monitor-69
+10-21 04:32:28.275  8327  8327 I ImeTracker: com.ratv.app:78568fe9: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+10-21 04:32:28.278  8327  8327 I ImeTracker: com.ratv.app:8378ef25: onHidden
+10-21 04:32:28.377  8757  8757 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:32:29.483  8757  8757 D AndroidRuntime: Shutting down VM
+10-21 04:32:30.415  8781  8781 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:32:30.418  8781  8781 I AndroidRuntime: Using default boot image
+10-21 04:32:30.418  8781  8781 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:32:30.500  8781  8781 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:32:31.549  8781  8781 D AndroidRuntime: Shutting down VM
+10-21 04:32:38.575  8327  8327 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:32:38.575  8327  8327 W FrameTracker: Missed App frame:UNKNOWN: 74, 35831, 0, CUJ=J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:32:38.575  8327  8327 W FrameTracker: Missed SF frame:UNKNOWN: 74, 35831, 0, CUJ=J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:32:38.575  8327  8327 W FrameTracker: Missed App frame:UNKNOWN: 74, 35854, 0, CUJ=J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:32:38.575  8327  8327 W FrameTracker: Missed SF frame:UNKNOWN: 74, 35854, 0, CUJ=J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:32:38.575  8327  8327 W FrameTracker: Missed App frame:UNKNOWN: 74, 35891, 0, CUJ=J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:32:38.575  8327  8327 W FrameTracker: Missed SF frame:UNKNOWN: 74, 35891, 0, CUJ=J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:32:38.575  8327  8327 W FrameTracker: Missed App frame:UNKNOWN: 74, 35907, 0, CUJ=J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:32:38.575  8327  8327 W FrameTracker: Missed SF frame:UNKNOWN: 74, 35907, 0, CUJ=J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:32:38.576  8327  8717 V PerfettoTrigger: Not triggering com.android.telemetry.interaction-jank-monitor-69 - not enough time since last trigger
+10-21 04:32:38.787  8808  8808 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:32:38.791  8808  8808 I AndroidRuntime: Using default boot image
+10-21 04:32:38.791  8808  8808 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:32:38.872  8808  8808 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:32:39.911  8808  8808 D AndroidRuntime: Shutting down VM
+10-21 04:32:40.810  8327  8327 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-21 04:32:40.810  8327  8327 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-21 04:32:40.837  8327  8354 D EGL_emulation: app_time_stats: avg=2134.46ms min=73.57ms max=12391.06ms count=6
+10-21 04:32:41.836  8836  8836 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:32:41.840  8836  8836 I AndroidRuntime: Using default boot image
+10-21 04:32:41.840  8836  8836 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:32:41.924  8836  8836 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:32:42.993  8836  8836 D AndroidRuntime: Shutting down VM
+10-21 04:32:43.924  8862  8862 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:32:43.928  8862  8862 I AndroidRuntime: Using default boot image
+10-21 04:32:43.928  8862  8862 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:32:44.007  8862  8862 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:32:45.075  8862  8862 D AndroidRuntime: Shutting down VM
+10-21 04:32:46.252  8327  8327 I ExoPlayerImpl: Init a50f15e [AndroidXMedia3/1.5.1] [emu64xa, sdk_gphone64_x86_64, Google, 34]
+10-21 04:32:46.261  8327  8354 D EGL_emulation: app_time_stats: avg=413.31ms min=45.21ms max=4528.61ms count=13
+10-21 04:32:46.349  8327  8327 D CompatibilityChangeReporter: Compat change id reported: 210923482; UID 10192; state: ENABLED
+10-21 04:32:46.359  8327  8327 D CompatibilityChangeReporter: Compat change id reported: 171228096; UID 10192; state: ENABLED
+10-21 04:32:46.500  8327  8334 I com.ratv.app: Background young concurrent copying GC freed 75049(3559KB) AllocSpace objects, 6(120KB) LOS objects, 34% free, 7163KB/10MB, paused 61us,20us total 154.753ms
+10-21 04:32:46.861  8327  8894 D TrafficStats: tagSocket(118) with statsTag=0xffffffff, statsUid=-1
+10-21 04:32:46.940  8327  8897 D TrafficStats: tagSocket(98) with statsTag=0xffffffff, statsUid=-1
+10-21 04:32:47.087  8327  8897 D TrafficStats: tagSocket(98) with statsTag=0xffffffff, statsUid=-1
+10-21 04:32:47.235  8327  8339 I OpenGLRenderer: Davey! duration=948ms; Flags=0, FrameTimelineVsyncId=36275, IntendedVsync=464236978984, Vsync=464703645632, InputEventId=0, HandleInputStart=464719378293, AnimationStart=464719400977, PerformTraversalsStart=464753311290, DrawStart=464765614165, FrameDeadline=464870312292, FrameInterval=464719210994, FrameStartTime=16666666, SyncQueued=464821388218, SyncStart=464840205945, IssueDrawCommandsStart=464840639649, SwapBuffers=465158858346, FrameCompleted=465204069232, DequeueBufferDuration=3666, QueueBufferDuration=557267, GpuCompleted=465204069232, SwapBuffersCompleted=465193273375, DisplayPresentTime=0, CommandSubmissionCompleted=465158858346, 
+10-21 04:32:47.812  8327  8892 I DMCodecAdapterFactory: Creating an asynchronous MediaCodec adapter for track type video
+10-21 04:32:47.843  8327  8899 D CCodec  : allocate(c2.goldfish.h264.decoder)
+10-21 04:32:47.857  8327  8899 I Codec2Client: Available Codec2 services: "default" "software"
+10-21 04:32:47.858  8327  8899 I CCodec  : setting up 'default' as default (vendor) store
+10-21 04:32:47.865  8327  8899 I CCodec  : Created component [c2.goldfish.h264.decoder]
+10-21 04:32:47.865  8327  8899 D CCodecConfig: read media type: video/avc
+10-21 04:32:47.866  8327  8899 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.max-count.values
+10-21 04:32:47.866  8327  8899 D ReflectedParamUpdater: extent() != 1 for single value type: output.subscribed-indices.values
+10-21 04:32:47.866  8327  8899 D ReflectedParamUpdater: extent() != 1 for single value type: input.buffers.allocator-ids.values
+10-21 04:32:47.866  8327  8899 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.allocator-ids.values
+10-21 04:32:47.866  8327  8899 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.allocator-ids.values
+10-21 04:32:47.866  8327  8899 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.pool-ids.values
+10-21 04:32:47.866  8327  8899 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.pool-ids.values
+10-21 04:32:47.867  8327  8899 D ReflectedParamUpdater: ignored struct field coded.color-format.locations
+10-21 04:32:47.867  8327  8899 D CCodecConfig: ignoring local param raw.size (0xd2001800) as it is already supported
+10-21 04:32:47.867  8327  8899 D CCodecConfig: ignoring local param default.color (0x5200180b) as it is already supported
+10-21 04:32:47.867  8327  8899 D ReflectedParamUpdater: ignored struct field raw.hdr-static-info.mastering
+10-21 04:32:47.868  8327  8899 I CCodecConfig: query failed after returning 12 values (BAD_INDEX)
+10-21 04:32:47.868  8327  8899 D CCodecConfig: c2 config diff is Dict {
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 coded.pl.level = 20496
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 coded.pl.profile = 20481
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 coded.vui.color.matrix = 0
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 coded.vui.color.primaries = 0
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 coded.vui.color.range = 2
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 coded.vui.color.transfer = 0
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 default.color.matrix = 0
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 default.color.primaries = 0
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 default.color.range = 0
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 default.color.transfer = 0
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 input.buffers.max-size.value = 6291456
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 input.delay.value = 0
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   string input.media-type.value = "video/avc"
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 output.delay.value = 8
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   string output.media-type.value = "video/raw"
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 raw.color.matrix = 0
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 raw.color.primaries = 0
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 raw.color.range = 2
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 raw.color.transfer = 0
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 raw.max-size.height = 240
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 raw.max-size.width = 320
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 raw.pixel-format.value = 35
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::i32 raw.rotation.flip = 0
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::i32 raw.rotation.value = 0
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 raw.sar.height = 1
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 raw.sar.width = 1
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 raw.size.height = 240
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2::u32 raw.size.width = 320
+10-21 04:32:47.868  8327  8899 D CCodecConfig:   c2:
+10-21 04:32:47.868  8327  8899 W ColorUtils: expected specified color aspects (2:0:0:0)
+10-21 04:32:47.869  8327  8327 I Choreographer: Skipped 36 frames!  The application may be doing too much work on its main thread.
+10-21 04:32:47.872  8327  8898 I MediaCodec: MediaCodec will operate in async mode
+10-21 04:32:47.872  8327  8898 D MediaCodec: flushMediametrics
+10-21 04:32:47.872  8327  8898 D SurfaceUtils: connecting to surface 0x78eff3272c70, reason connectToSurface
+10-21 04:32:47.872  8327  8898 I MediaCodec: [c2.goldfish.h264.decoder] setting surface generation to 8526849
+10-21 04:32:47.872  8327  8898 D SurfaceUtils: disconnecting from surface 0x78eff3272c70, reason connectToSurface(reconnect)
+10-21 04:32:47.872  8327  8898 D SurfaceUtils: connecting to surface 0x78eff3272c70, reason connectToSurface(reconnect)
+10-21 04:32:47.872  8327  8899 I CCodecBufferChannel: Using latch times for frame rendered signals - present fences not supported
+10-21 04:32:47.872  8327  8899 D CCodec  : [c2.goldfish.h264.decoder] buffers are bound to CCodec for this session
+10-21 04:32:47.873  8327  8899 D CCodecConfig: no c2 equivalents for csd-1
+10-21 04:32:47.873  8327  8899 D CCodecConfig: no c2 equivalents for log-session-id
+10-21 04:32:47.873  8327  8899 D CCodecConfig: no c2 equivalents for native-window
+10-21 04:32:47.873  8327  8899 D CCodecConfig: no c2 equivalents for flags
+10-21 04:32:47.873  8327  8899 D CCodecConfig: config failed => CORRUPTED
+10-21 04:32:47.873  8327  8899 D CCodecConfig: c2 config diff is   c2::u32 raw.max-size.height = 720
+10-21 04:32:47.873  8327  8899 D CCodecConfig:   c2::u32 raw.max-size.width = 1280
+10-21 04:32:47.873  8327  8899 D CCodecConfig:   c2::u32 raw.size.height = 720
+10-21 04:32:47.873  8327  8899 D CCodecConfig:   c2::u32 raw.size.width = 1280
+10-21 04:32:47.873  8327  8899 W Codec2Client: query -- param skipped: index = 1107298332.
+10-21 04:32:47.873  8327  8899 D CCodec  : client requested max input size 691200, which is smaller than what component recommended (6291456); overriding with component recommendation.
+10-21 04:32:47.873  8327  8899 W CCodec  : This behavior is subject to change. It is recommended that app developers double check whether the requested max input size is in reasonable range.
+10-21 04:32:47.873  8327  8899 D CCodec  : encoding statistics level = 0
+10-21 04:32:47.873  8327  8899 D CCodec  : setup formats input: AMessage(what = 0x00000000) = {
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t height = 720
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t level = 65536
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t max-input-size = 6291456
+10-21 04:32:47.873  8327  8899 D CCodec  :   string mime = "video/avc"
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t profile = 65536
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t width = 1280
+10-21 04:32:47.873  8327  8899 D CCodec  :   Rect crop(0, 0, 1279, 719)
+10-21 04:32:47.873  8327  8899 D CCodec  : }
+10-21 04:32:47.873  8327  8899 D CCodec  : setup formats output: AMessage(what = 0x00000000) = {
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t android._color-format = 2135033992
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t android._video-scaling = 1
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t rotation-degrees = 0
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t color-standard = 1
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t color-range = 2
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t color-transfer = 3
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t sar-height = 1
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t sar-width = 1
+10-21 04:32:47.873  8327  8899 D CCodec  :   Rect crop(0, 0, 1279, 719)
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t width = 1280
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t height = 720
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t max-height = 720
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t max-width = 1280
+10-21 04:32:47.873  8327  8899 D CCodec  :   string mime = "video/raw"
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t android._dataspace = 260
+10-21 04:32:47.873  8327  8899 D CCodec  :   int32_t color-format = 2130708361
+10-21 04:32:47.873  8327  8899 D CCodec  : }
+10-21 04:32:47.873  8327  8899 I CCodecConfig: query failed after returning 12 values (BAD_INDEX)
+10-21 04:32:47.879  8327  8341 I OpenGLRenderer: Davey! duration=902ms; Flags=0, FrameTimelineVsyncId=36549, IntendedVsync=464936978956, Vsync=465220312278, InputEventId=0, HandleInputStart=465234263890, AnimationStart=465234264250, PerformTraversalsStart=465246389436, DrawStart=465246623544, FrameDeadline=465270312276, FrameInterval=465233055756, FrameStartTime=16666666, SyncQueued=465247477782, SyncStart=465247651540, IssueDrawCommandsStart=465247824527, SwapBuffers=465690248206, FrameCompleted=465840006109, DequeueBufferDuration=5577110, QueueBufferDuration=179647, GpuCompleted=465840006109, SwapBuffersCompleted=465832012387, DisplayPresentTime=0, CommandSubmissionCompleted=465690248206, 
+10-21 04:32:47.884  8327  8892 D MediaCodec: keep callback message for reclaim
+10-21 04:32:47.885  8327  8899 W Codec2Client: query -- param skipped: index = 1342179345.
+10-21 04:32:47.885  8327  8899 W Codec2Client: query -- param skipped: index = 2415921170.
+10-21 04:32:47.885  8327  8899 W Codec2Client: query -- param skipped: index = 1610614798.
+10-21 04:32:47.885  8327  8899 W Codec2Client: query -- param skipped: index = 2684356609.
+10-21 04:32:47.885  8327  8899 D C2Store : Using DMABUF Heaps
+10-21 04:32:47.886  8327  8899 D CCodecBufferChannel: [c2.goldfish.h264.decoder#687] Created input block pool with allocatorID 16 => poolID 17 - OK (0)
+10-21 04:32:47.886  8327  8899 D CCodecBufferChannel: [c2.goldfish.h264.decoder#687] Query output surface allocator returned 0 params => BAD_INDEX (6)
+10-21 04:32:47.888  8327  8899 I CCodecBufferChannel: [c2.goldfish.h264.decoder#687] Created output block pool with allocatorID 18 => poolID 19 - OK
+10-21 04:32:47.888  8327  8899 D CCodecBufferChannel: [c2.goldfish.h264.decoder#687] Configured output block pool ids 19 => OK
+10-21 04:32:47.888  8327  8899 D Codec2-OutputBufferQueue: remote graphic buffer migration 0/0
+10-21 04:32:47.888  8327  8899 D Codec2Client: setOutputSurface -- failed to set consumer usage (6/BAD_INDEX)
+10-21 04:32:47.888  8327  8899 D Codec2Client: setOutputSurface -- generation=8526849 consumer usage=0x900
+10-21 04:32:47.938  8327  8899 D Codec2Client: Surface configure completed
+10-21 04:32:47.941  8327  8899 I DMABUFHEAPS: Using DMA-BUF heap named: system
+10-21 04:32:47.995  8327  8892 I DMCodecAdapterFactory: Creating an asynchronous MediaCodec adapter for track type audio
+10-21 04:32:48.000  8327  8907 D CCodec  : allocate(c2.android.aac.decoder)
+10-21 04:32:48.040  8327  8341 I OpenGLRenderer: Davey! duration=709ms; Flags=0, FrameTimelineVsyncId=36670, IntendedVsync=465236978944, Vsync=465836978920, InputEventId=0, HandleInputStart=465849137791, AnimationStart=465849138362, PerformTraversalsStart=465852201740, DrawStart=465852235981, FrameDeadline=465870312252, FrameInterval=465849037122, FrameStartTime=16666666, SyncQueued=465853260061, SyncStart=465853291017, IssueDrawCommandsStart=465853368122, SwapBuffers=465857465164, FrameCompleted=465946044315, DequeueBufferDuration=3796, QueueBufferDuration=1548764, GpuCompleted=465946044315, SwapBuffersCompleted=465914680201, DisplayPresentTime=0, CommandSubmissionCompleted=465857465164, 
+10-21 04:32:48.085  8327  8334 I com.ratv.app: Background concurrent copying GC freed 64372(3100KB) AllocSpace objects, 9(652KB) LOS objects, 49% free, 7716KB/15MB, paused 33us,43us total 261.992ms
+10-21 04:32:48.093  8327  8907 I CCodec  : setting up 'default' as default (vendor) store
+10-21 04:32:48.119  8327  8907 I CCodec  : Created component [c2.android.aac.decoder]
+10-21 04:32:48.119  8327  8907 D CCodecConfig: read media type: audio/mp4a-latm
+10-21 04:32:48.120  8327  8907 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.max-count.values
+10-21 04:32:48.120  8327  8907 D ReflectedParamUpdater: extent() != 1 for single value type: output.subscribed-indices.values
+10-21 04:32:48.120  8327  8907 D ReflectedParamUpdater: extent() != 1 for single value type: input.buffers.allocator-ids.values
+10-21 04:32:48.120  8327  8907 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.allocator-ids.values
+10-21 04:32:48.121  8327  8907 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.allocator-ids.values
+10-21 04:32:48.131  8327  8907 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.pool-ids.values
+10-21 04:32:48.131  8327  8907 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.pool-ids.values
+10-21 04:32:48.134  8327  8907 I CCodecConfig: query failed after returning 20 values (BAD_INDEX)
+10-21 04:32:48.134  8327  8907 D CCodecConfig: c2 config diff is Dict {
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::u32 coded.aac-packaging.value = 0
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::u32 coded.bitrate.value = 64000
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::u32 coded.pl.level = 0
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::u32 coded.pl.profile = 8192
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::i32 coding.drc.album-mode.value = 0
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::float coding.drc.attenuation-factor.value = 1
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::float coding.drc.boost-factor.value = 1
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::i32 coding.drc.compression-mode.value = 3
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::i32 coding.drc.effect-type.value = 3
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::float coding.drc.encoded-level.value = 0.25
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::float coding.drc.reference-level.value = -16
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::u32 input.buffers.max-size.value = 8192
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::u32 input.delay.value = 0
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   string input.media-type.value = "audio/mp4a-latm"
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::u32 output.delay.value = 2
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::float output.drc.output-loudness.value = 0.25
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   string output.media-type.value = "audio/raw"
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::u32 raw.channel-count.value = 1
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::u32 raw.channel-mask.value = 0
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::u32 raw.max-channel-count.value = 8
+10-21 04:32:48.134  8327  8907 D CCodecConfig:   c2::u32 raw.sample-rate.value = 44100
+10-21 04:32:48.134  8327  8907 D CCodecConfig: }
+10-21 04:32:48.156  8327  8907 I MediaCodec: MediaCodec will operate in async mode
+10-21 04:32:48.156  8327  8907 D MediaCodec: flushMediametrics
+10-21 04:32:48.156  8327  8907 D CCodec  : [c2.android.aac.decoder] buffers are bound to CCodec for this session
+10-21 04:32:48.156  8327  8907 D CCodecConfig: no c2 equivalents for log-session-id
+10-21 04:32:48.156  8327  8907 D CCodecConfig: no c2 equivalents for flags
+10-21 04:32:48.156  8327  8907 D CCodecConfig: c2 config diff is   c2::u32 raw.sample-rate.value = 48000
+10-21 04:32:48.157  8327  8907 W Codec2Client: query -- param skipped: index = 1107298332.
+10-21 04:32:48.157  8327  8907 D CCodec  : encoding statistics level = 0
+10-21 04:32:48.157  8327  8907 D CCodec  : setup formats input: AMessage(what = 0x00000000) = {
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t aac-drc-album-mode = 0
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t aac-drc-boost-level = 127
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t aac-drc-cut-level = 127
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t aac-drc-effect-type = 3
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t aac-encoded-target-level = -1
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t aac-max-output-channel_count = 8
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t aac-target-ref-level = 64
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t bitrate = 64000
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t channel-count = 1
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t channel-mask = 0
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t level = 0
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t max-input-size = 8192
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t max-output-channel-count = 8
+10-21 04:32:48.157  8327  8907 D CCodec  :   string mime = "audio/mp4a-latm"
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t profile = 2
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t sample-rate = 48000
+10-21 04:32:48.157  8327  8907 D CCodec  : }
+10-21 04:32:48.157  8327  8907 D CCodec  : setup formats output: AMessage(what = 0x00000000) = {
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t aac-drc-album-mode = 0
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t aac-drc-boost-level = 127
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t aac-drc-cut-level = 127
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t aac-drc-effect-type = 3
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t aac-drc-output-loudness = -1
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t aac-encoded-target-level = -1
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t aac-max-output-channel_count = 8
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t aac-target-ref-level = 64
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t channel-count = 1
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t channel-mask = 0
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t max-output-channel-count = 8
+10-21 04:32:48.157  8327  8907 D CCodec  :   string mime = "audio/raw"
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t sample-rate = 48000
+10-21 04:32:48.157  8327  8907 D CCodec  :   int32_t android._config-pcm-encoding = 2
+10-21 04:32:48.157  8327  8907 D CCodec  : }
+10-21 04:32:48.157  8327  8907 I CCodecConfig: query failed after returning 20 values (BAD_INDEX)
+10-21 04:32:48.161  8327  8892 D MediaCodec: keep callback message for reclaim
+10-21 04:32:48.161  8327  8907 W Codec2Client: query -- param skipped: index = 1342179345.
+10-21 04:32:48.161  8327  8907 W Codec2Client: query -- param skipped: index = 2415921170.
+10-21 04:32:48.161  8327  8907 W Codec2Client: query -- param skipped: index = 1610614798.
+10-21 04:32:48.162  8327  8907 D CCodecBufferChannel: [c2.android.aac.decoder#912] Created input block pool with allocatorID 16 => poolID 18 - OK (0)
+10-21 04:32:48.162  8327  8907 I CCodecBufferChannel: [c2.android.aac.decoder#912] Created output block pool with allocatorID 16 => poolID 29 - OK
+10-21 04:32:48.162  8327  8907 D CCodecBufferChannel: [c2.android.aac.decoder#912] Configured output block pool ids 29 => OK
+10-21 04:32:48.267  8327  8899 D CCodecConfig: c2 config diff is   c2::u32 raw.crop.height = 720
+10-21 04:32:48.267  8327  8899 D CCodecConfig:   c2::u32 raw.crop.left = 0
+10-21 04:32:48.267  8327  8899 D CCodecConfig:   c2::u32 raw.crop.top = 0
+10-21 04:32:48.267  8327  8899 D CCodecConfig:   c2::u32 raw.crop.width = 1280
+10-21 04:32:48.333  8327  8907 D CCodecConfig: c2 config diff is   c2::u32 raw.channel-mask.value = 4
+10-21 04:32:48.333  8327  8907 D CCodecBuffers: [c2.android.aac.decoder#912:Output[N]] popFromStashAndRegister: at 1000000058666us, output format changed to AMessage(what = 0x00000000) = {
+10-21 04:32:48.333  8327  8907 D CCodecBuffers:   int32_t aac-drc-album-mode = 0
+10-21 04:32:48.333  8327  8907 D CCodecBuffers:   int32_t aac-drc-boost-level = 127
+10-21 04:32:48.333  8327  8907 D CCodecBuffers:   int32_t aac-drc-cut-level = 127
+10-21 04:32:48.333  8327  8907 D CCodecBuffers:   int32_t aac-drc-effect-type = 3
+10-21 04:32:48.333  8327  8907 D CCodecBuffers:   int32_t aac-drc-output-loudness = -1
+10-21 04:32:48.333  8327  8907 D CCodecBuffers:   int32_t aac-encoded-target-level = -1
+10-21 04:32:48.333  8327  8907 D CCodecBuffers:   int32_t aac-max-output-channel_count = 8
+10-21 04:32:48.333  8327  8907 D CCodecBuffers:   int32_t aac-target-ref-level = 64
+10-21 04:32:48.333  8327  8907 D CCodecBuffers:   int32_t channel-count = 1
+10-21 04:32:48.333  8327  8907 D CCodecBuffers:   int32_t channel-mask = 4
+10-21 04:32:48.333  8327  8907 D CCodecBuffers:   int32_t max-output-channel-count = 8
+10-21 04:32:48.333  8327  8907 D CCodecBuffers:   string mime = "audio/raw"
+10-21 04:32:48.333  8327  8907 D CCodecBuffers:   int32_t sample-rate = 48000
+10-21 04:32:48.333  8327  8907 D CCodecBuffers:   int32_t android._config-pcm-encoding = 2
+10-21 04:32:48.333  8327  8907 D CCodecBuffers: }
+10-21 04:32:48.964  8327  8354 D EGL_emulation: app_time_stats: avg=165.37ms min=53.01ms max=595.64ms count=10
+10-21 04:32:52.901  8327  8903 D BufferPoolAccessor2.0: bufferpool2 0x78f05329fda8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 119/124 (recycle/alloc) - 5/123 (fetch/transfer)
+10-21 04:32:52.959  8327  8354 D EGL_emulation: app_time_stats: avg=3994.68ms min=3994.68ms max=3994.68ms count=1
+10-21 04:32:53.641  8327  8907 D BufferPoolAccessor2.0: bufferpool2 0x78f053277f68 : 5(40960 size) total buffers - 1(8192 size) used buffers - 245/250 (recycle/alloc) - 5/249 (fetch/transfer)
+10-21 04:32:58.121  8327  8903 D BufferPoolAccessor2.0: bufferpool2 0x78f05329fda8 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 249/254 (recycle/alloc) - 5/253 (fetch/transfer)
+10-21 04:32:58.851  8327  8907 D BufferPoolAccessor2.0: bufferpool2 0x78f053277f68 : 5(40960 size) total buffers - 1(8192 size) used buffers - 488/493 (recycle/alloc) - 5/492 (fetch/transfer)
+10-21 04:32:59.016  8327  8327 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::1@1@com.ratv.app>
+10-21 04:33:00.882  8327  8354 D EGL_emulation: app_time_stats: avg=1580.93ms min=61.45ms max=7460.01ms count=5
+10-21 04:33:01.703  8327  8922 E EGL_emulation: eglQueryContext 32c0  EGL_BAD_ATTRIBUTE
+10-21 04:33:01.703  8327  8922 E EGL_emulation: tid 8922: eglQueryContext(2146): error 0x3004 (EGL_BAD_ATTRIBUTE)
+10-21 04:33:01.704  8327  8898 D SurfaceUtils: connecting to surface 0x78eff324a540, reason connectToSurface
+10-21 04:33:01.704  8327  8898 I MediaCodec: [c2.goldfish.h264.decoder] setting surface generation to 8526850
+10-21 04:33:01.704  8327  8898 D SurfaceUtils: disconnecting from surface 0x78eff324a540, reason connectToSurface(reconnect)
+10-21 04:33:01.704  8327  8898 D SurfaceUtils: connecting to surface 0x78eff324a540, reason connectToSurface(reconnect)
+10-21 04:33:01.704  8327  8898 D Codec2-OutputBufferQueue: remote graphic buffer migration 15/15
+10-21 04:33:01.704  8327  8898 D Codec2Client: setOutputSurface -- failed to set consumer usage (6/BAD_INDEX)
+10-21 04:33:01.704  8327  8898 D Codec2Client: setOutputSurface -- generation=8526850 consumer usage=0x900
+10-21 04:33:01.706  8327  8898 D Codec2Client: Surface configure completed
+10-21 04:33:01.706  8327  8898 D SurfaceUtils: disconnecting from surface 0x78eff3272c70, reason disconnectFromSurface
+10-21 04:33:01.957  8327  8327 I ExoPlayerImpl: Release a50f15e [AndroidXMedia3/1.5.1] [emu64xa, sdk_gphone64_x86_64, Google, 34] [media3.common, media3.exoplayer, media3.decoder, media3.ui, media3.datasource, media3.extractor]
+10-21 04:33:01.959  8327  8898 D CCodecBufferChannel: [c2.goldfish.h264.decoder#687] MediaCodec discarded an unknown buffer
+10-21 04:33:01.960  8327  8892 D MediaCodec: keep callback message for reclaim
+10-21 04:33:01.960  8327  8898 I CCodecConfig: query failed after returning 12 values (BAD_INDEX)
+10-21 04:33:01.961  8327  8898 W Codec2Client: query -- param skipped: index = 1342179345.
+10-21 04:33:01.961  8327  8898 W Codec2Client: query -- param skipped: index = 2415921170.
+10-21 04:33:01.961  8327  8898 W Codec2Client: query -- param skipped: index = 1610614798.
+10-21 04:33:01.962  8327  8892 D MediaCodec: keep callback message for reclaim
+10-21 04:33:01.962  8327  8907 I CCodecConfig: query failed after returning 20 values (BAD_INDEX)
+10-21 04:33:01.974  8327  8907 W Codec2Client: query -- param skipped: index = 1342179345.
+10-21 04:33:01.974  8327  8907 W Codec2Client: query -- param skipped: index = 2415921170.
+10-21 04:33:01.974  8327  8907 W Codec2Client: query -- param skipped: index = 1610614798.
+10-21 04:33:01.975  8327  8903 D CCodecBufferChannel: [c2.goldfish.h264.decoder#687] Ignoring stale input buffer done callback: last flush index = 320, frameIndex = 317
+10-21 04:33:01.975  8327  8899 D CCodecBufferChannel: [c2.goldfish.h264.decoder#687] flushed work; ignored.
+10-21 04:33:01.975  8327  8899 D CCodecBufferChannel: [c2.goldfish.h264.decoder#687] Discard frames from previous generation.
+10-21 04:33:01.987  8327  8898 D SurfaceUtils: connecting to surface 0x78eff3254f90, reason connectToSurface
+10-21 04:33:01.987  8327  8898 I MediaCodec: [c2.goldfish.h264.decoder] setting surface generation to 8526851
+10-21 04:33:01.987  8327  8898 D SurfaceUtils: disconnecting from surface 0x78eff3254f90, reason connectToSurface(reconnect)
+10-21 04:33:01.987  8327  8898 D SurfaceUtils: connecting to surface 0x78eff3254f90, reason connectToSurface(reconnect)
+10-21 04:33:01.987  8327  8898 D Codec2-OutputBufferQueue: remote graphic buffer migration 0/0
+10-21 04:33:01.987  8327  8898 D Codec2Client: setOutputSurface -- failed to set consumer usage (6/BAD_INDEX)
+10-21 04:33:01.987  8327  8898 D Codec2Client: setOutputSurface -- generation=8526851 consumer usage=0x900
+10-21 04:33:02.001  8327  8898 D Codec2Client: Surface configure completed
+10-21 04:33:02.001  8327  8898 D SurfaceUtils: disconnecting from surface 0x78eff324a540, reason disconnectFromSurface
+10-21 04:33:02.005  8327  8898 D CCodecBufferChannel: [c2.goldfish.h264.decoder#687] MediaCodec discarded an unknown buffer
+10-21 04:33:02.005  8327  8898 D CCodecBufferChannel: [c2.goldfish.h264.decoder#687] MediaCodec discarded an unknown buffer
+10-21 04:33:02.005  8327  8898 D CCodecBufferChannel: [c2.goldfish.h264.decoder#687] MediaCodec discarded an unknown buffer
+10-21 04:33:02.005  8327  8898 D CCodecBufferChannel: [c2.goldfish.h264.decoder#687] MediaCodec discarded an unknown buffer
+10-21 04:33:02.008  8327  8907 D CCodecBufferChannel: [c2.android.aac.decoder#912] MediaCodec discarded an unknown buffer
+10-21 04:33:02.008  8327  8907 D CCodecBufferChannel: [c2.android.aac.decoder#912] MediaCodec discarded an unknown buffer
+10-21 04:33:02.008  8327  8907 D CCodecBufferChannel: [c2.android.aac.decoder#912] MediaCodec discarded an unknown buffer
+10-21 04:33:02.008  8327  8907 D CCodecBufferChannel: [c2.android.aac.decoder#912] MediaCodec discarded an unknown buffer
+10-21 04:33:02.024  8327  8907 I hw-BpHwBinder: onLastStrongRef automatically unlinking death recipients
+10-21 04:33:02.025  8327  8898 D SurfaceUtils: disconnecting from surface 0x78eff3254f90, reason disconnectFromSurface
+10-21 04:33:02.025  8327  8899 I hw-BpHwBinder: onLastStrongRef automatically unlinking death recipients
+10-21 04:33:02.040  8327  8898 D MediaCodec: flushMediametrics
+10-21 04:33:02.041  8327  8907 D MediaCodec: flushMediametrics
+10-21 04:33:02.045  8327  8898 D MediaCodec: flushMediametrics
+10-21 04:33:02.045  8327  8898 W MediaCodec: no metrics handle found
+10-21 04:33:02.049  8327  8907 D MediaCodec: flushMediametrics
+10-21 04:33:02.049  8327  8907 W MediaCodec: no metrics handle found
+10-21 04:33:02.137  8327  8354 D EGL_emulation: app_time_stats: avg=111.41ms min=59.00ms max=462.52ms count=11
+10-21 04:33:02.268  8327  8833 D TrafficStats: tagSocket(94) with statsTag=0xffffffff, statsUid=-1
+10-21 04:33:02.828  8930  8930 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:33:02.834  8930  8930 I AndroidRuntime: Using default boot image
+10-21 04:33:02.834  8930  8930 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:33:02.962  8930  8930 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:33:04.036  8930  8930 D AndroidRuntime: Shutting down VM
+10-21 04:33:04.948  8327  8354 D EGL_emulation: app_time_stats: avg=504.91ms min=61.82ms max=2060.34ms count=5
+10-21 04:33:05.967  8958  8958 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:33:05.971  8958  8958 I AndroidRuntime: Using default boot image
+10-21 04:33:05.971  8958  8958 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:33:06.052  8958  8958 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:33:06.951  8327  8902 D BufferPoolAccessor2.0: bufferpool2 0x78f053277f68 : 0(0 size) total buffers - 0(0 size) used buffers - 585/590 (recycle/alloc) - 5/581 (fetch/transfer)
+10-21 04:33:06.951  8327  8902 D BufferPoolAccessor2.0: bufferpool2 0x78f05329fda8 : 0(0 size) total buffers - 0(0 size) used buffers - 320/325 (recycle/alloc) - 5/322 (fetch/transfer)
+10-21 04:33:06.951  8327  8902 D BufferPoolAccessor2.0: evictor expired: 2, evicted: 2
+10-21 04:33:07.078  8958  8958 D AndroidRuntime: Shutting down VM
+10-21 04:33:08.015  8979  8979 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:33:08.018  8979  8979 I AndroidRuntime: Using default boot image
+10-21 04:33:08.018  8979  8979 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:33:08.098  8979  8979 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:33:09.131  8979  8979 D AndroidRuntime: Shutting down VM
+10-21 04:33:10.292  8327  8354 D EGL_emulation: app_time_stats: avg=328.61ms min=37.01ms max=4421.75ms count=16
+10-21 04:33:11.294  8327  8354 D EGL_emulation: app_time_stats: avg=87.45ms min=43.28ms max=339.57ms count=11
+10-21 04:33:12.666  8327  8327 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::0@1@com.ratv.app>
+10-21 04:33:14.157  9012  9012 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 04:33:14.161  9012  9012 I AndroidRuntime: Using default boot image
+10-21 04:33:14.161  9012  9012 I AndroidRuntime: Leaving lock profiling enabled
+10-21 04:33:14.240  9012  9012 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 04:33:15.265  9012  9012 D AndroidRuntime: Shutting down VM
+10-21 04:33:16.466  8327  8354 D EGL_emulation: app_time_stats: avg=5162.39ms min=5162.39ms max=5162.39ms count=1

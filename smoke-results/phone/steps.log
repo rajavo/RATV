@@ -1,0 +1,65 @@
+04:25:43 == launch
+04:26:37 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 2428
+WaitTime: 2477
+Complete
+04:26:40 screenshot 01-splash.png 1080x2400
+04:26:40 == login-screen
+04:26:44 screenshot 02-login.png 1080x2400
+04:26:44 == wrong-password
+04:27:08 screenshot 03-login-error.png 1080x2400
+04:27:08 == xtream-login
+04:27:14 screenshot 04-login-filled.png 1080x2400
+04:27:31 screenshot 05-home.png 1080x2400
+04:27:31 == live
+04:27:39 screenshot 06-live.png 1080x2400
+04:27:39 == live-category
+04:27:45 screenshot 07-live-sport.png 1080x2400
+04:27:48 == favorite
+04:27:57 screenshot 08-live-favorites.png 1080x2400
+04:28:00 == play-live
+04:28:16 screenshot 09-player-live.png 2400x1080
+04:28:21 screenshot 10-player-live-controls.png 2400x1080
+04:28:25 screenshot 11-after-live-player.png 1080x2400
+04:28:25 == commentator
+04:28:46 screenshot 12-player-sport1.png 2400x1080
+04:28:53 screenshot 13-player-sport1-controls.png 2400x1080
+04:29:04 screenshot 14-sources-panel.png 2400x1080
+04:29:04 sources:  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+04:29:04 !! RuntimeError('missing in panel: المعلق في هذا البث')
+04:29:05 screenshot 15-fail-commentator.png 2400x1080
+04:29:05 == guide
+04:29:27 !! RuntimeError("not found: {'text': 'دليل البرامج'}")
+04:29:29 screenshot 16-fail-guide.png 2400x1080
+04:29:29 == movies
+04:29:51 !! RuntimeError("not found: {'text': 'أفلام', 'bottom': True}")
+04:29:53 screenshot 17-fail-movies.png 2400x1080
+04:29:53 == series
+04:30:15 !! RuntimeError("not found: {'text': 'مسلسلات', 'bottom': True}")
+04:30:16 screenshot 18-fail-series.png 2400x1080
+04:30:16 == home-after
+04:30:38 !! RuntimeError("not found: {'text': 'الرئيسية', 'bottom': True}")
+04:30:40 screenshot 19-fail-home-after.png 2400x1080
+04:30:40 == search
+04:31:02 !! RuntimeError("not found: {'text': 'بحث'}")
+04:31:04 screenshot 20-fail-search.png 2400x1080
+04:31:04 == settings
+04:31:26 !! RuntimeError("not found: {'text': 'حسابي', 'bottom': True}")
+04:31:28 screenshot 21-fail-settings.png 2400x1080
+04:31:28 == parental
+04:31:50 !! RuntimeError("not found: {'contains': 'إخفاء محتوى البالغين'}")
+04:31:51 screenshot 22-fail-parental.png 2400x1080
+04:31:51 == relaunch
+04:32:02 screenshot 23-relaunch.png 1080x2400
+04:32:02 == switch-to-m3u
+04:32:11 screenshot 24-switch-dialog.png 1080x2400
+04:32:25 screenshot 25-login-m3u.png 1080x2400
+04:32:38 screenshot 26-home-m3u.png 1080x2400
+04:32:38 == m3u-content
+04:32:46 screenshot 27-live-m3u.png 1080x2400
+04:33:00 screenshot 28-player-m3u.png 2400x1080
+04:33:10 screenshot 29-series-m3u.png 1080x2400
+04:33:16 screenshot 30-series-detail-m3u.png 1080x2400
