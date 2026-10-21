@@ -115,8 +115,10 @@ fun vodQuality(name: String, categoryName: String?): String? {
     if (categoryName.isNullOrBlank()) return null
     qualityOf(categoryName)?.let { return it }
     val f = foldText(categoryName)
-    return if (f.contains("فائقه الوضوح") || f.contains("فائق الوضوح") || f.contains("فائقه الدقه")) "4K" else null
+    return if (UHD_SECTION_WORDS.any { f.contains(it) }) "4K" else null
 }
+
+private val UHD_SECTION_WORDS = listOf("فائقة الوضوح", "فائق الوضوح", "فائقة الدقة", "الدقة الفائقة").map { foldText(it) }
 
 // ------------------------------------------------------------ sport
 
