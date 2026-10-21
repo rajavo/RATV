@@ -742,6 +742,8 @@ def s_matches():
 
 def s_update():
     """Account > Update the app: finds the newer version, downloads it, opens Android's installer."""
+    tap_where(text="حسابي", bottom=True)
+    time.sleep(2)
     if scroll_to("تحديث التطبيق") is None:
         raise RuntimeError("update row missing")
     tap_where(contains="تحديث التطبيق")
