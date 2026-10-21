@@ -267,6 +267,7 @@ def s_launch():
     adb("logcat", "-b", "all", "-c")
     # Subtitles come from the mock provider instead of the real online library.
     shell("setprop debug.ratv.subs http://10.0.2.2:8000")
+    shell("setprop debug.ratv.speed http://10.0.2.2:8000")
     log("debug.ratv.subs=" + shell("getprop debug.ratv.subs").strip())
     log(shell("am start -W -n %s/.MainActivity" % PKG).strip())
     time.sleep(1.5)
@@ -620,11 +621,107 @@ def s_home_after():
 def s_search():
     tap_where(text="بحث")
     time.sleep(1.5)
-    type_text("sport")
+    type_text("Night")
     time.sleep(2.5)
-    dump("search")
+    root = dump("search")
     shot("search")
     back()
+    texts = all_texts(root)
+    # The parental filter is still off here, so the adult test titles are found.
+    if "Desert Night" not in texts or "Night Club" not in texts:
+        raise RuntimeError("search results incomplete: " + texts[:300])
+
+
+def scroll_to(text, tries=6):
+    for _ in range(tries):
+        _, n = wait_for(timeout=3, contains=text)
+        if n is not None:
+            return n
+        shell("input swipe 540 1700 540 900 400")
+        time.sleep(1.2)
+    return None
+
+
+def s_adult_hidden():
+    """With the filter on, adult titles are gone everywhere, search included."""
+    tap_where(text="الرئيسية", bottom=True)
+    time.sleep(1.5)
+    tap_where(text="بحث")
+    time.sleep(1.5)
+    type_text("Night")
+    time.sleep(2.5)
+    root = dump("search-adult")
+    shot("search-adult")
+    back()
+    texts = all_texts(root)
+    if "Desert Night" not in texts:
+        raise RuntimeError("search did not run: " + texts[:300])
+    if "Night Club" in texts or "Night Party" in texts:
+        raise RuntimeError("adult titles still shown: " + texts[:300])
+
+
+def s_speed_test():
+    tap_where(text="حسابي", bottom=True)
+    time.sleep(1.5)
+    if scroll_to("قياس سرعة النت") is None:
+        raise RuntimeError("speed test row missing")
+    tap_where(contains="قياس سرعة النت")
+    texts = ""
+    for _ in range(25):
+        time.sleep(2)
+        texts = all_texts(dump())
+        if "يكفي" in texts or "ضعيف" in texts or "تعذّر" in texts:
+            break
+    dump("speed-test")
+    shot("speed-test")
+    log("speed: " + texts[:300])
+    tap_where(text="إغلاق")
+    if "يكفي" not in texts and "ضعيف" not in texts:
+        raise RuntimeError("speed test gave no result: " + texts[:300])
+
+
+def s_clear_history():
+    if scroll_to("حذف سجل المشاهدة") is None:
+        raise RuntimeError("clear history row missing")
+    tap_where(contains="حذف سجل المشاهدة")
+    time.sleep(1)
+    shot("clear-history-dialog")
+    tap_where(text="حذف")
+    time.sleep(1.5)
+    tap_where(text="الرئيسية", bottom=True)
+    time.sleep(2.5)
+    root = dump("home-history-cleared")
+    shot("home-history-cleared")
+    if find(root, text="تابع المشاهدة") is not None:
+        raise RuntimeError("continue watching still shown after clearing the history")
+
+
+def s_users():
+    """Both users are kept; switching back brings the first one with its favourites."""
+    tap_where(text="حسابي", bottom=True)
+    time.sleep(2)
+    root = dump("users")
+    shot("users")
+    texts = all_texts(root)
+    for need in ("اشتراكي", "قائمتي", "الحالي"):
+        if need not in texts:
+            raise RuntimeError("users list is missing " + need + ": " + texts[:300])
+    tap_where(text="اشتراكي")
+    _, n = wait_for(timeout=60, text="الرئيسية", bottom=True, save="home-user1")
+    if n is None:
+        raise RuntimeError("home not reached after switching user")
+    time.sleep(3)
+    tap_where(text="مباشر", bottom=True)
+    time.sleep(2)
+    tap_where(text="المفضلة")
+    time.sleep(2)
+    root = dump("user1-favorites")
+    shot("user1-favorites")
+    texts = all_texts(root)
+    names = ("Sport 1 HD", "Sport 2 4K", "Racing SD", "Sport 1 4K", "Sport 1 EN", "Sky Sports Main", "RATV News HD", "Gulf 24 FHD")
+    if not any(c in texts for c in names):
+        raise RuntimeError("favourites of the first user were lost: " + texts[:300])
+    tap_where(text="الكل")
 
 
 def s_settings():
@@ -637,12 +734,12 @@ def s_settings():
 def s_parental():
     # Settings got longer: scroll until the parental row shows.
     for _ in range(4):
-        _, n = wait_for(timeout=3, contains="إخفاء محتوى البالغين")
+        _, n = wait_for(timeout=3, contains="حجب محتوى البالغين")
         if n is not None:
             break
         shell("input swipe 540 1700 540 900 400")
         time.sleep(1.2)
-    tap_where(contains="إخفاء محتوى البالغين")
+    tap_where(contains="حجب محتوى البالغين")
     time.sleep(1.5)
     fill_fields([(0, "1234")])
     shot("pin-dialog")
@@ -654,10 +751,8 @@ def s_parental():
 def s_switch_to_m3u():
     tap_where(text="حسابي", bottom=True)
     time.sleep(1.5)
-    tap_where(text="تبديل القائمة")
-    time.sleep(1)
-    shot("switch-dialog")
-    tap_where(text="تبديل")
+    tap_where(text="إضافة مستخدم")
+    time.sleep(1.5)
     _, n = wait_for(timeout=20, text="أضف اشتراكك")
     if n is None:
         raise RuntimeError("login screen not shown after switching")
@@ -769,9 +864,13 @@ if __name__ == "__main__":
         ("search", s_search),
         ("settings", s_settings),
         ("parental", s_parental),
+        ("adult-hidden", s_adult_hidden),
+        ("speed-test", s_speed_test),
+        ("clear-history", s_clear_history),
         ("relaunch", s_relaunch),
         ("switch-to-m3u", s_switch_to_m3u),
         ("m3u-content", s_m3u_content),
+        ("users", s_users),
     ]:
         step(name, fn)
     finish()

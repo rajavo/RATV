@@ -46,7 +46,7 @@ MATCH = {
     "sport1.ratv": "الدوري الإسباني: ريال مدريد × برشلونة",
     "skymain.ratv": "LaLiga: Real Madrid v Barcelona",
 }
-VOD_CATS = [("10", "أفلام عربية"), ("11", "أكشن"), ("12", "دراما"), ("13", "4K أفلام فائقة الوضوح")]
+VOD_CATS = [("10", "أفلام عربية"), ("11", "أكشن"), ("12", "دراما"), ("13", "4K أفلام فائقة الوضوح"), ("14", "XXX Adults")]
 MOVIES = [
     (5001, "Desert Night (2023)", "10", "7.4"),
     (5002, "The Long Road 2021", "11", "6.8"),
@@ -56,6 +56,9 @@ MOVIES = [
     (5006, "Old Town", "12", ""),
     (5007, "Sky Riders 2022", "11", "6.1"),
     (5008, "4K-AR: Desert Night (2023)", "13", "7.4"),
+    # Adult titles: one in an adult section, one only marked in its name.
+    (5009, "Night Club", "14", "5.0"),
+    (5010, "Night Party +18", "11", "4.0"),
 ]
 SERIES_CATS = [("20", "مسلسلات خليجية"), ("21", "دراما"), ("22", "مسلسلات 4K")]
 SERIES = [
@@ -336,6 +339,21 @@ class Handler(BaseHTTPRequestHandler):
         u = urlparse(self.path)
         q = {k: v[0] for k, v in parse_qs(u.query).items()}
         p = u.path
+        if p == "/__down":  # speed test download
+            n = int(q.get("bytes", "0") or 0)
+            self.send_response(200)
+            self.send_header("Content-Type", "application/octet-stream")
+            self.send_header("Content-Length", str(n))
+            self.end_headers()
+            chunk = b"\0" * 65536
+            try:
+                while n > 0:
+                    k = min(n, len(chunk))
+                    self.wfile.write(chunk[:k])
+                    n -= k
+            except (BrokenPipeError, ConnectionResetError):
+                pass
+            return
         if p == "/player_api.php":
             if q.get("username") != USER or q.get("password") != PASS:
                 return self.send_json({"user_info": {"auth": 0}})

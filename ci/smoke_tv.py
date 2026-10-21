@@ -195,7 +195,7 @@ def t_settings():
     time.sleep(1.5)
     _, f = log_focus("settings")
     S.shot("settings")
-    expect(f is not None and "تبديل القائمة" in f, "settings not focused (focus: %s)" % f)
+    expect(f is not None and "إضافة مستخدم" in f, "settings not focused (focus: %s)" % f)
 
 
 if __name__ == "__main__":
