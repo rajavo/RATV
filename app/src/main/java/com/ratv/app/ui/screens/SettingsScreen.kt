@@ -65,6 +65,7 @@ import com.ratv.app.data.Playlist
 import com.ratv.app.data.PlaylistType
 import com.ratv.app.ui.LocalRepo
 import com.ratv.app.ui.Navigator
+import com.ratv.app.ui.components.rememberIsTv
 import com.ratv.app.ui.components.CircleIconButton
 import com.ratv.app.ui.components.AppIcon
 import com.ratv.app.ui.components.OutlineButton
@@ -88,9 +89,9 @@ private val bufferLabels = linkedMapOf(
 )
 
 private val liveFormatLabels = linkedMapOf(
-    "auto" to "تلقائي (HLS إذا يدعمه السيرفر)",
-    "hls" to "HLS دائماً",
-    "ts" to "TS دائماً"
+    "ts" to "TS (موصى به)",
+    "hls" to "HLS",
+    "auto" to "تلقائي (HLS إذا يدعمه السيرفر)"
 )
 
 @Composable
@@ -119,6 +120,8 @@ fun SettingsScreen(nav: Navigator) {
     var showBuffer by remember { mutableStateOf(false) }
     var showFormat by remember { mutableStateOf(false) }
     var liveFormat by remember { mutableStateOf(repo.prefs.liveFormat) }
+    var matchFrameRate by remember { mutableStateOf(repo.prefs.matchFrameRate) }
+    val onTv = rememberIsTv()
     var showAbout by remember { mutableStateOf(false) }
     var confirmDelete by remember { mutableStateOf<Playlist?>(null) }
     var confirmClearHistory by remember { mutableStateOf(false) }
@@ -246,7 +249,18 @@ fun SettingsScreen(nav: Navigator) {
             Divider()
             ValueRow("الاحتياطي ضد انقطاع النت", bufferLabels[bufferMode] ?: "يكمل دقيقة بدون إنترنت") { showBuffer = true }
             Divider()
-            ValueRow("صيغة البث المباشر", liveFormatLabels[liveFormat] ?: "تلقائي") { showFormat = true }
+            ValueRow("صيغة البث المباشر", liveFormatLabels[liveFormat] ?: "TS") { showFormat = true }
+            if (onTv) {
+                Divider()
+                ToggleRow(
+                    "مطابقة معدل الإطارات",
+                    "يضبط الشاشة على 50 أو 60 هرتز حسب القناة فتصير الحركة ناعمة بدون تقطيع، وقد تسودّ الشاشة لحظة عند تشغيل القناة",
+                    matchFrameRate
+                ) {
+                    matchFrameRate = it
+                    repo.prefs.matchFrameRate = it
+                }
+            }
             Divider()
             ToggleRow("أعلى جودة متاحة دائماً", "يختار أعلى جودة يرسلها المزوّد للبث", bestQuality) {
                 bestQuality = it
@@ -421,7 +435,7 @@ fun SettingsScreen(nav: Navigator) {
                         }
                     }
                     Text(
-                        "في HLS يجهّز السيرفر القناة على شكل مقاطع، فيمتلئ التخزين المؤقت فوراً ويقل التقطيع. إذا لم تعمل قناة بصيغة HLS يرجع التطبيق إلى TS تلقائياً.",
+                        "TS هو البث الأصلي من السيرفر وهو الأنسب لأغلب الاشتراكات. جرّب HLS إذا كان التقطيع مستمراً مع TS؛ وإذا لم تعمل قناة بصيغة HLS يرجع التطبيق إلى TS تلقائياً.",
                         style = T.caption
                     )
                 }
@@ -459,7 +473,7 @@ fun SettingsScreen(nav: Navigator) {
                         }
                     }
                     Text(
-                        "طول المشاهدة يخزّن التطبيق احتياطياً من البث، وإذا ضعف النت أو انقطع تكمل الصورة منه حتى يعود الإنترنت، فالمدة المختارة هي أقصى وقت يكمل فيه بدون نت. الأفلام والمسلسلات يمتلئ احتياطيها خلال ثوانٍ. القنوات المباشرة يمتلئ احتياطيها فوراً إذا كان السيرفر يدعم HLS، وإلا يتجمّع أثناء المشاهدة (تُعرض القناة أبطأ بـ5% لا تُلاحظ حتى يمتلئ). الاحتياطي في ذاكرة الجهاز، فقد يكون أقصر في قنوات 4K والأجهزة ذات الذاكرة الصغيرة. يُطبَّق عند تشغيل القناة التالية.",
+                        "الأفلام والمسلسلات: يتجمّع الاحتياطي أثناء المشاهدة حتى المدة المختارة، فتكمل طوالها بدون إنترنت. القنوات المباشرة: البث يصل لحظة بلحظة فلا يمكن سبقه، فيخزّن التطبيق ثوانٍ احتياطية في بداية كل قناة ويعبّيها من جديد بعد أي توقف. إذا انقطع النت يكمل من الاحتياطي ويعيد الاتصال كل ثانيتين حتى يعود. الاحتياطي في ذاكرة الجهاز، فقد يكون أقصر مع 4K.",
                         style = T.caption
                     )
                 }

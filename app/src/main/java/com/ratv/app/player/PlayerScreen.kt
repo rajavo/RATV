@@ -1,5 +1,7 @@
 package com.ratv.app.player
 
+import android.os.SystemClock
+import androidx.compose.runtime.mutableFloatStateOf
 import android.app.PictureInPictureParams
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
@@ -200,7 +202,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val playPauseFocus = remember { FocusRequester() }
     val retryFocus = remember { FocusRequester() }
 
-    val player = remember { createPlayer(context, repo.prefs.bufferMode, repo.prefs.bestQuality) }
+    val player = remember { createPlayer(context, repo.prefs.bufferMode, repo.prefs.bestQuality, live = kind == "live") }
     val cushion = remember { cushionMs(repo.prefs.bufferMode) }
     val liveFormat = remember { repo.prefs.liveFormat }
     // Channel whose HLS version failed: it goes back to its own address.
@@ -209,6 +211,14 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // Reserve stored ahead of the picture, and whether the internet is failing right now.
     var reserveMs by remember { mutableLongStateOf(0L) }
     var netTrouble by remember { mutableStateOf(false) }
+    // Stream information (the ⓘ button), with what playback went through: finds the cause of stutter.
+    var showStats by remember { mutableStateOf(false) }
+    var stalls by remember { mutableIntStateOf(0) }
+    var droppedFrames by remember { mutableIntStateOf(0) }
+    var decoderName by remember { mutableStateOf<String?>(null) }
+    var bandwidthBps by remember { mutableLongStateOf(0L) }
+    var measuredFps by remember { mutableFloatStateOf(0f) }
+    var videoWidth by remember { mutableIntStateOf(0) }
     val scope = rememberCoroutineScope()
     val mix = remember { MixController(context, scope, player, repo.prefs.bufferMode) }
     val subs = remember { SubtitleController(scope, repo.prefs) }
@@ -277,9 +287,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         val hlsAllowed = repo.account.value?.formats?.contains("m3u8") == true
         val url = if (item.isLive && hlsFailedFor != item.id) liveStreamUrl(item.url, liveFormat, hlsAllowed) else item.url
         usingHls = url != item.url
-        // HLS channels start up to the reserve behind live, so the reserve is full at once.
-        val offset = if (item.isLive) cushion else null
-        player.setMediaItem(mediaItemFor(url, offset), item.startPosition.coerceAtLeast(0L))
+        stalls = 0
+        droppedFrames = 0
+        measuredFps = 0f
+        player.setMediaItem(mediaItemFor(url, live = item.isLive), item.startPosition.coerceAtLeast(0L))
         player.prepare()
         player.playWhenReady = true
         if (item.isLive) repo.noteChannelPlayed(item.id)
@@ -403,6 +414,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         }
         player.addListener(listener)
         val loadWatch = object : AnalyticsListener {
+            private var readyOnce = false
+
             override fun onLoadError(
                 eventTime: AnalyticsListener.EventTime,
                 loadEventInfo: LoadEventInfo,
@@ -411,6 +424,38 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 wasCanceled: Boolean
             ) {
                 netTrouble = true
+            }
+
+            override fun onPlaybackStateChanged(eventTime: AnalyticsListener.EventTime, state: Int) {
+                if (state == Player.STATE_READY) readyOnce = true
+                else if (state == Player.STATE_BUFFERING && readyOnce) stalls++
+                if (state == Player.STATE_IDLE) readyOnce = false
+            }
+
+            override fun onDroppedVideoFrames(eventTime: AnalyticsListener.EventTime, count: Int, elapsedMs: Long) {
+                droppedFrames += count
+            }
+
+            override fun onVideoDecoderInitialized(
+                eventTime: AnalyticsListener.EventTime,
+                name: String,
+                initializedTimestampMs: Long,
+                initializationDurationMs: Long
+            ) {
+                decoderName = name
+            }
+
+            override fun onBandwidthEstimate(
+                eventTime: AnalyticsListener.EventTime,
+                totalLoadTimeMs: Int,
+                totalBytesLoaded: Long,
+                bitrateEstimate: Long
+            ) {
+                bandwidthBps = bitrateEstimate
+            }
+
+            override fun onVideoSizeChanged(eventTime: AnalyticsListener.EventTime, videoSize: VideoSize) {
+                if (videoSize.width > 0) videoWidth = videoSize.width
             }
         }
         player.addAnalyticsListener(loadWatch)
@@ -424,31 +469,51 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         }
     }
 
-    // Builds the reserve while a live channel plays: the stream arrives in real time, so playing
-    // 5% slower stores the difference, until the reserve is full or cannot grow any more
-    // (memory or the server's window). Films and series fill it by downloading ahead.
+    // Watches the reserve, the connection and the real frame rate once a second. Playback
+    // speed is never touched: speeding up or slowing down shows as judder on a TV.
     LaunchedEffect(current) {
-        val item = current ?: return@LaunchedEffect
-        var ceiling = Long.MAX_VALUE
+        current ?: return@LaunchedEffect
+        if (player.playbackParameters.speed != 1f) player.setPlaybackSpeed(1f)
         var lastBuffered = player.bufferedPosition
-        var stuckSeconds = 0
+        var lastFrames = -1L
+        var lastFramesAt = 0L
         while (true) {
-            val buffered = player.totalBufferedDuration
-            reserveMs = buffered
+            reserveMs = player.totalBufferedDuration
             val grew = player.bufferedPosition > lastBuffered + 200L
             lastBuffered = player.bufferedPosition
             if (grew) netTrouble = false
-            if (item.isLive) {
-                val slowed = player.playbackParameters.speed < 1f
-                stuckSeconds = if (slowed && player.isPlaying && !grew && !netTrouble) stuckSeconds + 1 else 0
-                if (stuckSeconds >= 5) ceiling = buffered // cannot store more than this here
-                if (ceiling != Long.MAX_VALUE && buffered < ceiling / 10 * 7) ceiling = Long.MAX_VALUE
-                val grow = player.isPlaying && mix.channel == null &&
-                    buffered < minOf(cushion, ceiling) - 2_000L
-                val speed = if (grow) 0.95f else 1f
-                if (player.playbackParameters.speed != speed) player.setPlaybackSpeed(speed)
+            player.videoDecoderCounters?.let { c ->
+                c.ensureUpdated()
+                val frames = (c.renderedOutputBufferCount + c.droppedBufferCount + c.skippedOutputBufferCount).toLong()
+                val t = SystemClock.elapsedRealtime()
+                if (lastFrames >= 0 && player.isPlaying && t - lastFramesAt >= 2_900L) {
+                    val fps = (frames - lastFrames) * 1000f / (t - lastFramesAt)
+                    if (fps > 5f) measuredFps = standardFrameRate(fps)
+                    lastFrames = frames
+                    lastFramesAt = t
+                } else if (lastFrames < 0 || !player.isPlaying) {
+                    lastFrames = frames
+                    lastFramesAt = t
+                }
             }
             delay(1_000L)
+        }
+    }
+
+    // Optional on TVs: switch the screen to the refresh rate that shows this channel evenly
+    // (25 and 50 fps on 50 Hz, 30 and 60 on 60 Hz). Put back when the player closes.
+    val view = LocalView.current
+    val matchRate = remember { repo.prefs.matchFrameRate }
+    val hostWindow = remember(context) { context.hostActivity()?.window }
+    LaunchedEffect(measuredFps) {
+        if (!matchRate || measuredFps <= 0f) return@LaunchedEffect
+        val display = view.display ?: return@LaunchedEffect
+        val mode = displayModeFor(display, measuredFps) ?: return@LaunchedEffect
+        hostWindow?.let { w -> w.attributes = w.attributes.also { it.preferredDisplayModeId = mode.modeId } }
+    }
+    DisposableEffect(Unit) {
+        onDispose {
+            if (matchRate) hostWindow?.let { w -> w.attributes = w.attributes.also { it.preferredDisplayModeId = 0 } }
         }
     }
 
@@ -788,14 +853,39 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             }
         }
 
+        if (showStats && current != null) {
+            StatsPanel(
+                format = if (current?.isLive == true) (if (usingHls) "HLS" else "TS") else "ملف",
+                width = videoWidth,
+                height = videoHeight,
+                fps = measuredFps,
+                refresh = view.display?.refreshRate ?: 0f,
+                video = player.videoFormat?.sampleMimeType,
+                audio = player.audioFormat?.sampleMimeType,
+                decoder = decoderName,
+                bandwidthBps = bandwidthBps,
+                reserveMs = reserveMs,
+                stalls = stalls,
+                dropped = droppedFrames,
+                offline = netTrouble,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(start = 20.dp, top = 84.dp)
+            )
+        }
+
         // How much reserve there is; while the internet is down, how long the picture can still go on.
         val showReserve = playerError == null && !notFound && current != null &&
             ((netTrouble && reserveMs > 0) || (controlsVisible && !buffering))
         if (showReserve) {
-            val secs = minOf(reserveMs, cushion) / 1000L
+            val liveNow = current?.isLive == true
+            val secs = (if (liveNow) reserveMs else minOf(reserveMs, cushion)) / 1000L
             Text(
-                if (netTrouble) "انقطع الإنترنت — يكمل من الاحتياطي، باقي $secs ث"
-                else "الاحتياطي ضد انقطاع النت: $secs من ${cushion / 1000L} ث",
+                when {
+                    netTrouble -> "انقطع الإنترنت — يكمل من الاحتياطي، باقي $secs ث"
+                    liveNow -> "الاحتياطي ضد انقطاع النت: $secs ث"
+                    else -> "الاحتياطي ضد انقطاع النت: $secs من ${cushion / 1000L} ث"
+                },
                 style = T.body(13.sp, FontWeight.Bold, if (netTrouble) Color.White else RColors.Text),
                 modifier = Modifier
                     .align(Alignment.TopCenter)
@@ -970,6 +1060,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                                 repo.prefs.resizeMode = resizeIndex
                                 resizeNotice = resizeModes[resizeIndex].label
                             },
+                            onStats = {
+                                touch()
+                                showStats = !showStats
+                            },
                             onChannels = {
                                 touch()
                                 panelOpen = true
@@ -1132,6 +1226,7 @@ private fun Controls(
     onTracks: () -> Unit,
     onPip: () -> Unit,
     onResize: () -> Unit,
+    onStats: () -> Unit,
     onChannels: () -> Unit,
     onGuide: () -> Unit,
     onNextEpisode: () -> Unit,
@@ -1204,6 +1299,7 @@ private fun Controls(
             if (hasTrackChoice) GlassIcon(RIcons.Captions, "الصوت والترجمة", onTracks)
             if (canPip) GlassIcon(RIcons.Pip, "صورة داخل صورة", onPip)
             GlassIcon(RIcons.Aspect, "حجم الصورة: $resizeLabel", onResize)
+            GlassIcon(RIcons.Info, "معلومات البث", onStats)
         }
 
         // Center transport (media controls stay left-to-right)
@@ -1500,3 +1596,63 @@ private fun TrackRow(label: String, selected: Boolean, onClick: () -> Unit) {
     }
 }
 
+/** What the stream is and what playback went through, with the likely cause of any stutter. */
+@Composable
+private fun StatsPanel(
+    format: String,
+    width: Int,
+    height: Int,
+    fps: Float,
+    refresh: Float,
+    video: String?,
+    audio: String?,
+    decoder: String?,
+    bandwidthBps: Long,
+    reserveMs: Long,
+    stalls: Int,
+    dropped: Int,
+    offline: Boolean,
+    modifier: Modifier = Modifier
+) {
+    fun codec(mime: String?) = mime?.substringAfter('/')?.uppercase() ?: "—"
+    val fpsText = if (fps > 0f) String.format(java.util.Locale.US, if (fps % 1f == 0f) "%.0f" else "%.2f", fps) else "—"
+    val uneven = fps > 0f && refresh > 0f && !refreshFits(refresh, fps)
+    val verdict = when {
+        dropped > 50 -> "الجهاز لا يلحق على فك هذا البث ($dropped إطار سقط): جرّب نسخة HD من القناة."
+        stalls > 0 && offline -> "التوقفات من انقطاع الاتصال بالإنترنت."
+        stalls > 0 -> "توقف البث $stalls مرة: الاتصال أو السيرفر لم يرسل البث بسرعة كافية."
+        uneven -> "البث $fpsText إطار والشاشة ${refresh.toInt()} هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات."
+        else -> "البث سليم: لا توقفات ولا إطارات ساقطة."
+    }
+    Column(
+        modifier
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color(0xE60B0C10))
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(3.dp)
+    ) {
+        Text("معلومات البث", style = T.body(14.sp, FontWeight.Bold, RColors.Saffron))
+        val lines = listOf(
+            "الصيغة" to format,
+            "الصورة" to (if (height > 0) "${if (width > 0) "$width×" else ""}$height · $fpsText إطار/ث" else "—"),
+            "الشاشة" to (if (refresh > 0f) "${refresh.toInt()} هرتز" else "—"),
+            "الترميز" to "${codec(video)} · صوت ${codec(audio)}",
+            "فك الترميز" to (decoder ?: "—"),
+            "سرعة الاتصال" to (if (bandwidthBps > 0) String.format(java.util.Locale.US, "%.1f ميجابت", bandwidthBps / 1_000_000.0) else "—"),
+            "الاحتياطي" to "${reserveMs / 1000L} ث",
+            "التوقفات" to "$stalls",
+            "إطارات ساقطة" to "$dropped"
+        )
+        lines.forEach { (k, v) ->
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text(k, style = T.body(12.5.sp, color = RColors.Text2), modifier = Modifier.width(96.dp))
+                Text(v, style = T.body(12.5.sp, FontWeight.Bold).copy(textDirection = androidx.compose.ui.text.style.TextDirection.ContentOrLtr))
+            }
+        }
+        Text(
+            verdict,
+            style = T.body(12.5.sp, FontWeight.Bold, if (verdict.startsWith("البث سليم")) RColors.Text else RColors.Saffron),
+            modifier = Modifier.width(300.dp)
+        )
+    }
+}

@@ -211,14 +211,19 @@ class Prefs(context: Context) {
         }
         set(value) = sp.edit().putString("buffer", value).apply()
 
-    /** Live stream format: "auto" (HLS when the server offers it), "hls" or "ts". */
+    /** Live stream format: "ts" (the provider's own stream), "hls", or "auto" (HLS when the server offers it). */
     var liveFormat: String
-        get() = sp.getString("liveFormat", "auto") ?: "auto"
-        set(value) = sp.edit().putString("liveFormat", value).apply()
+        get() = sp.getString("liveFormat2", "ts") ?: "ts"
+        set(value) = sp.edit().putString("liveFormat2", value).apply()
+
+    /** On a TV, switch the screen to 50 or 60 Hz to match the channel, for even motion. */
+    var matchFrameRate: Boolean
+        get() = sp.getBoolean("matchFrameRate", false)
+        set(value) = sp.edit().putBoolean("matchFrameRate", value).apply()
 
     /** Always take the highest quality an adaptive stream offers. */
     var bestQuality: Boolean
-        get() = sp.getBoolean("bestQuality", true)
+        get() = sp.getBoolean("bestQuality", false)
         set(value) = sp.edit().putBoolean("bestQuality", value).apply()
 
     var autoplayLast: Boolean

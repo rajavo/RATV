@@ -1,5 +1,6 @@
 package com.ratv.app.player
 
+import android.view.Display
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
@@ -27,6 +28,10 @@ import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.HttpDataSource
 import androidx.media3.exoplayer.DefaultLivePlaybackSpeedControl
 import androidx.media3.exoplayer.DefaultLoadControl
+import androidx.media3.exoplayer.DefaultRenderersFactory
+import androidx.media3.exoplayer.upstream.DefaultBandwidthMeter
+import androidx.media3.extractor.DefaultExtractorsFactory
+import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.upstream.DefaultLoadErrorHandlingPolicy
@@ -134,22 +139,46 @@ fun moviePlayable(m: Movie, start: Long = 0L) =
 
 /** A media item for a stream address (HLS links get their type so they always play as HLS). */
 /**
- * [liveOffsetMs]: for a live HLS stream, how far behind live to play. The segments already on
- * the server fill the cache at once, so the picture starts quickly with a full cushion.
+ * [live]: a live stream plays at normal speed only, at the distance from live the stream itself
+ * asks for (for HLS, three segments behind live), never at the edge of the server's window.
  */
-fun mediaItemFor(url: String, liveOffsetMs: Long? = null): MediaItem {
+fun mediaItemFor(url: String, live: Boolean = false): MediaItem {
     val builder = MediaItem.Builder().setUri(url)
     if (url.contains(".m3u8", ignoreCase = true)) builder.setMimeType(MimeTypes.APPLICATION_M3U8)
-    if (liveOffsetMs != null) {
+    if (live) {
         builder.setLiveConfiguration(
             MediaItem.LiveConfiguration.Builder()
-                .setTargetOffsetMs(liveOffsetMs)
                 .setMinPlaybackSpeed(1f)
                 .setMaxPlaybackSpeed(1f)
                 .build()
         )
     }
     return builder.build()
+}
+
+private val STANDARD_RATES = floatArrayOf(23.976f, 24f, 25f, 29.97f, 30f, 50f, 59.94f, 60f)
+
+/** A measured frame rate rounded to the broadcast rate it is (24.9 is 25). */
+fun standardFrameRate(fps: Float): Float =
+    STANDARD_RATES.minByOrNull { kotlin.math.abs(it - fps) }?.takeIf { kotlin.math.abs(it - fps) < 2f } ?: fps
+
+/** True when a screen refreshing at [refresh] Hz shows [fps] frames evenly (25 on 50 Hz, 30 on 60 Hz). */
+fun refreshFits(refresh: Float, fps: Float): Boolean =
+    listOf(1, 2).any { k -> kotlin.math.abs(refresh - fps * k) < 0.06f * k }
+
+/** The TV's display mode of the same size whose refresh rate shows [fps] evenly, if it has one. */
+fun displayModeFor(display: Display, fps: Float): Display.Mode? {
+    val current = display.mode
+    if (refreshFits(current.refreshRate, fps)) return null
+    return display.supportedModes
+        .filter { it.physicalWidth == current.physicalWidth && it.physicalHeight == current.physicalHeight && refreshFits(it.refreshRate, fps) }
+        .minByOrNull { it.refreshRate }
+}
+
+tailrec fun Context.hostActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.hostActivity()
+    else -> null
 }
 
 /** The reserve setting in milliseconds (30 s to 3 min). */
@@ -215,11 +244,21 @@ fun episodePlayable(ep: Episode, seriesId: String, seriesName: String?, cover: S
 )
 
 @androidx.annotation.OptIn(UnstableApi::class)
-fun createPlayer(context: Context, bufferMode: String, bestQuality: Boolean, handleAudioFocus: Boolean = true): ExoPlayer {
-    // Starts after 3 s, then keeps loading until the reserve is full, as far as memory allows
-    // (films fill it in seconds; live channels build it while playing, see PlayerScreen).
+/**
+ * The player for one screen. [live] channels arrive in real time, so they keep a steady cushion
+ * stored at the start; films and series download ahead up to the reserve chosen in settings.
+ */
+@androidx.annotation.OptIn(UnstableApi::class)
+fun createPlayer(
+    context: Context,
+    bufferMode: String,
+    bestQuality: Boolean,
+    handleAudioFocus: Boolean = true,
+    live: Boolean = false
+): ExoPlayer {
     val reserve = maxOf(cushionMs(bufferMode).toInt(), 15_000)
-    val durations = intArrayOf(reserve, reserve + 30_000, 3_000, 5_000)
+    // min buffer, max buffer, stored before starting, stored before resuming after a stall (ms)
+    val durations = if (live) intArrayOf(20_000, 60_000, 5_000, 8_000) else intArrayOf(reserve, reserve + 30_000, 3_000, 5_000)
     val memoryCap = (Runtime.getRuntime().maxMemory() * 0.45).toLong().coerceIn(32L shl 20, 220L shl 20).toInt()
     val http = DefaultHttpDataSource.Factory()
         .setUserAgent(Http.USER_AGENT)
@@ -236,21 +275,31 @@ fun createPlayer(context: Context, bufferMode: String, bestQuality: Boolean, han
         .setUsage(C.USAGE_MEDIA)
         .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
         .build()
-    // Retry failed downloads several times before giving up, so short network drops do not stop playback.
-    val mediaSourceFactory = DefaultMediaSourceFactory(dataSourceFactory)
+    // IPTV encoders often key frames without IDR slices: accept them, so the picture does not
+    // wait for the next IDR frame after joining or after a gap.
+    val extractors = DefaultExtractorsFactory()
+        .setTsExtractorFlags(DefaultTsPayloadReaderFactory.FLAG_ALLOW_NON_IDR_KEYFRAMES)
+    val mediaSourceFactory = DefaultMediaSourceFactory(dataSourceFactory, extractors)
         .setLoadErrorHandlingPolicy(PatientLoadErrorPolicy())
-    // Live streams keep normal speed instead of rushing back to the live edge after a stall:
-    // fewer stalls, and two streams stay in step when one gives the picture and the other the commentary.
+    // Live streams always play at normal speed: no speeding up or slowing down, which shows as
+    // judder on a TV, and two streams stay in step for commentary from another channel.
     val liveSpeed = DefaultLivePlaybackSpeedControl.Builder()
         .setFallbackMinPlaybackSpeed(1f)
         .setFallbackMaxPlaybackSpeed(1f)
         .build()
-    val player = ExoPlayer.Builder(context)
+    // If the device's first video decoder fails on a stream, try the next one instead of stopping.
+    val renderers = DefaultRenderersFactory(context).setEnableDecoderFallback(true)
+    // Start at a high quality and step down only when the connection really cannot carry it.
+    val bandwidth = DefaultBandwidthMeter.Builder(context).setInitialBitrateEstimate(12_000_000L).build()
+    val player = ExoPlayer.Builder(context, renderers)
         .setMediaSourceFactory(mediaSourceFactory)
         .setLoadControl(loadControl)
+        .setBandwidthMeter(bandwidth)
         .setLivePlaybackSpeedControl(liveSpeed)
         .setAudioAttributes(audioAttributes, handleAudioFocus)
         .setHandleAudioBecomingNoisy(handleAudioFocus)
+        // Keeps Wi-Fi at full power while playing: its power saving causes stalls now and then.
+        .setWakeMode(C.WAKE_MODE_NETWORK)
         .build()
     if (bestQuality) {
         player.trackSelectionParameters = player.trackSelectionParameters.buildUpon()

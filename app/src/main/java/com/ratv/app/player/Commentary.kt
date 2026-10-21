@@ -97,12 +97,12 @@ class MixController(
             return
         }
         stop()
-        val p = createPlayer(context, bufferMode, bestQuality = false, handleAudioFocus = false)
+        val p = createPlayer(context, bufferMode, bestQuality = false, handleAudioFocus = false, live = true)
         p.trackSelectionParameters = p.trackSelectionParameters.buildUpon()
             .setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, true)
             .build()
         p.addListener(listener)
-        p.setMediaItem(mediaItemFor(ch.url))
+        p.setMediaItem(mediaItemFor(ch.url, live = true))
         p.prepare()
         p.playWhenReady = main.playWhenReady
         audio = p

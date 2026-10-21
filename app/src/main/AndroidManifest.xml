@@ -3,6 +3,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Keeps Wi-Fi at full power while a channel plays. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- Installs updates downloaded from the app's GitHub release. -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
