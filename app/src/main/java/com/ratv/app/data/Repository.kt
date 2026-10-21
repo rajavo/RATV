@@ -162,7 +162,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
 
     fun refreshEpg() {
         val p = _playlist.value ?: return
-        scope.launch { loadEpg(p, force = true) }
+        scope.launch(Playback.gentle) { loadEpg(p, force = true) }
     }
 
     /** Validates, saves and loads a new playlist. Returns an error message or null on success. */
@@ -276,8 +276,11 @@ class Repository(private val context: Context, val prefs: Prefs) {
             _state.value = LoadState.Error(friendlyError(e))
             return
         }
-        if (p.type == PlaylistType.XTREAM) loadXtreamLibrary(p, force)
-        loadEpg(p, force)
+        // Films, series and the guide load on low-priority threads, so a channel already playing comes first.
+        withContext(Playback.gentle) {
+            if (p.type == PlaylistType.XTREAM) loadXtreamLibrary(p, force)
+            loadEpg(p, force)
+        }
     }
 
     private fun loadXtreamCore(p: Playlist, force: Boolean) {

@@ -3,6 +3,12 @@ name: Build APK
 on:
   push:
     branches: [ main, master ]
+    # RA Net (net/) has its own workflow: changing it must not publish a new RATV for the customers.
+    # Edits of this file alone do not publish either; run it by hand (workflow_dispatch) if needed.
+    paths-ignore:
+      - 'net/**'
+      - '.github/workflows/net.yml'
+      - '.github/workflows/build.yml'
   workflow_dispatch:
 
 permissions:

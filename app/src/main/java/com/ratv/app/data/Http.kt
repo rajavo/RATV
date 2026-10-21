@@ -1,5 +1,6 @@
 package com.ratv.app.data
 
+import android.os.SystemClock
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.BufferedInputStream
@@ -43,7 +44,26 @@ object Http {
             target.parentFile?.mkdirs()
             val tmp = File(target.parentFile, target.name + ".part")
             tmp.outputStream().use { out ->
-                body.byteStream().use { input -> input.copyTo(out, 64 * 1024) }
+                body.byteStream().use { input ->
+                    // While a channel or film plays, lists and the guide come in slowly, so they
+                    // never take the line from the picture.
+                    val buf = ByteArray(64 * 1024)
+                    var since = SystemClock.elapsedRealtime()
+                    var bytes = 0L
+                    while (true) {
+                        val n = input.read(buf)
+                        if (n < 0) break
+                        out.write(buf, 0, n)
+                        if (!Playback.active) {
+                            since = SystemClock.elapsedRealtime()
+                            bytes = 0L
+                            continue
+                        }
+                        bytes += n
+                        val ahead = bytes * 1000L / Playback.BACKGROUND_BYTES_PER_SECOND - (SystemClock.elapsedRealtime() - since)
+                        if (ahead > 0) Thread.sleep(ahead)
+                    }
+                }
             }
             if (tmp.length() == 0L) {
                 tmp.delete()
