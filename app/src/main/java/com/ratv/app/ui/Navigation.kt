@@ -3,7 +3,8 @@ package com.ratv.app.ui
 import android.net.Uri
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -28,7 +29,7 @@ import androidx.navigation.navArgument
 import com.ratv.app.data.Repository
 import com.ratv.app.player.PlayerScreen
 import com.ratv.app.ui.components.BottomNav
-import com.ratv.app.ui.components.SideNav
+import com.ratv.app.ui.components.TopBar
 import com.ratv.app.ui.components.rememberIsWide
 import com.ratv.app.ui.screens.GuideScreen
 import com.ratv.app.ui.screens.HomeScreen
@@ -97,7 +98,7 @@ fun RatvRoot() {
     val currentTab = if (route == "guide") "live" else (route ?: "home")
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
-    Row(
+    Column(
         Modifier
             .fillMaxSize()
             .background(RColors.Ink)
@@ -110,10 +111,11 @@ fun RatvRoot() {
             }
     ) {
     if (wide && showBar) {
-        SideNav(current = currentTab, onSelect = { navigator.tab(it) })
+        TopBar(current = currentTab, onSelect = { navigator.tab(it) }, onSearch = { navigator.search() })
     }
+    Box(Modifier.weight(1f)) {
     Scaffold(
-        modifier = Modifier.weight(1f),
+        modifier = Modifier.fillMaxSize(),
         containerColor = RColors.Ink,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
@@ -178,6 +180,7 @@ fun RatvRoot() {
                 )
             }
         }
+    }
     }
     }
 }

@@ -1,5 +1,7 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.player.languageName
+import com.ratv.app.player.subtitleLanguages
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -71,6 +73,8 @@ import com.ratv.app.ui.components.relativeTime
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 
+private val subtitleSizeLabels = listOf("صغير", "متوسط", "كبير", "كبير جداً")
+
 private val bufferLabels = linkedMapOf(
     "small" to "صغير (أسرع بدءاً)",
     "medium" to "متوسط",
@@ -95,6 +99,11 @@ fun SettingsScreen(nav: Navigator) {
     var autoplay by remember { mutableStateOf(repo.prefs.autoplayLast) }
     var bestQuality by remember { mutableStateOf(repo.prefs.bestQuality) }
     var epgAuto by remember { mutableStateOf(repo.prefs.epgAuto) }
+    var livePreview by remember { mutableStateOf(repo.prefs.livePreview) }
+    var subLang by remember { mutableStateOf(repo.prefs.subtitleLang) }
+    var subSize by remember { mutableStateOf(repo.prefs.subtitleSize.coerceIn(0, 3)) }
+    var subAuto by remember { mutableStateOf(repo.prefs.subtitleAuto) }
+    var showSubLang by remember { mutableStateOf(false) }
     var showBuffer by remember { mutableStateOf(false) }
     var showAbout by remember { mutableStateOf(false) }
     var confirmSwitch by remember { mutableStateOf(false) }
@@ -202,6 +211,26 @@ fun SettingsScreen(nav: Navigator) {
                 autoplay = it
                 repo.prefs.autoplayLast = it
             }
+            Divider()
+            ToggleRow("معاينة القناة في قائمة المباشر", "على التلفزيون تُعرض القناة المختارة في نافذة صغيرة", livePreview) {
+                livePreview = it
+                repo.prefs.livePreview = it
+            }
+        }
+
+        GroupTitle("الترجمة")
+        Group {
+            ValueRow("لغة الترجمة", languageName(subLang)) { showSubLang = true }
+            Divider()
+            ValueRow("حجم خط الترجمة", subtitleSizeLabels[subSize]) {
+                subSize = (subSize + 1) % subtitleSizeLabels.size
+                repo.prefs.subtitleSize = subSize
+            }
+            Divider()
+            ToggleRow("تشغيل الترجمة تلقائياً", "تبحث عن ترجمة بلغتك عند بدء أي فيلم أو حلقة، وتترجمها آلياً إن لم تتوفر", subAuto) {
+                subAuto = it
+                repo.prefs.subtitleAuto = it
+            }
         }
 
         GroupTitle("دليل البرامج")
@@ -243,6 +272,44 @@ fun SettingsScreen(nav: Navigator) {
             Icon(RIcons.ChevronLeft, contentDescription = null, tint = RColors.Text3, modifier = Modifier.size(18.dp))
         }
         Spacer(Modifier.height(28.dp))
+    }
+
+    if (showSubLang) {
+        AlertDialog(
+            onDismissRequest = { showSubLang = false },
+            confirmButton = { TextButton(onClick = { showSubLang = false }) { Text("تم", color = RColors.Saffron) } },
+            title = { Text("لغة الترجمة", style = T.h2) },
+            text = {
+                Column(
+                    Modifier
+                        .heightIn(max = 380.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    subtitleLanguages.forEach { lang ->
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 46.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .tvClickable(RoundedCornerShape(10.dp), role = Role.RadioButton) {
+                                    subLang = lang.code
+                                    repo.prefs.subtitleLang = lang.code
+                                },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = subLang == lang.code,
+                                onClick = null,
+                                colors = RadioButtonDefaults.colors(selectedColor = RColors.Saffron)
+                            )
+                            Spacer(Modifier.size(8.dp))
+                            Text(lang.name, style = T.body(15.sp))
+                        }
+                    }
+                }
+            },
+            containerColor = RColors.Surface
+        )
     }
 
     if (showBuffer) {

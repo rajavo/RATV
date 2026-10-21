@@ -60,6 +60,7 @@ import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.components.RingsArt
 import com.ratv.app.ui.components.ScreenHeader
 import com.ratv.app.ui.components.TvInitialFocus
+import com.ratv.app.ui.components.rememberIsWide
 import com.ratv.app.ui.components.tvClickable
 import com.ratv.app.ui.components.hm
 import com.ratv.app.ui.theme.RColors
@@ -67,21 +68,36 @@ import com.ratv.app.ui.theme.T
 
 private const val ALL = "__all__"
 private const val FAV = "__fav__"
+private const val RECENT = "__recent__"
 
 @Composable
 fun LiveScreen(nav: Navigator) {
+    if (rememberIsWide()) {
+        LiveWideScreen(nav)
+    } else {
+        LivePhoneScreen(nav)
+    }
+}
+
+@Composable
+private fun LivePhoneScreen(nav: Navigator) {
     val repo = LocalRepo.current
     val channels by repo.channels.collectAsStateWithLifecycle()
     val categories by repo.liveCategories.collectAsStateWithLifecycle()
     val favorites by repo.favorites.collectAsStateWithLifecycle()
+    val recentIds by repo.recentChannels.collectAsStateWithLifecycle()
     val epg by repo.epg.collectAsStateWithLifecycle()
     val now = rememberNow()
     var selected by rememberSaveable { mutableStateOf(ALL) }
 
-    val visible = remember(channels, favorites, selected) {
+    val visible = remember(channels, favorites, selected, recentIds) {
         when (selected) {
             ALL -> channels
             FAV -> channels.filter { Keys.live(it.id) in favorites }
+            RECENT -> {
+                val byId = channels.associateBy { it.id }
+                recentIds.mapNotNull { byId[it] }
+            }
             else -> channels.filter { it.categoryId == selected }
         }
     }
@@ -128,6 +144,7 @@ fun LiveScreen(nav: Navigator) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 item { Chip("الكل", selected == ALL, { selected = ALL }) }
+                if (recentIds.isNotEmpty()) item { Chip("شوهدت مؤخراً", selected == RECENT, { selected = RECENT }) }
                 item { Chip("المفضلة", selected == FAV, { selected = FAV }) }
                 items(categories, key = { it.id }) { cat ->
                     Chip(cat.name, selected == cat.id, { selected = cat.id })

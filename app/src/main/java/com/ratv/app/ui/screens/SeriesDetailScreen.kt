@@ -102,6 +102,11 @@ fun SeriesDetailScreen(seriesId: String, nav: Navigator) {
 
     val playFocus = remember { FocusRequester() }
     TvInitialFocus(playFocus, key = continueEpisode?.id)
+    val showQuality = remember(show) { repo.seriesQuality(show) }
+    val versions = remember(show, seriesList) { repo.seriesVersions(show) }
+    val better = remember(versions, showQuality) {
+        if (showQuality == "4K") null else versions.firstOrNull { repo.seriesQuality(it) == "4K" }
+    }
 
     LazyColumn(
         Modifier
@@ -186,6 +191,20 @@ fun SeriesDetailScreen(seriesId: String, nav: Navigator) {
                             .focusRequester(playFocus),
                         height = 52.dp
                     )
+                }
+                if (better != null) {
+                    UpgradeButton(onClick = { nav.show(better.id) })
+                }
+                if (versions.isNotEmpty()) {
+                    Text("نسخ أخرى من المسلسل في اشتراكك", style = T.h2)
+                    versions.take(6).forEach { v ->
+                        VersionRow(
+                            quality = repo.seriesQuality(v),
+                            title = v.name,
+                            subtitle = listOfNotNull(repo.seriesCategoryName(v.categoryId), v.year).joinToString(" · ").ifBlank { null },
+                            onClick = { nav.show(v.id) }
+                        )
+                    }
                 }
                 val plot = info?.plot ?: show.plot
                 if (!plot.isNullOrBlank()) {

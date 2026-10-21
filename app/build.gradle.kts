@@ -92,5 +92,9 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 
+    // On-device translation of subtitles into the viewer's language.
+    implementation("com.google.mlkit:translate:17.0.3")
+
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.json:json:20240303")
 }

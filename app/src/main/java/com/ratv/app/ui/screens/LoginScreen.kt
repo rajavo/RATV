@@ -143,7 +143,7 @@ fun LoginScreen(onDone: () -> Unit) {
                 return
             }
             if (!Links.isWebLink(p.server)) {
-                error = "رابط الخادم غير صحيح. اكتبه بالإنجليزية مثل: http://server.com:8080"
+                error = "رابط الخادم غير صحيح. اكتبه بالإنجليزية مثل: http://server.com:8080\u200E"
                 return
             }
             p
@@ -157,7 +157,7 @@ fun LoginScreen(onDone: () -> Unit) {
                 return
             }
             if (!link.startsWith("content://") && !Links.isWebLink(link)) {
-                error = "رابط القائمة غير صحيح. اكتبه كاملاً بالإنجليزية ويبدأ بـ http://"
+                error = "رابط القائمة غير صحيح. اكتبه كاملاً بالإنجليزية ويبدأ بـ http://\u200E"
                 return
             }
             if (guide.isNotEmpty() && !Links.isWebLink(guide)) {

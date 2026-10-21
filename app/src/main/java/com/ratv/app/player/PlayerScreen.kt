@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -53,7 +54,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -102,6 +105,7 @@ import com.ratv.app.data.Channel
 import com.ratv.app.data.Episode
 import com.ratv.app.data.Keys
 import com.ratv.app.data.WatchEntry
+import com.ratv.app.data.cleanTitle
 import com.ratv.app.data.current
 import com.ratv.app.data.forChannel
 import com.ratv.app.data.next
@@ -123,18 +127,26 @@ import com.ratv.app.ui.components.hm
 import com.ratv.app.ui.screens.rememberNow
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 
 private val Glass = Color(0x1FFFFFFF)
 private const val MAX_RECONNECTS = 5
 private val SoftText = Color(0xFFD9D4CC)
 
+private class ResizeMode(val label: String, val resize: Int, val ratio: Float?)
+
+/** Picture sizes: fit, stretch, zoom, or a fixed shape the picture is stretched to. */
 @androidx.annotation.OptIn(UnstableApi::class)
 private val resizeModes = listOf(
-    AspectRatioFrameLayout.RESIZE_MODE_FIT to "ملاءمة",
-    AspectRatioFrameLayout.RESIZE_MODE_ZOOM to "تكبير",
-    AspectRatioFrameLayout.RESIZE_MODE_FILL to "ملء"
+    ResizeMode("ملاءمة", AspectRatioFrameLayout.RESIZE_MODE_FIT, null),
+    ResizeMode("ملء الشاشة", AspectRatioFrameLayout.RESIZE_MODE_FILL, null),
+    ResizeMode("تكبير", AspectRatioFrameLayout.RESIZE_MODE_ZOOM, null),
+    ResizeMode("16:9", AspectRatioFrameLayout.RESIZE_MODE_FILL, 16f / 9f),
+    ResizeMode("4:3", AspectRatioFrameLayout.RESIZE_MODE_FILL, 4f / 3f),
+    ResizeMode("21:9", AspectRatioFrameLayout.RESIZE_MODE_FILL, 21f / 9f)
 )
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -166,7 +178,12 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     var locked by remember { mutableStateOf(false) }
     var panelOpen by remember { mutableStateOf(false) }
     var showTracks by remember { mutableStateOf(false) }
-    var resizeIndex by remember { mutableIntStateOf(0) }
+    var resizeIndex by remember { mutableIntStateOf(repo.prefs.resizeMode.coerceIn(0, resizeModes.size - 1)) }
+    var resizeNotice by remember { mutableStateOf<String?>(null) }
+    var subsOpen by remember { mutableStateOf(false) }
+    var subPos by remember { mutableLongStateOf(0L) }
+    var upgrade by remember { mutableStateOf<Playable?>(null) }
+    var upgradeEpisodes by remember { mutableStateOf<List<Episode>?>(null) }
     var banner by remember { mutableStateOf<Channel?>(null) }
     var sourcesOpen by remember { mutableStateOf(false) }
     var audioVersion by remember { mutableIntStateOf(0) }
@@ -180,6 +197,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val retryFocus = remember { FocusRequester() }
 
     val player = remember { createPlayer(context, repo.prefs.bufferMode, repo.prefs.bestQuality) }
+    val scope = rememberCoroutineScope()
+    val mix = remember { MixController(context, scope, player, repo.prefs.bufferMode) }
+    val subs = remember { SubtitleController(scope, repo.prefs) }
     val inPip = rememberIsInPictureInPicture(activity)
     val canPip = remember {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
@@ -214,9 +234,11 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
 
     fun play(item: Playable, showControls: Boolean = true) {
         saveProgress()
+        mix.stop()
         current = item
         panelOpen = false
         sourcesOpen = false
+        subsOpen = false
         reconnectAttempts = 0
         reconnecting = false
         videoHeight = 0
@@ -238,14 +260,74 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // ------------------------------------------------- start the stream
     LaunchedEffect(current) {
         val item = current ?: return@LaunchedEffect
-        val builder = MediaItem.Builder().setUri(item.url)
-        if (item.url.contains(".m3u8", ignoreCase = true)) builder.setMimeType(MimeTypes.APPLICATION_M3U8)
         playerError = null
         ended = false
-        player.setMediaItem(builder.build(), item.startPosition.coerceAtLeast(0L))
+        player.setMediaItem(mediaItemFor(item.url), item.startPosition.coerceAtLeast(0L))
         player.prepare()
         player.playWhenReady = true
-        if (item.isLive) repo.prefs.lastChannelId = item.id
+        if (item.isLive) repo.noteChannelPlayed(item.id)
+    }
+
+    // ------------------------------------- subtitles and 4K copies of films and episodes
+    LaunchedEffect(current?.id) {
+        val playing = current ?: return@LaunchedEffect
+        upgrade = null
+        upgradeEpisodes = null
+        val keepSubtitles = subs.isOn
+        if (playing.isLive) {
+            subs.setItem(null)
+            return@LaunchedEffect
+        }
+        when (playing.kind) {
+            Playable.KIND_MOVIE -> {
+                val m = repo.movie(playing.id)
+                val title = cleanTitle(m?.name ?: playing.title)
+                subs.setItem(SubtitleQuery(title, null, m?.year?.toIntOrNull()))
+                if (m != null) {
+                    if (repo.movieQuality(m) != "4K") {
+                        repo.movieVersions(m).firstOrNull { repo.movieQuality(it) == "4K" }?.let { upgrade = moviePlayable(it) }
+                    }
+                    val info = repo.movieInfo(m.id)
+                    val alt = info?.originalName?.let { cleanTitle(it) }?.takeIf { it.isNotBlank() && it != title }
+                    val year = m.year?.toIntOrNull() ?: info?.year?.toIntOrNull()
+                    subs.setItem(SubtitleQuery(title, alt, year))
+                }
+            }
+            Playable.KIND_EPISODE -> {
+                val show = playing.seriesId?.let { repo.seriesItem(it) }
+                val ep = episodes.firstOrNull { it.id == playing.id }
+                subs.setItem(SubtitleQuery(cleanTitle(show?.name ?: playing.title), null, show?.year?.toIntOrNull(), ep?.season, ep?.num))
+                if (show != null && ep != null && repo.seriesQuality(show) != "4K") {
+                    val better = repo.seriesVersions(show).firstOrNull { repo.seriesQuality(it) == "4K" }
+                    if (better != null) {
+                        val all = repo.seriesInfo(better.id)?.episodes?.toSortedMap()?.values?.flatten().orEmpty()
+                        val match = all.firstOrNull { it.season == ep.season && it.num == ep.num }
+                        if (match != null) {
+                            upgrade = episodePlayable(match, better.id, better.name, better.cover)
+                            upgradeEpisodes = all
+                        }
+                    }
+                }
+            }
+        }
+        if (keepSubtitles || repo.prefs.subtitleAuto) subs.search(autoPick = true)
+    }
+
+    // The subtitle line follows the picture closely.
+    LaunchedEffect(subs.isOn) {
+        subs.positionMs = { player.currentPosition }
+        if (subs.isOn) selectTrack(player, C.TRACK_TYPE_TEXT, null)
+        while (subs.isOn) {
+            subPos = player.currentPosition
+            delay(120L)
+        }
+    }
+
+    LaunchedEffect(resizeNotice) {
+        if (resizeNotice != null) {
+            delay(1_600L)
+            resizeNotice = null
+        }
     }
 
     // ------------------------------------------------------- listeners
@@ -253,6 +335,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         val listener = object : Player.Listener {
             override fun onIsPlayingChanged(playing: Boolean) {
                 isPlaying = playing
+            }
+
+            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                mix.onMainPlayWhenReady(playWhenReady)
             }
 
             override fun onPlaybackStateChanged(playbackState: Int) {
@@ -298,6 +384,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         onDispose {
             player.removeListener(listener)
             saveProgress()
+            mix.release()
+            subs.release()
             player.release()
         }
     }
@@ -364,8 +452,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // ------------------------------------------------------- behaviour
-    LaunchedEffect(controlsVisible, isPlaying, lastTouch, panelOpen, showTracks, sourcesOpen) {
-        if (controlsVisible && isPlaying && !panelOpen && !showTracks && !sourcesOpen) {
+    LaunchedEffect(controlsVisible, isPlaying, lastTouch, panelOpen, showTracks, sourcesOpen, subsOpen) {
+        if (controlsVisible && isPlaying && !panelOpen && !showTracks && !sourcesOpen && !subsOpen) {
             delay(4_000L)
             controlsVisible = false
         }
@@ -396,10 +484,11 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     BackHandler(enabled = locked) { locked = false }
-    BackHandler(enabled = !locked && (panelOpen || showTracks || sourcesOpen)) {
+    BackHandler(enabled = !locked && (panelOpen || showTracks || sourcesOpen || subsOpen)) {
         panelOpen = false
         showTracks = false
         sourcesOpen = false
+        subsOpen = false
     }
 
     val zapList = remember(item?.channel?.categoryId, channels) {
@@ -414,6 +503,20 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
     val fourK = siblings.firstOrNull { it.quality == "4K" }?.takeIf { item?.channel?.quality != "4K" }
     val audioOptions = remember(audioVersion, sourcesOpen) { trackOptions(player, C.TRACK_TYPE_AUDIO) }
+    val liveChannel = item?.channel
+    val isSports = remember(liveChannel?.id) { liveChannel?.let { repo.isSportsChannel(it) } == true }
+    val sameEvent by produceState<List<Channel>?>(null, liveChannel?.id, programme?.title, sourcesOpen) {
+        val ch = liveChannel
+        value = if (ch == null) emptyList() else withContext(Dispatchers.Default) {
+            repo.sameEventChannels(ch, System.currentTimeMillis())
+        }
+    }
+    val sportsChoices by produceState(emptyList<Channel>(), liveChannel?.id, sourcesOpen, isSports) {
+        val ch = liveChannel
+        value = if (ch == null || !sourcesOpen || !isSports) emptyList() else withContext(Dispatchers.Default) {
+            repo.sportsChannels(ch.id)
+        }
+    }
 
     fun zap(step: Int) {
         val ch = item?.channel ?: return
@@ -482,7 +585,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             showControls()
             return true
         }
-        if (panelOpen || sourcesOpen || showTracks || playerError != null || notFound) return false
+        if (panelOpen || sourcesOpen || showTracks || subsOpen || playerError != null || notFound) return false
         if (controlsVisible) {
             touch()
             return false
@@ -509,7 +612,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 true
             }
             Key.Menu -> {
-                if (live) panelOpen = true else if (hasTrackChoice) showTracks = true
+                if (live) panelOpen = true else subsOpen = true
                 true
             }
             else -> false
@@ -529,11 +632,11 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // Keep the remote's focus somewhere useful as the controls come and go.
-    LaunchedEffect(controlsVisible, locked, panelOpen, showTracks, sourcesOpen) {
+    LaunchedEffect(controlsVisible, locked, panelOpen, showTracks, sourcesOpen, subsOpen) {
         delay(80L)
-        if (controlsVisible && !locked && !panelOpen && !showTracks && !sourcesOpen) {
+        if (controlsVisible && !locked && !panelOpen && !showTracks && !sourcesOpen && !subsOpen) {
             if (isTv) runCatching { playPauseFocus.requestFocus() }
-        } else if (!panelOpen && !showTracks && !sourcesOpen) {
+        } else if (!panelOpen && !showTracks && !sourcesOpen && !subsOpen) {
             runCatching { rootFocus.requestFocus() }
         }
     }
@@ -546,7 +649,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // On TV the first Back only hides the controls.
-    BackHandler(enabled = isTv && controlsVisible && !locked && !panelOpen && !showTracks && !sourcesOpen) {
+    BackHandler(enabled = isTv && controlsVisible && !locked && !panelOpen && !showTracks && !sourcesOpen && !subsOpen) {
         controlsVisible = false
     }
 
@@ -573,8 +676,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                     setPlayer(exoPlayer)
                 }
             },
-            update = { it.resizeMode = resizeModes[resizeIndex].first },
-            modifier = Modifier.fillMaxSize()
+            update = { it.resizeMode = resizeModes[resizeIndex].resize },
+            modifier = resizeModes[resizeIndex].ratio?.let { Modifier.align(Alignment.Center).aspectRatio(it) } ?: Modifier.fillMaxSize()
         )
 
         Box(
@@ -631,6 +734,32 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             }
         }
 
+        if (subs.isOn && !inPip) {
+            SubtitleOverlay(subs.textAt(subPos), subs.size, raised = controlsVisible)
+        }
+
+        val mixing = mix.channel
+        if (mixing != null && !inPip && !controlsVisible) {
+            Row(
+                Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(20.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(Color(0xB30B0C10))
+                    .padding(horizontal = 12.dp, vertical = 7.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Icon(RIcons.Mic, contentDescription = null, tint = RColors.Saffron, modifier = Modifier.size(15.dp))
+                Text("معلق ${mixing.name}", style = T.body(12.sp, FontWeight.Medium), maxLines = 1)
+            }
+        }
+
+        val notice = resizeNotice
+        if (notice != null && !inPip) {
+            TopNotice("حجم الصورة: $notice", RIcons.Aspect)
+        }
+
         val zapped = banner
         if (zapped != null && !controlsVisible && !inPip) {
             Row(
@@ -677,7 +806,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 }
             } else {
                 AnimatedVisibility(
-                    visible = controlsVisible && !panelOpen && !sourcesOpen && item != null,
+                    visible = controlsVisible && !panelOpen && !sourcesOpen && !subsOpen && item != null,
                     enter = fadeIn(),
                     exit = fadeOut(),
                     modifier = Modifier.fillMaxSize()
@@ -697,12 +826,26 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                             nextLabel = nextProgramme?.let { "التالي ${hm(it.start)} · ${it.title}" },
                             hasTrackChoice = hasTrackChoice,
                             canPip = canPip,
-                            resizeLabel = resizeModes[resizeIndex].second,
+                            resizeLabel = resizeModes[resizeIndex].label,
                             hasNextEpisode = nextEpisode != null,
                             resolution = resolutionLabel(videoHeight),
-                            fourKName = fourK?.name,
-                            onFourK = { fourK?.let { play(liveToPlayable(it)) } },
-                            showSources = item.isLive && (audioTracks > 1 || siblings.isNotEmpty()),
+                            fourKName = if (item.isLive) fourK?.name else upgrade?.title,
+                            onFourK = {
+                                if (item.isLive) {
+                                    fourK?.let { play(liveToPlayable(it)) }
+                                } else {
+                                    upgrade?.let { better ->
+                                        upgradeEpisodes?.let { episodes = it }
+                                        play(better.copy(startPosition = player.currentPosition))
+                                    }
+                                }
+                            },
+                            showSources = item.isLive && (audioTracks > 1 || siblings.isNotEmpty() || isSports || !sameEvent.isNullOrEmpty() || mixing != null),
+                            subtitlesOn = subs.isOn,
+                            onSubtitles = {
+                                touch()
+                                subsOpen = true
+                            },
                             onSources = {
                                 touch()
                                 sourcesOpen = true
@@ -733,6 +876,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                             onResize = {
                                 touch()
                                 resizeIndex = (resizeIndex + 1) % resizeModes.size
+                                repo.prefs.resizeMode = resizeIndex
+                                resizeNotice = resizeModes[resizeIndex].label
                             },
                             onChannels = {
                                 touch()
@@ -774,21 +919,44 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 ) {
                     SourcesPanel(
                         audio = audioOptions,
+                        sameEvent = sameEvent,
                         siblings = siblings,
+                        sports = sportsChoices,
+                        mix = mix,
                         epgLookup = { ch -> epg.forChannel(ch).current(now)?.title },
                         onPickAudio = { option ->
+                            mix.stop()
                             selectTrack(player, C.TRACK_TYPE_AUDIO, option)
                             audioVersion++
                         },
-                        onPickChannel = { ch -> play(liveToPlayable(ch)) },
+                        onMix = { ch -> mix.start(ch, repo.account.value?.maxCons) },
+                        onSwitch = { ch -> play(liveToPlayable(ch)) },
                         onClose = { sourcesOpen = false },
+                        tv = isTv
+                    )
+                }
+
+                AnimatedVisibility(
+                    visible = subsOpen,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    SubtitlesPanel(
+                        sub = subs,
+                        hasEmbedded = hasTrackChoice,
+                        onEmbedded = {
+                            subsOpen = false
+                            showTracks = true
+                        },
+                        onClose = { subsOpen = false },
                         tv = isTv
                     )
                 }
             }
 
             val error = playerError
-            if (error != null && !panelOpen && !sourcesOpen) {
+            if (error != null && !panelOpen && !sourcesOpen && !subsOpen) {
                 Column(
                     Modifier
                         .align(Alignment.Center)
@@ -863,6 +1031,8 @@ private fun Controls(
     onFourK: () -> Unit,
     showSources: Boolean,
     onSources: () -> Unit,
+    subtitlesOn: Boolean,
+    onSubtitles: () -> Unit,
     playPauseFocus: FocusRequester,
     onBack: () -> Unit,
     onPlayPause: () -> Unit,
@@ -1041,6 +1211,7 @@ private fun Controls(
                         Spacer(Modifier.weight(1f))
                     }
                 } else {
+                    PillButton(RIcons.Captions, if (subtitlesOn) "الترجمة: مفعّلة" else "الترجمة", onSubtitles)
                     if (hasNextEpisode) PillButton(RIcons.SkipNext, "الحلقة التالية", onNextEpisode)
                     Spacer(Modifier.weight(1f))
                 }
@@ -1175,127 +1346,6 @@ private fun ChannelPanel(
                 }
             }
         }
-    }
-}
-
-/** Commentators of this stream and other versions of the same channel (quality, language). */
-@Composable
-private fun SourcesPanel(
-    audio: List<TrackOption>,
-    siblings: List<Channel>,
-    epgLookup: (Channel) -> String?,
-    onPickAudio: (TrackOption) -> Unit,
-    onPickChannel: (Channel) -> Unit,
-    onClose: () -> Unit,
-    tv: Boolean
-) {
-    val firstFocus = remember { FocusRequester() }
-    LaunchedEffect(Unit) {
-        if (tv) {
-            delay(120L)
-            runCatching { firstFocus.requestFocus() }
-        }
-    }
-    Box(
-        Modifier
-            .fillMaxSize()
-            .background(Color(0x66000000))
-            .pointerInput(Unit) { detectTapGestures(onTap = { onClose() }) }
-    ) {
-        Column(
-            Modifier
-                .align(Alignment.CenterStart)
-                .width(360.dp)
-                .fillMaxHeight()
-                .background(Color(0xF00B0C10))
-                .pointerInput(Unit) { detectTapGestures { } }
-                .padding(start = 12.dp, end = 12.dp, top = 16.dp)
-        ) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(Modifier.weight(1f)) {
-                    Text("المعلق والجودة", style = T.display(17.sp))
-                    Text("اختر المعلق أو نسخة أخرى من القناة", style = T.caption, maxLines = 1)
-                }
-                CircleIconButton(RIcons.Close, "إغلاق", onClose, background = RColors.Surface2, size = 40.dp, iconSize = 20.dp)
-            }
-            Spacer(Modifier.height(8.dp))
-            LazyColumn(contentPadding = PaddingValues(bottom = 16.dp)) {
-                if (audio.size > 1) {
-                    item { PanelHeader("المعلق في هذا البث") }
-                    itemsIndexed(audio) { index, option ->
-                        SourceRow(
-                            title = option.label,
-                            subtitle = null,
-                            badge = null,
-                            selected = option.selected,
-                            icon = RIcons.Mic,
-                            modifier = if (index == 0) Modifier.focusRequester(firstFocus) else Modifier,
-                            onClick = { onPickAudio(option) }
-                        )
-                    }
-                }
-                if (siblings.isNotEmpty()) {
-                    item { PanelHeader("نسخ أخرى من القناة") }
-                    itemsIndexed(siblings, key = { _, ch -> ch.id }) { index, ch ->
-                        SourceRow(
-                            title = ch.name,
-                            subtitle = epgLookup(ch),
-                            badge = ch.quality,
-                            selected = false,
-                            icon = RIcons.Tv,
-                            modifier = if (index == 0 && audio.size <= 1) Modifier.focusRequester(firstFocus) else Modifier,
-                            onClick = { onPickChannel(ch) }
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun PanelHeader(text: String) {
-    Text(text, style = T.label, modifier = Modifier.padding(start = 8.dp, top = 14.dp, bottom = 6.dp))
-}
-
-@Composable
-private fun SourceRow(
-    title: String,
-    subtitle: String?,
-    badge: String?,
-    selected: Boolean,
-    icon: ImageVector,
-    modifier: Modifier,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier
-            .fillMaxWidth()
-            .heightIn(min = 56.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .background(if (selected) RColors.Surface2 else Color.Transparent)
-            .tvClickable(RoundedCornerShape(14.dp), onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        Icon(icon, contentDescription = null, tint = if (selected) RColors.Saffron else RColors.Text2, modifier = Modifier.size(20.dp))
-        Column(Modifier.weight(1f)) {
-            Text(
-                title,
-                style = T.body(14.sp, FontWeight.Bold, if (selected) RColors.Saffron else RColors.Text),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            if (subtitle != null) Text(subtitle, style = T.caption, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        }
-        if (badge != null) QualityBadge(badge, color = if (badge == "4K") RColors.SaffronLight else RColors.Text2)
-        if (selected) Icon(RIcons.Check, contentDescription = "المختار", tint = RColors.Saffron, modifier = Modifier.size(18.dp))
     }
 }
 
