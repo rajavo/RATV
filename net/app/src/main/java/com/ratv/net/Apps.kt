@@ -34,7 +34,8 @@ object Apps {
 
     fun labelForUid(context: Context, uid: Int): String {
         if (uid < 0) return "تطبيق غير معروف"
-        val pkg = packageForUid(context, uid) ?: return context.packageManager.getNameForUid(uid) ?: "uid $uid"
+        val pkg = packageForUid(context, uid)
+            ?: return if (uid < 10000) "خدمات النظام" else context.packageManager.getNameForUid(uid) ?: "uid $uid"
         return label(context, pkg)
     }
 
