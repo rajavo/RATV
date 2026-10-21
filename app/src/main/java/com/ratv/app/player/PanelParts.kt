@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -153,7 +154,13 @@ internal fun ActionChip(
         if (icon != null) {
             Icon(icon, contentDescription = null, tint = if (selected) RColors.OnSaffron else RColors.Text, modifier = Modifier.size(16.dp))
         }
-        Text(label, style = T.body(13.sp, FontWeight.Bold, if (selected) RColors.OnSaffron else RColors.Text), maxLines = 1)
+        Text(
+            label,
+            // "+5" and "−½" keep their sign in front in the right-to-left layout.
+            style = T.body(13.sp, FontWeight.Bold, if (selected) RColors.OnSaffron else RColors.Text)
+                .copy(textDirection = TextDirection.ContentOrLtr),
+            maxLines = 1
+        )
     }
 }
 
