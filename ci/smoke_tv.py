@@ -8,7 +8,7 @@ os.environ.setdefault("SMOKE_OUT", "smoke-results/tv")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import smoke as S  # noqa: E402
 
-NAV = ["الرئيسية", "مباشر", "أفلام", "مسلسلات", "حسابي"]
+NAV = ["الرئيسية", "مباشر", "المباريات", "أفلام", "مسلسلات", "حسابي"]
 
 
 def key(name, n=1, pause=1.0):
@@ -194,6 +194,16 @@ def t_series():
     key("BACK", pause=2)
 
 
+def t_matches():
+    go_tab("المباريات")
+    _, n = S.wait_for(timeout=20, contains="ريال مدريد", save="matches")
+    S.shot("matches")
+    expect(n is not None, "the game of the test guide is missing from the schedule")
+    root = S.dump()
+    texts = " | ".join((x.get("text") or "") for x in S.nodes(root))
+    expect("Sky Sports Main" in texts, "Sky Sports Main not listed as showing the game: " + texts[:300])
+
+
 def t_settings():
     go_tab("حسابي")
     time.sleep(1.5)
@@ -213,6 +223,7 @@ if __name__ == "__main__":
         ("movies", t_movies),
         ("live", t_live),
         ("series", t_series),
+        ("matches", t_matches),
         ("settings", t_settings),
     ]:
         S.step(name, fn)

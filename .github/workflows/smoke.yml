@@ -75,6 +75,7 @@ jobs:
         run: |
           if ! command -v ffmpeg >/dev/null; then sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg; fi
           mkdir -p ci/media
+          cp apk/apk/release/app-release.apk ci/media/RATV.apk 2>/dev/null || cp apk/app-release.apk ci/media/RATV.apk 2>/dev/null || true
           ffmpeg -hide_banner -loglevel error -f lavfi -i testsrc2=size=1280x720:rate=25 -f lavfi -i sine=frequency=440:sample_rate=48000 -t 240 -c:v libx264 -preset veryfast -pix_fmt yuv420p -b:v 1200k -g 50 -c:a aac -b:a 96k -f mpegts ci/media/live.ts
           ffmpeg -hide_banner -loglevel error -f lavfi -i testsrc2=size=1280x720:rate=25 -f lavfi -i sine=frequency=440:sample_rate=48000 -f lavfi -i sine=frequency=880:sample_rate=48000 -t 240 -map 0:v -map 1:a -map 2:a -c:v libx264 -preset veryfast -pix_fmt yuv420p -b:v 1200k -g 50 -c:a aac -b:a 96k -metadata:s:a:0 language=ara -metadata:s:a:1 language=eng -f mpegts ci/media/live_multi.ts
           ffmpeg -hide_banner -loglevel error -f lavfi -i testsrc=size=1280x720:rate=25 -f lavfi -i sine=frequency=660:sample_rate=48000 -t 120 -c:v libx264 -preset veryfast -pix_fmt yuv420p -b:v 1200k -g 50 -c:a aac -b:a 96k -movflags +faststart ci/media/movie.mp4

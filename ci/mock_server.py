@@ -339,6 +339,10 @@ class Handler(BaseHTTPRequestHandler):
         u = urlparse(self.path)
         q = {k: v[0] for k, v in parse_qs(u.query).items()}
         p = u.path
+        if p == "/update/version.json":  # a newer app version for the update test
+            return self.send_json({"versionCode": 99999, "versionName": "9.9.9", "apk": "RATV.apk"})
+        if p == "/update/RATV.apk":
+            return self.send_file(os.path.join(MEDIA, "RATV.apk"), "application/vnd.android.package-archive")
         if p == "/__down":  # speed test download
             n = int(q.get("bytes", "0") or 0)
             self.send_response(200)

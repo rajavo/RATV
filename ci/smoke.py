@@ -268,6 +268,7 @@ def s_launch():
     # Subtitles come from the mock provider instead of the real online library.
     shell("setprop debug.ratv.subs http://10.0.2.2:8000")
     shell("setprop debug.ratv.speed http://10.0.2.2:8000")
+    shell("setprop debug.ratv.update http://10.0.2.2:8000/update")
     log("debug.ratv.subs=" + shell("getprop debug.ratv.subs").strip())
     log(shell("am start -W -n %s/.MainActivity" % PKG).strip())
     time.sleep(1.5)
@@ -717,6 +718,55 @@ def s_speed_test():
         raise RuntimeError("speed test gave no result: " + texts[:300])
 
 
+def s_matches():
+    """The schedule lists the test game once, with every channel showing it; a channel plays."""
+    tap_where(text="جدول المباريات")
+    _, n = wait_for(timeout=20, contains="ريال مدريد", save="matches")
+    shot("matches")
+    if n is None:
+        raise RuntimeError("the game is missing from the schedule")
+    root = dump()
+    texts = all_texts(root)
+    log("matches: " + texts[:400])
+    for need in ("جدول المباريات", "Sky Sports Main", "Sport 1 HD", "قناة ناقلة"):
+        if need not in texts:
+            raise RuntimeError("schedule is missing " + need)
+    tap_where(text="Sky Sports Main")
+    time.sleep(8)
+    shot("matches-play")
+    back()
+    time.sleep(2)
+    back()
+    time.sleep(2)
+
+
+def s_update():
+    """Account > Update the app: finds the newer version, downloads it, opens Android's installer."""
+    if scroll_to("تحديث التطبيق") is None:
+        raise RuntimeError("update row missing")
+    tap_where(contains="تحديث التطبيق")
+    _, n = wait_for(timeout=20, text="تحديث جديد متاح", save="update-dialog")
+    shot("update-dialog")
+    if n is None:
+        raise RuntimeError("no update offered")
+    tap_where(text="تحديث الآن")
+    focus = ""
+    for _ in range(30):
+        time.sleep(2)
+        focus = shell("dumpsys window | grep -E 'mCurrentFocus'")
+        if "packageinstaller" in focus.lower() or "settings" in focus.lower():
+            break
+    shot("update-installer")
+    log("after update: " + focus.strip()[:200])
+    back()
+    time.sleep(2)
+    _, n = wait_for(timeout=10, text="لاحقاً")
+    if n is not None:
+        tap_node(n)
+    if "packageinstaller" not in focus.lower() and "settings" not in focus.lower():
+        raise RuntimeError("installer did not open: " + focus.strip()[:200])
+
+
 def s_clear_history():
     if scroll_to("حذف سجل المشاهدة") is None:
         raise RuntimeError("clear history row missing")
@@ -891,6 +941,7 @@ if __name__ == "__main__":
         ("favorite", s_favorite),
         ("play-live", s_play_live),
         ("offline", s_offline),
+        ("matches", s_matches),
         ("commentator", s_commentator),
         ("commentary-mix", s_commentary_mix),
         ("guide", s_guide),
@@ -905,6 +956,7 @@ if __name__ == "__main__":
         ("adult-hidden", s_adult_hidden),
         ("speed-test", s_speed_test),
         ("clear-history", s_clear_history),
+        ("update", s_update),
         ("relaunch", s_relaunch),
         ("switch-to-m3u", s_switch_to_m3u),
         ("m3u-content", s_m3u_content),
