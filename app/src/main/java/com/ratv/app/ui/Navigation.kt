@@ -1,6 +1,7 @@
 package com.ratv.app.ui
 
 import android.net.Uri
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -12,6 +13,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -89,11 +95,19 @@ fun RatvRoot() {
     val showBar = route in barRoutes
     val wide = rememberIsWide()
     val currentTab = if (route == "guide") "live" else (route ?: "home")
+    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
     Row(
         Modifier
             .fillMaxSize()
             .background(RColors.Ink)
+            // With a remote, Back on a selected item would only clear the selection;
+            // send it straight to the normal back handling instead.
+            .onKeyEvent { e ->
+                if (e.key != Key.Back || backDispatcher == null) return@onKeyEvent false
+                if (e.type == KeyEventType.KeyUp) backDispatcher.onBackPressed()
+                true
+            }
     ) {
     if (wide && showBar) {
         SideNav(current = currentTab, onSelect = { navigator.tab(it) })
