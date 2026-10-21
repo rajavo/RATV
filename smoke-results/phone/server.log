@@ -1,0 +1,133 @@
+mock IPTV server on port 8000
+17:12:26 GET /player_api.php?username=test&password=test
+17:15:40 GET /player_api.php?username=test&password=wrong
+17:15:53 GET /player_api.php?username=test&password=test
+17:15:53 GET /player_api.php?username=test&password=test
+17:15:53 GET /player_api.php?username=test&password=test&action=get_live_categories
+17:15:53 GET /player_api.php?username=test&password=test&action=get_live_streams
+17:15:53 GET /player_api.php?username=test&password=test&action=get_vod_categories
+17:15:53 GET /player_api.php?username=test&password=test&action=get_series_categories
+17:15:53 GET /player_api.php?username=test&password=test&action=get_vod_streams
+17:15:53 GET /player_api.php?username=test&password=test&action=get_series
+17:15:53 GET /xmltv.php?username=test&password=test
+17:15:54 GET /logo/l1.png
+17:16:10 GET /logo/l2.png
+17:16:10 GET /logo/l3.png
+17:16:10 GET /logo/missing.png
+17:16:10 GET /logo/missing.png
+17:16:10 GET /logo/l4.png
+17:16:36 GET /logo/missing.png
+17:16:36 GET /logo/missing.png
+17:16:40 GET /live/test/test/102.m3u8
+17:16:40 GET /live/test/test/102.m3u8
+17:16:40 GET /live/test/test/102.m3u8
+17:16:40 GET /live/test/test/102.m3u8
+17:16:40 GET /logo/missing.png
+17:16:40 GET /logo/missing.png
+17:16:40 GET /live/test/test/102.m3u8
+17:16:40 GET /live/test/test/102.m3u8
+17:16:42 GET /live/test/test/102.m3u8
+17:16:42 GET /live/test/test/102.m3u8
+17:16:44 GET /live/test/test/102.m3u8
+17:16:44 GET /live/test/test/102.m3u8
+17:16:48 GET /live/test/test/102.m3u8
+17:16:48 GET /live/test/test/102.m3u8
+17:16:52 GET /live/test/test/102.m3u8
+17:16:52 GET /live/test/test/102.m3u8
+17:16:58 GET /live/test/test/102.m3u8
+17:16:58 GET /live/test/test/102.m3u8
+17:17:00 GET /logo/missing.png
+17:17:00 GET /logo/missing.png
+17:17:00 GET /logo/missing.png
+17:17:00 GET /logo/missing.png
+17:17:10 GET /live/test/test/201.m3u8
+17:17:10 GET /live/test/test/201.m3u8
+17:17:10 GET /live/test/test/201.m3u8
+17:17:10 GET /live/test/test/201.m3u8
+17:17:11 GET /logo/missing.png
+17:17:11 GET /logo/missing.png
+17:17:11 GET /live/test/test/201.m3u8
+17:17:11 GET /live/test/test/201.m3u8
+17:17:12 GET /live/test/test/201.m3u8
+17:17:12 GET /live/test/test/201.m3u8
+17:17:15 GET /live/test/test/201.m3u8
+17:17:15 GET /live/test/test/201.m3u8
+17:17:18 GET /live/test/test/201.m3u8
+17:17:18 GET /live/test/test/201.m3u8
+17:17:23 GET /live/test/test/201.m3u8
+17:17:23 GET /live/test/test/201.m3u8
+17:17:28 GET /live/test/test/201.m3u8
+17:17:28 GET /live/test/test/201.m3u8
+17:17:29 GET /logo/missing.png
+17:17:29 GET /logo/missing.png
+17:17:30 GET /logo/missing.png
+17:17:30 GET /logo/missing.png
+17:17:43 GET /live/test/test/201.m3u8
+17:17:43 GET /live/test/test/201.m3u8
+17:17:43 GET /live/test/test/201.m3u8
+17:17:43 GET /live/test/test/201.m3u8
+17:17:43 GET /live/test/test/201.m3u8
+17:17:43 GET /live/test/test/201.m3u8
+17:17:43 GET /logo/missing.png
+17:17:43 GET /logo/missing.png
+17:17:44 GET /live/test/test/201.m3u8
+17:17:44 GET /live/test/test/201.m3u8
+17:17:47 GET /live/test/test/201.m3u8
+17:17:47 GET /live/test/test/201.m3u8
+17:17:50 GET /live/test/test/201.m3u8
+17:17:50 GET /live/test/test/201.m3u8
+17:17:55 GET /live/test/test/201.m3u8
+17:17:55 GET /live/test/test/201.m3u8
+17:18:00 GET /live/test/test/201.m3u8
+17:18:00 GET /live/test/test/201.m3u8
+17:18:06 GET /live/test/test/201.m3u8
+17:18:06 GET /live/test/test/201.m3u8
+17:18:12 GET /live/test/test/201.m3u8
+17:18:12 GET /live/test/test/201.m3u8
+17:18:12 GET /live/test/test/201.ts
+17:18:12 GET /live/test/test/201.ts
+17:18:13 GET /live/test/test/201.ts
+17:18:38 GET /logo/missing.png
+17:18:38 GET /logo/missing.png
+17:18:39 GET /logo/missing.png
+17:18:39 GET /logo/missing.png
+17:18:47 GET /logo/missing.png
+17:18:47 GET /logo/missing.png
+17:18:47 GET /logo/l5.png
+17:18:54 GET /logo/missing.png
+17:18:54 GET /logo/missing.png
+17:19:03 GET /player_api.php?username=test&password=test&action=get_vod_info&vod_id=5001
+17:19:13 GET /movie/test/test/5001.mp4
+17:19:13 GET /movie/test/test/5001.mp4
+17:19:58 GET /player_api.php?username=test&password=test&action=get_vod_info&vod_id=5005
+17:20:01 GET /movie/test/test/5005.mp4
+17:20:01 GET /movie/test/test/5005.mp4
+17:20:29 GET /subtitles/search/advanced?keywords=Silent+Sea&language=ar&movie_type=movie&year=2019
+17:20:29 GET /subtitles/search/advanced?keywords=Silent+Sea&language=en&movie_type=movie&year=2019
+17:20:35 GET /subtitles/sub-en-1/download?container=zip
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 38814)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 498, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 464, in handle_one_request
+    self.raw_requestline = self.rfile.readline(65537)
+                           ~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/usr/lib/python3.14/socket.py", line 725, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+----------------------------------------
+17:21:16 GET /player_api.php?username=test&password=test&action=get_series_info&series_id=7001
+17:21:34 GET /player_api.php?username=test&password=test&action=get_series_info&series_id=7004
+17:21:34 GET /series/test/test/7001102.mp4

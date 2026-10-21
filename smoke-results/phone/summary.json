@@ -1,0 +1,143 @@
+{
+ "results": [
+  {
+   "step": "launch",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "login-screen",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "wrong-password",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "xtream-login",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "live",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "live-category",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "favorite",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "play-live",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "commentator",
+   "ok": false,
+   "error": "RuntimeError('4K shortcut missing')"
+  },
+  {
+   "step": "commentary-mix",
+   "ok": false,
+   "error": "RuntimeError('missing in panel: تنقل نفس المباراة الآن')"
+  },
+  {
+   "step": "guide",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "movies",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "subtitles",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "subtitles-translated",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "series",
+   "ok": false,
+   "error": "APP NOT RUNNING"
+  },
+  {
+   "step": "home-after",
+   "ok": false,
+   "error": "RuntimeError(\"not found: {'text': 'الرئيسية', 'bottom': True}\") APP NOT RUNNING"
+  },
+  {
+   "step": "search",
+   "ok": false,
+   "error": "RuntimeError(\"not found: {'text': 'بحث'}\") APP NOT RUNNING"
+  },
+  {
+   "step": "settings",
+   "ok": false,
+   "error": "RuntimeError(\"not found: {'text': 'حسابي', 'bottom': True}\") APP NOT RUNNING"
+  },
+  {
+   "step": "parental",
+   "ok": false,
+   "error": "RuntimeError(\"not found: {'contains': 'حجب محتوى البالغين'}\") APP NOT RUNNING"
+  },
+  {
+   "step": "adult-hidden",
+   "ok": false,
+   "error": "RuntimeError(\"not found: {'text': 'الرئيسية', 'bottom': True}\") APP NOT RUNNING"
+  },
+  {
+   "step": "speed-test",
+   "ok": false,
+   "error": "RuntimeError(\"not found: {'text': 'حسابي', 'bottom': True}\") APP NOT RUNNING"
+  },
+  {
+   "step": "clear-history",
+   "ok": false,
+   "error": "RuntimeError('clear history row missing') APP NOT RUNNING"
+  },
+  {
+   "step": "relaunch",
+   "ok": false,
+   "error": "RuntimeError('saved playlist not restored after restart') APP NOT RUNNING"
+  },
+  {
+   "step": "switch-to-m3u",
+   "ok": false,
+   "error": "RuntimeError(\"not found: {'text': 'حسابي', 'bottom': True}\") APP NOT RUNNING"
+  },
+  {
+   "step": "m3u-content",
+   "ok": false,
+   "error": "RuntimeError(\"not found: {'text': 'مباشر', 'bottom': True}\") APP NOT RUNNING"
+  },
+  {
+   "step": "users",
+   "ok": false,
+   "error": "RuntimeError(\"not found: {'text': 'حسابي', 'bottom': True}\") APP NOT RUNNING"
+  }
+ ],
+ "system_dialogs": [
+  " |  |  |  |  |  | Pixel Launcher isn't responding |  |  |  | Close app | Wait"
+ ],
+ "anr": [],
+ "pids": [
+  "5919"
+ ],
+ "crash_buffer_lines": 0,
+ "fatal": []
+}
