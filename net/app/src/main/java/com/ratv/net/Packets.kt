@@ -17,9 +17,9 @@ object Packets {
         fun key(): String = buildString {
             append(protocol).append('|')
             src.forEach { append(it.toInt() and 0xFF).append('.') }
-            append(srcPort).append('|')
+            append('|').append(srcPort).append('|')
             dst.forEach { append(it.toInt() and 0xFF).append('.') }
-            append(dstPort)
+            append('|').append(dstPort)
         }
     }
 
