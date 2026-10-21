@@ -52,6 +52,7 @@ import com.ratv.app.ui.components.PosterImage
 import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.components.ScreenHeader
 import com.ratv.app.ui.components.TvInitialFocus
+import com.ratv.app.ui.components.rememberIsWide
 import com.ratv.app.ui.components.tvClickable
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
@@ -70,6 +71,7 @@ data class CatalogItem(
 private const val ALL = "__all__"
 private const val FAV = "__fav__"
 private const val NEW = "__new__"
+private const val CONTINUE = "__continue__"
 
 @Composable
 fun MoviesScreen(nav: Navigator) {
@@ -77,18 +79,40 @@ fun MoviesScreen(nav: Navigator) {
     val movies by repo.movies.collectAsStateWithLifecycle()
     val categories by repo.vodCategories.collectAsStateWithLifecycle()
     val loading by repo.libraryLoading.collectAsStateWithLifecycle()
+    val history by repo.history.collectAsStateWithLifecycle()
     val entries = remember(movies) {
         movies.map { CatalogItem(it.id, it.name, it.poster, it.rating, it.year, it.added, it.categoryId, Keys.movie(it.id)) }
     }
-    CatalogScreen(
-        title = "الأفلام",
-        entries = entries,
-        categories = categories,
-        loading = loading,
-        emptyTitle = "لا توجد أفلام",
-        onSearch = { nav.search() },
-        onOpen = { nav.movie(it) }
-    )
+    val continueIds = remember(history) { history.filter { it.kind == "movie" }.map { it.itemId }.distinct() }
+    if (rememberIsWide()) {
+        var sort by remember { mutableStateOf(repo.prefs.movieSort) }
+        CatalogWide(
+            title = "الأفلام",
+            entries = entries,
+            categories = categories,
+            loading = loading,
+            continueIds = continueIds,
+            sortKey = sort,
+            onSort = {
+                sort = it
+                repo.prefs.movieSort = it
+            },
+            emptyTitle = "لا توجد أفلام",
+            badgeOf = { item -> repo.movie(item.id)?.let { repo.movieQuality(it) } },
+            onOpen = { nav.movie(it) }
+        )
+    } else {
+        CatalogScreen(
+            title = "الأفلام",
+            entries = entries,
+            categories = categories,
+            loading = loading,
+            continueIds = continueIds,
+            emptyTitle = "لا توجد أفلام",
+            onSearch = { nav.search() },
+            onOpen = { nav.movie(it) }
+        )
+    }
 }
 
 @Composable
@@ -97,18 +121,40 @@ fun SeriesScreen(nav: Navigator) {
     val series by repo.series.collectAsStateWithLifecycle()
     val categories by repo.seriesCategories.collectAsStateWithLifecycle()
     val loading by repo.libraryLoading.collectAsStateWithLifecycle()
+    val history by repo.history.collectAsStateWithLifecycle()
     val entries = remember(series) {
         series.map { CatalogItem(it.id, it.name, it.cover, it.rating, it.year, it.added, it.categoryId, Keys.series(it.id)) }
     }
-    CatalogScreen(
-        title = "المسلسلات",
-        entries = entries,
-        categories = categories,
-        loading = loading,
-        emptyTitle = "لا توجد مسلسلات",
-        onSearch = { nav.search() },
-        onOpen = { nav.show(it) }
-    )
+    val continueIds = remember(history) { history.mapNotNull { it.seriesId }.distinct() }
+    if (rememberIsWide()) {
+        var sort by remember { mutableStateOf(repo.prefs.seriesSort) }
+        CatalogWide(
+            title = "المسلسلات",
+            entries = entries,
+            categories = categories,
+            loading = loading,
+            continueIds = continueIds,
+            sortKey = sort,
+            onSort = {
+                sort = it
+                repo.prefs.seriesSort = it
+            },
+            emptyTitle = "لا توجد مسلسلات",
+            badgeOf = { item -> repo.seriesItem(item.id)?.let { repo.seriesQuality(it) } },
+            onOpen = { nav.show(it) }
+        )
+    } else {
+        CatalogScreen(
+            title = "المسلسلات",
+            entries = entries,
+            categories = categories,
+            loading = loading,
+            continueIds = continueIds,
+            emptyTitle = "لا توجد مسلسلات",
+            onSearch = { nav.search() },
+            onOpen = { nav.show(it) }
+        )
+    }
 }
 
 @Composable
@@ -117,6 +163,7 @@ private fun CatalogScreen(
     entries: List<CatalogItem>,
     categories: List<Category>,
     loading: Boolean,
+    continueIds: List<String>,
     emptyTitle: String,
     onSearch: () -> Unit,
     onOpen: (String) -> Unit
@@ -125,11 +172,15 @@ private fun CatalogScreen(
     val favorites by repo.favorites.collectAsStateWithLifecycle()
     var selected by rememberSaveable(title) { mutableStateOf(ALL) }
 
-    val visible = remember(entries, favorites, selected) {
+    val visible = remember(entries, favorites, selected, continueIds) {
         when (selected) {
             ALL -> entries
             FAV -> entries.filter { it.favoriteKey in favorites }
             NEW -> entries.sortedByDescending { it.added }.take(60)
+            CONTINUE -> {
+                val byId = entries.associateBy { it.id }
+                continueIds.mapNotNull { byId[it] }
+            }
             else -> entries.filter { it.categoryId == selected }
         }
     }
@@ -157,6 +208,7 @@ private fun CatalogScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 item { Chip("الكل", selected == ALL, { selected = ALL }) }
+                if (continueIds.isNotEmpty()) item { Chip("متابعة المشاهدة", selected == CONTINUE, { selected = CONTINUE }) }
                 item { Chip("أُضيف حديثاً", selected == NEW, { selected = NEW }) }
                 item { Chip("المفضلة", selected == FAV, { selected = FAV }) }
                 items(categories, key = { it.id }) { cat ->

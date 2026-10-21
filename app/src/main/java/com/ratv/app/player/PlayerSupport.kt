@@ -15,6 +15,8 @@ import androidx.core.app.PictureInPictureModeChangedInfo
 import androidx.core.util.Consumer
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
@@ -23,6 +25,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.HttpDataSource
+import androidx.media3.exoplayer.DefaultLivePlaybackSpeedControl
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
@@ -31,6 +34,7 @@ import com.ratv.app.data.Channel
 import com.ratv.app.data.Episode
 import com.ratv.app.data.Http
 import com.ratv.app.data.Keys
+import com.ratv.app.data.Movie
 import com.ratv.app.data.Repository
 import java.util.Locale
 
@@ -86,10 +90,7 @@ suspend fun resolvePlayable(repo: Repository, kind: String, id: String, seriesId
         Playable.KIND_MOVIE -> {
             val m = repo.movie(id) ?: return null
             val start = repo.historyEntry(Keys.movie(m.id))?.position ?: 0L
-            return Resolved(
-                Playable(Playable.KIND_MOVIE, m.id, m.url, m.name, null, m.poster, startPosition = start),
-                emptyList()
-            )
+            return Resolved(moviePlayable(m, start), emptyList())
         }
         Playable.KIND_EPISODE -> {
             val sid = seriesId ?: return null
@@ -127,6 +128,16 @@ private suspend fun resolveEpisode(repo: Repository, seriesId: String, episodeId
     return Resolved(episodePlayable(ep, seriesId, item?.name, item?.cover, start), all)
 }
 
+fun moviePlayable(m: Movie, start: Long = 0L) =
+    Playable(Playable.KIND_MOVIE, m.id, m.url, m.name, null, m.poster, startPosition = start)
+
+/** A media item for a stream address (HLS links get their type so they always play as HLS). */
+fun mediaItemFor(url: String): MediaItem {
+    val builder = MediaItem.Builder().setUri(url)
+    if (url.contains(".m3u8", ignoreCase = true)) builder.setMimeType(MimeTypes.APPLICATION_M3U8)
+    return builder.build()
+}
+
 fun episodePlayable(ep: Episode, seriesId: String, seriesName: String?, cover: String?, start: Long = 0L) = Playable(
     kind = Playable.KIND_EPISODE,
     id = ep.id,
@@ -139,7 +150,7 @@ fun episodePlayable(ep: Episode, seriesId: String, seriesName: String?, cover: S
 )
 
 @androidx.annotation.OptIn(UnstableApi::class)
-fun createPlayer(context: Context, bufferMode: String, bestQuality: Boolean): ExoPlayer {
+fun createPlayer(context: Context, bufferMode: String, bestQuality: Boolean, handleAudioFocus: Boolean = true): ExoPlayer {
     // min buffer, max buffer, needed to start, needed to resume after a stall (ms)
     val durations = when (bufferMode) {
         "small" -> intArrayOf(5_000, 20_000, 1_000, 2_000)
@@ -163,11 +174,18 @@ fun createPlayer(context: Context, bufferMode: String, bestQuality: Boolean): Ex
     // Retry failed downloads several times before giving up, so short network drops do not stop playback.
     val mediaSourceFactory = DefaultMediaSourceFactory(dataSourceFactory)
         .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(8))
+    // Live streams keep normal speed instead of rushing back to the live edge after a stall:
+    // fewer stalls, and two streams stay in step when one gives the picture and the other the commentary.
+    val liveSpeed = DefaultLivePlaybackSpeedControl.Builder()
+        .setFallbackMinPlaybackSpeed(1f)
+        .setFallbackMaxPlaybackSpeed(1f)
+        .build()
     val player = ExoPlayer.Builder(context)
         .setMediaSourceFactory(mediaSourceFactory)
         .setLoadControl(loadControl)
-        .setAudioAttributes(audioAttributes, true)
-        .setHandleAudioBecomingNoisy(true)
+        .setLivePlaybackSpeedControl(liveSpeed)
+        .setAudioAttributes(audioAttributes, handleAudioFocus)
+        .setHandleAudioBecomingNoisy(handleAudioFocus)
         .build()
     if (bestQuality) {
         player.trackSelectionParameters = player.trackSelectionParameters.buildUpon()

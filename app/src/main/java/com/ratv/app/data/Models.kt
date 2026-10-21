@@ -75,7 +75,8 @@ data class MovieInfo(
     val rating: String?,
     val backdrop: String?,
     val cover: String?,
-    val trailer: String?
+    val trailer: String?,
+    val originalName: String? = null
 )
 
 data class SeriesInfo(

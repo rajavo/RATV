@@ -68,10 +68,15 @@ class Repository(private val context: Context, val prefs: Prefs) {
     private val _lastUpdated = MutableStateFlow(0L)
     val lastUpdated: StateFlow<Long> = _lastUpdated.asStateFlow()
 
+    private val _recentChannels = MutableStateFlow(prefs.recentChannels)
+    val recentChannels: StateFlow<List<String>> = _recentChannels.asStateFlow()
+
     @Volatile private var channelIndex: Map<String, Channel> = emptyMap()
     @Volatile private var siblingIndex: Map<String, List<Channel>> = emptyMap()
     @Volatile private var movieIndex: Map<String, Movie> = emptyMap()
     @Volatile private var seriesIndex: Map<String, SeriesItem> = emptyMap()
+    @Volatile private var movieKeyIndex: Map<String, List<Movie>> = emptyMap()
+    @Volatile private var seriesKeyIndex: Map<String, List<SeriesItem>> = emptyMap()
     @Volatile private var m3uEpisodes: Map<String, Map<Int, List<Episode>>> = emptyMap()
     @Volatile private var m3uEpgUrl: String? = null
     private val movieInfoCache = ConcurrentHashMap<String, MovieInfo>()
@@ -160,6 +165,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
             _favorites.value = emptySet()
             _watched.value = emptySet()
             _history.value = emptyList()
+            _recentChannels.value = emptyList()
         }
         prefs.savePlaylist(p)
         _playlist.value = p
@@ -177,6 +183,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
         _favorites.value = emptySet()
         _watched.value = emptySet()
         _history.value = emptyList()
+        _recentChannels.value = emptyList()
         _playlist.value = null
         _state.value = LoadState.Idle
     }
@@ -380,12 +387,14 @@ class Repository(private val context: Context, val prefs: Prefs) {
     private fun setMovies(list: List<Movie>) {
         val unique = list.distinctBy { it.id }
         movieIndex = unique.associateBy { it.id }
+        movieKeyIndex = unique.groupBy { vodKey(it.name) }.filterValues { it.size > 1 }
         _movies.value = unique
     }
 
     private fun setSeries(list: List<SeriesItem>) {
         val unique = list.distinctBy { it.id }
         seriesIndex = unique.associateBy { it.id }
+        seriesKeyIndex = unique.groupBy { vodKey(it.name) }.filterValues { it.size > 1 }
         _series.value = unique
     }
 
@@ -402,6 +411,59 @@ class Repository(private val context: Context, val prefs: Prefs) {
             .sortedWith(compareByDescending<Channel> { qualityRank(it.quality) }.thenBy { it.num })
     }
     fun movie(id: String): Movie? = movieIndex[id]
+
+    fun movieQuality(m: Movie): String? = vodQuality(m.name, vodCategoryName(m.categoryId))
+
+    fun seriesQuality(s: SeriesItem): String? = vodQuality(s.name, seriesCategoryName(s.categoryId))
+
+    /** The same film elsewhere in the subscription (another quality or section), best quality first. */
+    fun movieVersions(m: Movie): List<Movie> {
+        val group = movieKeyIndex[vodKey(m.name)] ?: return emptyList()
+        val hide = _hideAdult.value
+        return group
+            .filter { it.id != m.id && (m.year == null || it.year == null || it.year == m.year) && (!hide || !isAdultName(it.name)) }
+            .sortedByDescending { qualityRank(movieQuality(it)) }
+    }
+
+    /** The same series elsewhere in the subscription, best quality first. */
+    fun seriesVersions(s: SeriesItem): List<SeriesItem> {
+        val group = seriesKeyIndex[vodKey(s.name)] ?: return emptyList()
+        val hide = _hideAdult.value
+        return group
+            .filter { it.id != s.id && (s.year == null || it.year == null || it.year == s.year) && (!hide || !isAdultName(it.name)) }
+            .sortedByDescending { qualityRank(seriesQuality(it)) }
+    }
+
+    /** Channels whose current programme is the same game as the one on [ch]. */
+    fun sameEventChannels(ch: Channel, now: Long): List<Channel> {
+        val epg = _epg.value
+        val title = epg.forChannel(ch).current(now)?.title ?: return emptyList()
+        val target = eventTokens(title)
+        if (target.size < 2) return emptyList()
+        val cache = HashMap<String, Boolean>()
+        return channels.value.filter { other ->
+            if (other.id == ch.id) return@filter false
+            val p = epg.forChannel(other).current(now) ?: return@filter false
+            cache.getOrPut(p.title) { sameEvent(target, eventTokens(p.title)) }
+        }
+    }
+
+    /** Sports channels (by name or section), for picking another commentator. */
+    fun sportsChannels(exceptId: String?): List<Channel> {
+        val sportCats = _liveCats.value.filter { looksSports(it.name) }.mapTo(HashSet()) { it.id }
+        return channels.value.filter { it.id != exceptId && (it.categoryId in sportCats || looksSports(it.name)) }
+    }
+
+    fun isSportsChannel(ch: Channel): Boolean =
+        looksSports(ch.name) || looksSports(liveCategoryName(ch.categoryId).orEmpty())
+
+    /** Remembers a channel for "watched recently" and for starting where the viewer left off. */
+    fun noteChannelPlayed(id: String) {
+        prefs.lastChannelId = id
+        val list = (listOf(id) + _recentChannels.value.filter { it != id }).take(40)
+        _recentChannels.value = list
+        prefs.recentChannels = list
+    }
     fun seriesItem(id: String): SeriesItem? = seriesIndex[id]
     fun cachedSeriesInfo(id: String): SeriesInfo? = seriesInfoCache[id]
 

@@ -94,6 +94,11 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
     val similar = remember(movies, movie) {
         movies.filter { it.categoryId == movie.categoryId && it.id != movie.id }.take(12)
     }
+    val quality = remember(movie) { repo.movieQuality(movie) }
+    val versions = remember(movie, movies) { repo.movieVersions(movie) }
+    val better = remember(versions, quality) {
+        if (quality == "4K") null else versions.firstOrNull { repo.movieQuality(it) == "4K" }
+    }
     val backdrop = info?.backdrop ?: info?.cover ?: movie.poster
     val rating = info?.rating ?: movie.rating
     val meta = listOfNotNull(info?.year ?: movie.year, info?.genre, info?.duration).joinToString(" · ")
@@ -149,7 +154,7 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
                         Text("/10", style = T.caption)
                         Spacer(Modifier.width(4.dp))
                     }
-                    qualityOf(movie.name)?.let { QualityBadge(it) }
+                    quality?.let { QualityBadge(it, color = if (it == "4K") RColors.SaffronLight else RColors.Text2) }
                 }
             }
         }
@@ -168,6 +173,9 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
                         .weight(1f)
                         .focusRequester(playFocus)
                 )
+                if (better != null) {
+                    UpgradeButton(onClick = { nav.playMovie(better.id) })
+                }
                 val trailer = info?.trailer
                 if (!trailer.isNullOrBlank()) {
                     Box(
@@ -194,6 +202,18 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
             val plot = info?.plot
             if (!plot.isNullOrBlank()) {
                 Text(plot, style = T.body(14.5.sp, color = RColors.Text2).copy(lineHeight = 25.sp))
+            }
+
+            if (versions.isNotEmpty()) {
+                Text("نسخ أخرى من الفيلم في اشتراكك", style = T.h2)
+                versions.take(6).forEach { v ->
+                    VersionRow(
+                        quality = repo.movieQuality(v),
+                        title = v.name,
+                        subtitle = listOfNotNull(repo.vodCategoryName(v.categoryId), v.year).joinToString(" · ").ifBlank { null },
+                        onClick = { nav.playMovie(v.id) }
+                    )
+                }
             }
 
             val director = info?.director
@@ -225,6 +245,48 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
             PosterRow(similar.map { PosterData(it.id, it.name, it.poster, it.year ?: "") }) { nav.movie(it) }
         }
         Spacer(Modifier.height(28.dp))
+    }
+}
+
+/** "4K متاح": the same title in a higher quality elsewhere in the subscription. */
+@Composable
+fun UpgradeButton(onClick: () -> Unit) {
+    Row(
+        Modifier
+            .height(54.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(RColors.SaffronSoft)
+            .border(1.5.dp, RColors.Saffron, RoundedCornerShape(16.dp))
+            .tvClickable(RoundedCornerShape(16.dp), onClickLabel = "شاهد نسخة 4K", ringColor = Color.White, onClick = onClick)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Icon(RIcons.Play, contentDescription = null, tint = RColors.Saffron, modifier = Modifier.size(16.dp))
+        Text("4K متاح", style = T.body(15.sp, FontWeight.Bold, RColors.Saffron))
+    }
+}
+
+/** Another copy of the same film or series (quality, section). */
+@Composable
+fun VersionRow(quality: String?, title: String, subtitle: String?, onClick: () -> Unit) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(RColors.Surface)
+            .tvClickable(RoundedCornerShape(14.dp), onClick = onClick)
+            .padding(horizontal = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        QualityBadge(quality ?: "—", color = if (quality == "4K") RColors.SaffronLight else RColors.Text2)
+        Column(Modifier.weight(1f)) {
+            Text(title, style = T.body(14.sp, FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            if (subtitle != null) Text(subtitle, style = T.caption, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        }
+        Icon(RIcons.ChevronLeft, contentDescription = null, tint = RColors.Text3, modifier = Modifier.size(18.dp))
     }
 }
 

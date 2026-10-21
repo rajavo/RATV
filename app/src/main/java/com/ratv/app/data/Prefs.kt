@@ -129,6 +129,48 @@ class Prefs(context: Context) {
         get() = sp.getString("pin", null)
         set(value) = sp.edit().putString("pin", value).apply()
 
+    /** Channels played lately, newest first. */
+    var recentChannels: List<String>
+        get() = try {
+            val arr = JSONArray(sp.getString("recentChannels", "[]") ?: "[]")
+            List(arr.length()) { arr.optString(it) }.filter { it.isNotBlank() }
+        } catch (e: Exception) {
+            emptyList()
+        }
+        set(value) = sp.edit().putString("recentChannels", JSONArray(value).toString()).apply()
+
+    /** Play the selected channel in a small window on the TV channel list. */
+    var livePreview: Boolean
+        get() = sp.getBoolean("livePreview", true)
+        set(value) = sp.edit().putBoolean("livePreview", value).apply()
+
+    /** Language subtitles are shown in (ISO 639-1). */
+    var subtitleLang: String
+        get() = sp.getString("subLang", "ar") ?: "ar"
+        set(value) = sp.edit().putString("subLang", value).apply()
+
+    /** 0 small, 1 medium, 2 large, 3 extra large. */
+    var subtitleSize: Int
+        get() = sp.getInt("subSize", 1)
+        set(value) = sp.edit().putInt("subSize", value).apply()
+
+    /** Turn subtitles on by themselves when a film or episode starts. */
+    var subtitleAuto: Boolean
+        get() = sp.getBoolean("subAuto", false)
+        set(value) = sp.edit().putBoolean("subAuto", value).apply()
+
+    var resizeMode: Int
+        get() = sp.getInt("resizeMode", 0)
+        set(value) = sp.edit().putInt("resizeMode", value).apply()
+
+    var movieSort: String
+        get() = sp.getString("movieSort", "added") ?: "added"
+        set(value) = sp.edit().putString("movieSort", value).apply()
+
+    var seriesSort: String
+        get() = sp.getString("seriesSort", "added") ?: "added"
+        set(value) = sp.edit().putString("seriesSort", value).apply()
+
     fun clearUserData() {
         sp.edit()
             .remove(KEY_PLAYLIST)
@@ -136,6 +178,7 @@ class Prefs(context: Context) {
             .remove("watched")
             .remove("history")
             .remove("lastChannel")
+            .remove("recentChannels")
             .apply()
     }
 

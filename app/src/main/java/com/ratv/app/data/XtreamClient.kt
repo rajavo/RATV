@@ -138,7 +138,8 @@ class XtreamClient(private val p: Playlist) {
             rating = cleanRating(info.str("rating")),
             backdrop = firstUrl(info.opt("backdrop_path")),
             cover = info.str("movie_image") ?: info.str("cover_big"),
-            trailer = info.str("youtube_trailer")
+            trailer = info.str("youtube_trailer"),
+            originalName = info.str("o_name") ?: info.str("original_name")
         )
     }
 
