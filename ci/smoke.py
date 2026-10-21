@@ -388,7 +388,7 @@ def s_commentator():
                 break
             time.sleep(1)
         log("sources: " + texts[:400])
-        for need in ("المعلق في هذا البث", "نسخ أخرى من القناة", "Sport 1 4K", "Sport 1 EN"):
+        for need in ("المعلق في هذا البث", "نسخ أخرى من القناة", "Sport 1 4K", "تنقل نفس المباراة الآن", "Sky Sports Main"):
             if need not in texts:
                 raise RuntimeError("missing in panel: " + need)
         second = [x for x in nodes(root) if (x.get("text") or "") in ("الإنجليزية", "الإنكليزية", "English")]
@@ -635,6 +635,13 @@ def s_settings():
 
 
 def s_parental():
+    # Settings got longer: scroll until the parental row shows.
+    for _ in range(4):
+        _, n = wait_for(timeout=3, contains="إخفاء محتوى البالغين")
+        if n is not None:
+            break
+        shell("input swipe 540 1700 540 900 400")
+        time.sleep(1.2)
     tap_where(contains="إخفاء محتوى البالغين")
     time.sleep(1.5)
     fill_fields([(0, "1234")])
