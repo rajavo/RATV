@@ -7,6 +7,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -38,6 +41,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,7 +53,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
@@ -79,11 +85,13 @@ import com.ratv.app.ui.components.OutlineButton
 import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.components.RatvLogo
 import com.ratv.app.ui.components.TvInitialFocus
+import com.ratv.app.ui.components.focusRing
 import com.ratv.app.ui.components.rememberIsTv
 import com.ratv.app.ui.components.rememberIsWide
 import com.ratv.app.ui.components.tvClickable
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -436,6 +444,11 @@ private fun Segment(label: String, selected: Boolean, modifier: Modifier = Modif
     }
 }
 
+/** After the keyboard's "Next" key on TV, the next field starts typing as soon as it is reached. */
+private object TvEditChain {
+    var until = 0L
+}
+
 @Composable
 private fun Field(
     label: String,
@@ -454,75 +467,112 @@ private fun Field(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+    // On TV the remote first selects the field and OK starts typing, so the keyboard never
+    // opens by itself and the arrows keep moving between fields.
+    var editing by remember { mutableStateOf(false) }
+    val inputFocus = remember { FocusRequester() }
+    val boxSource = remember { MutableInteractionSource() }
+    val boxFocused by boxSource.collectIsFocusedAsState()
+    LaunchedEffect(editing) {
+        if (editing) {
+            delay(40)
+            runCatching { inputFocus.requestFocus() }
+        }
+    }
     Column(modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(label, style = T.label)
+        Text(label, style = if (boxFocused || editing) T.label.copy(color = RColors.Saffron) else T.label)
         val textStyle = if (ltr) {
             T.body(15.sp).merge(TextStyle(textDirection = TextDirection.Ltr, textAlign = TextAlign.Right))
         } else {
             T.body(15.sp)
         }
         var fieldModifier = Modifier.fillMaxWidth()
-        if (focusRequester != null) fieldModifier = fieldModifier.focusRequester(focusRequester)
         if (tv) {
-            // With a remote, OK opens the keyboard and up/down always move to the next field.
-            fieldModifier = fieldModifier.onPreviewKeyEvent { e ->
-                when (e.key) {
-                    Key.DirectionCenter, Key.Enter, Key.NumPadEnter -> {
-                        if (e.type == KeyEventType.KeyUp) keyboardController?.show()
-                        true
+            fieldModifier = fieldModifier
+                .focusRequester(inputFocus)
+                .focusProperties { canFocus = editing }
+                .onFocusChanged { if (!it.isFocused && editing) editing = false }
+                .onPreviewKeyEvent { e ->
+                    when (e.key) {
+                        Key.DirectionCenter, Key.Enter, Key.NumPadEnter -> {
+                            if (e.type == KeyEventType.KeyUp) keyboardController?.show()
+                            true
+                        }
+                        Key.DirectionDown -> {
+                            if (e.type == KeyEventType.KeyDown) focusManager.moveFocus(FocusDirection.Down)
+                            true
+                        }
+                        Key.DirectionUp -> {
+                            if (e.type == KeyEventType.KeyDown) focusManager.moveFocus(FocusDirection.Up)
+                            true
+                        }
+                        else -> false
                     }
-                    Key.DirectionDown -> {
-                        if (e.type == KeyEventType.KeyDown) focusManager.moveFocus(FocusDirection.Down)
-                        true
-                    }
-                    Key.DirectionUp -> {
-                        if (e.type == KeyEventType.KeyDown) focusManager.moveFocus(FocusDirection.Up)
-                        true
-                    }
-                    else -> false
                 }
-            }
+        } else if (focusRequester != null) {
+            fieldModifier = fieldModifier.focusRequester(focusRequester)
         }
-        OutlinedTextField(
-            value = value,
-            onValueChange = onChange,
-            modifier = fieldModifier,
-            textStyle = textStyle,
-            placeholder = {
-                Text(
-                    placeholder,
-                    style = textStyle.copy(color = RColors.Text3),
-                    modifier = Modifier.fillMaxWidth()
-                )
-            },
-            trailingIcon = trailing,
-            singleLine = true,
-            visualTransformation = if (secret) PasswordVisualTransformation() else VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = keyboard,
-                imeAction = if (last) ImeAction.Done else ImeAction.Next,
-                showKeyboardOnFocus = !tv
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Next)
-                    if (tv) keyboardController?.show()
+        val field: @Composable () -> Unit = {
+            OutlinedTextField(
+                value = value,
+                onValueChange = onChange,
+                modifier = fieldModifier,
+                textStyle = textStyle,
+                placeholder = {
+                    Text(
+                        placeholder,
+                        style = textStyle.copy(color = RColors.Text3),
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 },
-                onDone = {
-                    keyboardController?.hide()
-                    onDone()
-                }
-            ),
-            shape = RoundedCornerShape(14.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = RColors.Saffron,
-                unfocusedBorderColor = RColors.Surface3,
-                focusedContainerColor = RColors.Surface,
-                unfocusedContainerColor = RColors.Surface,
-                cursorColor = RColors.Saffron,
-                focusedTextColor = RColors.Text,
-                unfocusedTextColor = RColors.Text
+                trailingIcon = trailing,
+                singleLine = true,
+                visualTransformation = if (secret) PasswordVisualTransformation() else VisualTransformation.None,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = keyboard,
+                    imeAction = if (last) ImeAction.Done else ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        if (tv) TvEditChain.until = System.currentTimeMillis() + 800L
+                        focusManager.moveFocus(if (tv) FocusDirection.Down else FocusDirection.Next)
+                    },
+                    onDone = {
+                        keyboardController?.hide()
+                        onDone()
+                    }
+                ),
+                shape = RoundedCornerShape(14.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = RColors.Saffron,
+                    unfocusedBorderColor = if (boxFocused) RColors.Saffron else RColors.Surface3,
+                    focusedContainerColor = RColors.Surface,
+                    unfocusedContainerColor = RColors.Surface,
+                    cursorColor = RColors.Saffron,
+                    focusedTextColor = RColors.Text,
+                    unfocusedTextColor = RColors.Text
+                )
             )
-        )
+        }
+        if (tv) {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier)
+                    .onFocusChanged {
+                        if (it.isFocused && System.currentTimeMillis() < TvEditChain.until) {
+                            TvEditChain.until = 0L
+                            editing = true
+                        }
+                    }
+                    .focusProperties { canFocus = !editing }
+                    .focusRing(boxFocused, RoundedCornerShape(14.dp))
+                    .clickable(interactionSource = boxSource, indication = null, role = Role.Button) { editing = true }
+            ) {
+                field()
+            }
+        } else {
+            field()
+        }
     }
 }
