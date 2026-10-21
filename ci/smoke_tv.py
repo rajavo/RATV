@@ -74,10 +74,9 @@ def t_login_screen():
     _, n = S.wait_for(timeout=40, text="أضف اشتراكك", save="login")
     expect(n is not None, "login screen not shown")
     time.sleep(1.5)
-    root, f = log_focus("login-initial")
+    _, f = log_focus("login-initial")
     S.shot("login")
-    node = focused_node(root)
-    expect(node is not None and node.get("class") == "android.widget.EditText", "first field not focused (focus: %s)" % f)
+    expect(f is not None and "server.example" in f, "server field not selected (focus: %s)" % f)
     expect(not ime_shown(), "keyboard opened without pressing OK")
 
 
@@ -92,12 +91,22 @@ def t_keyboard_on_ok():
     expect(not ime_shown(), "keyboard still open after Back")
 
 
+def type_in_selected(text):
+    """OK on the selected field, type, then close the keyboard with Back."""
+    key("DPAD_CENTER", pause=2.0)
+    S.type_text(text)
+    if ime_shown():
+        key("BACK", pause=1.2)
+
+
 def t_fill_with_remote():
-    S.type_text("http://10.0.2.2:8000")
+    S.type_text("http://10.0.2.2:8000")  # the server field is still in typing mode
     key("DPAD_DOWN")
-    S.type_text("test")
+    _, f = log_focus("login-user")
+    expect(f is not None and "username" in f, "down arrow did not reach the username field (focus: %s)" % f)
+    type_in_selected("test")
     key("DPAD_DOWN")
-    S.type_text("test")
+    type_in_selected("test")
     key("DPAD_DOWN")
     _, f = log_focus("login-name")
     key("DPAD_DOWN")
