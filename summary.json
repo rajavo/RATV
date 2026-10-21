@@ -1,0 +1,45 @@
+{
+ "results": [
+  {
+   "step": "setup",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "turn-on",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "probe-on-screen",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "probe-background",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "probe-back",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "blocked-list",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "accessibility",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "turn-off",
+   "ok": true,
+   "error": ""
+  }
+ ],
+ "ranet_crashed": false
+}

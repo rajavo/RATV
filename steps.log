@@ -1,0 +1,25 @@
+23:12:47 == setup
+23:13:32 Starting: Intent { cmp=com.ratv.net/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.net/.MainActivity
+TotalTime: 1181
+WaitTime: 1182
+Complete
+23:13:40 start: RA Net | النت كله للتطبيق اللي على الشاشة | التركيز طافي | شغّله، وكل النت يروح للتطبيق اللي تفتحه، والباقي ينقطع عنه. | تشغيل | استهلاك النت الحين | التلفزيون كله: 0.0 ميجابت · وكل تطبيق في آخر ١٥ ثانية تقريباً | أول قراءة بعد ١٥ ثانية تقريباً… | مسموح لها النت دائماً | حتى لو كانت بالخلفية. الأفضل تخليها قليلة: كل تطبيق هنا يشارك التطبيق اللي على الشاشة في النت. | Android TV Remote Service | Chromecast built-in | Google
+23:13:40 == turn-on
+23:13:42 focus: التركيز طافي | شغّله، وكل النت يروح للتطبيق اللي تفتحه، والباقي ينقطع عنه. | تشغيل
+23:13:55 == probe-on-screen
+23:14:04 probe on screen: ['fail', 'ok', 'ok', 'ok', 'ok', 'ok', 'ok', 'ok', 'ok']
+23:14:04 == probe-background
+23:14:17 probe in background: ['ok', 'fail', 'fail', 'fail', 'fail']
+23:14:17 == probe-back
+23:14:25 probe back on screen: ['ok', 'ok', 'ok', 'ok', 'ok', 'ok', 'ok', 'ok']
+23:14:25 VPN reader threads: 1
+23:14:25 == blocked-list
+23:14:30 blocked screen:  | RA Net | النت كله للتطبيق اللي على الشاشة | التركيز شغّال | النت الحين لـ: RA Net (هذي الشاشة) | إيقاف | استهلاك النت الحين | التلفزيون كله: 0.1 ميجابت · وكل تطبيق في آخر ١٥ ثانية تقريباً | خدمات النظام | 0.0 ميجابت | 0.1 ميجابت | سرعة التحميل الحين | 2 | تطبيقات انحجبت | 9 | محاولات انحجبت | معه النت الحين: Google Play services، Chromecast built-in، Google | حاولت تستخدم النت وانحجبت | RANet Probe | 8 محاولة
+23:14:30 == accessibility
+23:14:44 accessibility, probe on screen: ['fail', 'ok', 'ok', 'ok', 'ok', 'ok', 'ok', 'ok']
+23:14:57 accessibility, probe in background: ['ok', 'fail', 'fail', 'fail', 'fail']
+23:14:57 == turn-off
+23:15:04 focus before turning off: التركيز شغّال | النت الحين لـ: RA Net (هذي الشاشة) | إيقاف
