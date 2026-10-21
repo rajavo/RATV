@@ -232,12 +232,20 @@ def s_probe_back():
 
 def s_blocked_list():
     open_ranet()
-    root = dump("blocked")
-    shot("blocked")
-    t = texts(root)
-    log("blocked screen: " + t[:700])
-    expect("حاولت تستخدم النت وانحجبت" in t, "no list of blocked apps")
-    expect("RANet Probe" in t, "the probe is missing from the blocked apps")
+    seen = ""
+    for i in range(14):  # down through the screen with the remote, reading as it scrolls
+        root = dump("blocked" if i == 0 else None)
+        if i == 0:
+            shot("blocked")
+        seen += " | " + texts(root)
+        if "استهلاك النت الحين" in seen and re.search(r"RANet Probe \| \d+ محاولة", seen):
+            break
+        key("DPAD_DOWN", 0.6)
+    shot("blocked-scrolled")
+    log("blocked screen: " + seen[:1200])
+    expect("استهلاك النت الحين" in seen, "no live usage section")
+    expect("حاولت تستخدم النت وانحجبت" in seen, "no list of blocked apps")
+    expect(re.search(r"RANet Probe \| \d+ محاولة", seen), "the probe is missing from the blocked apps")
 
 
 def s_accessibility():
@@ -263,11 +271,11 @@ def s_accessibility():
 def s_turn_off():
     open_ranet()
     f = None
-    for _ in range(5):
+    for _ in range(20):
         f = focused(dump())
         if f and "التركيز" in f:
             break
-        key("DPAD_UP", 0.8)
+        key("DPAD_UP", 0.5)
     log("focus before turning off: %s" % f)
     shot("before-off")
     key("DPAD_CENTER", 3)

@@ -17,6 +17,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -179,6 +180,21 @@ private fun Modifier.tvClick(shape: Shape, onClick: () -> Unit): Modifier {
         .clickable(interactionSource = source, indication = ripple(), onClick = onClick)
 }
 
+/** A row to read: the remote can select it (to scroll to it), pressing does nothing. */
+@Composable
+private fun Modifier.tvRow(shape: Shape): Modifier {
+    val source = remember { MutableInteractionSource() }
+    val focused by source.collectIsFocusedAsState()
+    return this
+        .clip(shape)
+        .border(BorderStroke(3.dp, if (focused) C.Saffron else Color.Transparent), shape)
+        .focusable(interactionSource = source)
+}
+
+private fun mbps(v: Double) = String.format(Locale.US, "%.1f ميجابت", v)
+
+private class UsageLine(val label: String, val icon: ImageBitmap?, val mbps: Double, val onScreen: Boolean)
+
 // ---------------------------------------------------------------- screen
 
 @Composable
@@ -207,6 +223,36 @@ private fun MainScreen(prefs: Prefs, onToggle: () -> Unit, onUsage: () -> Unit, 
             else (bytes - lastBytes) * 8.0 / ((time - lastTime) / 1000.0) / 1_000_000.0
             lastBytes = bytes
             lastTime = time
+        }
+    }
+    val usageOk by produceState(Detect.usageGranted(context)) {
+        while (true) {
+            value = Detect.usageGranted(context)
+            delay(2000)
+        }
+    }
+    val usage by produceState<List<UsageMeter.AppSpeed>?>(null, usageOk) {
+        if (!usageOk) {
+            value = null
+            return@produceState
+        }
+        val meter = UsageMeter(context)
+        withContext(Dispatchers.IO) { meter.sample() }
+        while (true) {
+            delay(meter.interval)
+            value = withContext(Dispatchers.IO) { meter.sample() } ?: emptyList()
+        }
+    }
+    val usageLines = remember(usage, fg) {
+        usage.orEmpty().take(8).map { s ->
+            val pkg = Apps.packageForUid(context, s.uid)
+            val label = when (s.uid) {
+                -5 -> "مشاركة النت من التلفزيون"
+                -4 -> "تطبيقات محذوفة"
+                0 -> "النظام"
+                else -> Apps.labelForUid(context, s.uid)
+            }
+            UsageLine(label, pkg?.let { Apps.icon(context, it) }, s.downMbps + s.upMbps, pkg != null && pkg == fg)
         }
     }
     val apps by produceState<List<AppInfo>?>(null) {
@@ -252,6 +298,27 @@ private fun MainScreen(prefs: Prefs, onToggle: () -> Unit, onUsage: () -> Unit, 
                 message?.let { m -> item { Notice(m) } }
                 item { ToggleCard(running, onScreen, Modifier.focusRequester(toggleFocus), onToggle) }
                 if (!ready) item { SetupCard(onUsage, onAccessibility) }
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        SectionTitle("استهلاك النت الحين")
+                        Text(
+                            "التلفزيون كله: " + (speed?.let { mbps(it) } ?: "—") + " · وكل تطبيق في آخر ١٥ ثانية تقريباً",
+                            style = t(14, color = C.Text2)
+                        )
+                    }
+                }
+                val live = usage
+                when {
+                    !usageOk -> item {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text("عشان يبان استهلاك كل تطبيق، فعّل «إذن الاستخدام» لـ RA Net.", style = t(14, color = C.Text2))
+                            Pill("إذن الاستخدام", true, onUsage)
+                        }
+                    }
+                    live == null -> item { Text("أول قراءة بعد ١٥ ثانية تقريباً…", style = t(14, color = C.Text2)) }
+                    live.isEmpty() -> item { Text("ما فيه تطبيق يستخدم النت الحين.", style = t(14, color = C.Text2)) }
+                    else -> items(usageLines) { line -> UsageRow(line) }
+                }
                 if (running) {
                     item { StatsRow(speed, blocked) }
                     if (withInternet.isNotEmpty()) {
@@ -406,7 +473,7 @@ private fun Pill(label: String, primary: Boolean, onClick: () -> Unit) {
 @Composable
 private fun StatsRow(speed: Double?, blocked: Map<Int, Int>) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        Stat("سرعة التحميل الحين", speed?.let { String.format(Locale.US, "%.1f ميجابت", it) } ?: "—", Modifier.weight(1f))
+        Stat("سرعة التحميل الحين", speed?.let { mbps(it) } ?: "—", Modifier.weight(1f))
         Stat("تطبيقات انحجبت", blocked.size.toString(), Modifier.weight(1f))
         Stat("محاولات انحجبت", blocked.values.sum().toString(), Modifier.weight(1f))
     }
@@ -439,11 +506,39 @@ private fun AppIcon(icon: ImageBitmap?) {
 }
 
 @Composable
+private fun UsageRow(line: UsageLine) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .tvRow(RoundedCornerShape(14.dp))
+            .background(C.Surface)
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AppIcon(line.icon)
+        Spacer(Modifier.width(12.dp))
+        Text(line.label, style = t(16), modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
+        if (line.onScreen) {
+            Text(
+                "على الشاشة",
+                style = t(12, true, C.Success),
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(C.SuccessBg)
+                    .padding(horizontal = 8.dp, vertical = 3.dp)
+            )
+            Spacer(Modifier.width(10.dp))
+        }
+        Text(mbps(line.mbps), style = t(15, true, C.Saffron))
+    }
+}
+
+@Composable
 private fun BlockedRow(label: String, icon: ImageBitmap?, count: Int) {
     Row(
         Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
+            .tvRow(RoundedCornerShape(14.dp))
             .background(C.Surface)
             .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
