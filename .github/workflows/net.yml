@@ -13,6 +13,11 @@ on:
 permissions:
   contents: write
 
+# A newer push replaces a run still in progress, so only the latest version is published.
+concurrency:
+  group: ranet-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
