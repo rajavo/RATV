@@ -36,8 +36,9 @@ import java.util.concurrent.TimeUnit
  * A new connection starts with a burst of the last seconds the server holds, part of which the
  * player already has. Passed on as it is, the picture would jump back or freeze for those seconds,
  * so the new stream is joined where the old one ended: everything up to the last picture already
- * delivered is skipped, and it resumes at the next key frame (the next picture at most, if the
- * server does not mark key frames or one is long in coming).
+ * delivered is skipped (by decode time), and it resumes with the very next picture. Only when
+ * pictures were lost in between (the server jumped ahead) does it wait, at most 1.5 s, for a key
+ * frame, so the picture is not smeared until the next one.
  *
  * Only live streams (no known length, not HLS) are handled this way.
  */
@@ -84,7 +85,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
     // Joining a new connection to the old one (MPEG-TS packets of 188 bytes).
     private val delivered = ByteArray(TS_PACKET)
     private var deliveredFill = 0
-    private var lastVideoPts = -1L
+    private var lastVideoDts = -1L
     private var keyFramesMarked = false
     private var splicing = false
     private var spliceStartedAt = 0L
@@ -94,7 +95,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
     private val spliceBuffer = ByteArray(64 * 1024)
     private var pending: ByteArray? = null
     private var pendingOffset = 0
-    private var foundPts = 0L
+    private var foundDts = 0L
     private var foundKey = false
 
     override fun addTransferListener(transferListener: TransferListener) {
@@ -110,7 +111,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         splicing = false
         deliveredFill = 0
         incomingFill = 0
-        lastVideoPts = -1L
+        lastVideoDts = -1L
         keyFramesMarked = false
         val source = newSource()
         val length = source.open(dataSpec)
@@ -192,7 +193,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
             try {
                 again.open(spec ?: throw IOException("Not opened"))
                 current = again
-                splicing = lastVideoPts >= 0L
+                splicing = lastVideoDts >= 0L
                 spliceStartedAt = SystemClock.elapsedRealtime()
                 spliceDropped = 0L
                 incomingFill = 0
@@ -220,7 +221,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
             if (deliveredFill == TS_PACKET) {
                 deliveredFill = 0
                 if (videoPesStart(delivered)) {
-                    lastVideoPts = foundPts
+                    lastVideoDts = foundDts
                     if (foundKey) keyFramesMarked = true
                 }
             }
@@ -244,8 +245,11 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
             i += k
             if (incomingFill < TS_PACKET) break
             incomingFill = 0
-            if (videoPesStart(incoming) && newer(foundPts, lastVideoPts)) {
-                val waitForKey = keyFramesMarked && SystemClock.elapsedRealtime() - spliceStartedAt < KEY_WAIT_MS
+            if (videoPesStart(incoming) && newer(foundDts, lastVideoDts)) {
+                // The very next picture joins seamlessly; after a gap, wait a little for a key frame.
+                val continuous = ((foundDts - lastVideoDts) and 0x1FFFFFFFFL) <= CONTINUOUS_GAP
+                val waitForKey = !continuous && keyFramesMarked &&
+                    SystemClock.elapsedRealtime() - spliceStartedAt < KEY_WAIT_MS
                 if (foundKey || !waitForKey) {
                     Log.i(TAG, "joined the new connection after skipping $spliceDropped bytes")
                     val out = ByteArray(TS_PACKET + (n - i))
@@ -264,7 +268,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         return null
     }
 
-    /** True when [p] starts a video PES with a time stamp; fills [foundPts] and [foundKey]. */
+    /** True when [p] starts a video PES with a time stamp; fills [foundDts] (decode time) and [foundKey]. */
     private fun videoPesStart(p: ByteArray): Boolean {
         if (p[0] != SYNC || (p[1].toInt() and 0x40) == 0) return false
         val adaptation = (p[3].toInt() ushr 4) and 0x3
@@ -276,19 +280,23 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
             if (len > 0) key = (p[5].toInt() and 0x40) != 0
             i = 5 + len
         }
-        if (i + 14 > TS_PACKET) return false
+        if (i + 19 > TS_PACKET) return false
         if (p[i].toInt() != 0 || p[i + 1].toInt() != 0 || p[i + 2].toInt() != 1) return false
         if ((p[i + 3].toInt() and 0xF0) != 0xE0) return false // not video
-        if ((p[i + 7].toInt() and 0x80) == 0) return false // no time stamp
-        val b = i + 9
-        foundPts = ((p[b].toLong() and 0x0E) shl 29) or
+        val flags = p[i + 7].toInt() and 0xC0
+        if ((flags and 0x80) == 0) return false // no time stamp
+        // The decode time (DTS) when given, as it grows picture after picture; else the PTS.
+        foundDts = timeStamp(p, if (flags == 0xC0) i + 14 else i + 9)
+        foundKey = key
+        return true
+    }
+
+    private fun timeStamp(p: ByteArray, b: Int): Long =
+        ((p[b].toLong() and 0x0E) shl 29) or
             ((p[b + 1].toLong() and 0xFF) shl 22) or
             ((p[b + 2].toLong() and 0xFE) shl 14) or
             ((p[b + 3].toLong() and 0xFF) shl 7) or
             ((p[b + 4].toLong() and 0xFE) ushr 1)
-        foundKey = key
-        return true
-    }
 
     private fun noteWait(waited: Long) {
         if (!receiving) {
@@ -348,6 +356,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         private const val STALL_MAX_MS = 8_000L
         private const val LEARN_MS = 12_000L
         private const val KEY_WAIT_MS = 1_500L
+        private const val CONTINUOUS_GAP = 45_000L // 0.5 s in 90 kHz ticks
         private const val GIVE_UP_MS = 5_000L
         private const val GIVE_UP_BYTES = 16L shl 20
         private const val TS_PACKET = 188
