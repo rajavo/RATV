@@ -18,6 +18,11 @@ android {
         versionCode = buildNumber
         versionName = "1.0.$buildNumber"
         vectorDrawables { useSupportLibrary = true }
+        // The published APK keeps only the ARM libraries that phones and TV boxes use (half the
+        // size); the emulator tests build without this flag and get every ABI.
+        if (project.hasProperty("armOnly")) {
+            ndk { abiFilters += listOf("armeabi-v7a", "arm64-v8a") }
+        }
     }
 
     // مفتاح توقيع ثابت حتى تُثبَّت كل نسخة جديدة فوق القديمة دون حذفها.
