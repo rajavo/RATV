@@ -311,39 +311,56 @@ def s_commentator():
     if n is None:
         raise RuntimeError("Sport 1 HD missing")
     tap_node(n)
-    time.sleep(12)
-    w, h = shot("player-sport1")
-    tap(w // 2, h // 3)
-    time.sleep(1.2)
-    root = dump("player-sport1-controls")
-    shot("player-sport1-controls")
-    if find(root, text="4K متاح") is None:
-        raise RuntimeError("4K shortcut missing")
-    n = find(root, text="المعلق والجودة")
-    if n is None:
-        raise RuntimeError("commentator button missing")
-    tap_node(n)
-    time.sleep(1.5)
-    root = dump("sources-panel")
-    shot("sources-panel")
-    texts = " | ".join((x.get("text") or "") for x in nodes(root))
-    log("sources: " + texts[:400])
-    for need in ("المعلق في هذا البث", "نسخ أخرى من القناة", "Sport 1 4K", "Sport 1 EN"):
-        if need not in texts:
-            raise RuntimeError("missing in panel: " + need)
-    second = [x for x in nodes(root) if (x.get("text") or "") in ("الإنجليزية", "الإنكليزية", "English")]
-    if not second:
-        raise RuntimeError("second commentator not listed")
-    tap_node(second[0])
-    time.sleep(1.5)
-    shot("sources-second-commentator")
-    _, n = wait_for(timeout=5, text="Sport 1 4K")
-    tap_node(n)
-    time.sleep(10)
-    shot("player-sport1-4k")
-    back()
-    time.sleep(2)
-    tap_where(text="الكل")
+    try:
+        time.sleep(12)
+        w, h = shot("player-sport1")
+        tap(w // 2, h // 3)
+        root = dump("player-sport1-controls")
+        shot("player-sport1-controls")
+        if find(root, text="4K متاح") is None:
+            raise RuntimeError("4K shortcut missing")
+        pill = find(root, text="المعلق والجودة")
+        if pill is None:
+            raise RuntimeError("commentator button missing")
+        px, py = center(pill)
+        time.sleep(5)  # the controls hide again by themselves
+        shell("input tap %d %d" % (w // 2, h // 3))
+        time.sleep(0.7)
+        tap(px, py)  # open the panel while the controls are on screen
+        time.sleep(1.5)
+        shot("sources-panel")
+        texts = ""
+        root = None
+        for _ in range(4):
+            root = dump("sources-panel")
+            texts = " | ".join((x.get("text") or "") for x in nodes(root))
+            if "نسخ أخرى من القناة" in texts:
+                break
+            time.sleep(1)
+        log("sources: " + texts[:400])
+        for need in ("المعلق في هذا البث", "نسخ أخرى من القناة", "Sport 1 4K", "Sport 1 EN"):
+            if need not in texts:
+                raise RuntimeError("missing in panel: " + need)
+        second = [x for x in nodes(root) if (x.get("text") or "") in ("الإنجليزية", "الإنكليزية", "English")]
+        if not second:
+            raise RuntimeError("second commentator not listed")
+        tap_node(second[0])
+        time.sleep(1.5)
+        shot("sources-second-commentator")
+        _, n = wait_for(timeout=8, text="Sport 1 4K")
+        if n is None:
+            raise RuntimeError("4K version not listed")
+        tap_node(n)
+        time.sleep(10)
+        shot("player-sport1-4k")
+    finally:
+        # Leave the player (closing the panel first if it is still open).
+        for _ in range(3):
+            back()
+            _, n = wait_for(timeout=4, text="البث المباشر")
+            if n is not None:
+                break
+        tap_where(text="الكل")
 
 
 def s_guide():
