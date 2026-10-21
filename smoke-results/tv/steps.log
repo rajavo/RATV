@@ -1,0 +1,68 @@
+03:32:25 == launch
+03:33:12 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 1073
+WaitTime: 1079
+Complete
+03:33:14 screenshot 01-splash.png 1920x1080
+03:33:14 == login-screen
+03:33:20 focus[login-initial]: http://server.example:8080
+03:33:21 screenshot 02-login.png 1920x1080
+03:33:21 == keyboard-on-ok
+03:33:24 screenshot 03-login-keyboard.png 1920x1080
+03:33:28 == fill-with-remote
+03:33:38 focus[login-user]: username
+03:33:54 focus[login-name]: مثال: اشتراك المنزل
+03:33:57 focus[login-submit]: دخول
+03:33:58 screenshot 04-login-filled.png 1920x1080
+03:34:09 screenshot 05-home.png 1920x1080
+03:34:10 == home-focus
+03:34:11 focus[home-focus]: مباشر | RATV News HD | Live Match | بدأ 02:15 · متبقي 11د | شاهد الآن
+03:34:11 screenshot 06-home-focus.png 1920x1080
+03:34:11 == player-remote
+03:34:23 screenshot 07-player.png 1920x1080
+03:34:26 screenshot 08-player-zap.png 1920x1080
+03:34:30 screenshot 09-player-controls.png 1920x1080
+03:34:32 screenshot 10-player-controls-moved.png 1920x1080
+03:34:35 screenshot 11-player-controls-hidden.png 1920x1080
+03:34:58 screenshot 12-home-after-player.png 1920x1080
+03:34:58 !! RuntimeError('Back did not return from the player')
+03:34:59 screenshot 13-fail-player-remote.png 1920x1080
+03:34:59 == movies
+03:35:01 focus[nav-search]: (android.view.View, no text)
+03:35:04 focus[nav-search]: إيقاف مؤقت
+03:35:08 focus[nav-search]: تقديم 10 ثوانٍ | 10
+03:35:11 focus[nav-search]: الدليل
+03:35:15 focus[nav-search]: القنوات
+03:35:18 focus[nav-start]: القنوات
+03:35:18 !! RuntimeError('side bar not reached (focus: القنوات)')
+03:35:19 screenshot 14-fail-movies.png 1920x1080
+03:35:19 == live
+03:35:21 focus[nav-search]: (android.view.View, no text)
+03:35:24 focus[nav-search]: إيقاف مؤقت
+03:35:28 focus[nav-search]: تقديم 10 ثوانٍ | 10
+03:35:31 focus[nav-search]: الدليل
+03:35:35 focus[nav-search]: القنوات
+03:35:38 focus[nav-start]: القنوات
+03:35:38 !! RuntimeError('side bar not reached (focus: القنوات)')
+03:35:39 screenshot 15-fail-live.png 1920x1080
+03:35:39 == series
+03:35:41 focus[nav-search]: (android.view.View, no text)
+03:35:44 focus[nav-search]: إيقاف مؤقت
+03:35:48 focus[nav-search]: تقديم 10 ثوانٍ | 10
+03:35:51 focus[nav-search]: الدليل
+03:35:55 focus[nav-search]: القنوات
+03:35:58 focus[nav-start]: القنوات
+03:35:58 !! RuntimeError('side bar not reached (focus: القنوات)')
+03:35:59 screenshot 16-fail-series.png 1920x1080
+03:35:59 == settings
+03:36:01 focus[nav-search]: (android.view.View, no text)
+03:36:04 focus[nav-search]: إيقاف مؤقت
+03:36:08 focus[nav-search]: تقديم 10 ثوانٍ | 10
+03:36:12 focus[nav-search]: الدليل
+03:36:15 focus[nav-search]: القنوات
+03:36:18 focus[nav-start]: القنوات
+03:36:18 !! RuntimeError('side bar not reached (focus: القنوات)')
+03:36:19 screenshot 17-fail-settings.png 1920x1080
