@@ -5,12 +5,13 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Rational
+import android.view.ViewGroup
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,9 +57,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -87,6 +96,7 @@ import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
+import com.ratv.app.data.Channel
 import com.ratv.app.data.Episode
 import com.ratv.app.data.Keys
 import com.ratv.app.data.WatchEntry
@@ -105,6 +115,8 @@ import com.ratv.app.ui.components.ProgressLine
 import com.ratv.app.ui.components.QualityBadge
 import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.components.formatClock
+import com.ratv.app.ui.components.rememberIsTv
+import com.ratv.app.ui.components.tvClickable
 import com.ratv.app.ui.components.hm
 import com.ratv.app.ui.screens.rememberNow
 import com.ratv.app.ui.theme.RColors
@@ -152,6 +164,11 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     var panelOpen by remember { mutableStateOf(false) }
     var showTracks by remember { mutableStateOf(false) }
     var resizeIndex by remember { mutableIntStateOf(0) }
+    var banner by remember { mutableStateOf<Channel?>(null) }
+    val isTv = rememberIsTv()
+    val rootFocus = remember { FocusRequester() }
+    val playPauseFocus = remember { FocusRequester() }
+    val retryFocus = remember { FocusRequester() }
 
     val player = remember { createPlayer(context, repo.prefs.bufferMode) }
     val inPip = rememberIsInPictureInPicture(activity)
@@ -186,11 +203,11 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         )
     }
 
-    fun play(item: Playable) {
+    fun play(item: Playable, showControls: Boolean = true) {
         saveProgress()
         current = item
         panelOpen = false
-        controlsVisible = true
+        controlsVisible = showControls
         touch()
     }
 
@@ -356,7 +373,134 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         if (zapList.isEmpty()) return
         val index = zapList.indexOfFirst { it.id == ch.id }
         val target = zapList[((if (index < 0) 0 else index) + step + zapList.size) % zapList.size]
-        play(liveToPlayable(target))
+        play(liveToPlayable(target), showControls = false)
+        banner = target
+    }
+
+    fun seekBy(delta: Long) {
+        if (!seekable) return
+        touch()
+        val target = (player.currentPosition + delta).coerceAtLeast(0L)
+        player.seekTo(if (duration > 0L) target.coerceAtMost(duration) else target)
+    }
+
+    fun togglePlay() {
+        touch()
+        if (player.isPlaying) {
+            player.pause()
+        } else {
+            if (ended) player.seekTo(0L)
+            player.play()
+        }
+    }
+
+    fun showControls() {
+        controlsVisible = true
+        touch()
+    }
+
+    /** TV remote: OK shows the controls, up/down change channel, left/right seek, media keys work anywhere. */
+    fun onRemoteKey(event: KeyEvent): Boolean {
+        if (event.type != KeyEventType.KeyDown) return false
+        val live = item?.isLive == true
+        when (event.key) {
+            Key.MediaPlayPause, Key.MediaPlay, Key.MediaPause -> {
+                togglePlay()
+                return true
+            }
+            Key.MediaFastForward -> {
+                seekBy(30_000L)
+                return true
+            }
+            Key.MediaRewind -> {
+                seekBy(-30_000L)
+                return true
+            }
+            Key.ChannelUp -> {
+                if (live) zap(1)
+                return true
+            }
+            Key.ChannelDown -> {
+                if (live) zap(-1)
+                return true
+            }
+        }
+        if (locked) {
+            if (event.key == Key.DirectionCenter || event.key == Key.Enter || event.key == Key.NumPadEnter) {
+                locked = false
+                showControls()
+                return true
+            }
+            if (event.key == Key.Back) return false
+            showControls()
+            return true
+        }
+        if (panelOpen || showTracks || playerError != null || notFound) return false
+        if (controlsVisible) {
+            touch()
+            return false
+        }
+        return when (event.key) {
+            Key.DirectionCenter, Key.Enter, Key.NumPadEnter -> {
+                showControls()
+                true
+            }
+            Key.DirectionUp -> {
+                if (live) zap(-1) else showControls()
+                true
+            }
+            Key.DirectionDown -> {
+                if (live) zap(1) else showControls()
+                true
+            }
+            Key.DirectionLeft -> {
+                if (live) showControls() else seekBy(-10_000L)
+                true
+            }
+            Key.DirectionRight -> {
+                if (live) showControls() else seekBy(10_000L)
+                true
+            }
+            Key.Menu -> {
+                if (live) panelOpen = true else if (hasTrackChoice) showTracks = true
+                true
+            }
+            else -> false
+        }
+    }
+
+    LaunchedEffect(banner) {
+        if (banner != null) {
+            delay(3_000L)
+            banner = null
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        delay(150L)
+        runCatching { rootFocus.requestFocus() }
+    }
+
+    // Keep the remote's focus somewhere useful as the controls come and go.
+    LaunchedEffect(controlsVisible, locked, panelOpen, showTracks) {
+        delay(80L)
+        if (controlsVisible && !locked && !panelOpen && !showTracks) {
+            if (isTv) runCatching { playPauseFocus.requestFocus() }
+        } else if (!panelOpen && !showTracks) {
+            runCatching { rootFocus.requestFocus() }
+        }
+    }
+
+    LaunchedEffect(playerError) {
+        if (isTv && playerError != null) {
+            delay(120L)
+            runCatching { retryFocus.requestFocus() }
+        }
+    }
+
+    // On TV the first Back only hides the controls.
+    BackHandler(enabled = isTv && controlsVisible && !locked && !panelOpen && !showTracks) {
+        controlsVisible = false
     }
 
     // ------------------------------------------------------------- UI
@@ -364,6 +508,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         Modifier
             .fillMaxSize()
             .background(Color.Black)
+            .focusRequester(rootFocus)
+            .onKeyEvent { onRemoteKey(it) }
+            .focusable()
     ) {
         val exoPlayer = player
         AndroidView(
@@ -373,6 +520,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                     setShowBuffering(PlayerView.SHOW_BUFFERING_NEVER)
                     setKeepContentOnPlayerReset(true)
                     setBackgroundColor(android.graphics.Color.BLACK)
+                    isFocusable = false
+                    isFocusableInTouchMode = false
+                    descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
                     setPlayer(exoPlayer)
                 }
             },
@@ -415,6 +565,28 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             )
         }
 
+        val zapped = banner
+        if (zapped != null && !controlsVisible && !inPip) {
+            Row(
+                Modifier
+                    .align(Alignment.TopStart)
+                    .padding(24.dp)
+                    .clip(RoundedCornerShape(18.dp))
+                    .background(Color(0xD90B0C10))
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(zapped.num.toString(), style = T.display(20.sp, FontWeight.Bold, RColors.Saffron))
+                ChannelLogo(zapped.name, zapped.logo, 40.dp, corner = 10.dp)
+                Column {
+                    Text(zapped.name, style = T.body(16.sp, FontWeight.Bold), maxLines = 1)
+                    val now0 = epg.forChannel(zapped).current(now)?.title
+                    if (now0 != null) Text(now0, style = T.body(13.sp, color = SoftText), maxLines = 1)
+                }
+            }
+        }
+
         if (!inPip) {
             if (locked) {
                 AnimatedVisibility(
@@ -428,7 +600,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                             .padding(24.dp)
                             .clip(RoundedCornerShape(22.dp))
                             .background(Color(0xB30B0C10))
-                            .clickable(role = Role.Button) { locked = false; touch() }
+                            .tvClickable(RoundedCornerShape(22.dp)) { locked = false; touch() }
                             .padding(horizontal = 16.dp, vertical = 10.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -461,21 +633,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                             canPip = canPip,
                             resizeLabel = resizeModes[resizeIndex].second,
                             hasNextEpisode = nextEpisode != null,
+                            playPauseFocus = playPauseFocus,
                             onBack = { navigator.back() },
-                            onPlayPause = {
-                                touch()
-                                if (player.isPlaying) {
-                                    player.pause()
-                                } else {
-                                    if (ended) player.seekTo(0L)
-                                    player.play()
-                                }
-                            },
-                            onSeekBy = { delta ->
-                                touch()
-                                val target = (player.currentPosition + delta).coerceAtLeast(0L)
-                                player.seekTo(if (duration > 0L) target.coerceAtMost(duration) else target)
-                            },
+                            onPlayPause = { togglePlay() },
+                            onSeekBy = { delta -> seekBy(delta) },
                             onSeekTo = { ms ->
                                 touch()
                                 player.seekTo(ms)
@@ -526,7 +687,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                         categoryName = item?.channel?.let { repo.liveCategoryName(it.categoryId) },
                         epgLookup = { ch -> epg.forChannel(ch).current(now)?.title },
                         onPick = { ch -> play(liveToPlayable(ch)) },
-                        onClose = { panelOpen = false }
+                        onClose = { panelOpen = false },
+                        tv = isTv
                     )
                 }
             }
@@ -555,7 +717,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                                 player.play()
                             },
                             icon = RIcons.Refresh,
-                            height = 46.dp
+                            height = 46.dp,
+                            modifier = Modifier.focusRequester(retryFocus)
                         )
                         if (item?.isLive == true && zapList.size > 1) {
                             OutlineButton("القناة التالية", onClick = { zap(1) }, height = 46.dp)
@@ -601,6 +764,7 @@ private fun Controls(
     canPip: Boolean,
     resizeLabel: String,
     hasNextEpisode: Boolean,
+    playPauseFocus: FocusRequester,
     onBack: () -> Unit,
     onPlayPause: () -> Unit,
     onSeekBy: (Long) -> Unit,
@@ -677,9 +841,10 @@ private fun Controls(
                 Box(
                     Modifier
                         .size(76.dp)
+                        .focusRequester(playPauseFocus)
                         .clip(CircleShape)
                         .background(Color(0x29FFFFFF))
-                        .clickable(role = Role.Button, onClick = onPlayPause),
+                        .tvClickable(CircleShape, onClick = onPlayPause),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -780,7 +945,7 @@ private fun SeekButton(icon: ImageVector, description: String, enabled: Boolean,
         Modifier
             .size(56.dp)
             .clip(CircleShape)
-            .clickable(enabled = enabled, role = Role.Button, onClick = onClick),
+            .tvClickable(CircleShape, enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         val tint = if (enabled) Color.White else Color(0x61FFFFFF)
@@ -796,7 +961,7 @@ private fun PillButton(icon: ImageVector, label: String, onClick: () -> Unit) {
             .height(44.dp)
             .clip(RoundedCornerShape(22.dp))
             .background(Glass)
-            .clickable(role = Role.Button, onClick = onClick)
+            .tvClickable(RoundedCornerShape(22.dp), onClick = onClick)
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -813,12 +978,18 @@ private fun ChannelPanel(
     categoryName: String?,
     epgLookup: (com.ratv.app.data.Channel) -> String?,
     onPick: (com.ratv.app.data.Channel) -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    tv: Boolean = false
 ) {
     val listState = rememberLazyListState()
+    val currentFocus = remember { FocusRequester() }
     LaunchedEffect(currentId) {
         val index = channels.indexOfFirst { it.id == currentId }
         if (index > 2) listState.scrollToItem(index - 2)
+        if (tv) {
+            delay(120L)
+            runCatching { currentFocus.requestFocus() }
+        }
     }
     Box(
         Modifier
@@ -859,9 +1030,10 @@ private fun ChannelPanel(
                         Modifier
                             .fillMaxWidth()
                             .heightIn(min = 56.dp)
+                            .then(if (selected) Modifier.focusRequester(currentFocus) else Modifier)
                             .clip(RoundedCornerShape(14.dp))
                             .background(if (selected) RColors.Surface2 else Color.Transparent)
-                            .clickable(role = Role.Button) { onPick(ch) }
+                            .tvClickable(RoundedCornerShape(14.dp)) { onPick(ch) }
                             .padding(horizontal = 10.dp, vertical = 6.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -940,7 +1112,8 @@ private fun TrackRow(label: String, selected: Boolean, onClick: () -> Unit) {
         Modifier
             .fillMaxWidth()
             .heightIn(min = 48.dp)
-            .clickable(role = Role.RadioButton, onClick = onClick),
+            .clip(RoundedCornerShape(10.dp))
+            .tvClickable(RoundedCornerShape(10.dp), role = Role.RadioButton, onClick = onClick),
         verticalAlignment = Alignment.CenterVertically
     ) {
         RadioButton(selected = selected, onClick = null, colors = RadioButtonDefaults.colors(selectedColor = RColors.Saffron))

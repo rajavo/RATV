@@ -33,6 +33,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -49,6 +51,8 @@ import com.ratv.app.ui.components.EmptyState
 import com.ratv.app.ui.components.PosterImage
 import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.components.ScreenHeader
+import com.ratv.app.ui.components.TvInitialFocus
+import com.ratv.app.ui.components.tvClickable
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 
@@ -130,8 +134,12 @@ private fun CatalogScreen(
         }
     }
 
+    val firstId = visible.firstOrNull()?.id
+    val firstFocus = remember { FocusRequester() }
+    TvInitialFocus(firstFocus, key = firstId)
+
     LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
+        columns = GridCells.Adaptive(96.dp),
         modifier = Modifier
             .fillMaxSize()
             .background(RColors.Ink),
@@ -181,8 +189,9 @@ private fun CatalogScreen(
         items(visible, key = { it.id }) { item ->
             Column(
                 Modifier
+                    .then(if (item.id == firstId) Modifier.focusRequester(firstFocus) else Modifier)
                     .clip(RoundedCornerShape(12.dp))
-                    .clickable(role = Role.Button) { onOpen(item.id) },
+                    .tvClickable(RoundedCornerShape(12.dp)) { onOpen(item.id) },
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 PosterImage(

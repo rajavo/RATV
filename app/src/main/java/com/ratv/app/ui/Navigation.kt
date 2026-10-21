@@ -1,7 +1,10 @@
 package com.ratv.app.ui
 
 import android.net.Uri
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -19,6 +22,8 @@ import androidx.navigation.navArgument
 import com.ratv.app.data.Repository
 import com.ratv.app.player.PlayerScreen
 import com.ratv.app.ui.components.BottomNav
+import com.ratv.app.ui.components.SideNav
+import com.ratv.app.ui.components.rememberIsWide
 import com.ratv.app.ui.screens.GuideScreen
 import com.ratv.app.ui.screens.HomeScreen
 import com.ratv.app.ui.screens.LiveScreen
@@ -82,16 +87,24 @@ fun RatvRoot() {
     val entry by nav.currentBackStackEntryAsState()
     val route = entry?.destination?.route
     val showBar = route in barRoutes
+    val wide = rememberIsWide()
+    val currentTab = if (route == "guide") "live" else (route ?: "home")
 
+    Row(
+        Modifier
+            .fillMaxSize()
+            .background(RColors.Ink)
+    ) {
+    if (wide && showBar) {
+        SideNav(current = currentTab, onSelect = { navigator.tab(it) })
+    }
     Scaffold(
+        modifier = Modifier.weight(1f),
         containerColor = RColors.Ink,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
-            if (showBar) {
-                BottomNav(
-                    current = if (route == "guide") "live" else (route ?: "home"),
-                    onSelect = { navigator.tab(it) }
-                )
+            if (showBar && !wide) {
+                BottomNav(current = currentTab, onSelect = { navigator.tab(it) })
             }
         }
     ) { padding ->
@@ -151,5 +164,6 @@ fun RatvRoot() {
                 )
             }
         }
+    }
     }
 }

@@ -31,6 +31,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
@@ -57,6 +59,8 @@ import com.ratv.app.ui.components.QualityBadge
 import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.components.RingsArt
 import com.ratv.app.ui.components.ScreenHeader
+import com.ratv.app.ui.components.TvInitialFocus
+import com.ratv.app.ui.components.tvClickable
 import com.ratv.app.ui.components.hm
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
@@ -85,6 +89,11 @@ fun LiveScreen(nav: Navigator) {
         val last = repo.prefs.lastChannelId
         channels.firstOrNull { it.id == last } ?: channels.firstOrNull()
     }
+    val focusTarget = remember(visible, featured) {
+        visible.firstOrNull { it.id == featured?.id }?.id ?: visible.firstOrNull()?.id
+    }
+    val rowFocus = remember { FocusRequester() }
+    TvInitialFocus(rowFocus, key = focusTarget)
 
     LazyColumn(
         Modifier
@@ -146,7 +155,8 @@ fun LiveScreen(nav: Navigator) {
                 favorite = Keys.live(ch.id) in favorites,
                 active = ch.id == featured?.id,
                 onOpen = { nav.playLive(ch.id) },
-                onToggleFavorite = { repo.toggleFavorite(Keys.live(ch.id)) }
+                onToggleFavorite = { repo.toggleFavorite(Keys.live(ch.id)) },
+                focusRequester = if (ch.id == focusTarget) rowFocus else null
             )
         }
     }
@@ -161,7 +171,8 @@ fun ChannelRow(
     favorite: Boolean,
     active: Boolean,
     onOpen: () -> Unit,
-    onToggleFavorite: () -> Unit
+    onToggleFavorite: () -> Unit,
+    focusRequester: FocusRequester? = null
 ) {
     Row(
         Modifier
@@ -175,7 +186,10 @@ fun ChannelRow(
             Modifier
                 .weight(1f)
                 .height(70.dp)
-                .clickable(role = Role.Button, onClick = onOpen),
+                .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier)
+                .clip(RoundedCornerShape(12.dp))
+                .tvClickable(RoundedCornerShape(12.dp), onClick = onOpen)
+                .padding(horizontal = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -215,7 +229,7 @@ fun ChannelRow(
             Modifier
                 .size(44.dp)
                 .clip(CircleShape)
-                .clickable(role = Role.Button, onClick = onToggleFavorite),
+                .tvClickable(CircleShape, onClick = onToggleFavorite),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -242,7 +256,7 @@ private fun PreviewCard(
             .height(180.dp)
             .clip(RoundedCornerShape(18.dp))
             .background(Brush.verticalGradient(listOf(Color(0xFF172028), RColors.Surface)))
-            .clickable(role = Role.Button, onClickLabel = "تشغيل ${channel.name}", onClick = onClick)
+            .tvClickable(RoundedCornerShape(18.dp), onClickLabel = "تشغيل ${channel.name}", onClick = onClick)
     ) {
         RingsArt(Modifier.fillMaxSize())
         ChannelLogo(

@@ -42,6 +42,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -61,6 +63,8 @@ import com.ratv.app.ui.components.AppIcon
 import com.ratv.app.ui.components.OutlineButton
 import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.components.ScreenHeader
+import com.ratv.app.ui.components.TvInitialFocus
+import com.ratv.app.ui.components.tvClickable
 import com.ratv.app.ui.components.arabicDate
 import com.ratv.app.ui.components.formatCount
 import com.ratv.app.ui.components.relativeTime
@@ -89,6 +93,8 @@ fun SettingsScreen(nav: Navigator) {
     var showAbout by remember { mutableStateOf(false) }
     var confirmSwitch by remember { mutableStateOf(false) }
     var pinMode by remember { mutableStateOf<String?>(null) }
+    val firstFocus = remember { FocusRequester() }
+    TvInitialFocus(firstFocus)
 
     Column(
         Modifier
@@ -155,7 +161,15 @@ fun SettingsScreen(nav: Navigator) {
                 Stat("آخر تحديث", relativeTime(lastUpdated), Modifier.weight(1f))
             }
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                OutlineButton("تبديل القائمة", onClick = { confirmSwitch = true }, icon = RIcons.Swap, modifier = Modifier.weight(1f), height = 44.dp)
+                OutlineButton(
+                    "تبديل القائمة",
+                    onClick = { confirmSwitch = true },
+                    icon = RIcons.Swap,
+                    modifier = Modifier
+                        .weight(1f)
+                        .focusRequester(firstFocus),
+                    height = 44.dp
+                )
                 OutlineButton(
                     "تحديث المحتوى",
                     onClick = {
@@ -205,7 +219,7 @@ fun SettingsScreen(nav: Navigator) {
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(18.dp))
                 .background(RColors.Surface)
-                .clickable(role = Role.Button) { showAbout = true }
+                .tvClickable(RoundedCornerShape(18.dp)) { showAbout = true }
                 .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -232,7 +246,8 @@ fun SettingsScreen(nav: Navigator) {
                             Modifier
                                 .fillMaxWidth()
                                 .heightIn(min = 48.dp)
-                                .clickable(role = Role.RadioButton) {
+                                .clip(RoundedCornerShape(10.dp))
+                                .tvClickable(RoundedCornerShape(10.dp), role = Role.RadioButton) {
                                     bufferMode = key
                                     repo.prefs.bufferMode = key
                                 },
@@ -375,7 +390,8 @@ private fun ValueRow(label: String, value: String, onClick: () -> Unit) {
         Modifier
             .fillMaxWidth()
             .heightIn(min = 60.dp)
-            .clickable(role = Role.Button, onClick = onClick)
+            .clip(RoundedCornerShape(14.dp))
+            .tvClickable(RoundedCornerShape(14.dp), onClick = onClick)
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -392,7 +408,8 @@ private fun ToggleRow(label: String, sub: String?, checked: Boolean, onChange: (
         Modifier
             .fillMaxWidth()
             .heightIn(min = 60.dp)
-            .clickable(role = Role.Switch) { onChange(!checked) }
+            .clip(RoundedCornerShape(14.dp))
+            .tvClickable(RoundedCornerShape(14.dp), role = Role.Switch) { onChange(!checked) }
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
