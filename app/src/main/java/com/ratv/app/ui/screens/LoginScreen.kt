@@ -68,6 +68,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.LocaleList
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -76,6 +77,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ratv.app.data.Links
 import com.ratv.app.data.Playlist
 import com.ratv.app.data.PlaylistType
 import com.ratv.app.data.XtreamClient
@@ -131,13 +133,42 @@ fun LoginScreen(onDone: () -> Unit) {
         if (loading) return
         error = null
         val playlist = if (xtream) {
-            XtreamClient.fromUserInput(name.trim().ifBlank { "اشتراكي" }, server, username, password)
+            val p = XtreamClient.fromUserInput(name.trim().ifBlank { "اشتراكي" }, server, username, password)
+            // Show what will be used: typing slips fixed, a pasted get.php link split into its parts.
+            if (p.server.isNotEmpty()) server = p.server
+            username = p.username
+            password = p.password
+            if (p.server.isEmpty() || p.username.isEmpty() || p.password.isEmpty()) {
+                error = "أكمل رابط الخادم واسم المستخدم وكلمة المرور."
+                return
+            }
+            if (!Links.isWebLink(p.server)) {
+                error = "رابط الخادم غير صحيح. اكتبه بالإنجليزية مثل: http://server.com:8080"
+                return
+            }
+            p
         } else {
+            val link = Links.clean(m3uUrl)
+            val guide = Links.clean(epgUrl)
+            m3uUrl = link
+            epgUrl = guide
+            if (link.isEmpty()) {
+                error = if (tv) "أدخل رابط قائمة M3U." else "أدخل رابط قائمة M3U أو اختر ملفاً."
+                return
+            }
+            if (!link.startsWith("content://") && !Links.isWebLink(link)) {
+                error = "رابط القائمة غير صحيح. اكتبه كاملاً بالإنجليزية ويبدأ بـ http://"
+                return
+            }
+            if (guide.isNotEmpty() && !Links.isWebLink(guide)) {
+                error = "رابط دليل البرامج غير صحيح. صحّحه أو اترك خانته فارغة."
+                return
+            }
             Playlist(
                 type = PlaylistType.M3U,
                 name = name.trim().ifBlank { "قائمتي" },
-                m3uUrl = m3uUrl.trim(),
-                epgUrl = epgUrl.trim()
+                m3uUrl = link,
+                epgUrl = guide
             )
         }
         loading = true
@@ -197,7 +228,10 @@ fun LoginScreen(onDone: () -> Unit) {
             )
             Spacer(Modifier.height(14.dp))
             val userField: @Composable (Modifier) -> Unit = { m ->
-                Field("اسم المستخدم", username, { username = it }, "username", ltr = true, tv = tv, modifier = m)
+                Field(
+                    "اسم المستخدم", username, { username = it }, "username",
+                    ltr = true, keyboard = KeyboardType.Ascii, tv = tv, modifier = m
+                )
             }
             val passwordField: @Composable (Modifier) -> Unit = { m ->
                 Field(
@@ -530,7 +564,10 @@ private fun Field(
                 visualTransformation = if (secret) PasswordVisualTransformation() else VisualTransformation.None,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = keyboard,
-                    imeAction = if (last) ImeAction.Done else ImeAction.Next
+                    imeAction = if (last) ImeAction.Done else ImeAction.Next,
+                    // Links and log-in details are Latin: no auto-correct, and ask for the English keyboard.
+                    autoCorrectEnabled = if (ltr) false else null,
+                    hintLocales = if (ltr) LocaleList("en") else null
                 ),
                 keyboardActions = KeyboardActions(
                     onNext = {

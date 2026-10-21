@@ -199,7 +199,9 @@ class Repository(private val context: Context, val prefs: Prefs) {
                     if (n > 0) String(buf, 0, n) else ""
                 }
                 if (!head.contains("#EXTINF") && !head.contains("#EXTM3U")) {
-                    throw IOException("الرابط لا يحتوي على قائمة M3U صالحة.")
+                    throw IOException(
+                        "هذا الرابط لا يحتوي على قائمة قنوات M3U. إذا كان عندك اسم مستخدم وكلمة مرور فادخل من تبويب Xtream Codes."
+                    )
                 }
             }
         }
@@ -495,7 +497,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
         is java.net.UnknownHostException -> "تعذّر الوصول إلى الخادم. تحقّق من الرابط والاتصال بالإنترنت."
         is java.net.SocketTimeoutException -> "انتهت مهلة الاتصال بالخادم."
         is java.net.ConnectException -> "تعذّر الاتصال بالخادم."
-        is IllegalArgumentException -> "الرابط غير صالح."
+        is IllegalArgumentException -> "الرابط غير صحيح. اكتبه كاملاً بالإنجليزية ويبدأ بـ http://"
         is IOException -> e.message?.takeIf { msg -> msg.any { it in '؀'..'ۿ' } }
             ?: "تعذّر تحميل البيانات. تحقّق من الاتصال."
         else -> "حدث خطأ غير متوقع."

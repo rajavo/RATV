@@ -209,21 +209,25 @@ class XtreamClient(private val p: Playlist) {
 
         /** Normalises what the user typed (may be a full get.php link) into a playlist. */
         fun fromUserInput(name: String, serverInput: String, username: String, password: String): Playlist {
-            var server = serverInput.trim()
-            var u = username.trim()
-            var p = password.trim()
-            if (!server.startsWith("http://", true) && !server.startsWith("https://", true)) {
-                server = "http://$server"
+            val link = Links.clean(serverInput)
+            var u = Links.credential(username)
+            var p = Links.credential(password)
+            var server = ""
+            if (link.isNotEmpty()) {
+                val uri = Uri.parse(link)
+                // A full get.php / player_api.php link also carries the user name and password.
+                val qUser = runCatching { uri.getQueryParameter("username") }.getOrNull()
+                val qPass = runCatching { uri.getQueryParameter("password") }.getOrNull()
+                if (u.isEmpty() && qUser != null) u = Links.credential(qUser)
+                if (p.isEmpty() && qPass != null) p = Links.credential(qPass)
+                val host = uri.host.orEmpty()
+                server = if (host.isNotEmpty()) {
+                    val port = if (uri.port > 0) ":" + uri.port else ""
+                    (uri.scheme ?: "http").lowercase() + "://" + host + port
+                } else {
+                    link // kept as typed so the screen can say the link is wrong
+                }
             }
-            val uri = Uri.parse(server)
-            val qUser = uri.getQueryParameter("username")
-            val qPass = uri.getQueryParameter("password")
-            if (u.isEmpty() && qUser != null) u = qUser
-            if (p.isEmpty() && qPass != null) p = qPass
-            val port = if (uri.port > 0) ":" + uri.port else ""
-            val scheme = uri.scheme ?: "http"
-            val host = uri.host ?: ""
-            server = "$scheme://$host$port"
             return Playlist(PlaylistType.XTREAM, name, server = server, username = u, password = p)
         }
     }
