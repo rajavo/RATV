@@ -94,9 +94,9 @@ fun SpeedTestDialog(playlist: Playlist?, onDismiss: () -> Unit) {
                     )
                 }
                 Column(Modifier.padding(top = 16.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    InfoLine("زمن الاستجابة", ping?.let { "$it ملي ثانية" } ?: "—")
+                    SpeedLine("زمن الاستجابة", ping?.let { "$it ملي ثانية" } ?: "—")
                     if (playlist != null) {
-                        InfoLine("استجابة سيرفر الاشتراك", serverPing?.let { "$it ملي ثانية" } ?: if (running) "—" else "لا يستجيب")
+                        SpeedLine("استجابة سيرفر الاشتراك", serverPing?.let { "$it ملي ثانية" } ?: if (running) "—" else "لا يستجيب")
                     }
                 }
             }
@@ -106,7 +106,7 @@ fun SpeedTestDialog(playlist: Playlist?, onDismiss: () -> Unit) {
 }
 
 @Composable
-private fun InfoLine(label: String, value: String) {
+private fun SpeedLine(label: String, value: String) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Text(label, style = T.body(14.sp, color = RColors.Text2))
         Text(value, style = T.body(14.sp, FontWeight.Bold))
