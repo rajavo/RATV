@@ -42,6 +42,10 @@ CHANNELS = [
     (206, 13, "Sky Sports Main", "2", "skymain.ratv", None),
     # Sent in real time like a real channel, and the server drops the connection every 7 s.
     (107, 14, "Unstable Live", "1", "", None),
+    # Every 12 s the connection stops delivering without being closed, as a stuck line does.
+    (108, 15, "Frozen Live", "1", "", None),
+    # Sends in 2-second chunks, as servers that relay HLS do: healthy, must not be cut.
+    (109, 16, "Chunky Live", "1", "", None),
 ]
 # The same game, named in Arabic on one channel and in English on another.
 MATCH = {
@@ -215,6 +219,13 @@ def fmt(ts):
 
 
 LIVE_T0 = [None]  # when the unstable channel was first opened
+CHANNEL_T0 = {}  # first opening of the frozen and chunky channels
+CONNECTIONS = {}  # connections per test channel
+
+
+def note(event, **kw):
+    sys.stderr.write("%s EVENT %s %s\n" % (time.strftime("%H:%M:%S"), event, json.dumps(kw)))
+    sys.stderr.flush()
 MATCH_START = (NOW // 1800) * 1800 - 1800
 MATCH_END = MATCH_START + 7200
 
@@ -330,6 +341,52 @@ class Handler(BaseHTTPRequestHandler):
             pass
         self.close_connection = True
 
+    def send_live_paced(self, path, sid, stop_after=None, chunk_seconds=None):
+        """A live channel sent in real time from its live point, with a 3 s burst on each connection.
+
+        stop_after: seconds after which the connection stops delivering but stays open.
+        chunk_seconds: send the stream in chunks of this many seconds instead of steadily.
+        """
+        size = os.path.getsize(path)
+        rate = size / 240.0
+        now = time.time()
+        t0 = CHANNEL_T0.setdefault(sid, now)
+        CONNECTIONS[sid] = CONNECTIONS.get(sid, 0) + 1
+        burst = int(3 * rate) // 188 * 188
+        live_pos = int((now - t0) * rate) + burst
+        pos = (max(0, live_pos - burst) % size) // 188 * 188
+        note("connect", channel=sid, n=CONNECTIONS[sid])
+        self.send_response(200)
+        self.send_header("Content-Type", "video/mp2t")
+        self.end_headers()
+        started = time.time()
+        sent = 0
+        try:
+            with open(path, "rb") as f:
+                f.seek(pos)
+                self.wfile.write(f.read(burst))
+                while True:
+                    age = time.time() - started
+                    if stop_after is not None and age >= stop_after:
+                        note("frozen", channel=sid)
+                        while time.time() - started < 90:  # stuck: open but silent
+                            time.sleep(0.5)
+                        break
+                    step = int((chunk_seconds or 0.05) * rate) // 188 * 188 or 188 * 64
+                    data = f.read(step)
+                    if not data:
+                        f.seek(0)
+                        continue
+                    self.wfile.write(data)
+                    self.wfile.flush()
+                    sent += len(data)
+                    ahead = sent / rate - (time.time() - started)
+                    if ahead > 0:
+                        time.sleep(ahead)
+        except (BrokenPipeError, ConnectionResetError, OSError):
+            note("client-left", channel=sid)
+        self.close_connection = True
+
     def send_file(self, path, ctype):
         if not os.path.exists(path):
             self.send_error(404)
@@ -386,6 +443,8 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_json({"versionCode": 99999, "versionName": "9.9.9", "apk": "RATV.apk"})
         if p == "/update/RATV.apk":
             return self.send_file(os.path.join(MEDIA, "RATV.apk"), "application/vnd.android.package-archive")
+        if p == "/__stats":  # connections per test channel
+            return self.send_json({str(k): v for k, v in CONNECTIONS.items()})
         if p == "/__down":  # speed test download
             n = int(q.get("bytes", "0") or 0)
             self.send_response(200)
@@ -438,6 +497,10 @@ class Handler(BaseHTTPRequestHandler):
         if p.startswith("/live/") and p.endswith(".m3u8"):
             # Says it allows HLS but has none: the app must fall back to TS by itself.
             return self.send_error(404)
+        if p.startswith("/live/") and os.path.basename(p).startswith("108."):
+            return self.send_live_paced(os.path.join(MEDIA, "live.ts"), 108, stop_after=12.0)
+        if p.startswith("/live/") and os.path.basename(p).startswith("109."):
+            return self.send_live_paced(os.path.join(MEDIA, "live.ts"), 109, chunk_seconds=2.0)
         if p.startswith("/live/") and os.path.basename(p).startswith("107."):
             return self.send_live_unstable(os.path.join(MEDIA, "live.ts"))
         if p.startswith("/live/"):

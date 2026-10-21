@@ -727,41 +727,77 @@ def s_speed_test():
         raise RuntimeError("speed test gave no result: " + texts[:300])
 
 
-def s_unstable():
-    """The server cuts the channel every 7 s: the picture must go on without stalls."""
+def play_test_channel(name, seconds, tag):
+    """Opens a test channel from the full list, plays it, and returns the stall count it shows."""
     tap_where(text="الكل")
     time.sleep(1)
-    for _ in range(4):
-        _, n = wait_for(timeout=4, contains="Unstable Live")
+    n = None
+    for _ in range(6):
+        _, n = wait_for(timeout=4, contains=name)
         if n is not None:
             break
         shell("input swipe 540 1700 540 900 600")
         time.sleep(1.5)
     if n is None:
-        raise RuntimeError("unstable channel missing")
+        raise RuntimeError("channel missing: " + name)
     tap_node(n)
     try:
-        time.sleep(40)  # about five dropped connections
-        w, h = shot("unstable-playing")
+        time.sleep(seconds)
+        w, h = shot(tag + "-playing")
         open_from_controls("معلومات البث", w, h)
         time.sleep(2)
-        root = dump("unstable-stats")
-        shot("unstable-stats")
+        root = dump(tag + "-stats")
+        shot(tag + "-stats")
         texts = all_texts(root)
-        log("unstable: " + texts[:500])
+        log("%s: %s" % (tag, texts[:500]))
         parts = [t.strip() for t in texts.split("|")]
-        stalls = None
         for i, t in enumerate(parts):
             if t == "التوقفات":
                 stalls = next((int(x) for x in parts[i + 1:i + 4] if x.isdigit()), None)
-                break
-        if stalls is None:
-            raise RuntimeError("stall count not shown: " + texts[:200])
-        if stalls > 1:
-            raise RuntimeError("the channel stalled %d times while the server kept cutting it" % stalls)
+                if stalls is not None:
+                    return stalls
+        raise RuntimeError("stall count not shown: " + texts[:200])
     finally:
         back()
         time.sleep(2)
+
+
+def server_connections(sid):
+    try:
+        import urllib.request
+        return json.loads(urllib.request.urlopen("http://127.0.0.1:8000/__stats", timeout=5).read()).get(str(sid), 0)
+    except Exception as e:
+        log("stats: %r" % e)
+        return -1
+
+
+def s_unstable():
+    """The server cuts the channel every 7 s: the picture must go on without stalls."""
+    stalls = play_test_channel("Unstable Live", 40, "unstable")
+    if stalls > 1:
+        raise RuntimeError("the channel stalled %d times while the server kept cutting it" % stalls)
+
+
+def s_frozen():
+    """Every 12 s the line stops delivering without closing: RATV must reconnect before the store runs out."""
+    stalls = play_test_channel("Frozen Live", 50, "frozen")
+    conns = server_connections(108)
+    log("frozen: stalls %d, connections %d" % (stalls, conns))
+    if conns < 3:
+        raise RuntimeError("RATV did not reconnect after the line froze (%d connections)" % conns)
+    if stalls > 1:
+        raise RuntimeError("the channel stalled %d times when the line froze" % stalls)
+
+
+def s_chunky():
+    """A healthy server that sends in 2 s chunks: no stalls, and no needless reconnects."""
+    stalls = play_test_channel("Chunky Live", 40, "chunky")
+    conns = server_connections(109)
+    log("chunky: stalls %d, connections %d" % (stalls, conns))
+    if stalls > 0:
+        raise RuntimeError("the chunked channel stalled %d times" % stalls)
+    if conns > 2:
+        raise RuntimeError("a healthy chunked stream was cut %d times" % (conns - 1))
 
 
 def s_matches():
@@ -990,6 +1026,8 @@ if __name__ == "__main__":
         ("play-live", s_play_live),
         ("offline", s_offline),
         ("unstable", s_unstable),
+        ("frozen", s_frozen),
+        ("chunky", s_chunky),
         ("matches", s_matches),
         ("commentator", s_commentator),
         ("commentary-mix", s_commentary_mix),
