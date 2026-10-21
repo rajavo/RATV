@@ -216,6 +216,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // Stream information (the ⓘ button), with what playback went through: finds the cause of stutter.
     var showStats by remember { mutableStateOf(false) }
     var stalls by remember { mutableIntStateOf(0) }
+    var liveReconnects by remember { mutableIntStateOf(0) }
     var droppedFrames by remember { mutableIntStateOf(0) }
     var decoderName by remember { mutableStateOf<String?>(null) }
     var bandwidthBps by remember { mutableLongStateOf(0L) }
@@ -486,7 +487,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         var lastFramesAt = 0L
         var lastPos = -1L
         var lastPosAt = 0L
+        val reconnectBase = LiveReconnectingDataSource.reconnects.get()
+        liveReconnects = 0
         while (true) {
+            liveReconnects = LiveReconnectingDataSource.reconnects.get() - reconnectBase
             if (player.isPlaying || player.playbackState == Player.STATE_BUFFERING) Playback.markActive()
             // Jumps of the picture's clock (for the emulator checks): a joined reconnect shows none.
             val pos = player.currentPosition
@@ -884,6 +888,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 bandwidthBps = bandwidthBps,
                 reserveMs = reserveMs,
                 stalls = stalls,
+                reconnects = liveReconnects,
                 dropped = droppedFrames,
                 offline = netTrouble,
                 modifier = Modifier
@@ -1628,6 +1633,7 @@ private fun StatsPanel(
     bandwidthBps: Long,
     reserveMs: Long,
     stalls: Int,
+    reconnects: Int,
     dropped: Int,
     offline: Boolean,
     modifier: Modifier = Modifier
@@ -1640,6 +1646,7 @@ private fun StatsPanel(
         stalls > 0 && offline -> "التوقفات من انقطاع الاتصال بالإنترنت."
         stalls > 0 -> "توقف البث $stalls مرة: الاتصال أو السيرفر لم يرسل البث بسرعة كافية."
         uneven -> "البث $fpsText إطار والشاشة ${refresh.toInt()} هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات."
+        reconnects > 0 -> "البث سليم: انقطع الاتصال $reconnects مرة ورجع على طول بدون توقف."
         else -> "البث سليم: لا توقفات ولا إطارات ساقطة."
     }
     Column(
@@ -1659,6 +1666,7 @@ private fun StatsPanel(
             "سرعة الاتصال" to (if (bandwidthBps > 0 && bandwidthBps != 12_000_000L) String.format(java.util.Locale.US, "%.1f ميجابت", bandwidthBps / 1_000_000.0) else "—"),
             "الاحتياطي" to "${reserveMs / 1000L} ث",
             "التوقفات" to "$stalls",
+            "إعادة الاتصال" to "$reconnects",
             "إطارات ساقطة" to "$dropped"
         )
         lines.forEach { (k, v) ->
