@@ -100,7 +100,7 @@ def type_in_selected(text):
 
 
 def t_fill_with_remote():
-    S.type_text("http://10.0.2.2:8000")  # the server field is still in typing mode
+    type_in_selected("http://10.0.2.2:8000")
     key("DPAD_DOWN")
     _, f = log_focus("login-user")
     expect(f is not None and "username" in f, "down arrow did not reach the username field (focus: %s)" % f)
