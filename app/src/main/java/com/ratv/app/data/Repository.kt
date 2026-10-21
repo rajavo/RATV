@@ -497,7 +497,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
         is java.net.UnknownHostException -> "تعذّر الوصول إلى الخادم. تحقّق من الرابط والاتصال بالإنترنت."
         is java.net.SocketTimeoutException -> "انتهت مهلة الاتصال بالخادم."
         is java.net.ConnectException -> "تعذّر الاتصال بالخادم."
-        is IllegalArgumentException -> "الرابط غير صحيح. اكتبه كاملاً بالإنجليزية ويبدأ بـ http://"
+        is IllegalArgumentException -> "الرابط غير صحيح. اكتبه كاملاً بالإنجليزية ويبدأ بـ http://\u200E"
         is IOException -> e.message?.takeIf { msg -> msg.any { it in '؀'..'ۿ' } }
             ?: "تعذّر تحميل البيانات. تحقّق من الاتصال."
         else -> "حدث خطأ غير متوقع."
