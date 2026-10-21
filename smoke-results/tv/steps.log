@@ -1,0 +1,68 @@
+03:21:41 == launch
+03:22:27 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 951
+WaitTime: 959
+Complete
+03:22:29 screenshot 01-splash.png 1920x1080
+03:22:29 == login-screen
+03:22:35 focus[login-initial]: http://server.example:8080
+03:22:35 screenshot 02-login.png 1920x1080
+03:22:35 == keyboard-on-ok
+03:22:39 screenshot 03-login-keyboard.png 1920x1080
+03:22:42 == fill-with-remote
+03:22:49 focus[login-user]: http://10.0.2.2:8000
+03:22:49 !! RuntimeError('down arrow did not reach the username field (focus: http://10.0.2.2:8000)')
+03:22:49 screenshot 04-fail-fill-with-remote.png 1920x1080
+03:22:49 == home-focus
+03:22:50 focus[home-focus]: http://10.0.2.2:8000
+03:22:51 screenshot 05-home-focus.png 1920x1080
+03:22:51 !! RuntimeError('hero not focused (focus: http://10.0.2.2:8000)')
+03:22:51 screenshot 06-fail-home-focus.png 1920x1080
+03:22:51 == player-remote
+03:23:01 screenshot 07-player.png 1920x1080
+03:23:04 screenshot 08-player-zap.png 1920x1080
+03:23:06 screenshot 09-player-controls.png 1920x1080
+03:23:08 screenshot 10-player-controls-moved.png 1920x1080
+03:23:10 screenshot 11-player-controls-hidden.png 1920x1080
+03:23:31 screenshot 12-home-after-player.png 1920x1080
+03:23:31 !! RuntimeError('Back did not return from the player')
+03:23:31 screenshot 13-fail-player-remote.png 1920x1080
+03:23:31 == movies
+03:23:33 focus[nav-search]: Add app to favorites | Add app to favorites
+03:23:36 focus[nav-search]: Add app to favorites | Add app to favorites
+03:23:39 focus[nav-search]: Add app to favorites | Add app to favorites
+03:23:42 focus[nav-search]: Add app to favorites | Add app to favorites
+03:23:45 focus[nav-search]: Add app to favorites | Add app to favorites
+03:23:48 focus[nav-start]: Add app to favorites | Add app to favorites
+03:23:48 !! RuntimeError('side bar not reached (focus: Add app to favorites | Add app to favorites)')
+03:23:48 screenshot 14-fail-movies.png 1920x1080
+03:23:48 == live
+03:23:50 focus[nav-search]: Add app to favorites | Add app to favorites
+03:23:53 focus[nav-search]: Add app to favorites | Add app to favorites
+03:23:56 focus[nav-search]: Add app to favorites | Add app to favorites
+03:23:59 focus[nav-search]: Add app to favorites | Add app to favorites
+03:24:02 focus[nav-search]: Add app to favorites | Add app to favorites
+03:24:05 focus[nav-start]: Add app to favorites | Add app to favorites
+03:24:05 !! RuntimeError('side bar not reached (focus: Add app to favorites | Add app to favorites)')
+03:24:06 screenshot 15-fail-live.png 1920x1080
+03:24:06 == series
+03:24:07 focus[nav-search]: Add app to favorites | Add app to favorites
+03:24:10 focus[nav-search]: Add app to favorites | Add app to favorites
+03:24:13 focus[nav-search]: Add app to favorites | Add app to favorites
+03:24:16 focus[nav-search]: Add app to favorites | Add app to favorites
+03:24:19 focus[nav-search]: Add app to favorites | Add app to favorites
+03:24:22 focus[nav-start]: Add app to favorites | Add app to favorites
+03:24:22 !! RuntimeError('side bar not reached (focus: Add app to favorites | Add app to favorites)')
+03:24:23 screenshot 16-fail-series.png 1920x1080
+03:24:23 == settings
+03:24:24 focus[nav-search]: Add app to favorites | Add app to favorites
+03:24:27 focus[nav-search]: Add app to favorites | Add app to favorites
+03:24:30 focus[nav-search]: Add app to favorites | Add app to favorites
+03:24:33 focus[nav-search]: Add app to favorites | Add app to favorites
+03:24:36 focus[nav-search]: Add app to favorites | Add app to favorites
+03:24:39 focus[nav-start]: Add app to favorites | Add app to favorites
+03:24:39 !! RuntimeError('side bar not reached (focus: Add app to favorites | Add app to favorites)')
+03:24:40 screenshot 17-fail-settings.png 1920x1080
