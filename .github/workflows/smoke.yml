@@ -18,10 +18,22 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
-      - name: Build release APK
+      - name: Unit tests and release APK
         run: |
           chmod +x gradlew
-          ./gradlew --no-daemon assembleRelease
+          set -o pipefail
+          ./gradlew --no-daemon testReleaseUnitTest assembleRelease 2>&1 | tee build.log
+      - name: Save build errors to the branch
+        if: failure()
+        run: |
+          mkdir -p smoke-results
+          { grep -E "^e: |error:|FAILED|AssertionError|ComparisonFailure" build.log | head -60; echo ----; tail -80 build.log; } > smoke-results/build-error.txt || true
+          for f in $(find app/build/test-results -name "*.xml" 2>/dev/null); do grep -q "<failure" "$f" && cat "$f" >> smoke-results/build-error.txt; done; true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f smoke-results/build-error.txt
+          git commit -q -m "Build error" || true
+          for i in 1 2 3; do git pull -q --rebase origin ci-smoke && git push -q origin HEAD:ci-smoke && break; sleep 5; done
       - uses: actions/upload-artifact@v4
         with:
           name: apk

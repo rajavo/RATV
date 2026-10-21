@@ -234,12 +234,15 @@ def s_login_screen():
 
 
 def s_wrong_password():
-    fill_fields([(0, "http://10.0.2.2:8000"), (1, "test"), (2, "wrong")])
+    # The server is typed without http:// on purpose: the app adds it.
+    fill_fields([(0, "10.0.2.2:8000"), (1, "test"), (2, "wrong")])
     tap_where(text="دخول")
-    _, n = wait_for(timeout=40, contains="غير صحيحة", save="login-error")
+    root, n = wait_for(timeout=40, contains="غير صحيحة", save="login-error")
     shot("login-error")
     if n is None:
         raise RuntimeError("no error for a wrong password")
+    if find(root, text="http://10.0.2.2:8000") is None:
+        raise RuntimeError("server link was not completed with http://")
 
 
 def s_xtream_login():
@@ -472,7 +475,21 @@ def s_switch_to_m3u():
     if n is None:
         raise RuntimeError("login screen not shown after switching")
     tap_where(text="رابط M3U")
-    fill_fields([(0, "http://10.0.2.2:8000/playlist.m3u")])
+    # A link the app cannot use gets a clear message.
+    fill_fields([(0, "10.0.2.2:port/playlist.m3u")])
+    tap_where(text="إضافة القائمة")
+    _, n = wait_for(timeout=15, contains="رابط القائمة غير صحيح", save="login-m3u-bad")
+    shot("login-m3u-bad")
+    if n is None:
+        raise RuntimeError("no message for a broken M3U link")
+    # The right link typed without http:// works.
+    root = dump()
+    edits = [x for x in nodes(root) if x.get("class") == "android.widget.EditText"]
+    tap_node(edits[0])
+    shell("input keyevent 123")  # move to end
+    shell("input keyevent " + " ".join(["67"] * 45))
+    time.sleep(0.5)
+    type_text("10.0.2.2:8000/playlist.m3u")
     shot("login-m3u")
     tap_where(text="إضافة القائمة")
     _, n = wait_for(timeout=90, text="الرئيسية", save="home-m3u")
