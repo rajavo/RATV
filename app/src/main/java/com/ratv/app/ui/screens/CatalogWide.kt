@@ -45,6 +45,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -131,8 +134,9 @@ fun CatalogWide(
             categories.forEach { add(SideEntry(it.id, it.name, counts[it.id] ?: 0)) }
         }
     }
-    var sorting by remember { mutableStateOf(false) }
-    val visible by produceState(entries, entries, favorites, selected, sortKey, continueItems) {
+    // Starts empty (with the spinner) so the first poster on screen is already the sorted one.
+    var sorting by remember { mutableStateOf(true) }
+    val visible by produceState(emptyList<CatalogItem>(), entries, favorites, selected, sortKey, continueItems) {
         sorting = true
         value = withContext(Dispatchers.Default) {
             when (selected) {
@@ -153,14 +157,15 @@ fun CatalogWide(
     // rebuilt right after (sorting, favourites), which drops the focus back to the top bar,
     // so keep asking until the focus is really inside the screen, for a few seconds only.
     var contentFocused by remember { mutableStateOf(false) }
+    var userMoved by remember { mutableStateOf(false) }
     val openedAt = remember { SystemClock.uptimeMillis() }
-    LaunchedEffect(visible, sorting) {
-        if (!tv || visible.isEmpty() || sorting || contentFocused) return@LaunchedEffect
-        repeat(25) {
-            if (SystemClock.uptimeMillis() - openedAt > 5_000L) return@LaunchedEffect
-            delay(80L)
-            runCatching { firstFocus.requestFocus() }
-            if (contentFocused) return@LaunchedEffect
+    LaunchedEffect(visible.isNotEmpty(), sorting) {
+        if (!tv || visible.isEmpty() || sorting) return@LaunchedEffect
+        // Until the viewer presses a key, put the focus back on the first poster whenever a
+        // rebuilt list takes it away (for the first few seconds only).
+        while (!userMoved && SystemClock.uptimeMillis() - openedAt < 6_000L) {
+            if (!contentFocused) runCatching { firstFocus.requestFocus() }
+            delay(150L)
         }
     }
 
@@ -168,6 +173,10 @@ fun CatalogWide(
         Modifier
             .fillMaxSize()
             .onFocusChanged { contentFocused = it.hasFocus }
+            .onPreviewKeyEvent { e ->
+                if (e.type == KeyEventType.KeyDown) userMoved = true
+                false
+            }
             .background(RColors.Ink)
             .padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
