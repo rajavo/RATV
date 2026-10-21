@@ -1,0 +1,719 @@
+10-21 15:17:45.807  3983  3983 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:17:45.808  3983  3983 I AndroidRuntime: Using default boot image
+10-21 15:17:45.808  3983  3983 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:17:45.858  3983  3983 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:17:46.908  3983  3983 D AndroidRuntime: Shutting down VM
+10-21 15:17:47.475   485   526 I ActivityManager: Start proc 4017:com.ratv.app/u0a76 for pre-top-activity {com.ratv.app/com.ratv.app.MainActivity}
+10-21 15:17:47.529  4017  4017 W com.ratv.app: Unexpected CPU variant for X86 using defaults: x86
+10-21 15:17:47.535  4017  4017 E com.ratv.app: Not starting debugger since process cannot load the jdwp agent.
+10-21 15:17:47.554  4017  4017 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+10-21 15:17:47.554  4017  4017 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+10-21 15:17:47.618  4017  4063 D libEGL  : loaded /vendor/lib/egl/libEGL_emulation.so
+10-21 15:17:47.680  4017  4063 D libEGL  : loaded /vendor/lib/egl/libGLESv1_CM_emulation.so
+10-21 15:17:47.692  4017  4063 D libEGL  : loaded /vendor/lib/egl/libGLESv2_emulation.so
+10-21 15:17:47.743  4017  4055 D HostConnection: HostConnection::get() New Host Connection established 0xee2ccd40, tid 4055
+10-21 15:17:47.753  4017  4055 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:17:47.860  4017  4055 D EGL_emulation: eglCreateContext: 0xee2cebe0: maj 3 min 0 rcv 3
+10-21 15:17:47.872  4017  4055 D EGL_emulation: eglMakeCurrent: 0xee2cebe0: ver 3 0 (tinfo 0xee631810) (first time)
+10-21 15:17:48.123  4017  4055 I Gralloc4: mapper 4.x is not supported
+10-21 15:17:48.129  4017  4055 D HostConnection: createUnique: call
+10-21 15:17:48.129  4017  4055 D HostConnection: HostConnection::get() New Host Connection established 0xee2cdd70, tid 4055
+10-21 15:17:48.129  4017  4055 D goldfish-address-space: allocate: Ask for block of size 0x100
+10-21 15:17:48.129  4017  4055 D goldfish-address-space: allocate: ioctl allocate returned offset 0x3fbffe000 size 0x2000
+10-21 15:17:48.148  4017  4055 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:17:48.791  4017  4055 I OpenGLRenderer: Davey! duration=1200ms; Flags=1, IntendedVsync=87032889007, Vsync=87066222339, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=87072620351, AnimationStart=87072621493, PerformTraversalsStart=87072736127, DrawStart=87592344413, SyncQueued=87595811239, SyncStart=87596675303, IssueDrawCommandsStart=87596710629, SwapBuffers=88113504633, FrameCompleted=88234371107, DequeueBufferDuration=701028, QueueBufferDuration=202809, GpuCompleted=9223372034707292159, 
+10-21 15:17:48.795  4017  4017 I Choreographer: Skipped 69 frames!  The application may be doing too much work on its main thread.
+10-21 15:17:50.345  4017  4055 I OpenGLRenderer: Davey! duration=789ms; Flags=0, IntendedVsync=88999407602, Vsync=89116074264, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=89123987113, AnimationStart=89123987834, PerformTraversalsStart=89131176220, DrawStart=89131272640, SyncQueued=89139033423, SyncStart=89139151972, IssueDrawCommandsStart=89139280261, SwapBuffers=89759323922, FrameCompleted=89788689886, DequeueBufferDuration=40565, QueueBufferDuration=231492, GpuCompleted=9223372034707292159, 
+10-21 15:17:50.352  4017  4017 I Choreographer: Skipped 37 frames!  The application may be doing too much work on its main thread.
+10-21 15:17:50.495  4017  4055 I OpenGLRenderer: Davey! duration=730ms; Flags=0, IntendedVsync=89166086464, Vsync=89782753106, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=89795476263, AnimationStart=89795476904, PerformTraversalsStart=89802858340, DrawStart=89802891492, SyncQueued=89804367815, SyncStart=89846561480, IssueDrawCommandsStart=89846671225, SwapBuffers=89863801692, FrameCompleted=89938704488, DequeueBufferDuration=48811, QueueBufferDuration=339443, GpuCompleted=9223372034707292159, 
+10-21 15:17:51.166  4093  4093 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:17:51.186  4093  4093 I AndroidRuntime: Using default boot image
+10-21 15:17:51.186  4093  4093 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:17:51.330  4093  4093 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:17:52.387  4093  4093 D AndroidRuntime: Shutting down VM
+10-21 15:17:53.058  4017  4321 D ProfileInstaller: Installing profile for com.ratv.app
+10-21 15:17:53.093  4315  4315 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:17:53.094  4315  4315 I AndroidRuntime: Using default boot image
+10-21 15:17:53.094  4315  4315 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:17:53.180  4315  4315 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:17:54.216  4315  4315 D AndroidRuntime: Shutting down VM
+10-21 15:17:56.294  4487  4487 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:17:56.296  4487  4487 I AndroidRuntime: Using default boot image
+10-21 15:17:56.296  4487  4487 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:17:56.367  4487  4487 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:17:57.404  4487  4487 D AndroidRuntime: Shutting down VM
+10-21 15:17:58.064  4017  4034 I com.ratv.app: oneway function results will be dropped but finished with status OK and parcel size 4
+10-21 15:17:58.177  4535  4535 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:17:58.179  4535  4535 I AndroidRuntime: Using default boot image
+10-21 15:17:58.179  4535  4535 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:17:58.224  4535  4535 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:17:58.227  4535  4535 D AndroidRuntime: Shutting down VM
+10-21 15:17:59.381  4017  4551 I AssistStructure: Flattened final assist data: 3920 bytes, containing 1 windows, 49 views
+10-21 15:18:00.248  4017  4551 I AssistStructure: Flattened final assist data: 3920 bytes, containing 1 windows, 49 views
+10-21 15:18:01.178  4017  4551 I com.ratv.app: oneway function results will be dropped but finished with status OK and parcel size 4
+10-21 15:18:01.611  4637  4637 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:01.613  4637  4637 I AndroidRuntime: Using default boot image
+10-21 15:18:01.613  4637  4637 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:01.682  4637  4637 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:01.689  4637  4637 D AndroidRuntime: Shutting down VM
+10-21 15:18:03.697  4656  4656 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:03.698  4656  4656 I AndroidRuntime: Using default boot image
+10-21 15:18:03.698  4656  4656 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:03.752  4656  4656 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:18:04.778  4656  4656 D AndroidRuntime: Shutting down VM
+10-21 15:18:05.237  4017  4551 I com.ratv.app: oneway function results will be dropped but finished with status OK and parcel size 4
+10-21 15:18:05.350  4685  4685 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:05.351  4685  4685 I AndroidRuntime: Using default boot image
+10-21 15:18:05.351  4685  4685 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:05.406  4685  4685 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:05.410  4685  4685 D AndroidRuntime: Shutting down VM
+10-21 15:18:07.883  4702  4702 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:07.885  4702  4702 I AndroidRuntime: Using default boot image
+10-21 15:18:07.885  4702  4702 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:07.939  4702  4702 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:08.730  4702  4702 D AndroidRuntime: Shutting down VM
+10-21 15:18:09.769  4017  4033 I com.ratv.app: oneway function results will be dropped but finished with status OK and parcel size 4
+10-21 15:18:09.860  4722  4722 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:09.861  4722  4722 I AndroidRuntime: Using default boot image
+10-21 15:18:09.861  4722  4722 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:09.913  4722  4722 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:09.917  4722  4722 D AndroidRuntime: Shutting down VM
+10-21 15:18:11.640  4740  4740 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:11.642  4740  4740 I AndroidRuntime: Using default boot image
+10-21 15:18:11.642  4740  4740 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:11.721  4740  4740 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:11.726  4740  4740 D AndroidRuntime: Shutting down VM
+10-21 15:18:13.193  4757  4757 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:13.195  4757  4757 I AndroidRuntime: Using default boot image
+10-21 15:18:13.195  4757  4757 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:13.240  4757  4757 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:18:14.264  4757  4757 D AndroidRuntime: Shutting down VM
+10-21 15:18:14.729  4777  4777 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:14.730  4777  4777 I AndroidRuntime: Using default boot image
+10-21 15:18:14.730  4777  4777 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:14.776  4777  4777 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:14.779  4777  4777 D AndroidRuntime: Shutting down VM
+10-21 15:18:17.242  4794  4794 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:17.243  4794  4794 I AndroidRuntime: Using default boot image
+10-21 15:18:17.243  4794  4794 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:17.287  4794  4794 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:17.303  4794  4794 D AndroidRuntime: Shutting down VM
+10-21 15:18:18.482  4017  4716 I com.ratv.app: oneway function results will be dropped but finished with status OK and parcel size 4
+10-21 15:18:18.574  4812  4812 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:18.575  4812  4812 I AndroidRuntime: Using default boot image
+10-21 15:18:18.575  4812  4812 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:18.620  4812  4812 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:18.635  4812  4812 D AndroidRuntime: Shutting down VM
+10-21 15:18:20.341  4826  4826 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:20.342  4826  4826 I AndroidRuntime: Using default boot image
+10-21 15:18:20.342  4826  4826 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:20.392  4826  4826 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:20.399  4826  4826 D AndroidRuntime: Shutting down VM
+10-21 15:18:21.856  4840  4840 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:21.857  4840  4840 I AndroidRuntime: Using default boot image
+10-21 15:18:21.857  4840  4840 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:21.904  4840  4840 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:21.907  4840  4840 D AndroidRuntime: Shutting down VM
+10-21 15:18:24.471  4857  4857 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:24.483  4857  4857 I AndroidRuntime: Using default boot image
+10-21 15:18:24.483  4857  4857 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:24.602  4857  4857 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:24.934  4857  4857 D AndroidRuntime: Shutting down VM
+10-21 15:18:26.112  4017  4716 I com.ratv.app: oneway function results will be dropped but finished with status OK and parcel size 4
+10-21 15:18:26.378  4878  4878 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:26.422  4878  4878 I AndroidRuntime: Using default boot image
+10-21 15:18:26.422  4878  4878 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:26.525  4878  4878 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:26.588  4878  4878 D AndroidRuntime: Shutting down VM
+10-21 15:18:28.405  4893  4893 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:28.406  4893  4893 I AndroidRuntime: Using default boot image
+10-21 15:18:28.406  4893  4893 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:28.460  4893  4893 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:28.464  4893  4893 D AndroidRuntime: Shutting down VM
+10-21 15:18:29.931  4909  4909 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:29.932  4909  4909 I AndroidRuntime: Using default boot image
+10-21 15:18:29.932  4909  4909 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:29.979  4909  4909 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:18:31.006  4909  4909 D AndroidRuntime: Shutting down VM
+10-21 15:18:31.482  4929  4929 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:31.483  4929  4929 I AndroidRuntime: Using default boot image
+10-21 15:18:31.483  4929  4929 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:31.528  4929  4929 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:31.536  4929  4929 D AndroidRuntime: Shutting down VM
+10-21 15:18:33.003  4945  4945 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:33.005  4945  4945 I AndroidRuntime: Using default boot image
+10-21 15:18:33.005  4945  4945 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:33.056  4945  4945 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:18:34.079  4945  4945 D AndroidRuntime: Shutting down VM
+10-21 15:18:34.764  4969  4969 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:34.765  4969  4969 I AndroidRuntime: Using default boot image
+10-21 15:18:34.765  4969  4969 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:34.820  4969  4969 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:34.827  4969  4969 D AndroidRuntime: Shutting down VM
+10-21 15:18:35.216  4017  4044 I TetheringManager: registerTetheringEventCallback:com.ratv.app
+10-21 15:18:35.380  4017  4044 W Gralloc4: allocator 3.x is not supported
+10-21 15:18:35.393  4017  4988 D HostConnection: HostConnection::get() New Host Connection established 0xee2c5a30, tid 4988
+10-21 15:18:35.523  4017  4988 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:18:35.526  4017  4988 D EGL_emulation: eglCreateContext: 0xee2c1c10: maj 3 min 0 rcv 3
+10-21 15:18:35.528  4017  4988 D EGL_emulation: eglMakeCurrent: 0xee2c1c10: ver 3 0 (tinfo 0xbe11bb90) (first time)
+10-21 15:18:35.535  4017  4044 D HostConnection: HostConnection::get() New Host Connection established 0xee2c2d90, tid 4044
+10-21 15:18:35.538  4017  4044 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:18:37.332  4991  4991 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:37.333  4991  4991 I AndroidRuntime: Using default boot image
+10-21 15:18:37.333  4991  4991 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:37.380  4991  4991 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:18:38.418  4991  4991 D AndroidRuntime: Shutting down VM
+10-21 15:18:38.895  5013  5013 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:38.896  5013  5013 I AndroidRuntime: Using default boot image
+10-21 15:18:38.896  5013  5013 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:38.943  5013  5013 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:18:39.971  5013  5013 D AndroidRuntime: Shutting down VM
+10-21 15:18:46.687  5041  5041 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:46.688  5041  5041 I AndroidRuntime: Using default boot image
+10-21 15:18:46.688  5041  5041 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:46.735  5041  5041 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:18:47.767  5041  5041 D AndroidRuntime: Shutting down VM
+10-21 15:18:48.457  5067  5067 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:48.458  5067  5067 I AndroidRuntime: Using default boot image
+10-21 15:18:48.458  5067  5067 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:48.505  5067  5067 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:48.515  5067  5067 D AndroidRuntime: Shutting down VM
+10-21 15:18:48.545  4017  4017 I ExoPlayerImpl: Init f1b2206 [AndroidXMedia3/1.5.1] [generic_x86, AOSP TV on x86, Google, 30]
+10-21 15:18:48.563  4017  4017 E libc    : Access denied finding property "vendor.display-size"
+10-21 15:18:48.620  4017  4027 I com.ratv.app: Compiler allocated 6965KB to compile void l4.T0.e(java.lang.String, java.lang.String, java.lang.String, m4.f, M.p, int)
+10-21 15:18:49.087  4017  5083 I VideoCapabilities: Unsupported profile 4 for video/mp4v-es
+10-21 15:18:49.107  4017  5090 I OMXClient: IOmx service obtained
+10-21 15:18:49.112  4017  5089 D SurfaceUtils: connecting to surface 0xe8b8b068, reason connectToSurface
+10-21 15:18:49.113  4017  5089 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4113409
+10-21 15:18:49.113  4017  5089 D SurfaceUtils: disconnecting from surface 0xe8b8b068, reason connectToSurface(reconnect)
+10-21 15:18:49.113  4017  5089 D SurfaceUtils: connecting to surface 0xe8b8b068, reason connectToSurface(reconnect)
+10-21 15:18:49.113  4017  5090 E ACodec  : [OMX.google.h264.decoder] setPortMode on output to DynamicANWBuffer failed w/ err -1010
+10-21 15:18:49.114  4017  5090 I ACodec  : codec does not support config priority (err -1010)
+10-21 15:18:49.134  4017  5094 I OMXClient: IOmx service obtained
+10-21 15:18:49.136  4017  5094 I ACodec  : codec does not support config priority (err -2147483648)
+10-21 15:18:49.136  4017  5094 I ACodec  : codec does not support config operating rate (err -2147483648)
+10-21 15:18:49.188  4017  5089 D MediaCodec: [OMX.google.h264.decoder] setting dataspace on output surface to #104
+10-21 15:18:49.312  4017  5089 D SoftwareRenderer: setting dataspace on output surface to #104
+10-21 15:18:49.551  4017  5083 D AudioTrack: getTimestamp_l(16): device stall time corrected using current time 148994476933
+10-21 15:18:49.896  4017  5083 W AudioTrack: restartIfDisabled(16): releaseBuffer() track 0xe7fbf370 disabled due to previous underrun, restarting
+10-21 15:18:50.431  4017  5083 W AudioTrack: restartIfDisabled(16): releaseBuffer() track 0xe7fbf370 disabled due to previous underrun, restarting
+10-21 15:18:59.731  5624  5624 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:18:59.733  5624  5624 I AndroidRuntime: Using default boot image
+10-21 15:18:59.736  5624  5624 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:18:59.827  5624  5624 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:18:59.836  5624  5624 D AndroidRuntime: Shutting down VM
+10-21 15:19:00.438  4017  5083 D AudioTrack: getTimestamp_l(17): device stall time corrected using current time 159881181145
+10-21 15:19:03.062  5808  5808 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:03.065  5808  5808 I AndroidRuntime: Using default boot image
+10-21 15:19:03.065  5808  5808 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:03.182  5808  5808 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:19:03.190  5808  5808 D AndroidRuntime: Shutting down VM
+10-21 15:19:05.855  5968  5968 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:05.858  5968  5968 I AndroidRuntime: Using default boot image
+10-21 15:19:05.858  5968  5968 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:05.972  5968  5968 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:19:05.980  5968  5968 D AndroidRuntime: Shutting down VM
+10-21 15:19:08.064  6096  6096 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:08.066  6096  6096 I AndroidRuntime: Using default boot image
+10-21 15:19:08.066  6096  6096 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:08.157  6096  6096 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:19:08.166  6096  6096 D AndroidRuntime: Shutting down VM
+10-21 15:19:11.170  6289  6289 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:11.173  6289  6289 I AndroidRuntime: Using default boot image
+10-21 15:19:11.173  6289  6289 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:11.367  6289  6289 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:19:11.395  6289  6289 D AndroidRuntime: Shutting down VM
+10-21 15:19:11.495  6289  6350 I AndroidRuntime: NOTE: attach of thread 'Binder:6289_2' failed
+10-21 15:19:12.202  4017  6355 D HostConnection: HostConnection::get() New Host Connection established 0xee2ee5a0, tid 6355
+10-21 15:19:12.206  4017  6355 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:19:12.208  4017  6355 D EGL_emulation: eglCreateContext: 0xee2ee3e0: maj 3 min 0 rcv 3
+10-21 15:19:12.209  4017  6355 D EGL_emulation: eglMakeCurrent: 0xee2ee3e0: ver 3 0 (tinfo 0xbe11b6b0) (first time)
+10-21 15:19:12.217  4017  6355 E EGL_emulation: eglQueryContext 32c0  EGL_BAD_ATTRIBUTE
+10-21 15:19:12.217  4017  6355 E EGL_emulation: tid 6355: eglQueryContext(2019): error 0x3004 (EGL_BAD_ATTRIBUTE)
+10-21 15:19:12.218  4017  5089 D SurfaceUtils: connecting to surface 0xe8b87e08, reason connectToSurface
+10-21 15:19:12.218  4017  5089 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4113410
+10-21 15:19:12.218  4017  5089 D SurfaceUtils: disconnecting from surface 0xe8b87e08, reason connectToSurface(reconnect)
+10-21 15:19:12.218  4017  5089 D SurfaceUtils: connecting to surface 0xe8b87e08, reason connectToSurface(reconnect)
+10-21 15:19:12.218  4017  5089 D SurfaceUtils: disconnecting from surface 0xe8b8b068, reason disconnectFromSurface
+10-21 15:19:12.222  4017  4017 I ExoPlayerImpl: Release f1b2206 [AndroidXMedia3/1.5.1] [generic_x86, AOSP TV on x86, Google, 30] [media3.common, media3.exoplayer, media3.decoder, media3.ui, media3.datasource, media3.extractor]
+10-21 15:19:12.235  4017  5089 D SurfaceUtils: disconnecting from surface 0xe8b87e08, reason disconnectFromSurface
+10-21 15:19:14.524  6364  6364 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:14.525  6364  6364 I AndroidRuntime: Using default boot image
+10-21 15:19:14.525  6364  6364 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:14.578  6364  6364 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:19:15.606  6364  6364 D AndroidRuntime: Shutting down VM
+10-21 15:19:16.095  6386  6386 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:16.096  6386  6386 I AndroidRuntime: Using default boot image
+10-21 15:19:16.096  6386  6386 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:16.143  6386  6386 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:19:17.170  6386  6386 D AndroidRuntime: Shutting down VM
+10-21 15:19:17.885  6414  6414 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:17.886  6414  6414 I AndroidRuntime: Using default boot image
+10-21 15:19:17.886  6414  6414 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:17.940  6414  6414 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:19:18.968  6414  6414 D AndroidRuntime: Shutting down VM
+10-21 15:19:19.433  6434  6434 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:19.434  6434  6434 I AndroidRuntime: Using default boot image
+10-21 15:19:19.434  6434  6434 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:19.489  6434  6434 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:19:19.493  6434  6434 D AndroidRuntime: Shutting down VM
+10-21 15:19:20.960  6450  6450 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:20.961  6450  6450 I AndroidRuntime: Using default boot image
+10-21 15:19:20.961  6450  6450 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:21.012  6450  6450 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:19:22.044  6450  6450 D AndroidRuntime: Shutting down VM
+10-21 15:19:22.522  6473  6473 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:22.523  6473  6473 I AndroidRuntime: Using default boot image
+10-21 15:19:22.523  6473  6473 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:22.570  6473  6473 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:19:23.597  6473  6473 D AndroidRuntime: Shutting down VM
+10-21 15:19:24.062  6493  6493 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:24.063  6493  6493 I AndroidRuntime: Using default boot image
+10-21 15:19:24.063  6493  6493 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:24.111  6493  6493 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:19:24.114  6493  6493 D AndroidRuntime: Shutting down VM
+10-21 15:19:25.581  6509  6509 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:25.583  6509  6509 I AndroidRuntime: Using default boot image
+10-21 15:19:25.583  6509  6509 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:25.655  6509  6509 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:19:26.686  6509  6509 D AndroidRuntime: Shutting down VM
+10-21 15:19:27.163  6536  6536 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:27.165  6536  6536 I AndroidRuntime: Using default boot image
+10-21 15:19:27.165  6536  6536 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:27.214  6536  6536 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:19:27.219  6536  6536 D AndroidRuntime: Shutting down VM
+10-21 15:19:29.690  6552  6552 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:29.691  6552  6552 I AndroidRuntime: Using default boot image
+10-21 15:19:29.691  6552  6552 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:29.737  6552  6552 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:19:30.769  6552  6552 D AndroidRuntime: Shutting down VM
+10-21 15:19:32.748  6574  6574 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:32.749  6574  6574 I AndroidRuntime: Using default boot image
+10-21 15:19:32.749  6574  6574 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:32.797  6574  6574 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:19:33.828  6574  6574 D AndroidRuntime: Shutting down VM
+10-21 15:19:34.512  6598  6598 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:34.513  6598  6598 I AndroidRuntime: Using default boot image
+10-21 15:19:34.513  6598  6598 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:34.562  6598  6598 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:19:34.567  6598  6598 D AndroidRuntime: Shutting down VM
+10-21 15:19:38.053  6614  6614 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:38.055  6614  6614 I AndroidRuntime: Using default boot image
+10-21 15:19:38.055  6614  6614 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:38.101  6614  6614 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:19:39.130  6614  6614 D AndroidRuntime: Shutting down VM
+10-21 15:19:39.806  6638  6638 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:39.808  6638  6638 I AndroidRuntime: Using default boot image
+10-21 15:19:39.808  6638  6638 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:39.864  6638  6638 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:19:39.869  6638  6638 D AndroidRuntime: Shutting down VM
+10-21 15:19:39.893  4017  4017 I ExoPlayerImpl: Init 42dc06f [AndroidXMedia3/1.5.1] [generic_x86, AOSP TV on x86, Google, 30]
+10-21 15:19:39.899  4017  4017 E libc    : Access denied finding property "vendor.display-size"
+10-21 15:19:40.208  4017  6657 I OMXClient: IOmx service obtained
+10-21 15:19:40.317  4017  6656 D SurfaceUtils: connecting to surface 0xe8b87e08, reason connectToSurface
+10-21 15:19:40.317  4017  6656 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4113411
+10-21 15:19:40.317  4017  6656 D SurfaceUtils: disconnecting from surface 0xe8b87e08, reason connectToSurface(reconnect)
+10-21 15:19:40.317  4017  6656 D SurfaceUtils: connecting to surface 0xe8b87e08, reason connectToSurface(reconnect)
+10-21 15:19:40.318  4017  6657 E ACodec  : [OMX.google.h264.decoder] setPortMode on output to DynamicANWBuffer failed w/ err -1010
+10-21 15:19:40.320  4017  6657 I ACodec  : codec does not support config priority (err -1010)
+10-21 15:19:40.419  4017  6660 I OMXClient: IOmx service obtained
+10-21 15:19:40.456  4017  6660 I ACodec  : codec does not support config priority (err -2147483648)
+10-21 15:19:40.456  4017  6660 I ACodec  : codec does not support config operating rate (err -2147483648)
+10-21 15:19:40.523  4017  6656 D MediaCodec: [OMX.google.h264.decoder] setting dataspace on output surface to #104
+10-21 15:19:40.654  4017  6656 D SoftwareRenderer: setting dataspace on output surface to #104
+10-21 15:19:40.669  4017  6652 D AudioTrack: getTimestamp_l(18): device stall time corrected using current time 200112781173
+10-21 15:19:40.693  4017  4028 I com.ratv.app: Background young concurrent copying GC freed 45797(2837KB) AllocSpace objects, 21(800KB) LOS objects, 27% free, 9900KB/13MB, paused 28us total 126.186ms
+10-21 15:19:50.406  7171  7171 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:50.410  7171  7171 I AndroidRuntime: Using default boot image
+10-21 15:19:50.410  7171  7171 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:50.495  7171  7171 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:19:50.500  7171  7171 D AndroidRuntime: Shutting down VM
+10-21 15:19:51.651  4017  6652 D AudioTrack: getTimestamp_l(19): device stall time corrected using current time 211094222501
+10-21 15:19:52.080  7329  7329 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:52.087  7329  7329 I AndroidRuntime: Using default boot image
+10-21 15:19:52.087  7329  7329 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:52.180  7329  7329 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:19:52.184  7329  7329 D AndroidRuntime: Shutting down VM
+10-21 15:19:52.456  4017  6652 D AudioTrack: getTimestamp_l(20): device stall time corrected using current time 211899143931
+10-21 15:19:54.176  7489  7489 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:54.178  7489  7489 I AndroidRuntime: Using default boot image
+10-21 15:19:54.178  7489  7489 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:54.274  7489  7489 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:19:54.282  7489  7489 D AndroidRuntime: Shutting down VM
+10-21 15:19:55.161  4017  7513 D HostConnection: HostConnection::get() New Host Connection established 0xee2f3d20, tid 7513
+10-21 15:19:55.172  4017  7513 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:19:55.175  4017  7513 D EGL_emulation: eglCreateContext: 0xee2f2cf0: maj 3 min 0 rcv 3
+10-21 15:19:55.179  4017  7513 D EGL_emulation: eglMakeCurrent: 0xee2f2cf0: ver 3 0 (tinfo 0xbe10b0d0) (first time)
+10-21 15:19:55.192  4017  7513 E EGL_emulation: eglQueryContext 32c0  EGL_BAD_ATTRIBUTE
+10-21 15:19:55.192  4017  7513 E EGL_emulation: tid 7513: eglQueryContext(2019): error 0x3004 (EGL_BAD_ATTRIBUTE)
+10-21 15:19:55.194  4017  6656 D SurfaceUtils: connecting to surface 0xe8b8fbf8, reason connectToSurface
+10-21 15:19:55.194  4017  6656 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4113412
+10-21 15:19:55.194  4017  6656 D SurfaceUtils: disconnecting from surface 0xe8b8fbf8, reason connectToSurface(reconnect)
+10-21 15:19:55.194  4017  6656 D SurfaceUtils: connecting to surface 0xe8b8fbf8, reason connectToSurface(reconnect)
+10-21 15:19:55.194  4017  6656 D SurfaceUtils: disconnecting from surface 0xe8b87e08, reason disconnectFromSurface
+10-21 15:19:55.200  4017  4017 I ExoPlayerImpl: Release 42dc06f [AndroidXMedia3/1.5.1] [generic_x86, AOSP TV on x86, Google, 30] [media3.common, media3.exoplayer, media3.decoder, media3.ui, media3.datasource, media3.extractor]
+10-21 15:19:55.218  4017  6656 D SurfaceUtils: disconnecting from surface 0xe8b8fbf8, reason disconnectFromSurface
+10-21 15:19:57.977  7520  7520 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:19:57.978  7520  7520 I AndroidRuntime: Using default boot image
+10-21 15:19:57.978  7520  7520 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:19:58.042  7520  7520 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:19:58.047  7520  7520 D AndroidRuntime: Shutting down VM
+10-21 15:20:00.557  7538  7538 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:00.558  7538  7538 I AndroidRuntime: Using default boot image
+10-21 15:20:00.558  7538  7538 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:00.613  7538  7538 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:20:01.648  7538  7538 D AndroidRuntime: Shutting down VM
+10-21 15:20:02.113  7558  7558 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:02.114  7558  7558 I AndroidRuntime: Using default boot image
+10-21 15:20:02.114  7558  7558 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:02.168  7558  7558 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:20:02.172  7558  7558 D AndroidRuntime: Shutting down VM
+10-21 15:20:03.649  7574  7574 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:03.650  7574  7574 I AndroidRuntime: Using default boot image
+10-21 15:20:03.650  7574  7574 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:03.696  7574  7574 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:20:04.728  7574  7574 D AndroidRuntime: Shutting down VM
+10-21 15:20:05.208  7596  7596 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:05.209  7596  7596 I AndroidRuntime: Using default boot image
+10-21 15:20:05.209  7596  7596 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:05.255  7596  7596 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:20:06.286  7596  7596 D AndroidRuntime: Shutting down VM
+10-21 15:20:06.752  7616  7616 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:06.753  7616  7616 I AndroidRuntime: Using default boot image
+10-21 15:20:06.753  7616  7616 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:06.800  7616  7616 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:20:06.803  7616  7616 D AndroidRuntime: Shutting down VM
+10-21 15:20:08.256  7630  7630 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:08.258  7630  7630 I AndroidRuntime: Using default boot image
+10-21 15:20:08.258  7630  7630 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:08.306  7630  7630 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:20:08.309  7630  7630 D AndroidRuntime: Shutting down VM
+10-21 15:20:09.761  7644  7644 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:09.763  7644  7644 I AndroidRuntime: Using default boot image
+10-21 15:20:09.763  7644  7644 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:09.811  7644  7644 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:20:09.814  7644  7644 D AndroidRuntime: Shutting down VM
+10-21 15:20:11.281  7661  7661 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:11.282  7661  7661 I AndroidRuntime: Using default boot image
+10-21 15:20:11.282  7661  7661 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:11.330  7661  7661 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:20:12.363  7661  7661 D AndroidRuntime: Shutting down VM
+10-21 15:20:12.827  7681  7681 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:12.828  7681  7681 I AndroidRuntime: Using default boot image
+10-21 15:20:12.828  7681  7681 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:12.876  7681  7681 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:20:12.881  7681  7681 D AndroidRuntime: Shutting down VM
+10-21 15:20:12.910  4017  4017 I ExoPlayerImpl: Init 5a917b9 [AndroidXMedia3/1.5.1] [generic_x86, AOSP TV on x86, Google, 30]
+10-21 15:20:12.916  4017  4017 E libc    : Access denied finding property "vendor.display-size"
+10-21 15:20:12.951  4017  4988 D HostConnection: HostConnection::get() New Host Connection established 0xee2efc60, tid 4988
+10-21 15:20:12.954  4017  4988 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:20:12.955  4017  4988 D EGL_emulation: eglCreateContext: 0xee2ef1e0: maj 3 min 0 rcv 3
+10-21 15:20:12.957  4017  4988 D EGL_emulation: eglMakeCurrent: 0xee2ef1e0: ver 3 0 (tinfo 0xbe11bb90) (first time)
+10-21 15:20:12.987  4017  4064 D HostConnection: HostConnection::get() New Host Connection established 0xee2f7130, tid 4064
+10-21 15:20:13.002  4017  4064 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:20:13.072  4017  7698 D HostConnection: HostConnection::get() New Host Connection established 0xee2f64f0, tid 7698
+10-21 15:20:13.123  4017  7698 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:20:14.376  4017  7703 I OMXClient: IOmx service obtained
+10-21 15:20:14.378  4017  7702 D SurfaceUtils: connecting to surface 0xe8b89738, reason connectToSurface
+10-21 15:20:14.378  4017  7702 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4113413
+10-21 15:20:14.378  4017  7702 D SurfaceUtils: disconnecting from surface 0xe8b89738, reason connectToSurface(reconnect)
+10-21 15:20:14.378  4017  7702 D SurfaceUtils: connecting to surface 0xe8b89738, reason connectToSurface(reconnect)
+10-21 15:20:14.379  4017  7703 E ACodec  : [OMX.google.h264.decoder] setPortMode on output to DynamicANWBuffer failed w/ err -1010
+10-21 15:20:14.381  4017  7703 I ACodec  : codec does not support config priority (err -1010)
+10-21 15:20:14.387  4017  7706 I OMXClient: IOmx service obtained
+10-21 15:20:14.389  4017  7706 I ACodec  : codec does not support config priority (err -2147483648)
+10-21 15:20:14.390  4017  7706 I ACodec  : codec does not support config operating rate (err -2147483648)
+10-21 15:20:14.456  4017  7702 D MediaCodec: [OMX.google.h264.decoder] setting dataspace on output surface to #104
+10-21 15:20:14.634  4017  7702 D SoftwareRenderer: setting dataspace on output surface to #104
+10-21 15:20:14.643  4017  7695 D AudioTrack: getTimestamp_l(21): device stall time corrected using current time 234086320116
+10-21 15:20:15.386  7771  7771 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:15.388  7771  7771 I AndroidRuntime: Using default boot image
+10-21 15:20:15.388  7771  7771 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:15.448  7771  7771 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:20:16.548  7771  7771 D AndroidRuntime: Shutting down VM
+10-21 15:20:18.555  7949  7949 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:18.557  7949  7949 I AndroidRuntime: Using default boot image
+10-21 15:20:18.557  7949  7949 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:18.618  7949  7949 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:20:19.673  7949  7949 D AndroidRuntime: Shutting down VM
+10-21 15:20:20.549  8073  8073 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:20.550  8073  8073 I AndroidRuntime: Using default boot image
+10-21 15:20:20.550  8073  8073 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:20.614  8073  8073 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:20:20.623  8073  8073 D AndroidRuntime: Shutting down VM
+10-21 15:20:20.631  4017  8093 D HostConnection: HostConnection::get() New Host Connection established 0xee2f6480, tid 8093
+10-21 15:20:20.633  4017  8093 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:20:20.634  4017  8093 D EGL_emulation: eglCreateContext: 0xee2f77c0: maj 3 min 0 rcv 3
+10-21 15:20:20.635  4017  8093 D EGL_emulation: eglMakeCurrent: 0xee2f77c0: ver 3 0 (tinfo 0xbe11d190) (first time)
+10-21 15:20:20.637  4017  8093 E EGL_emulation: eglQueryContext 32c0  EGL_BAD_ATTRIBUTE
+10-21 15:20:20.637  4017  8093 E EGL_emulation: tid 8093: eglQueryContext(2019): error 0x3004 (EGL_BAD_ATTRIBUTE)
+10-21 15:20:20.637  4017  7702 D SurfaceUtils: connecting to surface 0xe8b8e2c8, reason connectToSurface
+10-21 15:20:20.637  4017  7702 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4113414
+10-21 15:20:20.637  4017  7702 D SurfaceUtils: disconnecting from surface 0xe8b8e2c8, reason connectToSurface(reconnect)
+10-21 15:20:20.637  4017  7702 D SurfaceUtils: connecting to surface 0xe8b8e2c8, reason connectToSurface(reconnect)
+10-21 15:20:20.637  4017  7702 D SurfaceUtils: disconnecting from surface 0xe8b89738, reason disconnectFromSurface
+10-21 15:20:20.654  4017  4988 D HostConnection: HostConnection::get() New Host Connection established 0xee2f61e0, tid 4988
+10-21 15:20:20.664  4017  7702 D SurfaceUtils: disconnecting from surface 0xe8b8e2c8, reason disconnectFromSurface
+10-21 15:20:20.671  4017  4988 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:20:20.672  4017  4988 D EGL_emulation: eglCreateContext: 0xee2e22f0: maj 3 min 0 rcv 3
+10-21 15:20:20.674  4017  4988 D EGL_emulation: eglMakeCurrent: 0xee2e22f0: ver 3 0 (tinfo 0xbe11bb90) (first time)
+10-21 15:20:22.043  4017  8097 I OMXClient: IOmx service obtained
+10-21 15:20:22.058  4017  8096 D SurfaceUtils: connecting to surface 0xe8b83278, reason connectToSurface
+10-21 15:20:22.089  4017  8096 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4113415
+10-21 15:20:22.089  4017  8096 D SurfaceUtils: disconnecting from surface 0xe8b83278, reason connectToSurface(reconnect)
+10-21 15:20:22.090  4017  8096 D SurfaceUtils: connecting to surface 0xe8b83278, reason connectToSurface(reconnect)
+10-21 15:20:22.097  4017  8097 E ACodec  : [OMX.google.h264.decoder] setPortMode on output to DynamicANWBuffer failed w/ err -1010
+10-21 15:20:22.114  4017  8097 I ACodec  : codec does not support config priority (err -1010)
+10-21 15:20:22.142  4017  8102 I OMXClient: IOmx service obtained
+10-21 15:20:22.186  4017  8102 I ACodec  : codec does not support config priority (err -2147483648)
+10-21 15:20:22.187  4017  8102 I ACodec  : codec does not support config operating rate (err -2147483648)
+10-21 15:20:22.228  8100  8100 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:22.251  8100  8100 I AndroidRuntime: Using default boot image
+10-21 15:20:22.251  8100  8100 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:22.466  8100  8100 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:20:22.491  4017  8096 D MediaCodec: [OMX.google.h264.decoder] setting dataspace on output surface to #104
+10-21 15:20:22.588  4017  8096 D SoftwareRenderer: setting dataspace on output surface to #104
+10-21 15:20:22.691  4017  8140 D HostConnection: HostConnection::get() New Host Connection established 0xee2f4490, tid 8140
+10-21 15:20:22.709  4017  8140 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:20:22.715  4017  8140 D EGL_emulation: eglCreateContext: 0xee2f47a0: maj 3 min 0 rcv 3
+10-21 15:20:22.720  4017  8140 D EGL_emulation: eglMakeCurrent: 0xee2f47a0: ver 3 0 (tinfo 0xbe110870) (first time)
+10-21 15:20:22.732  4017  8140 E EGL_emulation: eglQueryContext 32c0  EGL_BAD_ATTRIBUTE
+10-21 15:20:22.732  4017  8140 E EGL_emulation: tid 8140: eglQueryContext(2019): error 0x3004 (EGL_BAD_ATTRIBUTE)
+10-21 15:20:22.738  4017  8096 D SurfaceUtils: connecting to surface 0xe8b8e2c8, reason connectToSurface
+10-21 15:20:22.738  4017  8096 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4113416
+10-21 15:20:22.738  4017  8096 D SurfaceUtils: disconnecting from surface 0xe8b8e2c8, reason connectToSurface(reconnect)
+10-21 15:20:22.738  4017  8096 D SurfaceUtils: connecting to surface 0xe8b8e2c8, reason connectToSurface(reconnect)
+10-21 15:20:22.739  4017  8096 D SurfaceUtils: disconnecting from surface 0xe8b83278, reason disconnectFromSurface
+10-21 15:20:22.767  4017  7695 D AudioTrack: getTimestamp_l(22): device stall time corrected using current time 242210169919
+10-21 15:20:22.805  8100  8100 D AndroidRuntime: Shutting down VM
+10-21 15:20:22.824  4017  8096 D SurfaceUtils: disconnecting from surface 0xe8b8e2c8, reason disconnectFromSurface
+10-21 15:20:24.165  4017  8150 I OMXClient: IOmx service obtained
+10-21 15:20:24.181  4017  8149 D SurfaceUtils: connecting to surface 0xe8b8c998, reason connectToSurface
+10-21 15:20:24.181  4017  8149 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4113417
+10-21 15:20:24.181  4017  8149 D SurfaceUtils: disconnecting from surface 0xe8b8c998, reason connectToSurface(reconnect)
+10-21 15:20:24.181  4017  8149 D SurfaceUtils: connecting to surface 0xe8b8c998, reason connectToSurface(reconnect)
+10-21 15:20:24.184  4017  8150 E ACodec  : [OMX.google.h264.decoder] setPortMode on output to DynamicANWBuffer failed w/ err -1010
+10-21 15:20:24.185  4017  8150 I ACodec  : codec does not support config priority (err -1010)
+10-21 15:20:24.304  4017  8155 I OMXClient: IOmx service obtained
+10-21 15:20:24.308  4017  8155 I ACodec  : codec does not support config priority (err -2147483648)
+10-21 15:20:24.308  4017  8155 I ACodec  : codec does not support config operating rate (err -2147483648)
+10-21 15:20:24.436  4017  8149 D MediaCodec: [OMX.google.h264.decoder] setting dataspace on output surface to #104
+10-21 15:20:24.484  8156  8156 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:24.508  8156  8156 I AndroidRuntime: Using default boot image
+10-21 15:20:24.508  8156  8156 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:24.559  4017  8149 D SoftwareRenderer: setting dataspace on output surface to #104
+10-21 15:20:24.694  8156  8156 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:20:25.061  4017  7695 D AudioTrack: getTimestamp_l(23): device stall time corrected using current time 244504319231
+10-21 15:20:25.751  8156  8156 D AndroidRuntime: Shutting down VM
+10-21 15:20:26.629  8289  8289 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:26.630  8289  8289 I AndroidRuntime: Using default boot image
+10-21 15:20:26.630  8289  8289 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:26.693  8289  8289 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:20:27.735  8289  8289 D AndroidRuntime: Shutting down VM
+10-21 15:20:28.244  8389  8389 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:28.245  8389  8389 I AndroidRuntime: Using default boot image
+10-21 15:20:28.246  8389  8389 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:28.329  8389  8389 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:20:28.333  8389  8389 D AndroidRuntime: Shutting down VM
+10-21 15:20:28.350  4017  8411 D HostConnection: HostConnection::get() New Host Connection established 0xee2f78a0, tid 8411
+10-21 15:20:28.354  4017  8411 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:20:28.355  4017  8411 D EGL_emulation: eglCreateContext: 0xee2f8a20: maj 3 min 0 rcv 3
+10-21 15:20:28.356  4017  8411 D EGL_emulation: eglMakeCurrent: 0xee2f8a20: ver 3 0 (tinfo 0xbe11f830) (first time)
+10-21 15:20:28.368  4017  8411 E EGL_emulation: eglQueryContext 32c0  EGL_BAD_ATTRIBUTE
+10-21 15:20:28.368  4017  8411 E EGL_emulation: tid 8411: eglQueryContext(2019): error 0x3004 (EGL_BAD_ATTRIBUTE)
+10-21 15:20:28.370  4017  8149 D SurfaceUtils: connecting to surface 0xe8b979e8, reason connectToSurface
+10-21 15:20:28.370  4017  8149 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4113418
+10-21 15:20:28.370  4017  8149 D SurfaceUtils: disconnecting from surface 0xe8b979e8, reason connectToSurface(reconnect)
+10-21 15:20:28.370  4017  8149 D SurfaceUtils: connecting to surface 0xe8b979e8, reason connectToSurface(reconnect)
+10-21 15:20:28.370  4017  8149 D SurfaceUtils: disconnecting from surface 0xe8b8c998, reason disconnectFromSurface
+10-21 15:20:28.423  4017  8149 D SurfaceUtils: disconnecting from surface 0xe8b979e8, reason disconnectFromSurface
+10-21 15:20:29.772  4017  8417 I OMXClient: IOmx service obtained
+10-21 15:20:29.820  4017  8414 D SurfaceUtils: connecting to surface 0xe8b91528, reason connectToSurface
+10-21 15:20:29.833  4017  8414 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4113419
+10-21 15:20:29.834  4017  8414 D SurfaceUtils: disconnecting from surface 0xe8b91528, reason connectToSurface(reconnect)
+10-21 15:20:29.839  4017  8414 D SurfaceUtils: connecting to surface 0xe8b91528, reason connectToSurface(reconnect)
+10-21 15:20:29.846  4017  8417 E ACodec  : [OMX.google.h264.decoder] setPortMode on output to DynamicANWBuffer failed w/ err -1010
+10-21 15:20:29.862  4017  8417 I ACodec  : codec does not support config priority (err -1010)
+10-21 15:20:29.903  4017  8422 I OMXClient: IOmx service obtained
+10-21 15:20:29.923  4017  8422 I ACodec  : codec does not support config priority (err -2147483648)
+10-21 15:20:29.923  4017  8422 I ACodec  : codec does not support config operating rate (err -2147483648)
+10-21 15:20:29.949  8420  8420 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:29.959  8420  8420 I AndroidRuntime: Using default boot image
+10-21 15:20:29.959  8420  8420 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:30.098  4017  8414 D MediaCodec: [OMX.google.h264.decoder] setting dataspace on output surface to #104
+10-21 15:20:30.173  8420  8420 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:20:30.220  4017  8414 D SoftwareRenderer: setting dataspace on output surface to #104
+10-21 15:20:30.253  4017  7695 D AudioTrack: getTimestamp_l(24): device stall time corrected using current time 249696176455
+10-21 15:20:31.369  8420  8420 D AndroidRuntime: Shutting down VM
+10-21 15:20:31.869  8548  8548 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:31.871  8548  8548 I AndroidRuntime: Using default boot image
+10-21 15:20:31.872  8548  8548 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:31.942  8548  8548 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:20:31.951  8548  8548 D AndroidRuntime: Shutting down VM
+10-21 15:20:31.964  4017  8570 D HostConnection: HostConnection::get() New Host Connection established 0xee2f7ad0, tid 8570
+10-21 15:20:31.968  4017  8570 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:20:31.969  4017  8570 D EGL_emulation: eglCreateContext: 0xee2f7d00: maj 3 min 0 rcv 3
+10-21 15:20:31.970  4017  8570 D EGL_emulation: eglMakeCurrent: 0xee2f7d00: ver 3 0 (tinfo 0xbe11d090) (first time)
+10-21 15:20:31.972  4017  8570 E EGL_emulation: eglQueryContext 32c0  EGL_BAD_ATTRIBUTE
+10-21 15:20:31.972  4017  8570 E EGL_emulation: tid 8570: eglQueryContext(2019): error 0x3004 (EGL_BAD_ATTRIBUTE)
+10-21 15:20:31.972  4017  8414 D SurfaceUtils: connecting to surface 0xe8b960b8, reason connectToSurface
+10-21 15:20:31.972  4017  8414 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4113420
+10-21 15:20:31.972  4017  8414 D SurfaceUtils: disconnecting from surface 0xe8b960b8, reason connectToSurface(reconnect)
+10-21 15:20:31.972  4017  8414 D SurfaceUtils: connecting to surface 0xe8b960b8, reason connectToSurface(reconnect)
+10-21 15:20:31.972  4017  8414 D SurfaceUtils: disconnecting from surface 0xe8b91528, reason disconnectFromSurface
+10-21 15:20:32.017  4017  8414 D SurfaceUtils: disconnecting from surface 0xe8b960b8, reason disconnectFromSurface
+10-21 15:20:33.350  4017  8574 I OMXClient: IOmx service obtained
+10-21 15:20:33.353  4017  8573 D SurfaceUtils: connecting to surface 0xe8b979e8, reason connectToSurface
+10-21 15:20:33.353  4017  8573 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4113421
+10-21 15:20:33.353  4017  8573 D SurfaceUtils: disconnecting from surface 0xe8b979e8, reason connectToSurface(reconnect)
+10-21 15:20:33.353  4017  8573 D SurfaceUtils: connecting to surface 0xe8b979e8, reason connectToSurface(reconnect)
+10-21 15:20:33.356  4017  8574 E ACodec  : [OMX.google.h264.decoder] setPortMode on output to DynamicANWBuffer failed w/ err -1010
+10-21 15:20:33.358  4017  8574 I ACodec  : codec does not support config priority (err -1010)
+10-21 15:20:33.489  4017  8579 I OMXClient: IOmx service obtained
+10-21 15:20:33.512  4017  8579 I ACodec  : codec does not support config priority (err -2147483648)
+10-21 15:20:33.512  4017  8579 I ACodec  : codec does not support config operating rate (err -2147483648)
+10-21 15:20:33.669  8580  8580 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:33.688  4017  8573 D MediaCodec: [OMX.google.h264.decoder] setting dataspace on output surface to #104
+10-21 15:20:33.690  8580  8580 I AndroidRuntime: Using default boot image
+10-21 15:20:33.690  8580  8580 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:33.810  8580  8580 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:20:33.820  4017  8573 D SoftwareRenderer: setting dataspace on output surface to #104
+10-21 15:20:33.836  4017  7695 D AudioTrack: getTimestamp_l(25): device stall time corrected using current time 253279001718
+10-21 15:20:34.928  8580  8580 D AndroidRuntime: Shutting down VM
+10-21 15:20:35.440  8703  8703 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:35.441  8703  8703 I AndroidRuntime: Using default boot image
+10-21 15:20:35.441  8703  8703 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:35.499  8703  8703 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:20:35.508  8703  8703 D AndroidRuntime: Shutting down VM
+10-21 15:20:35.518  4017  8725 D HostConnection: HostConnection::get() New Host Connection established 0xee2ec1c0, tid 8725
+10-21 15:20:35.520  4017  8725 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:20:35.523  4017  8725 D EGL_emulation: eglCreateContext: 0xee2edc70: maj 3 min 0 rcv 3
+10-21 15:20:35.524  4017  8725 D EGL_emulation: eglMakeCurrent: 0xee2edc70: ver 3 0 (tinfo 0xbe127f90) (first time)
+10-21 15:20:35.538  4017  8725 E EGL_emulation: eglQueryContext 32c0  EGL_BAD_ATTRIBUTE
+10-21 15:20:35.538  4017  8725 E EGL_emulation: tid 8725: eglQueryContext(2019): error 0x3004 (EGL_BAD_ATTRIBUTE)
+10-21 15:20:35.539  4017  8573 D SurfaceUtils: connecting to surface 0xe8b8e2c8, reason connectToSurface
+10-21 15:20:35.539  4017  8573 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4113422
+10-21 15:20:35.539  4017  8573 D SurfaceUtils: disconnecting from surface 0xe8b8e2c8, reason connectToSurface(reconnect)
+10-21 15:20:35.539  4017  8573 D SurfaceUtils: connecting to surface 0xe8b8e2c8, reason connectToSurface(reconnect)
+10-21 15:20:35.539  4017  8573 D SurfaceUtils: disconnecting from surface 0xe8b979e8, reason disconnectFromSurface
+10-21 15:20:35.558  4017  4988 D HostConnection: HostConnection::get() New Host Connection established 0xee2f73d0, tid 4988
+10-21 15:20:35.561  4017  4988 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:20:35.568  4017  4988 D EGL_emulation: eglCreateContext: 0xee2f43b0: maj 3 min 0 rcv 3
+10-21 15:20:35.596  4017  4988 D EGL_emulation: eglMakeCurrent: 0xee2f43b0: ver 3 0 (tinfo 0xbe11bb90) (first time)
+10-21 15:20:35.628  4017  8573 D SurfaceUtils: disconnecting from surface 0xe8b8e2c8, reason disconnectFromSurface
+10-21 15:20:36.900  4017  8729 I OMXClient: IOmx service obtained
+10-21 15:20:36.906  4017  8728 D SurfaceUtils: connecting to surface 0xe8b8e2c8, reason connectToSurface
+10-21 15:20:36.907  4017  8728 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4113423
+10-21 15:20:36.907  4017  8728 D SurfaceUtils: disconnecting from surface 0xe8b8e2c8, reason connectToSurface(reconnect)
+10-21 15:20:36.907  4017  8728 D SurfaceUtils: connecting to surface 0xe8b8e2c8, reason connectToSurface(reconnect)
+10-21 15:20:36.910  4017  8729 E ACodec  : [OMX.google.h264.decoder] setPortMode on output to DynamicANWBuffer failed w/ err -1010
+10-21 15:20:36.926  4017  8729 I ACodec  : codec does not support config priority (err -1010)
+10-21 15:20:36.991  4017  8734 I OMXClient: IOmx service obtained
+10-21 15:20:37.010  4017  8734 I ACodec  : codec does not support config priority (err -2147483648)
+10-21 15:20:37.010  4017  8734 I ACodec  : codec does not support config operating rate (err -2147483648)
+10-21 15:20:37.214  4017  8728 D MediaCodec: [OMX.google.h264.decoder] setting dataspace on output surface to #104
+10-21 15:20:37.330  8737  8737 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:37.347  8737  8737 I AndroidRuntime: Using default boot image
+10-21 15:20:37.347  8737  8737 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:37.369  4017  8728 D SoftwareRenderer: setting dataspace on output surface to #104
+10-21 15:20:37.395  4017  7695 D AudioTrack: getTimestamp_l(26): device stall time corrected using current time 256838004939
+10-21 15:20:37.647  8737  8737 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:20:38.739  8737  8737 D AndroidRuntime: Shutting down VM
+10-21 15:20:39.244  8866  8866 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:39.246  8866  8866 I AndroidRuntime: Using default boot image
+10-21 15:20:39.246  8866  8866 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:39.328  8866  8866 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:20:39.335  8866  8866 D AndroidRuntime: Shutting down VM
+10-21 15:20:40.838  8962  8962 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:40.840  8962  8962 I AndroidRuntime: Using default boot image
+10-21 15:20:40.840  8962  8962 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:40.910  8962  8962 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:20:41.960  8962  8962 D AndroidRuntime: Shutting down VM
+10-21 15:20:42.484  9066  9066 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:42.485  9066  9066 I AndroidRuntime: Using default boot image
+10-21 15:20:42.485  9066  9066 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:42.543  9066  9066 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:20:43.633  9066  9066 D AndroidRuntime: Shutting down VM
+10-21 15:20:44.194  9172  9172 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:44.195  9172  9172 I AndroidRuntime: Using default boot image
+10-21 15:20:44.195  9172  9172 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:44.285  9172  9172 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:20:45.333  9172  9172 D AndroidRuntime: Shutting down VM
+10-21 15:20:45.847  9276  9276 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:45.848  9276  9276 I AndroidRuntime: Using default boot image
+10-21 15:20:45.848  9276  9276 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:45.927  9276  9276 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:20:45.937  9276  9276 D AndroidRuntime: Shutting down VM
+10-21 15:20:46.719  4017  9298 D HostConnection: HostConnection::get() New Host Connection established 0xee2fac40, tid 9298
+10-21 15:20:46.742  4017  9298 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-21 15:20:46.743  4017  9298 D EGL_emulation: eglCreateContext: 0xee2fa700: maj 3 min 0 rcv 3
+10-21 15:20:46.744  4017  9298 D EGL_emulation: eglMakeCurrent: 0xee2fa700: ver 3 0 (tinfo 0xbe1292d0) (first time)
+10-21 15:20:46.772  4017  9298 E EGL_emulation: eglQueryContext 32c0  EGL_BAD_ATTRIBUTE
+10-21 15:20:46.772  4017  9298 E EGL_emulation: tid 9298: eglQueryContext(2019): error 0x3004 (EGL_BAD_ATTRIBUTE)
+10-21 15:20:46.774  4017  8728 D SurfaceUtils: connecting to surface 0xe8b94788, reason connectToSurface
+10-21 15:20:46.774  4017  8728 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4113424
+10-21 15:20:46.774  4017  8728 D SurfaceUtils: disconnecting from surface 0xe8b94788, reason connectToSurface(reconnect)
+10-21 15:20:46.774  4017  8728 D SurfaceUtils: connecting to surface 0xe8b94788, reason connectToSurface(reconnect)
+10-21 15:20:46.774  4017  8728 D SurfaceUtils: disconnecting from surface 0xe8b8e2c8, reason disconnectFromSurface
+10-21 15:20:46.778  4017  4017 I ExoPlayerImpl: Release 5a917b9 [AndroidXMedia3/1.5.1] [generic_x86, AOSP TV on x86, Google, 30] [media3.common, media3.exoplayer, media3.decoder, media3.ui, media3.datasource, media3.extractor]
+10-21 15:20:46.796  4017  8728 D SurfaceUtils: disconnecting from surface 0xe8b94788, reason disconnectFromSurface
+10-21 15:20:48.421  9302  9302 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:48.422  9302  9302 I AndroidRuntime: Using default boot image
+10-21 15:20:48.422  9302  9302 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:48.476  9302  9302 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:20:49.502  9302  9302 D AndroidRuntime: Shutting down VM
+10-21 15:20:50.968  9322  9322 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:50.970  9322  9322 I AndroidRuntime: Using default boot image
+10-21 15:20:50.970  9322  9322 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:51.021  9322  9322 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:20:51.025  9322  9322 D AndroidRuntime: Shutting down VM
+10-21 15:20:55.517  9345  9345 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:55.518  9345  9345 I AndroidRuntime: Using default boot image
+10-21 15:20:55.518  9345  9345 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:55.566  9345  9345 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:20:56.584  9345  9345 D AndroidRuntime: Shutting down VM
+10-21 15:20:57.262  9369  9369 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:57.264  9369  9369 I AndroidRuntime: Using default boot image
+10-21 15:20:57.264  9369  9369 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:57.318  9369  9369 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:20:57.322  9369  9369 D AndroidRuntime: Shutting down VM
+10-21 15:20:59.848  9388  9388 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:20:59.849  9388  9388 I AndroidRuntime: Using default boot image
+10-21 15:20:59.849  9388  9388 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:20:59.896  9388  9388 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:21:00.922  9388  9388 D AndroidRuntime: Shutting down VM
+10-21 15:21:01.397  9408  9408 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:21:01.398  9408  9408 I AndroidRuntime: Using default boot image
+10-21 15:21:01.398  9408  9408 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:21:01.446  9408  9408 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:21:01.449  9408  9408 D AndroidRuntime: Shutting down VM
+10-21 15:21:02.916  9424  9424 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:21:02.918  9424  9424 I AndroidRuntime: Using default boot image
+10-21 15:21:02.918  9424  9424 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:21:02.972  9424  9424 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:21:03.999  9424  9424 D AndroidRuntime: Shutting down VM
+10-21 15:21:04.475  9446  9446 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:21:04.477  9446  9446 I AndroidRuntime: Using default boot image
+10-21 15:21:04.477  9446  9446 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:21:04.523  9446  9446 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:21:05.550  9446  9446 D AndroidRuntime: Shutting down VM
+10-21 15:21:06.018  9466  9466 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:21:06.020  9466  9466 I AndroidRuntime: Using default boot image
+10-21 15:21:06.020  9466  9466 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:21:06.072  9466  9466 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:21:06.075  9466  9466 D AndroidRuntime: Shutting down VM
+10-21 15:21:07.542  9482  9482 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:21:07.543  9482  9482 I AndroidRuntime: Using default boot image
+10-21 15:21:07.543  9482  9482 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:21:07.597  9482  9482 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:21:08.625  9482  9482 D AndroidRuntime: Shutting down VM
+10-21 15:21:09.090  9502  9502 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:21:09.091  9502  9502 I AndroidRuntime: Using default boot image
+10-21 15:21:09.091  9502  9502 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:21:09.137  9502  9502 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-21 15:21:09.141  9502  9502 D AndroidRuntime: Shutting down VM
+10-21 15:21:13.132  9518  9518 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-21 15:21:13.133  9518  9518 I AndroidRuntime: Using default boot image
+10-21 15:21:13.133  9518  9518 I AndroidRuntime: Leaving lock profiling enabled
+10-21 15:21:13.191  9518  9518 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-21 15:21:14.216  9518  9518 D AndroidRuntime: Shutting down VM
