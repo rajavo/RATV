@@ -1,0 +1,80 @@
+> Task :app:compileReleaseKotlin FAILED
+e: file:///home/runner/work/RATV/RATV/app/src/main/java/com/ratv/app/ui/screens/SpeedTestDialog.kt:97:21 Overload resolution ambiguity between candidates:
+e: file:///home/runner/work/RATV/RATV/app/src/main/java/com/ratv/app/ui/screens/SpeedTestDialog.kt:99:25 Overload resolution ambiguity between candidates:
+e: file:///home/runner/work/RATV/RATV/app/src/main/java/com/ratv/app/ui/screens/SpeedTestDialog.kt:108:1 Conflicting overloads:
+BUILD FAILED in 31s
+----
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :app:buildKotlinToolingMetadata
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:generateReleaseBuildConfig
+> Task :app:generateReleaseResValues FROM-CACHE
+> Task :app:checkReleaseAarMetadata
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:generateReleaseResources FROM-CACHE
+> Task :app:mergeReleaseResources FROM-CACHE
+> Task :app:packageReleaseResources FROM-CACHE
+> Task :app:parseReleaseLocalResources FROM-CACHE
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease FROM-CACHE
+> Task :app:processReleaseMainManifest
+> Task :app:processReleaseManifest
+> Task :app:javaPreCompileRelease FROM-CACHE
+> Task :app:preReleaseUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileReleaseUnitTest FROM-CACHE
+> Task :app:extractProguardFiles
+> Task :app:processReleaseManifestForPackage
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:mergeReleaseNativeLibs
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:mergeReleaseStartupProfile
+> Task :app:mergeReleaseShaders
+> Task :app:mergeReleaseArtProfile
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libtranslate_jni.so.
+
+> Task :app:mergeReleaseAssets
+> Task :app:extractReleaseNativeSymbolTables FROM-CACHE
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:compressReleaseAssets FROM-CACHE
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:processReleaseResources
+> Task :app:collectReleaseDependencies
+> Task :app:sdkReleaseDependencyData
+> Task :app:validateSigningRelease
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:convertLinkedResourcesToProtoRelease
+
+> Task :app:compileReleaseKotlin FAILED
+e: file:///home/runner/work/RATV/RATV/app/src/main/java/com/ratv/app/ui/screens/SpeedTestDialog.kt:97:21 Overload resolution ambiguity between candidates:
+fun InfoLine(label: String, value: String): Unit
+fun InfoLine(label: String, value: String): Unit
+e: file:///home/runner/work/RATV/RATV/app/src/main/java/com/ratv/app/ui/screens/SpeedTestDialog.kt:99:25 Overload resolution ambiguity between candidates:
+fun InfoLine(label: String, value: String): Unit
+fun InfoLine(label: String, value: String): Unit
+e: file:///home/runner/work/RATV/RATV/app/src/main/java/com/ratv/app/ui/screens/SpeedTestDialog.kt:108:1 Conflicting overloads:
+fun InfoLine(label: String, value: String): Unit
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1792594696787.json
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileReleaseKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 31s
+36 actionable tasks: 26 executed, 10 from cache
