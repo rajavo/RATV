@@ -51,5 +51,26 @@ jobs:
           else
             cp app/build/outputs/apk/debug/app-debug.apk RATV.apk
           fi
-          gh release delete latest --yes --cleanup-tag || true
-          gh release create latest RATV.apk --title "RATV" --notes "أحدث نسخة من تطبيق RATV — نزّل ملف RATV.apk وثبّته على جوالك."
+          # Keep one release named "latest" and only swap its file, so the download link
+          # (and the Downloader code) never changes and never disappears.
+          git push -f origin HEAD:refs/tags/latest
+          if gh release view latest >/dev/null 2>&1; then
+            gh release upload latest RATV.apk --clobber
+          else
+            gh release create latest RATV.apk --title "RATV" --notes "أحدث نسخة من تطبيق RATV — نزّل ملف RATV.apk وثبّته على جوالك."
+          fi
+          gh release edit latest --draft=false --prerelease=false --title "RATV"
+
+      - name: Check the public download link
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          url="https://github.com/${{ github.repository }}/releases/download/latest/RATV.apk"
+          for i in 1 2 3 4 5 6; do
+            if curl -fsIL -o /dev/null "$url"; then echo "Download link works: $url"; exit 0; fi
+            echo "Link not public yet, publishing the release again"
+            gh release edit latest --draft=false --prerelease=false || true
+            sleep 20
+          done
+          echo "Download link still not public: $url"
+          exit 1

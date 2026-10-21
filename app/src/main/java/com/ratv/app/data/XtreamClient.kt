@@ -46,7 +46,10 @@ class XtreamClient(private val p: Playlist) {
             status = ui.str("status"),
             expDate = ui.str("exp_date")?.toLongOrNull()?.let { it * 1000L },
             activeCons = ui.str("active_cons")?.toIntOrNull(),
-            maxCons = ui.str("max_connections")?.toIntOrNull()
+            maxCons = ui.str("max_connections")?.toIntOrNull(),
+            formats = ui.optJSONArray("allowed_output_formats")?.let { arr ->
+                List(arr.length()) { arr.optString(it).lowercase() }.filter { it.isNotBlank() }
+            } ?: emptyList()
         )
     }
 

@@ -78,10 +78,16 @@ import com.ratv.app.ui.theme.T
 private val subtitleSizeLabels = listOf("صغير", "متوسط", "كبير", "كبير جداً")
 
 private val bufferLabels = linkedMapOf(
-    "small" to "صغير (أسرع بدءاً)",
-    "medium" to "متوسط",
-    "large" to "كبير (موصى به)",
-    "max" to "أقل تقطيع (يبدأ أبطأ قليلاً)"
+    "5" to "5 ثوانٍ (تبدأ القناة أسرع)",
+    "10" to "10 ثوانٍ (موصى به)",
+    "20" to "20 ثانية (للنت الضعيف)",
+    "30" to "30 ثانية (أقل تقطيع)"
+)
+
+private val liveFormatLabels = linkedMapOf(
+    "auto" to "تلقائي (HLS إذا يدعمه السيرفر)",
+    "hls" to "HLS دائماً",
+    "ts" to "TS دائماً"
 )
 
 @Composable
@@ -108,6 +114,8 @@ fun SettingsScreen(nav: Navigator) {
     var subAuto by remember { mutableStateOf(repo.prefs.subtitleAuto) }
     var showSubLang by remember { mutableStateOf(false) }
     var showBuffer by remember { mutableStateOf(false) }
+    var showFormat by remember { mutableStateOf(false) }
+    var liveFormat by remember { mutableStateOf(repo.prefs.liveFormat) }
     var showAbout by remember { mutableStateOf(false) }
     var confirmDelete by remember { mutableStateOf<Playlist?>(null) }
     var confirmClearHistory by remember { mutableStateOf(false) }
@@ -229,7 +237,9 @@ fun SettingsScreen(nav: Navigator) {
         Group {
             ValueRow("قياس سرعة النت", "") { showSpeed = true }
             Divider()
-            ValueRow("التخزين المؤقت ضد التقطيع", bufferLabels[bufferMode] ?: "كبير (موصى به)") { showBuffer = true }
+            ValueRow("التخزين المؤقت ضد التقطيع", bufferLabels[bufferMode] ?: "10 ثوانٍ (موصى به)") { showBuffer = true }
+            Divider()
+            ValueRow("صيغة البث المباشر", liveFormatLabels[liveFormat] ?: "تلقائي") { showFormat = true }
             Divider()
             ToggleRow("أعلى جودة متاحة دائماً", "يختار أعلى جودة يرسلها المزوّد للبث", bestQuality) {
                 bestQuality = it
@@ -347,6 +357,44 @@ fun SettingsScreen(nav: Navigator) {
         )
     }
 
+    if (showFormat) {
+        AlertDialog(
+            onDismissRequest = { showFormat = false },
+            confirmButton = { TextButton(onClick = { showFormat = false }) { Text("تم", color = RColors.Saffron) } },
+            title = { Text("صيغة البث المباشر", style = T.h2) },
+            text = {
+                Column {
+                    liveFormatLabels.forEach { (key, label) ->
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 48.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .tvClickable(RoundedCornerShape(10.dp), role = Role.RadioButton) {
+                                    liveFormat = key
+                                    repo.prefs.liveFormat = key
+                                },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = liveFormat == key,
+                                onClick = null,
+                                colors = RadioButtonDefaults.colors(selectedColor = RColors.Saffron)
+                            )
+                            Spacer(Modifier.size(8.dp))
+                            Text(label, style = T.body(15.sp))
+                        }
+                    }
+                    Text(
+                        "في HLS يجهّز السيرفر القناة على شكل مقاطع، فيمتلئ التخزين المؤقت فوراً ويقل التقطيع. إذا لم تعمل قناة بصيغة HLS يرجع التطبيق إلى TS تلقائياً.",
+                        style = T.caption
+                    )
+                }
+            },
+            containerColor = RColors.Surface
+        )
+    }
+
     if (showBuffer) {
         AlertDialog(
             onDismissRequest = { showBuffer = false },
@@ -376,7 +424,7 @@ fun SettingsScreen(nav: Navigator) {
                         }
                     }
                     Text(
-                        "كلما كبر التخزين قلّ التقطيع في الشبكات الضعيفة، لكن بدء القناة يأخذ ثواني أكثر. يُطبَّق عند تشغيل القناة التالية.",
+                        "يخزّن التطبيق هذه المدة من القناة قبل عرضها ويبقى متأخراً عن البث المباشر بنفس المدة، فإذا ضعف النت أو انقطع لثوانٍ تكمل الصورة من المخزَّن بدون تقطيع. كلما زادت المدة قلّ التقطيع، وتأخذ القناة وقتاً أطول لتبدأ. يُطبَّق عند تشغيل القناة التالية.",
                         style = T.caption
                     )
                 }
