@@ -1,0 +1,160 @@
+mock IPTV server on port 8000
+18:05:22 GET /player_api.php?username=test&password=test
+18:08:14 GET /player_api.php?username=test&password=wrong
+18:08:27 GET /player_api.php?username=test&password=test
+18:08:27 GET /player_api.php?username=test&password=test
+18:08:27 GET /player_api.php?username=test&password=test&action=get_live_categories
+18:08:27 GET /player_api.php?username=test&password=test&action=get_live_streams
+18:08:27 GET /player_api.php?username=test&password=test&action=get_vod_categories
+18:08:27 GET /player_api.php?username=test&password=test&action=get_series_categories
+18:08:27 GET /player_api.php?username=test&password=test&action=get_series
+18:08:27 GET /player_api.php?username=test&password=test&action=get_vod_streams
+18:08:27 GET /xmltv.php?username=test&password=test
+18:08:27 GET /logo/l1.png
+18:08:28 GET /update/version.json
+18:08:43 GET /logo/l2.png
+18:08:43 GET /logo/l3.png
+18:08:43 GET /logo/missing.png
+18:08:43 GET /logo/missing.png
+18:08:43 GET /logo/l4.png
+18:09:09 GET /logo/missing.png
+18:09:09 GET /logo/missing.png
+18:09:12 GET /live/test/test/102.m3u8
+18:09:12 GET /live/test/test/102.m3u8
+18:09:13 GET /live/test/test/102.ts
+18:09:13 GET /live/test/test/102.ts
+18:09:13 GET /logo/missing.png
+18:09:13 GET /logo/missing.png
+18:09:13 GET /live/test/test/102.ts
+18:09:14 GET /live/test/test/102.ts
+18:09:14 GET /live/test/test/102.ts
+18:09:14 GET /live/test/test/102.ts
+18:09:33 GET /logo/missing.png
+18:09:33 GET /logo/missing.png
+18:09:34 GET /logo/missing.png
+18:09:34 GET /logo/missing.png
+18:09:39 GET /live/test/test/102.m3u8
+18:09:39 GET /live/test/test/102.m3u8
+18:09:39 GET /logo/missing.png
+18:09:39 GET /logo/missing.png
+18:09:39 GET /live/test/test/102.ts
+18:09:40 GET /live/test/test/102.ts
+18:09:40 GET /live/test/test/102.ts
+18:10:23 GET /logo/missing.png
+18:10:23 GET /logo/missing.png
+18:10:24 GET /logo/missing.png
+18:10:24 GET /logo/missing.png
+18:10:39 GET /live/test/test/206.m3u8
+18:10:39 GET /live/test/test/206.m3u8
+18:10:39 GET /live/test/test/206.m3u8
+18:10:39 GET /live/test/test/206.m3u8
+18:10:40 GET /live/test/test/206.ts
+18:10:41 GET /live/test/test/206.ts
+18:10:41 GET /live/test/test/206.ts
+18:10:52 GET /logo/missing.png
+18:10:52 GET /logo/missing.png
+18:11:02 GET /live/test/test/201.m3u8
+18:11:02 GET /live/test/test/201.m3u8
+18:11:03 GET /live/test/test/201.m3u8
+18:11:03 GET /live/test/test/201.m3u8
+18:11:03 GET /logo/missing.png
+18:11:03 GET /logo/missing.png
+18:11:03 GET /live/test/test/201.ts
+18:11:03 GET /live/test/test/201.ts
+18:11:04 GET /live/test/test/201.ts
+18:11:42 GET /live/test/test/204.m3u8
+18:11:42 GET /live/test/test/204.m3u8
+18:11:43 GET /live/test/test/204.ts
+18:11:43 GET /live/test/test/204.ts
+18:11:43 GET /live/test/test/204.ts
+18:11:55 GET /logo/l5.png
+18:11:56 GET /logo/missing.png
+18:11:56 GET /logo/missing.png
+18:12:09 GET /live/test/test/201.m3u8
+18:12:09 GET /live/test/test/201.m3u8
+18:12:09 GET /logo/missing.png
+18:12:09 GET /logo/missing.png
+18:12:10 GET /live/test/test/201.ts
+18:12:10 GET /live/test/test/201.ts
+18:12:11 GET /live/test/test/201.ts
+18:12:38 GET /live/test/test/206.ts
+18:12:39 GET /live/test/test/206.ts
+18:12:40 GET /live/test/test/206.ts
+18:13:15 GET /logo/missing.png
+18:13:15 GET /logo/missing.png
+18:13:15 GET /live/test/test/201.ts
+18:13:15 GET /logo/missing.png
+18:13:15 GET /logo/missing.png
+18:13:23 GET /logo/missing.png
+18:13:23 GET /logo/missing.png
+18:13:30 GET /logo/missing.png
+18:13:30 GET /logo/missing.png
+18:13:39 GET /player_api.php?username=test&password=test&action=get_vod_info&vod_id=5001
+18:13:49 GET /movie/test/test/5001.mp4
+18:13:49 GET /movie/test/test/5001.mp4
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54770)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 498, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 464, in handle_one_request
+    self.raw_requestline = self.rfile.readline(65537)
+                           ~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/usr/lib/python3.14/socket.py", line 725, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+----------------------------------------
+18:14:34 GET /player_api.php?username=test&password=test&action=get_vod_info&vod_id=5005
+18:14:37 GET /movie/test/test/5005.mp4
+18:14:37 GET /movie/test/test/5005.mp4
+18:15:03 GET /subtitles/search/advanced?keywords=Silent+Sea&language=en&movie_type=movie&year=2019
+18:15:04 GET /subtitles/search/advanced?keywords=Silent+Sea&language=ar&movie_type=movie&year=2019
+18:15:09 GET /subtitles/sub-en-1/download?container=zip
+18:15:57 GET /player_api.php?username=test&password=test&action=get_series_info&series_id=7001
+18:16:14 GET /series/test/test/7001102.mp4
+18:16:14 GET /player_api.php?username=test&password=test&action=get_series_info&series_id=7004
+18:17:57 GET /__down?bytes=0
+18:17:57 GET /__down?bytes=0
+18:17:57 GET /__down?bytes=0
+18:17:57 GET /
+18:17:57 GET /
+18:17:57 GET /
+18:17:57 GET /
+18:17:57 GET /
+18:17:57 GET /
+18:17:57 GET /__down?bytes=25000000
+18:17:57 GET /__down?bytes=25000000
+18:17:57 GET /__down?bytes=25000000
+18:17:57 GET /__down?bytes=25000000
+18:20:12 GET /player_api.php?username=test&password=test
+18:20:14 GET /update/version.json
+18:20:53 GET /playlist.m3u
+18:20:53 GET /xmltv.php
+18:21:07 GET /logo/missing.png
+18:21:07 GET /logo/missing.png
+18:21:12 GET /live/test/test/201.ts
+18:21:13 GET /live/test/test/201.ts
+18:21:13 GET /live/test/test/201.ts
+18:21:13 GET /logo/missing.png
+18:21:13 GET /logo/missing.png
+18:21:13 GET /live/test/test/201.ts
+18:21:26 GET /logo/missing.png
+18:21:26 GET /logo/missing.png
+18:21:27 GET /logo/missing.png
+18:21:27 GET /logo/missing.png
+18:21:52 GET /player_api.php?username=test&password=test
+18:22:02 GET /logo/missing.png
+18:22:02 GET /logo/missing.png
+18:22:14 GET /logo/missing.png
+18:22:14 GET /logo/missing.png
