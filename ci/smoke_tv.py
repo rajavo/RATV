@@ -11,24 +11,9 @@ import smoke as S  # noqa: E402
 NAV = ["الرئيسية", "مباشر", "أفلام", "مسلسلات", "حسابي"]
 
 
-# Keys go through the emulator's hardware keyboard so Android sees a real D-pad,
-# like a TV remote (adb "input" events come from a virtual device instead).
-EMU_KEYS = {"DPAD_UP": 103, "DPAD_DOWN": 108, "DPAD_LEFT": 105, "DPAD_RIGHT": 106, "DPAD_CENTER": 28, "BACK": 158}
-_emu_ok = [None]
-
-
 def key(name, n=1, pause=1.0):
     for _ in range(n):
-        code = EMU_KEYS.get(name)
-        sent = False
-        if code is not None and _emu_ok[0] is not False:
-            out = S.adb("emu", "event", "send", "EV_KEY:%d:1" % code, "EV_SYN:0:0", "EV_KEY:%d:0" % code, "EV_SYN:0:0", timeout=20)
-            if _emu_ok[0] is None:
-                S.log("emu event output: %r" % out.strip()[:200])
-                _emu_ok[0] = "KO" not in out and "unknown" not in out.lower()
-            sent = _emu_ok[0] is True
-        if not sent:
-            S.shell("input keyevent KEYCODE_%s" % name)
+        S.shell("input keyevent KEYCODE_%s" % name)
         time.sleep(pause)
 
 
