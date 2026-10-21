@@ -15,7 +15,7 @@ import android.widget.TextView
 import java.net.HttpURLConnection
 import java.net.URL
 
-/** Test helper: while it runs, calls the test server every second and logs "ok" or "fail". */
+/** Test helper: while it runs, calls a public address every second and logs "ok" or "fail". */
 class ProbeActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +61,7 @@ class ProbeService : Service() {
         while (running) {
             n++
             val result = try {
-                val c = URL("http://10.0.2.2:8000/probe.txt?n=$n").openConnection() as HttpURLConnection
+                val c = URL("http://connectivitycheck.gstatic.com/generate_204?n=$n").openConnection() as HttpURLConnection
                 c.connectTimeout = 1500
                 c.readTimeout = 1500
                 c.setRequestProperty("Connection", "close")

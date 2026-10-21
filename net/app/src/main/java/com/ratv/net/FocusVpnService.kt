@@ -145,11 +145,15 @@ class FocusVpnService : VpnService() {
             .setSession(getString(R.string.app_name))
             .addAddress(TUN_V4, 32)
             .addAddress(TUN_V6, 128)
-            .addRoute("0.0.0.0", 0)
-            .addRoute("::", 0)
             .addDnsServer(DNS_V4)
             .setMtu(1500)
             .setBlocking(false)
+        // Only the internet: the home network (phone remotes, casting, local servers) stays open to every app.
+        for (route in PUBLIC_V4) {
+            val (address, length) = route.split('/')
+            builder.addRoute(address, length.toInt())
+        }
+        builder.addRoute("2000::", 3)
         if (Build.VERSION.SDK_INT >= 29) builder.setMetered(false)
         for (pkg in allowed) {
             try {
@@ -207,7 +211,9 @@ class FocusVpnService : VpnService() {
                 if (at != null && now - at < 30_000L) continue // the same attempt, sent again
                 if (seen.size > 4096) seen.clear()
                 seen[key] = now
-                Focus.countBlocked(ownerUid(cm, flow))
+                val uid = ownerUid(cm, flow)
+                // Name lookups the system makes for a blocked app: not an app of their own.
+                if (uid != AID_DNS) Focus.countBlocked(uid)
             }
         } catch (e: Exception) {
             // The interface was closed: a newer one took over, or focus stopped.
@@ -302,8 +308,18 @@ class FocusVpnService : VpnService() {
         private const val CHANNEL = "focus"
         private const val NOTE_ID = 1
         private const val GRACE_SECONDS = 60L
-        private const val TUN_V4 = "10.215.173.1"
-        private const val DNS_V4 = "10.215.173.2"
+        private const val AID_DNS = 1051
+        private const val TUN_V4 = "100.80.80.1"
+        private const val DNS_V4 = "100.80.80.2"
+
+        /** Every IPv4 address except the home and local ranges (10/8, 172.16/12, 192.168/16, multicast). */
+        private val PUBLIC_V4 = listOf(
+            "0.0.0.0/5", "8.0.0.0/7", "11.0.0.0/8", "12.0.0.0/6", "16.0.0.0/4", "32.0.0.0/3", "64.0.0.0/2",
+            "128.0.0.0/3", "160.0.0.0/5", "168.0.0.0/6", "172.0.0.0/12", "172.32.0.0/11", "172.64.0.0/10",
+            "172.128.0.0/9", "173.0.0.0/8", "174.0.0.0/7", "176.0.0.0/4", "192.0.0.0/9", "192.128.0.0/11",
+            "192.160.0.0/13", "192.169.0.0/16", "192.170.0.0/15", "192.172.0.0/14", "192.176.0.0/12",
+            "192.192.0.0/10", "193.0.0.0/8", "194.0.0.0/7", "196.0.0.0/6", "200.0.0.0/5", "208.0.0.0/4"
+        )
         private const val TUN_V6 = "fd00:7261:6e65:7400::1"
 
         fun start(context: Context) {

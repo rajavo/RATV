@@ -67,8 +67,17 @@ class Prefs(context: Context) {
         set(value) = sp.edit().putStringSet("always", HashSet(value)).apply()
 
     companion object {
-        /** Google Play services (sign-in, casting) and the Chromecast receiver, unless the viewer turns them off. */
-        val DEFAULT_ALLOWED = setOf("com.google.android.gms", "com.google.android.gsf", "com.google.android.apps.mediashell")
+        /**
+         * Google Play services (sign-in, casting), the Chromecast receiver and voice search (the Google app),
+         * unless the viewer turns them off: they use little and are needed the moment the viewer asks.
+         */
+        val DEFAULT_ALLOWED = setOf(
+            "com.google.android.gms",
+            "com.google.android.gsf",
+            "com.google.android.apps.mediashell",
+            "com.google.android.katniss",
+            "com.google.android.googlequicksearchbox"
+        )
 
         /** The system itself (clock, network checks): never blocked. */
         const val SYSTEM = "android"

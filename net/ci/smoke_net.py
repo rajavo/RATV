@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Checks RA Net on an Android TV emulator (CI only).
 
-The probe app keeps calling a test server on the computer (10.0.2.2:8000) and logs ok or fail:
+The probe app keeps calling a public address and logs ok or fail:
 with focus on it must get through while it is on the screen, and be blocked once it is in
 the background. The adb shell stands for an app that is never on the screen.
 """
@@ -112,13 +112,24 @@ def vpn_up():
     return re.search(r"\btun\d+", sh("ip link")) is not None
 
 
-def shell_net():
-    """Can the adb shell (an app that is never on the screen) reach the test server? None: cannot tell."""
-    out = sh("printf 'GET /probe.txt HTTP/1.0\\r\\n\\r\\n' | toybox nc -w 3 10.0.2.2 8000 2>&1", timeout=20)
+def nc(host, port, request, want):
+    """Can the adb shell (an app that is never on the screen) reach this address? None: cannot tell."""
+    out = sh("printf '%s' | toybox nc -w 4 %s %d 2>&1" % (request, host, port), timeout=20)
     if "not found" in out or "Unknown command" in out:
         log("no nc on this image: " + out[:120])
         return None
-    return "200 OK" in out
+    return want in out
+
+
+def shell_net():
+    """The internet, from the shell."""
+    return nc("connectivitycheck.gstatic.com", 80,
+              r"GET /generate_204 HTTP/1.0\r\nHost: connectivitycheck.gstatic.com\r\n\r\n", " 204")
+
+
+def shell_lan():
+    """The home network (the computer running the emulator), from the shell."""
+    return nc("10.0.2.2", 8000, r"GET /probe.txt HTTP/1.0\r\n\r\n", "200 OK")
 
 
 def probe_log():
@@ -172,7 +183,8 @@ def s_setup():
     log("start: " + t[:500])
     expect("التركيز طافي" in t, "focus should start off")
     expect("خطوة وحدة قبل التشغيل" not in t, "usage access is granted but the setup step still shows")
-    expect(shell_net() is not False, "the test server is not reachable before focus is on")
+    expect(shell_net() is not False, "no internet before focus is on")
+    expect(shell_lan() is not False, "the home network is not reachable before focus is on")
 
 
 def s_turn_on():
@@ -187,6 +199,7 @@ def s_turn_on():
     expect(vpn_up(), "no VPN interface")
     time.sleep(2)
     expect(shell_net() is not True, "an app off the screen (adb shell) still reached the internet")
+    expect(shell_lan() is not False, "the home network was blocked too (it must stay open)")
 
 
 def s_probe_on_screen():
