@@ -1,0 +1,54 @@
+03:21:28 == launch
+03:22:24 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 2274
+WaitTime: 2281
+Complete
+03:22:26 screenshot 01-splash.png 1080x2400
+03:22:26 == login-screen
+03:22:31 screenshot 02-login.png 1080x2400
+03:22:31 == wrong-password
+03:22:52 screenshot 03-login-error.png 1080x2400
+03:22:52 == xtream-login
+03:22:57 screenshot 04-login-filled.png 1080x2400
+03:23:13 screenshot 05-home.png 1080x2400
+03:23:13 == live
+03:23:21 screenshot 06-live.png 1080x2400
+03:23:21 == live-category
+03:23:27 screenshot 07-live-sport.png 1080x2400
+03:23:30 == favorite
+03:23:39 screenshot 08-live-favorites.png 1080x2400
+03:23:42 == play-live
+03:23:59 screenshot 09-player-live.png 2400x1080
+03:24:02 screenshot 10-player-live-controls.png 2400x1080
+03:24:07 screenshot 11-after-live-player.png 1080x2400
+03:24:07 == guide
+03:24:16 screenshot 12-guide.png 1080x2400
+03:24:18 == movies
+03:24:25 screenshot 13-movies.png 1080x2400
+03:24:33 screenshot 14-movie-detail.png 1080x2400
+03:25:00 screenshot 15-player-movie.png 2400x1080
+03:25:04 screenshot 16-player-movie-controls.png 2400x1080
+03:25:10 screenshot 17-movie-detail-resume.png 1080x2400
+03:25:12 == series
+03:25:19 screenshot 18-series.png 1080x2400
+03:25:26 screenshot 19-series-detail.png 1080x2400
+03:25:31 screenshot 20-series-season2.png 1080x2400
+03:25:52 screenshot 21-player-episode.png 2400x1080
+03:25:58 screenshot 22-series-detail-after.png 1080x2400
+03:26:00 == home-after
+03:26:07 screenshot 23-home-after.png 1080x2400
+03:26:07 == search
+03:26:17 screenshot 24-search.png 1080x2400
+03:26:19 == settings
+03:26:26 screenshot 25-settings.png 1080x2400
+03:26:26 == parental
+03:26:35 screenshot 26-pin-dialog.png 1080x2400
+03:26:39 screenshot 27-settings-parental-on.png 1080x2400
+03:26:39 == relaunch
+03:26:48 screenshot 28-relaunch.png 1080x2400
+03:26:48 == switch-to-m3u
+03:26:56 screenshot 29-switch-dialog.png 1080x2400
+03:27:10 screenshot 30-login-m3u.png 1080x2400
