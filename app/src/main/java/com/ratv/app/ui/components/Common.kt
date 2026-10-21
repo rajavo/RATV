@@ -1,9 +1,24 @@
 package com.ratv.app.ui.components
 
+import android.app.UiModeManager
+import android.content.Context
+import android.content.pm.PackageManager
+import android.content.res.Configuration
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.ui.composed
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.layout.statusBarsPadding
+import kotlinx.coroutines.delay
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,6 +67,70 @@ import com.ratv.app.ui.theme.T
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
+// ------------------------------------------------------------ TV & focus
+
+/** True on Android TV, Google TV, Fire TV and boxes without a touchscreen. */
+fun Context.isTvDevice(): Boolean {
+    val ui = getSystemService(Context.UI_MODE_SERVICE) as? UiModeManager
+    val pm = packageManager
+    return ui?.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION ||
+        pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) ||
+        !pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)
+}
+
+@Composable
+fun rememberIsTv(): Boolean {
+    val context = LocalContext.current
+    return remember(context) { context.isTvDevice() }
+}
+
+/** A wide landscape window (TV, tablet or a rotated phone). */
+@Composable
+fun rememberIsWide(): Boolean {
+    val c = LocalConfiguration.current
+    return c.screenWidthDp >= 600 && c.screenWidthDp > c.screenHeightDp
+}
+
+/** Draws a ring while an element has the remote's focus. */
+fun Modifier.focusRing(focused: Boolean, shape: Shape, color: Color = RColors.Saffron, width: Dp = 2.5.dp): Modifier =
+    if (focused) border(width, color, shape) else this
+
+/** Clickable that shows a clear ring when selected with a TV remote or a keyboard. */
+fun Modifier.tvClickable(
+    shape: Shape,
+    enabled: Boolean = true,
+    role: Role? = Role.Button,
+    onClickLabel: String? = null,
+    ringColor: Color = RColors.Saffron,
+    onClick: () -> Unit
+): Modifier = composed {
+    val source = remember { MutableInteractionSource() }
+    val focused by source.collectIsFocusedAsState()
+    this
+        .focusRing(focused, shape, ringColor)
+        .clickable(
+            interactionSource = source,
+            indication = LocalIndication.current,
+            enabled = enabled,
+            onClickLabel = onClickLabel,
+            role = role,
+            onClick = onClick
+        )
+}
+
+/** On TV, gives the remote's focus to [requester] once it is on screen. */
+@Composable
+fun TvInitialFocus(requester: FocusRequester, key: Any? = Unit) {
+    val tv = rememberIsTv()
+    LaunchedEffect(tv, key) {
+        if (!tv) return@LaunchedEffect
+        repeat(10) {
+            delay(80)
+            if (runCatching { requester.requestFocus() }.isSuccess) return@LaunchedEffect
+        }
+    }
+}
 
 // ----------------------------------------------------------------- logo
 
@@ -125,7 +204,7 @@ fun CircleIconButton(
             .size(size)
             .clip(CircleShape)
             .background(background)
-            .clickable(role = Role.Button, onClick = onClick),
+            .tvClickable(CircleShape, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Icon(icon, contentDescription = contentDescription, tint = tint, modifier = Modifier.size(iconSize))
@@ -146,7 +225,7 @@ fun PrimaryButton(
             .height(height)
             .clip(RoundedCornerShape(16.dp))
             .background(if (enabled) RColors.Saffron else RColors.Surface3)
-            .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+            .tvClickable(RoundedCornerShape(16.dp), enabled = enabled, ringColor = Color.White, onClick = onClick)
             .padding(horizontal = 18.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
@@ -177,7 +256,7 @@ fun OutlineButton(
             .height(height)
             .clip(RoundedCornerShape(14.dp))
             .border(1.dp, RColors.Surface3, RoundedCornerShape(14.dp))
-            .clickable(role = Role.Button, onClick = onClick)
+            .tvClickable(RoundedCornerShape(14.dp), onClick = onClick)
             .padding(horizontal = 14.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
@@ -193,10 +272,12 @@ fun OutlineButton(
 /** A pill chip with a 44dp tall touch target. */
 @Composable
 fun Chip(label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val source = remember { MutableInteractionSource() }
+    val focused by source.collectIsFocusedAsState()
     Box(
         modifier
             .height(44.dp)
-            .clickable(role = Role.Tab, onClick = onClick),
+            .clickable(interactionSource = source, indication = null, role = Role.Tab, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Box(
@@ -204,7 +285,16 @@ fun Chip(label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifi
                 .height(34.dp)
                 .clip(RoundedCornerShape(17.dp))
                 .background(if (selected) RColors.Saffron else RColors.Surface)
-                .border(1.dp, if (selected) RColors.Saffron else RColors.Line, RoundedCornerShape(17.dp))
+                .border(
+                    if (focused) 2.5.dp else 1.dp,
+                    when {
+                        focused && selected -> Color.White
+                        focused -> RColors.Saffron
+                        selected -> RColors.Saffron
+                        else -> RColors.Line
+                    },
+                    RoundedCornerShape(17.dp)
+                )
                 .padding(horizontal = 14.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -370,7 +460,9 @@ fun SectionHeader(title: String, modifier: Modifier = Modifier, action: String? 
             Row(
                 Modifier
                     .height(44.dp)
-                    .clickable(role = Role.Button, onClick = onAction),
+                    .clip(RoundedCornerShape(10.dp))
+                    .tvClickable(RoundedCornerShape(10.dp), onClick = onAction)
+                    .padding(horizontal = 6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(action, style = T.body(13.sp, FontWeight.Medium, RColors.Saffron))
@@ -443,6 +535,35 @@ val navItems = listOf(
 )
 
 @Composable
+private fun NavEntry(item: NavItem, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
+    val source = remember { MutableInteractionSource() }
+    val focused by source.collectIsFocusedAsState()
+    val color = if (selected || focused) RColors.Saffron else RColors.Text3
+    Column(
+        modifier.clickable(interactionSource = source, indication = null, role = Role.Tab, onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Box(
+            Modifier
+                .width(56.dp)
+                .height(30.dp)
+                .clip(RoundedCornerShape(15.dp))
+                .background(if (selected) RColors.SaffronSoft else Color.Transparent)
+                .focusRing(focused, RoundedCornerShape(15.dp), width = 2.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(item.icon, contentDescription = null, tint = color, modifier = Modifier.size(22.dp))
+        }
+        Spacer(Modifier.height(4.dp))
+        Text(
+            item.label,
+            style = T.body(11.5.sp, if (selected || focused) FontWeight.Bold else FontWeight.Medium, color).copy(lineHeight = 14.sp)
+        )
+    }
+}
+
+@Composable
 fun BottomNav(current: String, onSelect: (String) -> Unit) {
     Column(Modifier.background(RColors.NavBg)) {
         Box(Modifier.fillMaxWidth().height(1.dp).background(RColors.Line))
@@ -455,34 +576,34 @@ fun BottomNav(current: String, onSelect: (String) -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             navItems.forEach { item ->
-                val selected = item.route == current
-                val color = if (selected) RColors.Saffron else RColors.Text3
-                Column(
-                    Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .clickable(role = Role.Tab) { onSelect(item.route) },
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Box(
-                        Modifier
-                            .width(56.dp)
-                            .height(30.dp)
-                            .clip(RoundedCornerShape(15.dp))
-                            .background(if (selected) RColors.SaffronSoft else Color.Transparent),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(item.icon, contentDescription = null, tint = color, modifier = Modifier.size(22.dp))
-                    }
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        item.label,
-                        style = T.body(11.5.sp, if (selected) FontWeight.Bold else FontWeight.Medium, color).copy(lineHeight = 14.sp)
-                    )
-                }
+                NavEntry(item, item.route == current, Modifier.weight(1f).fillMaxHeight()) { onSelect(item.route) }
             }
         }
+    }
+}
+
+/** Sections as a vertical bar on the start side, for TV screens and wide windows. */
+@Composable
+fun SideNav(current: String, onSelect: (String) -> Unit) {
+    Row(Modifier.fillMaxHeight()) {
+        Column(
+            Modifier
+                .fillMaxHeight()
+                .width(96.dp)
+                .background(RColors.NavBg)
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .padding(vertical = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            AppIcon(44.dp)
+            Spacer(Modifier.height(18.dp))
+            navItems.forEach { item ->
+                NavEntry(item, item.route == current, Modifier.fillMaxWidth().height(68.dp)) { onSelect(item.route) }
+            }
+        }
+        Box(Modifier.fillMaxHeight().width(1.dp).background(RColors.Line))
     }
 }
 

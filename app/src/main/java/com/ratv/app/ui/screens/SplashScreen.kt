@@ -18,6 +18,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -33,6 +36,7 @@ import com.ratv.app.ui.components.OutlineButton
 import com.ratv.app.ui.components.PrimaryButton
 import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.components.RatvLogo
+import com.ratv.app.ui.components.TvInitialFocus
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 import kotlinx.coroutines.delay
@@ -88,8 +92,16 @@ fun SplashScreen(onNeedLogin: () -> Unit, onReady: () -> Unit, onAutoPlay: (Stri
             if (current is LoadState.Error) {
                 Text(current.message, style = T.body(14.sp, color = RColors.Text2), textAlign = TextAlign.Center)
                 Spacer(Modifier.height(16.dp))
+                val retryFocus = remember { FocusRequester() }
+                TvInitialFocus(retryFocus, key = current.message)
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    PrimaryButton("إعادة المحاولة", onClick = { repo.refresh() }, icon = RIcons.Refresh, height = 48.dp)
+                    PrimaryButton(
+                        "إعادة المحاولة",
+                        onClick = { repo.refresh() },
+                        icon = RIcons.Refresh,
+                        height = 48.dp,
+                        modifier = Modifier.focusRequester(retryFocus)
+                    )
                     OutlineButton("تغيير الاشتراك", onClick = onNeedLogin, icon = RIcons.Swap)
                 }
             } else {

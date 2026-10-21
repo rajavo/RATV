@@ -31,6 +31,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -51,6 +53,8 @@ import com.ratv.app.ui.components.EmptyState
 import com.ratv.app.ui.components.PosterImage
 import com.ratv.app.ui.components.PrimaryButton
 import com.ratv.app.ui.components.QualityBadge
+import com.ratv.app.ui.components.TvInitialFocus
+import com.ratv.app.ui.components.tvClickable
 import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.components.artSeed
 import com.ratv.app.ui.components.formatClock
@@ -93,6 +97,8 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
     val backdrop = info?.backdrop ?: info?.cover ?: movie.poster
     val rating = info?.rating ?: movie.rating
     val meta = listOfNotNull(info?.year ?: movie.year, info?.genre, info?.duration).joinToString(" · ")
+    val playFocus = remember { FocusRequester() }
+    TvInitialFocus(playFocus, key = movie.id)
 
     Column(
         Modifier
@@ -158,7 +164,9 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
                     text = if (resume != null) "متابعة من ${formatClock(resume.position)}" else "تشغيل",
                     onClick = { nav.playMovie(movie.id) },
                     icon = RIcons.Play,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .focusRequester(playFocus)
                 )
                 val trailer = info?.trailer
                 if (!trailer.isNullOrBlank()) {
@@ -168,7 +176,7 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
                             .clip(RoundedCornerShape(16.dp))
                             .background(RColors.Surface)
                             .border(1.dp, RColors.Surface3, RoundedCornerShape(16.dp))
-                            .clickable(role = Role.Button, onClickLabel = "المقطع الدعائي") {
+                            .tvClickable(RoundedCornerShape(16.dp), onClickLabel = "المقطع الدعائي") {
                                 val url = if (trailer.startsWith("http")) trailer else "https://www.youtube.com/watch?v=$trailer"
                                 try {
                                     context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))

@@ -30,6 +30,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -55,6 +57,8 @@ import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.components.RatvLogo
 import com.ratv.app.ui.components.RingsArt
 import com.ratv.app.ui.components.SectionHeader
+import com.ratv.app.ui.components.TvInitialFocus
+import com.ratv.app.ui.components.tvClickable
 import com.ratv.app.ui.components.formatCount
 import com.ratv.app.ui.components.hm
 import com.ratv.app.ui.components.minutesLeft
@@ -92,6 +96,8 @@ fun HomeScreen(nav: Navigator) {
     val favoriteChannels = remember(channels, favorites) { channels.filter { Keys.live(it.id) in favorites }.take(20) }
     val recentMovies = remember(movies) { movies.sortedByDescending { it.added }.take(15) }
     val recentSeries = remember(series) { series.sortedByDescending { it.added }.take(15) }
+    val heroFocus = remember { FocusRequester() }
+    TvInitialFocus(heroFocus, key = featured?.id)
 
     LazyColumn(
         Modifier
@@ -126,7 +132,9 @@ fun HomeScreen(nav: Navigator) {
                     else (repo.liveCategoryName(featured.categoryId) ?: "بث مباشر"),
                     progress = programme?.progress(now),
                     onWatch = { nav.playLive(featured.id) },
-                    modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp)
+                    modifier = Modifier
+                        .padding(start = 20.dp, end = 20.dp, top = 20.dp)
+                        .focusRequester(heroFocus)
                 )
             }
         }
@@ -169,7 +177,7 @@ fun HomeScreen(nav: Navigator) {
                             Modifier
                                 .width(236.dp)
                                 .clip(RoundedCornerShape(14.dp))
-                                .clickable(role = Role.Button) { nav.resume(entry.key) }
+                                .tvClickable(RoundedCornerShape(14.dp)) { nav.resume(entry.key) }
                         ) {
                             Box(
                                 Modifier
@@ -229,7 +237,7 @@ fun HomeScreen(nav: Navigator) {
                             Modifier
                                 .width(76.dp)
                                 .clip(RoundedCornerShape(14.dp))
-                                .clickable(role = Role.Button) { nav.playLive(ch.id) },
+                                .tvClickable(RoundedCornerShape(14.dp)) { nav.playLive(ch.id) },
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             ChannelLogo(ch.name, ch.logo, 64.dp, corner = 18.dp)
@@ -290,7 +298,7 @@ fun PosterRow(posters: List<PosterData>, onOpen: (String) -> Unit) {
                 Modifier
                     .width(116.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .clickable(role = Role.Button) { onOpen(p.id) }
+                    .tvClickable(RoundedCornerShape(12.dp)) { onOpen(p.id) }
             ) {
                 PosterImage(
                     p.title,
@@ -323,7 +331,7 @@ private fun HeroCard(
             .height(200.dp)
             .clip(RoundedCornerShape(22.dp))
             .background(Brush.verticalGradient(listOf(Color(0xFF1E1A13), RColors.Surface)))
-            .clickable(role = Role.Button, onClick = onWatch)
+            .tvClickable(RoundedCornerShape(22.dp), onClick = onWatch)
     ) {
         RingsArt(Modifier.fillMaxSize())
         ChannelLogo(
@@ -349,7 +357,7 @@ private fun HeroCard(
         ) {
             LiveBadge()
             Text(
-                listOfNotNull(channel.name, channel.quality).joinToString(" · "),
+                channel.name,
                 style = T.body(12.sp, FontWeight.Medium),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -379,7 +387,6 @@ private fun HeroCard(
                     .height(44.dp)
                     .clip(RoundedCornerShape(22.dp))
                     .background(RColors.Saffron)
-                    .clickable(role = Role.Button, onClick = onWatch)
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -399,7 +406,7 @@ private fun CategoryTile(icon: ImageVector, label: String, count: String, modifi
             .clip(RoundedCornerShape(18.dp))
             .background(RColors.Surface)
             .border(1.dp, RColors.Line, RoundedCornerShape(18.dp))
-            .clickable(role = Role.Button, onClick = onClick)
+            .tvClickable(RoundedCornerShape(18.dp), onClick = onClick)
             .padding(14.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {

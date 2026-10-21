@@ -54,6 +54,7 @@ import com.ratv.app.ui.components.CircleIconButton
 import com.ratv.app.ui.components.EmptyState
 import com.ratv.app.ui.components.PosterImage
 import com.ratv.app.ui.components.RIcons
+import com.ratv.app.ui.components.tvClickable
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 import kotlinx.coroutines.Dispatchers
@@ -209,8 +210,10 @@ private fun ResultRow(title: String, subtitle: String, onClick: () -> Unit, lead
     Row(
         Modifier
             .fillMaxWidth()
-            .clickable(role = Role.Button, onClick = onClick)
-            .padding(horizontal = 20.dp, vertical = 8.dp),
+            .padding(horizontal = 12.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .tvClickable(RoundedCornerShape(14.dp), onClick = onClick)
+            .padding(horizontal = 8.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {

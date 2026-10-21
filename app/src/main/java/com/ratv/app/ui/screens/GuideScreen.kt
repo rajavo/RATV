@@ -40,6 +40,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -60,6 +63,8 @@ import com.ratv.app.ui.components.CircleIconButton
 import com.ratv.app.ui.components.EmptyState
 import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.components.ScreenHeader
+import com.ratv.app.ui.components.TvInitialFocus
+import com.ratv.app.ui.components.tvClickable
 import com.ratv.app.ui.components.hm
 import com.ratv.app.ui.components.minutesLeft
 import com.ratv.app.ui.theme.RColors
@@ -74,6 +79,16 @@ private const val WINDOW_MINUTES = 24 * 60
 private const val MINUTE = 60_000L
 private const val ALL = "__all__"
 private const val FAV = "__fav__"
+
+/** Keeps a programme's title inside the visible part of the timeline when the cell starts off-screen. */
+private fun Modifier.stickToViewport(scroll: ScrollState, startPx: Int): Modifier = layout { measurable, constraints ->
+    val maxShift = (constraints.maxWidth - 120.dp.roundToPx()).coerceAtLeast(0)
+    val hidden = (scroll.value - startPx).coerceIn(0, maxShift)
+    val placeable = measurable.measure(
+        constraints.copy(minWidth = 0, maxWidth = (constraints.maxWidth - hidden).coerceAtLeast(0))
+    )
+    layout(constraints.maxWidth, placeable.height) { placeable.placeRelative(hidden, 0) }
+}
 
 private fun windowOrigin(day: Int, now: Long): Long {
     val cal = Calendar.getInstance()
@@ -117,6 +132,9 @@ fun GuideScreen(nav: Navigator) {
             else -> channels.filter { it.categoryId == category }
         }
     }
+
+    val firstRowFocus = remember { FocusRequester() }
+    TvInitialFocus(firstRowFocus, key = visible.firstOrNull()?.id to epg.isEmpty())
 
     LaunchedEffect(day) {
         val startMinute = if (day == 0) ((System.currentTimeMillis() - origin) / MINUTE - 30).coerceAtLeast(0) else 18L * 60L
@@ -183,9 +201,18 @@ fun GuideScreen(nav: Navigator) {
                             windowEnd = windowEnd,
                             now = now,
                             scroll = scroll,
-                            selected = selected?.second,
-                            onSelect = { p -> selected = ch to p },
-                            onOpenChannel = { nav.playLive(ch.id) }
+                            selected = selected?.takeIf { it.first.id == ch.id }?.second,
+                            onSelect = { p ->
+                                val current = selected
+                                // A second press on the selected programme plays the channel.
+                                if (current != null && current.first.id == ch.id && current.second == p) {
+                                    nav.playLive(ch.id)
+                                } else {
+                                    selected = ch to p
+                                }
+                            },
+                            onOpenChannel = { nav.playLive(ch.id) },
+                            focusRequester = if (ch.id == visible.firstOrNull()?.id) firstRowFocus else null
                         )
                     }
                 }
@@ -289,7 +316,8 @@ private fun GuideRow(
     scroll: ScrollState,
     selected: Programme?,
     onSelect: (Programme) -> Unit,
-    onOpenChannel: () -> Unit
+    onOpenChannel: () -> Unit,
+    focusRequester: FocusRequester? = null
 ) {
     Row(
         Modifier
@@ -300,7 +328,10 @@ private fun GuideRow(
             Modifier
                 .width(CHANNEL_COLUMN)
                 .fillMaxHeight()
-                .clickable(role = Role.Button, onClickLabel = "تشغيل ${channel.name}", onClick = onOpenChannel),
+                .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier)
+                .padding(3.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .tvClickable(RoundedCornerShape(10.dp), onClickLabel = "تشغيل ${channel.name}", onClick = onOpenChannel),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -344,7 +375,8 @@ private fun GuideRow(
                         val isNow = now >= p.start && now < p.end
                         val isPast = p.end <= now
                         val isSelected = selected == p
-                        Column(
+                        val startPx = with(LocalDensity.current) { (PER_MINUTE * startMinute).roundToPx() }
+                        Box(
                             Modifier
                                 .offset(x = PER_MINUTE * startMinute)
                                 .width(cellWidth)
@@ -359,7 +391,12 @@ private fun GuideRow(
                                         else -> androidx.compose.ui.graphics.Color(0xFF16181E)
                                     }
                                 )
-                                .clickable(role = Role.Button) { onSelect(p) }
+                                .tvClickable(RoundedCornerShape(10.dp)) { onSelect(p) }
+                        ) {
+                        Column(
+                            Modifier
+                                .stickToViewport(scroll, startPx)
+                                .fillMaxHeight()
                                 .padding(horizontal = 10.dp),
                             verticalArrangement = Arrangement.Center
                         ) {
@@ -382,6 +419,7 @@ private fun GuideRow(
                                 style = T.body(11.sp, color = if (isNow) androidx.compose.ui.graphics.Color(0xFFC9A46A) else RColors.Text3).copy(lineHeight = 14.sp),
                                 maxLines = 1
                             )
+                        }
                         }
                     }
                 }
@@ -431,7 +469,7 @@ private fun ProgrammeDetail(
                     .size(52.dp)
                     .clip(CircleShape)
                     .background(RColors.Saffron)
-                    .clickable(role = Role.Button, onClickLabel = "شاهد ${channel.name}", onClick = onPlay),
+                    .tvClickable(CircleShape, onClickLabel = "شاهد ${channel.name}", ringColor = androidx.compose.ui.graphics.Color.White, onClick = onPlay),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(RIcons.Play, contentDescription = "شاهد القناة", tint = RColors.OnSaffron, modifier = Modifier.size(22.dp))
@@ -440,7 +478,7 @@ private fun ProgrammeDetail(
                 Modifier
                     .size(32.dp)
                     .clip(CircleShape)
-                    .clickable(role = Role.Button, onClick = onClose),
+                    .tvClickable(CircleShape, onClick = onClose),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(RIcons.Close, contentDescription = "إغلاق", tint = RColors.Text3, modifier = Modifier.size(18.dp))

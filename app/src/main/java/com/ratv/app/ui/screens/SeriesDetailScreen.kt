@@ -35,6 +35,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -55,6 +57,8 @@ import com.ratv.app.ui.components.PosterImage
 import com.ratv.app.ui.components.PrimaryButton
 import com.ratv.app.ui.components.ProgressLine
 import com.ratv.app.ui.components.RIcons
+import com.ratv.app.ui.components.TvInitialFocus
+import com.ratv.app.ui.components.tvClickable
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 import androidx.compose.ui.graphics.Brush
@@ -95,6 +99,9 @@ fun SeriesDetailScreen(seriesId: String, nav: Navigator) {
         lastEntry?.let { e -> i.episodes.values.flatten().firstOrNull { it.id == e.itemId } }
             ?: i.seasons.firstOrNull()?.let { s -> i.episodes[s]?.firstOrNull() }
     }
+
+    val playFocus = remember { FocusRequester() }
+    TvInitialFocus(playFocus, key = continueEpisode?.id)
 
     LazyColumn(
         Modifier
@@ -174,7 +181,9 @@ fun SeriesDetailScreen(seriesId: String, nav: Navigator) {
                         text = if (resuming) "متابعة · الموسم ${ep.season}، الحلقة ${ep.num}" else "تشغيل الحلقة ${ep.num}",
                         onClick = { nav.playEpisode(show.id, ep.id) },
                         icon = RIcons.Play,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(playFocus),
                         height = 52.dp
                     )
                 }
@@ -261,8 +270,10 @@ private fun EpisodeRow(episode: Episode, entry: WatchEntry?, watched: Boolean, o
     Row(
         Modifier
             .fillMaxWidth()
-            .clickable(role = Role.Button, onClick = onClick)
-            .padding(horizontal = 20.dp, vertical = 6.dp),
+            .padding(horizontal = 12.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .tvClickable(RoundedCornerShape(14.dp), onClick = onClick)
+            .padding(horizontal = 8.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
