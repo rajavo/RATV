@@ -639,8 +639,8 @@ def scroll_to(text, tries=6):
             _, n = wait_for(timeout=3, contains=text)
             if n is not None:
                 return n
-            shell("input swipe %s 400" % swipe)
-            time.sleep(1.2)
+            shell("input swipe %s 900" % swipe)
+            time.sleep(2.0)  # let the list stop before reading where rows are
     return None
 
 
@@ -665,6 +665,9 @@ def s_adult_hidden():
 def s_speed_test():
     tap_where(text="حسابي", bottom=True)
     time.sleep(1.5)
+    for _ in range(5):  # back to the top of the settings
+        shell("input swipe 540 700 540 1900 200")
+    time.sleep(2.0)
     if scroll_to("قياس سرعة النت") is None:
         raise RuntimeError("speed test row missing")
     tap_where(contains="قياس سرعة النت")

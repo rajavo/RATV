@@ -182,7 +182,11 @@ def t_series():
     go_tab("مسلسلات")
     _, n = S.wait_for(timeout=20, contains="Sands of Time")
     expect(n is not None, "series missing")
-    time.sleep(1)
+    for _ in range(6):  # the first poster takes the focus once the list is ready
+        _, f = log_focus("series")
+        if f is not None and f not in NAV:
+            break
+        time.sleep(1)
     key("DPAD_CENTER", pause=4)
     _, f = log_focus("series-detail")
     S.shot("series-detail")
