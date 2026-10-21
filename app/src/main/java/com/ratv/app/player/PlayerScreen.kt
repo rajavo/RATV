@@ -197,6 +197,12 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val retryFocus = remember { FocusRequester() }
 
     val player = remember { createPlayer(context, repo.prefs.bufferMode, repo.prefs.bestQuality) }
+    val cushion = remember { cushionMs(repo.prefs.bufferMode) }
+    val liveFormat = remember { repo.prefs.liveFormat }
+    // Channel whose HLS version failed: it goes back to its own address.
+    var hlsFailedFor by remember { mutableStateOf<String?>(null) }
+    var usingHls by remember { mutableStateOf(false) }
+    var bufferedMs by remember { mutableLongStateOf(0L) }
     val scope = rememberCoroutineScope()
     val mix = remember { MixController(context, scope, player, repo.prefs.bufferMode) }
     val subs = remember { SubtitleController(scope, repo.prefs) }
@@ -258,11 +264,16 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // ------------------------------------------------- start the stream
-    LaunchedEffect(current) {
+    LaunchedEffect(current, hlsFailedFor) {
         val item = current ?: return@LaunchedEffect
         playerError = null
         ended = false
-        player.setMediaItem(mediaItemFor(item.url), item.startPosition.coerceAtLeast(0L))
+        val hlsAllowed = repo.account.value?.formats?.contains("m3u8") == true
+        val url = if (item.isLive && hlsFailedFor != item.id) liveStreamUrl(item.url, liveFormat, hlsAllowed) else item.url
+        usingHls = url != item.url
+        // Live channels play [cushion] behind live, with that much kept in store against drops.
+        val offset = if (item.isLive) maxOf(cushion * 2, 20_000L) else null
+        player.setMediaItem(mediaItemFor(url, offset), item.startPosition.coerceAtLeast(0L))
         player.prepare()
         player.playWhenReady = true
         if (item.isLive) repo.noteChannelPlayed(item.id)
@@ -351,7 +362,11 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             }
 
             override fun onPlayerError(error: PlaybackException) {
+                val now = current
                 when {
+                    usingHls && now != null && hlsUnsupported(error) -> {
+                        hlsFailedFor = now.id // try the channel's own (TS) address
+                    }
                     error.errorCode == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW -> {
                         player.seekToDefaultPosition()
                         player.prepare()
@@ -706,13 +721,31 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         )
 
         if (buffering && playerError == null && !notFound) {
-            CircularProgressIndicator(
-                color = RColors.Saffron,
-                strokeWidth = 3.dp,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .size(48.dp)
-            )
+            LaunchedEffect(Unit) {
+                while (true) {
+                    bufferedMs = player.totalBufferedDuration
+                    delay(300L)
+                }
+            }
+            Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
+                CircularProgressIndicator(
+                    color = RColors.Saffron,
+                    strokeWidth = 3.dp,
+                    modifier = Modifier.size(48.dp)
+                )
+                if (current?.isLive == true) {
+                    val have = (bufferedMs / 1000L).coerceIn(0L, cushion / 1000L)
+                    Text(
+                        "جارٍ التخزين المؤقت ضد التقطيع… $have من ${cushion / 1000L} ث",
+                        style = T.body(14.sp, FontWeight.Bold),
+                        modifier = Modifier
+                            .padding(top = 14.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color(0xB30B0C10))
+                            .padding(horizontal = 12.dp, vertical = 6.dp)
+                    )
+                }
+            }
         }
 
         if (reconnecting || (reconnectAttempts > 0 && buffering)) {

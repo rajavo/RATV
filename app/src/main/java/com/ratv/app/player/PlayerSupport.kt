@@ -132,10 +132,59 @@ fun moviePlayable(m: Movie, start: Long = 0L) =
     Playable(Playable.KIND_MOVIE, m.id, m.url, m.name, null, m.poster, startPosition = start)
 
 /** A media item for a stream address (HLS links get their type so they always play as HLS). */
-fun mediaItemFor(url: String): MediaItem {
+/**
+ * [liveOffsetMs]: for a live HLS stream, how far behind live to play. The segments already on
+ * the server fill the cache at once, so the picture starts quickly with a full cushion.
+ */
+fun mediaItemFor(url: String, liveOffsetMs: Long? = null): MediaItem {
     val builder = MediaItem.Builder().setUri(url)
     if (url.contains(".m3u8", ignoreCase = true)) builder.setMimeType(MimeTypes.APPLICATION_M3U8)
+    if (liveOffsetMs != null) {
+        builder.setLiveConfiguration(
+            MediaItem.LiveConfiguration.Builder()
+                .setTargetOffsetMs(liveOffsetMs)
+                .setMinPlaybackSpeed(1f)
+                .setMaxPlaybackSpeed(1f)
+                .build()
+        )
+    }
     return builder.build()
+}
+
+/** The cache ("buffer") setting in milliseconds: 5, 10, 20 or 30 seconds. */
+fun cushionMs(bufferMode: String): Long = (bufferMode.toIntOrNull() ?: 10).coerceIn(1, 60) * 1000L
+
+private val XTREAM_LIVE_TS = Regex("""^(https?://[^/]+)/live/([^/]+)/([^/]+)/(\d+)\.ts$""", RegexOption.IGNORE_CASE)
+private val XTREAM_LIVE_BARE = Regex("""^(https?://[^/]+)/([^/]+)/([^/]+)/(\d+)$""")
+
+/**
+ * The HLS (.m3u8) address of a live channel when HLS should be used: always for "hls", and for
+ * "auto" when the server says it allows m3u8. Other addresses are returned unchanged.
+ */
+fun liveStreamUrl(url: String, format: String, serverAllowsHls: Boolean): String {
+    if (format == "ts" || (format == "auto" && !serverAllowsHls)) return url
+    XTREAM_LIVE_TS.find(url)?.let { m ->
+        val (host, user, pass, id) = m.destructured
+        return "$host/live/$user/$pass/$id.m3u8"
+    }
+    if (format == "hls") {
+        XTREAM_LIVE_BARE.find(url)?.let { m ->
+            val (host, user, pass, id) = m.destructured
+            return "$host/live/$user/$pass/$id.m3u8"
+        }
+    }
+    return url
+}
+
+/** The server refused or broke the HLS version, so the channel should go back to its own address. */
+fun hlsUnsupported(e: PlaybackException): Boolean = when (e.errorCode) {
+    PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS,
+    PlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND,
+    PlaybackException.ERROR_CODE_PARSING_MANIFEST_MALFORMED,
+    PlaybackException.ERROR_CODE_PARSING_MANIFEST_UNSUPPORTED,
+    PlaybackException.ERROR_CODE_PARSING_CONTAINER_MALFORMED,
+    PlaybackException.ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED -> true
+    else -> false
 }
 
 fun episodePlayable(ep: Episode, seriesId: String, seriesName: String?, cover: String?, start: Long = 0L) = Playable(
@@ -151,13 +200,10 @@ fun episodePlayable(ep: Episode, seriesId: String, seriesName: String?, cover: S
 
 @androidx.annotation.OptIn(UnstableApi::class)
 fun createPlayer(context: Context, bufferMode: String, bestQuality: Boolean, handleAudioFocus: Boolean = true): ExoPlayer {
-    // min buffer, max buffer, needed to start, needed to resume after a stall (ms)
-    val durations = when (bufferMode) {
-        "small" -> intArrayOf(5_000, 20_000, 1_000, 2_000)
-        "medium" -> intArrayOf(15_000, 50_000, 2_000, 4_000)
-        "max" -> intArrayOf(50_000, 150_000, 8_000, 12_000)
-        else -> intArrayOf(30_000, 90_000, 3_000, 6_000)
-    }
+    // The player waits until this much is stored before it starts or resumes, and keeps
+    // filling well beyond it, so a drop shorter than the cushion is never seen on screen.
+    val cushion = cushionMs(bufferMode).toInt()
+    val durations = intArrayOf(maxOf(cushion + 20_000, 30_000), maxOf(cushion + 60_000, 90_000), cushion, cushion)
     val http = DefaultHttpDataSource.Factory()
         .setUserAgent(Http.USER_AGENT)
         .setAllowCrossProtocolRedirects(true)
@@ -166,6 +212,8 @@ fun createPlayer(context: Context, bufferMode: String, bestQuality: Boolean, han
     val dataSourceFactory = DefaultDataSource.Factory(context, http)
     val loadControl = DefaultLoadControl.Builder()
         .setBufferDurationsMs(durations[0], durations[1], durations[2], durations[3])
+        // Keep the time-based cache even for 4K streams, whose size would otherwise cut it short.
+        .setPrioritizeTimeOverSizeThresholds(true)
         .build()
     val audioAttributes = AudioAttributes.Builder()
         .setUsage(C.USAGE_MEDIA)

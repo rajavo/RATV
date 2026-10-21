@@ -102,7 +102,9 @@ data class AccountInfo(
     val status: String?,
     val expDate: Long?,
     val activeCons: Int?,
-    val maxCons: Int?
+    val maxCons: Int?,
+    /** Live formats the server allows, such as "m3u8" and "ts". */
+    val formats: List<String> = emptyList()
 )
 
 /** A resume point for a movie or an episode ("تابع المشاهدة"). */

@@ -144,7 +144,7 @@ fun LiveWideScreen(nav: Navigator) {
 
     // -------------------------------------------------------- preview
     val previewOn = remember { repo.prefs.livePreview }
-    val preview: ExoPlayer? = remember { if (previewOn) createPlayer(context, "small", false) else null }
+    val preview: ExoPlayer? = remember { if (previewOn) createPlayer(context, "2", false) else null }
     var previewingId by remember { mutableStateOf<String?>(null) }
     DisposableEffect(preview) {
         onDispose { preview?.release() }

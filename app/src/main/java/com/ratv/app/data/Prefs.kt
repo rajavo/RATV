@@ -197,9 +197,23 @@ class Prefs(context: Context) {
 
     // ---------------------------------------------------- shared settings
 
+    /**
+     * Seconds of a live channel kept in memory before it plays ("5", "10", "20", "30"):
+     * the player stays that far behind live, so short network drops do not stop the picture.
+     */
     var bufferMode: String
-        get() = sp.getString("buffer", "large") ?: "large"
+        get() = when (val v = sp.getString("buffer", "10") ?: "10") {
+            "small" -> "5"
+            "medium", "large" -> "10"
+            "max" -> "20"
+            else -> v
+        }
         set(value) = sp.edit().putString("buffer", value).apply()
+
+    /** Live stream format: "auto" (HLS when the server offers it), "hls" or "ts". */
+    var liveFormat: String
+        get() = sp.getString("liveFormat", "auto") ?: "auto"
+        set(value) = sp.edit().putString("liveFormat", value).apply()
 
     /** Always take the highest quality an adaptive stream offers. */
     var bestQuality: Boolean
