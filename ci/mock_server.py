@@ -5,10 +5,12 @@ It answers the Xtream Codes API (player_api.php, xmltv.php), serves an M3U
 playlist and plays generated test media, so the app can be exercised end to
 end on an emulator without a real subscription.
 """
+import io
 import json
 import os
 import sys
 import time
+import zipfile
 from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
@@ -37,8 +39,14 @@ CHANNELS = [
     (402, 10, "History FHD", "4", "history.ratv", None),
     (204, 11, "Sport 1 4K", "2", "sport1.ratv", "l3.png"),
     (205, 12, "Sport 1 EN", "2", "sport1.ratv", None),
+    (206, 13, "Sky Sports Main", "2", "skymain.ratv", None),
 ]
-VOD_CATS = [("10", "أفلام عربية"), ("11", "أكشن"), ("12", "دراما")]
+# The same game, named in Arabic on one channel and in English on another.
+MATCH = {
+    "sport1.ratv": "الدوري الإسباني: ريال مدريد × برشلونة",
+    "skymain.ratv": "LaLiga: Real Madrid v Barcelona",
+}
+VOD_CATS = [("10", "أفلام عربية"), ("11", "أكشن"), ("12", "دراما"), ("13", "4K أفلام فائقة الوضوح")]
 MOVIES = [
     (5001, "Desert Night (2023)", "10", "7.4"),
     (5002, "The Long Road 2021", "11", "6.8"),
@@ -47,13 +55,58 @@ MOVIES = [
     (5005, "Silent Sea (2019)", "12", "7.0"),
     (5006, "Old Town", "12", ""),
     (5007, "Sky Riders 2022", "11", "6.1"),
+    (5008, "4K-AR: Desert Night (2023)", "13", "7.4"),
 ]
-SERIES_CATS = [("20", "مسلسلات خليجية"), ("21", "دراما")]
+SERIES_CATS = [("20", "مسلسلات خليجية"), ("21", "دراما"), ("22", "مسلسلات 4K")]
 SERIES = [
     (7001, "Sands of Time", "20", "8.1", "2022-05-01"),
     (7002, "City Lights", "21", "7.2", "2020-09-10"),
     (7003, "بيت الجيران", "20", "", "2021-01-15"),
+    (7004, "4K: Sands of Time", "22", "8.1", "2022-05-01"),
 ]
+
+# Subtitles for "Silent Sea" (2019): English and Arabic files, as a Podnapisi-like service.
+SUBTITLES = {
+    "sub-en-1": ("en", "Silent.Sea.2019.1080p.WEB", ["Welcome to the silent sea", "The water is calm tonight", "We sail at dawn"]),
+    "sub-ar-1": ("ar", "Silent.Sea.2019.AR", ["أهلاً بكم في البحر الصامت", "البحر هادئ الليلة", "نبحر عند الفجر"]),
+}
+
+
+def srt(lines):
+    out = []
+    for i in range(200):
+        start = i * 3
+        out.append("%d\n%s --> %s\n%s\n" % (i + 1, ts(start), ts(start + 2.6), lines[i % len(lines)]))
+    return "\n".join(out)
+
+
+def ts(sec):
+    ms = int(round(sec * 1000))
+    return "%02d:%02d:%02d,%03d" % (ms // 3600000, ms // 60000 % 60, ms // 1000 % 60, ms % 1000)
+
+
+def subtitle_search(q):
+    keyword = (q.get("keywords") or "").strip().lower()
+    lang = q.get("language")
+    data = []
+    if keyword in ("silent sea",):
+        for sid, (l, release, _) in SUBTITLES.items():
+            if l == lang:
+                data.append({
+                    "id": sid, "language": l, "flags": [], "url": "/subtitles/" + sid,
+                    "releases": [release], "custom_releases": [],
+                    "movie": {"title": "Silent Sea", "type": "movie", "year": 2019, "episode_info": {}},
+                    "stats": {"downloads": 100 if l == "en" else 10},
+                })
+    return {"data": data, "page": 1, "all_pages": 1}
+
+
+def subtitle_zip(sid):
+    lang, release, lines = SUBTITLES[sid]
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        z.writestr(release + ".srt", srt(lines).encode("utf-8"))
+    return buf.getvalue()
 
 TITLES = ["نشرة الأخبار", "Morning Show", "حوار مفتوح", "Live Match", "وثائقي الطبيعة", "Cartoon Hour", "Weekly Review", "مسلسل السهرة"]
 
@@ -170,6 +223,8 @@ def xmltv():
         while t < NOW + 30 * 3600:
             dur = [1800, 3600, 2700, 5400][(i + num) % 4]
             title = TITLES[(i + num) % len(TITLES)]
+            if epg in MATCH and t <= NOW < t + dur:
+                title = MATCH[epg]
             lines.append(
                 '<programme start="%s" stop="%s" channel="%s"><title lang="ar">%s</title>'
                 '<desc lang="ar">%s</desc></programme>'
@@ -296,6 +351,13 @@ class Handler(BaseHTTPRequestHandler):
             if action == "get_series_info":
                 return self.send_json(series_info(q.get("series_id")))
             return self.send_json([])
+        if p == "/subtitles/search/advanced":
+            return self.send_json(subtitle_search(q))
+        if p.startswith("/subtitles/") and p.endswith("/download"):
+            sid = p.split("/")[2]
+            if sid not in SUBTITLES:
+                return self.send_error(404)
+            return self._send(subtitle_zip(sid), "application/zip")
         if p == "/xmltv.php":
             return self._send(xmltv().encode("utf-8"), "application/xml; charset=utf-8")
         if p in ("/playlist.m3u", "/get.php"):

@@ -13,3 +13,4 @@
 *.keystore
 *.jks
 !app/ratv-release.jks
+__pycache__/

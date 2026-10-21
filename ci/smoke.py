@@ -210,6 +210,50 @@ def step(name, fn):
 
 # ------------------------------------------------------------------- steps
 
+def all_texts(root):
+    return " | ".join((x.get("text") or "") for x in nodes(root))
+
+
+def row_chip(root, row_text, chip_text):
+    """The button with chip_text on the same row as the text row_text."""
+    row = find(root, text=row_text)
+    if row is None:
+        return None
+    _, ry = center(row)
+    chips = [x for x in nodes(root) if (x.get("text") or "") == chip_text]
+    if not chips:
+        return None
+    best = min(chips, key=lambda c: abs(center(c)[1] - ry))
+    return best if abs(center(best)[1] - ry) < 120 else None
+
+
+def open_from_controls(label, w, h):
+    """Shows the player controls and taps the button with this label before they hide again."""
+    tap(w // 2, h // 3)
+    root = dump()
+    pill = find(root, text=label) or find(root, contains=label)
+    if pill is None:
+        tap(w // 2, h // 3)
+        root = dump()
+        pill = find(root, text=label) or find(root, contains=label)
+    if pill is None:
+        raise RuntimeError("button missing: " + label)
+    px, py = center(pill)
+    time.sleep(5)  # the controls hide again by themselves
+    shell("input tap %d %d" % (w // 2, h // 3))
+    time.sleep(0.7)
+    tap(px, py)
+    time.sleep(1.5)
+
+
+def leave_player():
+    for _ in range(3):
+        back()
+        _, n = wait_for(timeout=4, text="البث المباشر")
+        if n is not None:
+            break
+
+
 def s_launch():
     # Let the freshly booted emulator settle; its launcher is slow at first.
     shell("settings put global hide_error_dialogs 1")
@@ -221,6 +265,9 @@ def s_launch():
     time.sleep(3)
     dump()
     adb("logcat", "-b", "all", "-c")
+    # Subtitles come from the mock provider instead of the real online library.
+    shell("setprop debug.ratv.subs http://10.0.2.2:8000")
+    log("debug.ratv.subs=" + shell("getprop debug.ratv.subs").strip())
     log(shell("am start -W -n %s/.MainActivity" % PKG).strip())
     time.sleep(1.5)
     shot("splash")
@@ -350,10 +397,11 @@ def s_commentator():
         tap_node(second[0])
         time.sleep(1.5)
         shot("sources-second-commentator")
-        _, n = wait_for(timeout=8, text="Sport 1 4K")
-        if n is None:
-            raise RuntimeError("4K version not listed")
-        tap_node(n)
+        root = dump()
+        chip = row_chip(root, "Sport 1 4K", "انتقال")
+        if chip is None:
+            raise RuntimeError("switch button for the 4K version missing")
+        tap_node(chip)
         time.sleep(10)
         shot("player-sport1-4k")
     finally:
@@ -364,6 +412,134 @@ def s_commentator():
             if n is not None:
                 break
         tap_where(text="الكل")
+
+
+def s_commentary_mix():
+    """Sky Sports Main shows the same game: its commentary plays over Sport 1 HD's picture."""
+    tap_where(text="رياضة")
+    time.sleep(1.5)
+    _, n = wait_for(timeout=10, contains="Sport 1 HD")
+    if n is None:
+        raise RuntimeError("Sport 1 HD missing")
+    tap_node(n)
+    try:
+        time.sleep(12)
+        w, h = shot("mix-player")
+        open_from_controls("المعلق والجودة", w, h)
+        root = None
+        for _ in range(5):
+            root = dump("mix-panel")
+            if find(root, text="Sky Sports Main") is not None:
+                break
+            time.sleep(1.5)
+        shot("mix-panel")
+        texts = all_texts(root)
+        log("mix panel: " + texts[:500])
+        for need in ("تنقل نفس المباراة الآن", "Sky Sports Main"):
+            if need not in texts:
+                raise RuntimeError("missing in panel: " + need)
+        chip = row_chip(root, "Sky Sports Main", "سماع معلقها")
+        if chip is None:
+            raise RuntimeError("listen button missing")
+        tap_node(chip)
+        time.sleep(3)
+        _, n = wait_for(timeout=10, text="تسمع الآن معلق", save="mix-on")
+        shot("mix-on")
+        if n is None:
+            raise RuntimeError("commentary from the other channel did not start")
+        tap_where(text="+½")
+        time.sleep(1.5)
+        _, n = wait_for(timeout=8, contains="الصوت متأخر 0.5", save="mix-shifted")
+        shot("mix-shifted")
+        if n is None:
+            raise RuntimeError("sync buttons did not move the sound")
+        back()  # close the panel and keep listening for a moment
+        time.sleep(6)
+        root = dump("mix-playing")
+        shot("mix-playing")
+        if find(root, contains="معلق Sky Sports Main") is None:
+            raise RuntimeError("no sign on screen that another commentary is playing")
+    finally:
+        leave_player()
+        tap_where(text="الكل")
+
+
+ENGLISH_LINES = ("Welcome to the silent sea", "The water is calm tonight", "We sail at dawn")
+UI_TEXTS = ("الترجمة", "رجوع", "مباشر")
+
+
+def subtitle_on_screen(root):
+    for x in nodes(root):
+        t = (x.get("text") or "").strip()
+        if len(t) >= 4 and t not in UI_TEXTS:
+            return t
+    return None
+
+
+def s_subtitles():
+    """Finds subtitles for Silent Sea and shows the English one, machine-translated into Arabic."""
+    tap_where(text="أفلام", bottom=True)
+    _, n = wait_for(timeout=30, contains="Silent Sea", save="movies-subs")
+    if n is None:
+        raise RuntimeError("Silent Sea missing")
+    tap_node(n)
+    _, n = wait_for(timeout=20, text="تشغيل")
+    if n is None:
+        raise RuntimeError("play button missing")
+    tap_node(n)
+    time.sleep(15)
+    w, h = shot("subs-player")
+    open_from_controls("الترجمة", w, h)
+    root = None
+    for _ in range(8):
+        root = dump("subs-panel")
+        if find(root, contains="Silent.Sea.2019") is not None:
+            break
+        time.sleep(2)
+    shot("subs-panel")
+    log("subtitles panel: " + all_texts(root)[:500])
+    en = find(root, text="Silent.Sea.2019.1080p.WEB")
+    if en is None:
+        raise RuntimeError("subtitle search found nothing")
+    if find(root, text="Silent.Sea.2019.AR") is None:
+        raise RuntimeError("Arabic subtitle not listed")
+    tap_node(en)
+    time.sleep(3)
+    shot("subs-chosen")
+    back()  # close the panel
+    seen = None
+    for _ in range(10):
+        time.sleep(3)
+        root = dump()
+        seen = subtitle_on_screen(root)
+        if seen:
+            break
+    shot("subs-on-screen")
+    log("subtitle on screen: %r" % seen)
+    if not seen:
+        raise RuntimeError("no subtitle line over the film")
+
+
+def s_subtitles_translated():
+    """The English lines turn into Arabic once the on-device translation model is ready."""
+    try:
+        arabic = None
+        for _ in range(40):
+            root = dump()
+            t = subtitle_on_screen(root)
+            if t and any(0x0600 <= ord(c) <= 0x06FF for c in t):
+                arabic = t
+                break
+            time.sleep(4)
+        shot("subs-translated")
+        log("translated line: %r" % arabic)
+        if not arabic:
+            raise RuntimeError("subtitles were not translated into Arabic")
+    finally:
+        back()
+        time.sleep(2)
+        back()
+        time.sleep(1.5)
 
 
 def s_guide():
@@ -386,6 +562,8 @@ def s_movies():
     shot("movie-detail")
     if n is None:
         raise RuntimeError("play button missing")
+    offered_4k = find(dump(), text="4K متاح") is not None
+    log("4K copy offered: %s" % offered_4k)
     tap_node(n)
     time.sleep(25)
     w, h = shot("player-movie")
@@ -398,6 +576,8 @@ def s_movies():
     back()
     if n is None:
         raise RuntimeError("resume point not saved")
+    if not offered_4k:
+        raise RuntimeError("the 4K copy of Desert Night was not offered")
 
 
 def s_series():
@@ -572,8 +752,11 @@ if __name__ == "__main__":
         ("favorite", s_favorite),
         ("play-live", s_play_live),
         ("commentator", s_commentator),
+        ("commentary-mix", s_commentary_mix),
         ("guide", s_guide),
         ("movies", s_movies),
+        ("subtitles", s_subtitles),
+        ("subtitles-translated", s_subtitles_translated),
         ("series", s_series),
         ("home-after", s_home_after),
         ("search", s_search),
