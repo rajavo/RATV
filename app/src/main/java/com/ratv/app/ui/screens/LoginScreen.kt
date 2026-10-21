@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -329,13 +330,18 @@ fun LoginScreen(onDone: () -> Unit) {
                     .padding(horizontal = 48.dp, vertical = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(48.dp)
             ) {
-                CenteredScroll(Modifier.weight(0.42f).fillMaxHeight()) {
-                    intro()
-                    Spacer(Modifier.height(24.dp))
-                    modeSwitch()
-                    Spacer(Modifier.height(24.dp))
-                    disclaimer()
+                val introPane: @Composable RowScope.() -> Unit = {
+                    CenteredScroll(Modifier.weight(0.42f).fillMaxHeight()) {
+                        intro()
+                        Spacer(Modifier.height(24.dp))
+                        modeSwitch()
+                        Spacer(Modifier.height(24.dp))
+                        disclaimer()
+                    }
                 }
+                // On TV the on-screen keyboard floats over the middle of the screen, so the
+                // fields go on the right where what you type stays visible.
+                if (!tv) introPane()
                 CenteredScroll(Modifier.weight(0.58f).fillMaxHeight()) {
                     fields()
                     errorBox()
@@ -351,6 +357,7 @@ fun LoginScreen(onDone: () -> Unit) {
                         )
                     }
                 }
+                if (tv) introPane()
             }
         } else {
             Column(
@@ -457,12 +464,23 @@ private fun Field(
         var fieldModifier = Modifier.fillMaxWidth()
         if (focusRequester != null) fieldModifier = fieldModifier.focusRequester(focusRequester)
         if (tv) {
-            // With a remote, OK opens the keyboard; the arrows keep moving between fields.
+            // With a remote, OK opens the keyboard and up/down always move to the next field.
             fieldModifier = fieldModifier.onPreviewKeyEvent { e ->
-                val ok = e.key == Key.DirectionCenter || e.key == Key.Enter || e.key == Key.NumPadEnter
-                if (!ok) return@onPreviewKeyEvent false
-                if (e.type == KeyEventType.KeyUp) keyboardController?.show()
-                true
+                when (e.key) {
+                    Key.DirectionCenter, Key.Enter, Key.NumPadEnter -> {
+                        if (e.type == KeyEventType.KeyUp) keyboardController?.show()
+                        true
+                    }
+                    Key.DirectionDown -> {
+                        if (e.type == KeyEventType.KeyDown) focusManager.moveFocus(FocusDirection.Down)
+                        true
+                    }
+                    Key.DirectionUp -> {
+                        if (e.type == KeyEventType.KeyDown) focusManager.moveFocus(FocusDirection.Up)
+                        true
+                    }
+                    else -> false
+                }
             }
         }
         OutlinedTextField(
