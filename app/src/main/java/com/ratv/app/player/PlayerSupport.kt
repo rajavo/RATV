@@ -1,5 +1,7 @@
 package com.ratv.app.player
 
+import okhttp3.OkHttpClient
+import java.util.concurrent.TimeUnit
 import android.view.Display
 import android.app.Activity
 import android.content.Context
@@ -248,6 +250,17 @@ fun episodePlayable(ep: Episode, seriesId: String, seriesName: String?, cover: S
  * stored at the start; films and series download ahead up to the reserve chosen in settings.
  */
 @androidx.annotation.OptIn(UnstableApi::class)
+/**
+ * Connections for channels and films: up to 8 s to connect and 10 s for data to start (a channel
+ * the server has to start first); a live stream that stops later is caught sooner by its watch.
+ */
+private val mediaClient: OkHttpClient by lazy {
+    Http.client.newBuilder()
+        .connectTimeout(8, TimeUnit.SECONDS)
+        .readTimeout(10, TimeUnit.SECONDS)
+        .build()
+}
+
 fun createPlayer(
     context: Context,
     bufferMode: String,
@@ -259,15 +272,9 @@ fun createPlayer(
     // min buffer, max buffer, stored before starting, stored before resuming after a stall (ms)
     val durations = if (live) intArrayOf(20_000, 60_000, 5_000, 8_000) else intArrayOf(reserve, reserve + 30_000, 3_000, 5_000)
     val memoryCap = (Runtime.getRuntime().maxMemory() * 0.45).toLong().coerceIn(32L shl 20, 220L shl 20).toInt()
-    val http = DefaultHttpDataSource.Factory()
-        .setUserAgent(Http.USER_AGENT)
-        .setAllowCrossProtocolRedirects(true)
-        .setConnectTimeoutMs(10_000)
-        // A connection that stops sending is noticed after 8 s (not 20), while the store still lasts.
-        .setReadTimeoutMs(8_000)
-    // Live TS channels reconnect at once when the connection breaks, as other IPTV players do,
-    // instead of stalling once the store runs out (see LiveReconnectingDataSource).
-    val dataSourceFactory = LiveReconnectingDataSource.Factory(DefaultDataSource.Factory(context, http))
+    // Live TS channels reconnect at once when the connection breaks or gets stuck, as other IPTV
+    // players do, instead of stalling once the store runs out (see LiveReconnectingDataSource).
+    val dataSourceFactory = LiveReconnectingDataSource.Factory(context, mediaClient, Http.USER_AGENT)
     val loadControl = DefaultLoadControl.Builder()
         .setBufferDurationsMs(durations[0], durations[1], durations[2], durations[3])
         .setTargetBufferBytes(memoryCap)

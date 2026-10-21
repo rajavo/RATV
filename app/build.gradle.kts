@@ -92,6 +92,8 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:1.5.1")
     implementation("androidx.media3:media3-exoplayer-hls:1.5.1")
     implementation("androidx.media3:media3-ui:1.5.1")
+    // Channels and films load through OkHttp, whose connections can be cut from another thread.
+    implementation("androidx.media3:media3-datasource-okhttp:1.5.1")
 
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("io.coil-kt:coil-compose:2.7.0")

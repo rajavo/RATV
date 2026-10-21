@@ -1,5 +1,7 @@
 package com.ratv.app.player
 
+import android.util.Log
+import com.ratv.app.data.Playback
 import android.os.SystemClock
 import androidx.compose.runtime.mutableFloatStateOf
 import android.app.PictureInPictureParams
@@ -427,8 +429,13 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             }
 
             override fun onPlaybackStateChanged(eventTime: AnalyticsListener.EventTime, state: Int) {
-                if (state == Player.STATE_READY) readyOnce = true
-                else if (state == Player.STATE_BUFFERING && readyOnce) stalls++
+                if (state == Player.STATE_READY) {
+                    if (readyOnce && stalls > 0) Log.i("RATVPlayback", "playing again after stall $stalls")
+                    readyOnce = true
+                } else if (state == Player.STATE_BUFFERING && readyOnce) {
+                    stalls++
+                    Log.i("RATVPlayback", "stall $stalls, reserve ${player.totalBufferedDuration} ms")
+                }
                 if (state == Player.STATE_IDLE) readyOnce = false
             }
 
@@ -478,6 +485,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         var lastFrames = -1L
         var lastFramesAt = 0L
         while (true) {
+            if (player.isPlaying || player.playbackState == Player.STATE_BUFFERING) Playback.markActive()
             reserveMs = player.totalBufferedDuration
             val grew = player.bufferedPosition > lastBuffered + 200L
             lastBuffered = player.bufferedPosition
