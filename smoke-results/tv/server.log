@@ -1,0 +1,70 @@
+mock IPTV server on port 8000
+11:33:01 GET /player_api.php?username=test&password=test
+11:36:04 GET /player_api.php?username=test&password=test
+11:36:04 GET /player_api.php?username=test&password=test
+11:36:04 GET /player_api.php?username=test&password=test&action=get_live_categories
+11:36:04 GET /player_api.php?username=test&password=test&action=get_live_streams
+11:36:04 GET /player_api.php?username=test&password=test&action=get_vod_categories
+11:36:04 GET /player_api.php?username=test&password=test&action=get_vod_streams
+11:36:04 GET /player_api.php?username=test&password=test&action=get_series_categories
+11:36:04 GET /player_api.php?username=test&password=test&action=get_series
+11:36:04 GET /xmltv.php?username=test&password=test
+11:36:04 GET /logo/l1.png
+11:36:18 GET /live/test/test/101.ts
+11:36:18 GET /live/test/test/101.ts
+11:36:18 GET /live/test/test/101.ts
+11:36:18 GET /live/test/test/101.ts
+11:36:29 GET /live/test/test/102.ts
+11:36:29 GET /live/test/test/102.ts
+11:36:29 GET /live/test/test/102.ts
+11:37:05 GET /player_api.php?username=test&password=test&action=get_vod_info&vod_id=5001
+11:37:10 GET /movie/test/test/5001.mp4
+11:37:10 GET /movie/test/test/5001.mp4
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 53838)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 498, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 464, in handle_one_request
+    self.raw_requestline = self.rfile.readline(65537)
+                           ~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/usr/lib/python3.14/socket.py", line 725, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+----------------------------------------
+11:37:42 GET /logo/l2.png
+11:37:42 GET /logo/l3.png
+11:37:42 GET /logo/l4.png
+11:37:42 GET /logo/missing.png
+11:37:42 GET /logo/missing.png
+11:37:43 GET /live/test/test/102.ts
+11:37:43 GET /live/test/test/102.ts
+11:37:43 GET /live/test/test/102.ts
+11:37:51 GET /live/test/test/103.ts
+11:37:51 GET /live/test/test/103.ts
+11:37:51 GET /live/test/test/103.ts
+11:37:52 GET /logo/l5.png
+11:37:53 GET /live/test/test/201.ts
+11:37:53 GET /live/test/test/201.ts
+11:37:53 GET /live/test/test/201.ts
+11:37:59 GET /live/test/test/103.ts
+11:37:59 GET /live/test/test/103.ts
+11:37:59 GET /live/test/test/103.ts
+11:38:02 GET /live/test/test/102.ts
+11:38:02 GET /live/test/test/102.ts
+11:38:02 GET /live/test/test/102.ts
+11:38:06 GET /live/test/test/101.ts
+11:38:06 GET /live/test/test/101.ts
+11:38:06 GET /live/test/test/101.ts
+11:38:20 GET /player_api.php?username=test&password=test&action=get_series_info&series_id=7001
