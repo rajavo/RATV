@@ -262,9 +262,12 @@ fun createPlayer(
     val http = DefaultHttpDataSource.Factory()
         .setUserAgent(Http.USER_AGENT)
         .setAllowCrossProtocolRedirects(true)
-        .setConnectTimeoutMs(15_000)
-        .setReadTimeoutMs(20_000)
-    val dataSourceFactory = DefaultDataSource.Factory(context, http)
+        .setConnectTimeoutMs(10_000)
+        // A connection that stops sending is noticed after 8 s (not 20), while the store still lasts.
+        .setReadTimeoutMs(8_000)
+    // Live TS channels reconnect at once when the connection breaks, as other IPTV players do,
+    // instead of stalling once the store runs out (see LiveReconnectingDataSource).
+    val dataSourceFactory = LiveReconnectingDataSource.Factory(DefaultDataSource.Factory(context, http))
     val loadControl = DefaultLoadControl.Builder()
         .setBufferDurationsMs(durations[0], durations[1], durations[2], durations[3])
         .setTargetBufferBytes(memoryCap)
