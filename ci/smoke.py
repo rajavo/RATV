@@ -727,6 +727,43 @@ def s_speed_test():
         raise RuntimeError("speed test gave no result: " + texts[:300])
 
 
+def s_unstable():
+    """The server cuts the channel every 7 s: the picture must go on without stalls."""
+    tap_where(text="الكل")
+    time.sleep(1)
+    for _ in range(4):
+        _, n = wait_for(timeout=4, contains="Unstable Live")
+        if n is not None:
+            break
+        shell("input swipe 540 1700 540 900 600")
+        time.sleep(1.5)
+    if n is None:
+        raise RuntimeError("unstable channel missing")
+    tap_node(n)
+    try:
+        time.sleep(40)  # about five dropped connections
+        w, h = shot("unstable-playing")
+        open_from_controls("معلومات البث", w, h)
+        time.sleep(2)
+        root = dump("unstable-stats")
+        shot("unstable-stats")
+        texts = all_texts(root)
+        log("unstable: " + texts[:500])
+        parts = [t.strip() for t in texts.split("|")]
+        stalls = None
+        for i, t in enumerate(parts):
+            if t == "التوقفات":
+                stalls = next((int(x) for x in parts[i + 1:i + 4] if x.isdigit()), None)
+                break
+        if stalls is None:
+            raise RuntimeError("stall count not shown: " + texts[:200])
+        if stalls > 1:
+            raise RuntimeError("the channel stalled %d times while the server kept cutting it" % stalls)
+    finally:
+        back()
+        time.sleep(2)
+
+
 def s_matches():
     """The schedule lists the test game once, with every channel showing it; a channel plays."""
     tap_where(text="جدول المباريات")
@@ -952,6 +989,7 @@ if __name__ == "__main__":
         ("favorite", s_favorite),
         ("play-live", s_play_live),
         ("offline", s_offline),
+        ("unstable", s_unstable),
         ("matches", s_matches),
         ("commentator", s_commentator),
         ("commentary-mix", s_commentary_mix),

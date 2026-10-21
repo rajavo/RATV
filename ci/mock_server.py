@@ -40,6 +40,8 @@ CHANNELS = [
     (204, 11, "Sport 1 4K", "2", "sport1.ratv", "l3.png"),
     (205, 12, "Sport 1 EN", "2", "sport1.ratv", None),
     (206, 13, "Sky Sports Main", "2", "skymain.ratv", None),
+    # Sent in real time like a real channel, and the server drops the connection every 7 s.
+    (107, 14, "Unstable Live", "1", "", None),
 ]
 # The same game, named in Arabic on one channel and in English on another.
 MATCH = {
@@ -212,6 +214,7 @@ def fmt(ts):
     return datetime.fromtimestamp(ts, TZ).strftime("%Y%m%d%H%M%S") + " +0300"
 
 
+LIVE_T0 = [None]  # when the unstable channel was first opened
 MATCH_START = (NOW // 1800) * 1800 - 1800
 MATCH_END = MATCH_START + 7200
 
@@ -286,6 +289,46 @@ class Handler(BaseHTTPRequestHandler):
 
     def send_json(self, obj):
         self._send(json.dumps(obj, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
+
+    def send_live_unstable(self, path):
+        """A live channel paced in real time whose connection is cut every few seconds.
+
+        Every connection starts at the current live point (a short burst on the very first one),
+        the way an IPTV server sends a channel, so the app has to reconnect and carry on.
+        """
+        size = os.path.getsize(path)
+        rate = size / 240.0  # the test file lasts 240 s
+        now = time.time()
+        if LIVE_T0[0] is None:
+            LIVE_T0[0] = now
+            burst = int(3 * rate)
+        else:
+            burst = 0
+        pos = int(((now - LIVE_T0[0]) * rate) % size) // 188 * 188
+        pos = max(0, pos - burst // 188 * 188)
+        self.send_response(200)
+        self.send_header("Content-Type", "video/mp2t")
+        self.end_headers()
+        sent_live = 0
+        started = time.time()
+        try:
+            with open(path, "rb") as f:
+                f.seek(pos)
+                if burst:
+                    self.wfile.write(f.read(burst // 188 * 188))
+                while time.time() - started < 7.0:
+                    chunk = f.read(188 * 64)
+                    if not chunk:
+                        f.seek(0)
+                        continue
+                    self.wfile.write(chunk)
+                    sent_live += len(chunk)
+                    ahead = sent_live / rate - (time.time() - started)
+                    if ahead > 0:
+                        time.sleep(ahead)
+        except (BrokenPipeError, ConnectionResetError):
+            pass
+        self.close_connection = True
 
     def send_file(self, path, ctype):
         if not os.path.exists(path):
@@ -395,6 +438,8 @@ class Handler(BaseHTTPRequestHandler):
         if p.startswith("/live/") and p.endswith(".m3u8"):
             # Says it allows HLS but has none: the app must fall back to TS by itself.
             return self.send_error(404)
+        if p.startswith("/live/") and os.path.basename(p).startswith("107."):
+            return self.send_live_unstable(os.path.join(MEDIA, "live.ts"))
         if p.startswith("/live/"):
             name = "live_multi.ts" if os.path.basename(p).startswith("201.") else "live.ts"
             return self.send_file(os.path.join(MEDIA, name), "video/mp2t")
