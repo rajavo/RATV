@@ -1,4 +1,0 @@
-mock IPTV server on port 8000
-03:30:31 GET /player_api.php?username=test&password=test
-03:33:09 GET /player_api.php?username=test&password=wrong
-03:33:21 GET /player_api.php?username=test&password=testwrong
