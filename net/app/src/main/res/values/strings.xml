@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RA Net</string>
+    <string name="accessibility_description">يعرف RA Net التطبيق المفتوح على الشاشة عشان يعطيه النت كله. ما يقرأ محتوى الشاشة ولا اللي تكتبه، وما يرسل أي شيء لأي مكان.</string>
+</resources>
