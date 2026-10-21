@@ -216,7 +216,7 @@ private fun MainScreen(prefs: Prefs, onToggle: () -> Unit, onUsage: () -> Unit, 
     val onScreen = fg?.let { if (it == context.packageName) "RA Net (هذي الشاشة)" else Apps.label(context, it) }
     val withInternet = remember(allowedNow) {
         allowedNow.filter { it != Prefs.SYSTEM && it != context.packageName && it != "com.google.android.gsf" }
-            .map { Apps.label(context, it) }
+            .mapNotNull { pkg -> Apps.label(context, pkg).takeIf { it != pkg } } // installed ones only
     }
     val topBlocked = remember(blocked) {
         blocked.entries.sortedByDescending { it.value }.take(8).map { (uid, count) ->

@@ -123,8 +123,7 @@ def nc(host, port, request, want):
 
 def shell_net():
     """The internet, from the shell."""
-    return nc("connectivitycheck.gstatic.com", 80,
-              r"GET /generate_204 HTTP/1.0\r\nHost: connectivitycheck.gstatic.com\r\n\r\n", " 204")
+    return nc("1.1.1.1", 80, r"GET / HTTP/1.0\r\nHost: 1.1.1.1\r\n\r\n", "HTTP/1.")
 
 
 def shell_lan():

@@ -61,7 +61,8 @@ class ProbeService : Service() {
         while (running) {
             n++
             val result = try {
-                val c = URL("http://connectivitycheck.gstatic.com/generate_204?n=$n").openConnection() as HttpURLConnection
+                // An address, not a name: a blocked name lookup would hang for many seconds before failing.
+                val c = URL("http://1.1.1.1/?n=$n").openConnection() as HttpURLConnection
                 c.connectTimeout = 1500
                 c.readTimeout = 1500
                 c.setRequestProperty("Connection", "close")
