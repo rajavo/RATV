@@ -1,0 +1,64 @@
+04:25:41 == launch
+04:26:28 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 1033
+WaitTime: 1034
+Complete
+04:26:30 screenshot 01-splash.png 1920x1080
+04:26:30 == login-screen
+04:26:37 focus[login-initial]: http://server.example:8080
+04:26:37 screenshot 02-login.png 1920x1080
+04:26:37 == keyboard-on-ok
+04:26:40 screenshot 03-login-keyboard.png 1920x1080
+04:26:44 == fill-with-remote
+04:26:54 focus[login-user]: username
+04:27:11 focus[login-name]: مثال: اشتراك المنزل
+04:27:14 focus[login-submit]: دخول
+04:27:14 screenshot 04-login-filled.png 1920x1080
+04:27:26 screenshot 05-home.png 1920x1080
+04:27:26 == home-focus
+04:27:28 focus[home-focus]: مباشر | RATV News HD | وثائقي الطبيعة | بدأ 04:15 · متبقي 17د | شاهد الآن
+04:27:28 screenshot 06-home-focus.png 1920x1080
+04:27:28 == player-remote
+04:27:39 screenshot 07-player.png 1920x1080
+04:27:43 screenshot 08-player-zap.png 1920x1080
+04:27:45 screenshot 09-player-controls.png 1920x1080
+04:27:48 screenshot 10-player-controls-moved.png 1920x1080
+04:27:50 screenshot 11-player-controls-hidden.png 1920x1080
+04:27:57 screenshot 12-home-after-player.png 1920x1080
+04:27:57 == movies
+04:27:58 focus[nav-search]: G2 | مباشر | Gulf 24 FHD | Cartoon Hour | بدأ 03:45 · متبقي 17د | شاهد الآن
+04:28:01 focus[nav-search]: مباشر
+04:28:03 focus[nav-start]: مباشر
+04:28:06 focus[nav-target]: أفلام
+04:28:13 focus[movies]: Desert Night (2023) | Desert Night (2023) | 7.4 |  · 2023
+04:28:14 screenshot 13-movies.png 1920x1080
+04:28:19 focus[movie-detail]: تشغيل
+04:28:19 screenshot 14-movie-detail.png 1920x1080
+04:28:33 screenshot 15-player-movie-seek.png 1920x1080
+04:28:37 screenshot 16-movie-detail-after.png 1920x1080
+04:28:40 == live
+04:28:41 focus[nav-search]: Desert Night (2023) | Desert Night (2023) | 7.4 |  · 2023
+04:28:44 focus[nav-search]: مباشر
+04:28:46 focus[nav-start]: مباشر
+04:28:48 focus[nav-target]: مباشر
+04:28:55 focus[live]: 2 | G2 | Gulf 24 FHD | FHD | Cartoon Hour | 03:45 – 04:45
+04:28:55 screenshot 17-live.png 1920x1080
+04:29:00 focus[live-moved]: 4 | Sport 1 HD | HD | مسلسل السهرة | 03:15 – 04:45
+04:29:00 screenshot 18-live-moved.png 1920x1080
+04:29:00 == series
+04:29:01 focus[nav-search]: 4 | Sport 1 HD | HD | مسلسل السهرة | 03:15 – 04:45
+04:29:04 focus[nav-search]: مباشر
+04:29:06 focus[nav-start]: مباشر
+04:29:11 focus[nav-target]: مسلسلات
+04:29:22 focus[series-detail]: تشغيل الحلقة 1
+04:29:22 screenshot 19-series-detail.png 1920x1080
+04:29:24 == settings
+04:29:26 focus[nav-search]: Sands of Time | Sands of Time | 8.1 |  · 2022
+04:29:29 focus[nav-search]: مباشر
+04:29:31 focus[nav-start]: مباشر
+04:29:37 focus[nav-target]: حسابي
+04:29:42 focus[settings]: تبديل القائمة
+04:29:42 screenshot 20-settings.png 1920x1080
