@@ -55,7 +55,7 @@ fun TopBar(current: String, onSelect: (String) -> Unit, onSearch: () -> Unit) {
         ) {
             RatvLogo(fontSize = 22.sp)
             Spacer(Modifier.width(28.dp))
-            navItems.forEachIndexed { index, item ->
+            tvNavItems.forEachIndexed { index, item ->
                 if (index > 0) {
                     Box(
                         Modifier

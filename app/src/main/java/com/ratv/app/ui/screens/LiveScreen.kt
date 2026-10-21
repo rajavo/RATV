@@ -120,6 +120,8 @@ private fun LivePhoneScreen(nav: Navigator) {
         item {
             ScreenHeader("البث المباشر", Modifier.statusBarsPadding()) {
                 CircleIconButton(RIcons.Search, "بحث في القنوات", { nav.search() })
+                CircleIconButton(RIcons.Trophy, "جدول المباريات", { nav.matches() })
+                Spacer(Modifier.width(8.dp))
                 CircleIconButton(RIcons.Calendar, "دليل البرامج", { nav.guide() })
             }
         }

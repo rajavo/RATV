@@ -1,5 +1,8 @@
 package com.ratv.app.ui.screens
 
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
+import com.ratv.app.data.Updater
 import com.ratv.app.player.languageName
 import com.ratv.app.player.subtitleLanguages
 import android.net.Uri
@@ -120,6 +123,10 @@ fun SettingsScreen(nav: Navigator) {
     var confirmDelete by remember { mutableStateOf<Playlist?>(null) }
     var confirmClearHistory by remember { mutableStateOf(false) }
     var showSpeed by remember { mutableStateOf(false) }
+    val update by Updater.available.collectAsStateWithLifecycle()
+    var showUpdate by remember { mutableStateOf(false) }
+    var checkingUpdate by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
     var pinMode by remember { mutableStateOf<String?>(null) }
     val firstFocus = remember { FocusRequester() }
     TvInitialFocus(firstFocus)
@@ -296,6 +303,34 @@ fun SettingsScreen(nav: Navigator) {
             }
             Divider()
             ValueRow("حذف سجل المشاهدة", "") { confirmClearHistory = true }
+        }
+
+        GroupTitle("التطبيق")
+        Group {
+            ValueRow(
+                "تحديث التطبيق",
+                when {
+                    checkingUpdate -> "جارٍ البحث…"
+                    update != null -> "متاح ${update?.versionName}"
+                    else -> "الإصدار ${BuildConfig.VERSION_NAME}"
+                }
+            ) {
+                if (checkingUpdate) return@ValueRow
+                checkingUpdate = true
+                scope.launch {
+                    val found = runCatching { Updater.check() }
+                    checkingUpdate = false
+                    found.onSuccess { info ->
+                        if (info != null) {
+                            showUpdate = true
+                        } else {
+                            Toast.makeText(context, "عندك آخر إصدار (${BuildConfig.VERSION_NAME})", Toast.LENGTH_SHORT).show()
+                        }
+                    }.onFailure {
+                        Toast.makeText(context, "تعذّر الوصول إلى GitHub. تحقّق من الاتصال.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
 
         Row(
@@ -480,6 +515,8 @@ fun SettingsScreen(nav: Navigator) {
             containerColor = RColors.Surface
         )
     }
+
+    update?.let { info -> if (showUpdate) UpdateDialog(info) { showUpdate = false } }
 
     if (showSpeed) {
         SpeedTestDialog(playlist = playlist, onDismiss = { showSpeed = false })

@@ -53,12 +53,16 @@ jobs:
           fi
           # Keep one release named "latest" and only swap its file, so the download link
           # (and the Downloader code) never changes and never disappears.
+          # Read by the app's "update" button to know a newer version is out.
+          printf '{"versionCode": %s, "versionName": "1.0.%s", "apk": "RATV.apk"}\n' "${{ github.run_number }}" "${{ github.run_number }}" > version.json
           git push -f origin HEAD:refs/tags/latest
           if gh release view latest >/dev/null 2>&1; then
             gh release upload latest RATV.apk --clobber
           else
             gh release create latest RATV.apk --title "RATV" --notes "أحدث نسخة من تطبيق RATV — نزّل ملف RATV.apk وثبّته على جوالك."
           fi
+          # The version file goes up last, so the app never offers a version whose APK is not there yet.
+          gh release upload latest version.json --clobber
           gh release edit latest --draft=false --prerelease=false --title "RATV"
 
       - name: Check the public download link
@@ -67,7 +71,9 @@ jobs:
         run: |
           url="https://github.com/${{ github.repository }}/releases/download/latest/RATV.apk"
           for i in 1 2 3 4 5 6; do
-            if curl -fsIL -o /dev/null "$url"; then echo "Download link works: $url"; exit 0; fi
+            if curl -fsIL -o /dev/null "$url" && curl -fsL "${url%/*}/version.json" | grep -q '"versionCode": ${{ github.run_number }}'; then
+              echo "Download link and version file work: $url"; exit 0
+            fi
             echo "Link not public yet, publishing the release again"
             gh release edit latest --draft=false --prerelease=false || true
             sleep 20
