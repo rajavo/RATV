@@ -19,6 +19,7 @@ import java.io.InterruptedIOException
 import java.util.concurrent.CopyOnWriteArraySet
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Keeps a live TS channel flowing when the connection breaks or gets stuck.
@@ -193,6 +194,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
             try {
                 again.open(spec ?: throw IOException("Not opened"))
                 current = again
+                reconnects.incrementAndGet()
                 splicing = lastVideoDts >= 0L
                 spliceStartedAt = SystemClock.elapsedRealtime()
                 spliceDropped = 0L
@@ -363,6 +365,9 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         private const val SYNC: Byte = 0x47
         private val RETRY_DELAYS_MS = longArrayOf(0L, 250L, 500L, 1_000L, 1_000L, 2_000L)
         private val WATCHED: MutableSet<LiveReconnectingDataSource> = CopyOnWriteArraySet()
+
+        /** Reconnections of live channels since the app started (shown in the stream information). */
+        val reconnects = AtomicInteger()
 
         /** True when the 33-bit time stamp [pts] comes after [last]. */
         fun newer(pts: Long, last: Long): Boolean {
