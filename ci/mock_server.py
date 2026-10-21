@@ -46,6 +46,8 @@ CHANNELS = [
     (108, 15, "Frozen Live", "1", "", None),
     # Sends in 2-second chunks, as servers that relay HLS do: healthy, must not be cut.
     (109, 16, "Chunky Live", "1", "", None),
+    # Cut every 7 s, and each new connection repeats the last 4 s (a burst, like real servers).
+    (110, 17, "Overlap Live", "1", "", None),
 ]
 # The same game, named in Arabic on one channel and in English on another.
 MATCH = {
@@ -341,7 +343,7 @@ class Handler(BaseHTTPRequestHandler):
             pass
         self.close_connection = True
 
-    def send_live_paced(self, path, sid, stop_after=None, chunk_seconds=None):
+    def send_live_paced(self, path, sid, stop_after=None, chunk_seconds=None, cut_after=None, burst_seconds=3.0):
         """A live channel sent in real time from its live point, with a 3 s burst on each connection.
 
         stop_after: seconds after which the connection stops delivering but stays open.
@@ -352,7 +354,7 @@ class Handler(BaseHTTPRequestHandler):
         now = time.time()
         t0 = CHANNEL_T0.setdefault(sid, now)
         CONNECTIONS[sid] = CONNECTIONS.get(sid, 0) + 1
-        burst = int(3 * rate) // 188 * 188
+        burst = int(burst_seconds * rate) // 188 * 188
         live_pos = int((now - t0) * rate) + burst
         pos = (max(0, live_pos - burst) % size) // 188 * 188
         note("connect", channel=sid, n=CONNECTIONS[sid])
@@ -367,6 +369,9 @@ class Handler(BaseHTTPRequestHandler):
                 self.wfile.write(f.read(burst))
                 while True:
                     age = time.time() - started
+                    if cut_after is not None and age >= cut_after:
+                        note("cut", channel=sid)
+                        break
                     if stop_after is not None and age >= stop_after:
                         note("frozen", channel=sid)
                         while time.time() - started < 90:  # stuck: open but silent
@@ -501,6 +506,8 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_live_paced(os.path.join(MEDIA, "live.ts"), 108, stop_after=12.0)
         if p.startswith("/live/") and os.path.basename(p).startswith("109."):
             return self.send_live_paced(os.path.join(MEDIA, "live.ts"), 109, chunk_seconds=2.0)
+        if p.startswith("/live/") and os.path.basename(p).startswith("110."):
+            return self.send_live_paced(os.path.join(MEDIA, "live.ts"), 110, cut_after=7.0, burst_seconds=4.0)
         if p.startswith("/live/") and os.path.basename(p).startswith("107."):
             return self.send_live_unstable(os.path.join(MEDIA, "live.ts"))
         if p.startswith("/live/"):

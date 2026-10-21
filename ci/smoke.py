@@ -800,6 +800,27 @@ def s_chunky():
         raise RuntimeError("a healthy chunked stream was cut %d times" % (conns - 1))
 
 
+def live_log(*needles):
+    lines = adb("logcat", "-d", "-s", "RATVLive:I", "RATVPlayback:I", timeout=30).splitlines()
+    return {n: sum(1 for l in lines if n in l) for n in needles}
+
+
+def s_overlap():
+    """Each reconnect repeats the last 4 s: RATV must join the streams without jumping back."""
+    keys = ("joined the new connection", "position went back", "could not join")
+    before = live_log(*keys)
+    stalls = play_test_channel("Overlap Live", 40, "overlap")
+    after = live_log(*keys)
+    delta = {k: after[k] - before[k] for k in keys}
+    log("overlap: stalls %d, log %s" % (stalls, delta))
+    if stalls > 1:
+        raise RuntimeError("the channel stalled %d times" % stalls)
+    if delta["joined the new connection"] < 2:
+        raise RuntimeError("new connections were not joined to the old ones: %s" % delta)
+    if delta["position went back"] > 0:
+        raise RuntimeError("the picture jumped back after a reconnect: %s" % delta)
+
+
 def s_matches():
     """The schedule lists the test game once, with every channel showing it; a channel plays."""
     tap_where(text="جدول المباريات")
@@ -1028,6 +1049,7 @@ if __name__ == "__main__":
         ("unstable", s_unstable),
         ("frozen", s_frozen),
         ("chunky", s_chunky),
+        ("overlap", s_overlap),
         ("matches", s_matches),
         ("commentator", s_commentator),
         ("commentary-mix", s_commentary_mix),
