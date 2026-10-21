@@ -353,6 +353,15 @@ def s_play_live():
     shot("player-live-controls")
     if find(root, contains="الاحتياطي ضد انقطاع النت") is None:
         raise RuntimeError("reserve not shown with the controls")
+    # Stream information: what the stream is and what playback went through.
+    open_from_controls("معلومات البث", w, h)
+    time.sleep(3)
+    root = dump("stats")
+    shot("stats")
+    texts = all_texts(root)
+    log("stats: " + texts[:500])
+    if "إطارات ساقطة" not in texts or "التوقفات" not in texts:
+        raise RuntimeError("stream info panel missing: " + texts[:200])
     back()
     time.sleep(2)
     shot("after-live-player")
