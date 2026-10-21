@@ -58,9 +58,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ratv.app.BuildConfig
+import com.ratv.app.data.Playlist
 import com.ratv.app.data.PlaylistType
 import com.ratv.app.ui.LocalRepo
 import com.ratv.app.ui.Navigator
+import com.ratv.app.ui.components.CircleIconButton
 import com.ratv.app.ui.components.AppIcon
 import com.ratv.app.ui.components.OutlineButton
 import com.ratv.app.ui.components.RIcons
@@ -94,6 +96,7 @@ fun SettingsScreen(nav: Navigator) {
     val lastUpdated by repo.lastUpdated.collectAsStateWithLifecycle()
     val hideAdult by repo.hideAdult.collectAsStateWithLifecycle()
     val epgLoading by repo.epgLoading.collectAsStateWithLifecycle()
+    val users by repo.playlists.collectAsStateWithLifecycle()
 
     var bufferMode by remember { mutableStateOf(repo.prefs.bufferMode) }
     var autoplay by remember { mutableStateOf(repo.prefs.autoplayLast) }
@@ -106,7 +109,9 @@ fun SettingsScreen(nav: Navigator) {
     var showSubLang by remember { mutableStateOf(false) }
     var showBuffer by remember { mutableStateOf(false) }
     var showAbout by remember { mutableStateOf(false) }
-    var confirmSwitch by remember { mutableStateOf(false) }
+    var confirmDelete by remember { mutableStateOf<Playlist?>(null) }
+    var confirmClearHistory by remember { mutableStateOf(false) }
+    var showSpeed by remember { mutableStateOf(false) }
     var pinMode by remember { mutableStateOf<String?>(null) }
     val firstFocus = remember { FocusRequester() }
     TvInitialFocus(firstFocus)
@@ -177,9 +182,9 @@ fun SettingsScreen(nav: Navigator) {
             }
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 OutlineButton(
-                    "تبديل القائمة",
-                    onClick = { confirmSwitch = true },
-                    icon = RIcons.Swap,
+                    "إضافة مستخدم",
+                    onClick = { nav.addUser() },
+                    icon = RIcons.Plus,
                     modifier = Modifier
                         .weight(1f)
                         .focusRequester(firstFocus),
@@ -198,8 +203,32 @@ fun SettingsScreen(nav: Navigator) {
             }
         }
 
+        if (users.isNotEmpty()) {
+            GroupTitle("المستخدمون")
+            Group {
+                users.forEachIndexed { i, u ->
+                    if (i > 0) Divider()
+                    UserRow(
+                        user = u,
+                        current = u.id == p?.id,
+                        onOpen = {
+                            if (u.id != p?.id) {
+                                repo.switchTo(u)
+                                nav.reload()
+                            }
+                        },
+                        onDelete = { confirmDelete = u }
+                    )
+                }
+                Divider()
+                ValueRow("إضافة مستخدم", "يبقى المستخدمون الآخرون كما هم") { nav.addUser() }
+            }
+        }
+
         GroupTitle("المشغّل")
         Group {
+            ValueRow("قياس سرعة النت", "") { showSpeed = true }
+            Divider()
             ValueRow("التخزين المؤقت ضد التقطيع", bufferLabels[bufferMode] ?: "كبير (موصى به)") { showBuffer = true }
             Divider()
             ToggleRow("أعلى جودة متاحة دائماً", "يختار أعلى جودة يرسلها المزوّد للبث", bestQuality) {
@@ -248,9 +277,15 @@ fun SettingsScreen(nav: Navigator) {
 
         GroupTitle("الأمان")
         Group {
-            ToggleRow("إخفاء محتوى البالغين", "يتطلب رمزاً سرياً لإظهاره", hideAdult) { enable ->
+            ToggleRow(
+                "حجب محتوى البالغين",
+                "يحجب أقسام وقنوات وأفلام ومسلسلات البالغين في كل المستخدمين، ويلزم رمز سري لإظهارها",
+                hideAdult
+            ) { enable ->
                 pinMode = if (enable) "set" else "check"
             }
+            Divider()
+            ValueRow("حذف سجل المشاهدة", "") { confirmClearHistory = true }
         }
 
         Row(
@@ -350,21 +385,56 @@ fun SettingsScreen(nav: Navigator) {
         )
     }
 
-    if (confirmSwitch) {
+    confirmDelete?.let { u ->
         AlertDialog(
-            onDismissRequest = { confirmSwitch = false },
+            onDismissRequest = { confirmDelete = null },
             confirmButton = {
                 TextButton(onClick = {
-                    confirmSwitch = false
-                    repo.logout()
-                    nav.login()
-                }) { Text("تبديل", color = RColors.Saffron) }
+                    confirmDelete = null
+                    val wasCurrent = u.id == playlist?.id
+                    val next = repo.removePlaylist(u.id)
+                    when {
+                        next == null -> nav.login()
+                        wasCurrent -> nav.reload()
+                    }
+                }) { Text("حذف", color = RColors.Live) }
             },
-            dismissButton = { TextButton(onClick = { confirmSwitch = false }) { Text("إلغاء", color = RColors.Text2) } },
-            title = { Text("تبديل القائمة؟", style = T.h2) },
-            text = { Text("سيتم حذف الاشتراك الحالي والمفضلة وسجل المشاهدة من هذا الجهاز.", style = T.body(14.sp, color = RColors.Text2)) },
+            dismissButton = { TextButton(onClick = { confirmDelete = null }) { Text("إلغاء", color = RColors.Text2) } },
+            title = { Text("حذف المستخدم «${u.name}»؟", style = T.h2) },
+            text = {
+                Text(
+                    "سيُحذف هذا المستخدم ومفضلته وسجل مشاهدته من هذا الجهاز. باقي المستخدمين يبقون كما هم.",
+                    style = T.body(14.sp, color = RColors.Text2)
+                )
+            },
             containerColor = RColors.Surface
         )
+    }
+
+    if (confirmClearHistory) {
+        AlertDialog(
+            onDismissRequest = { confirmClearHistory = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmClearHistory = false
+                    repo.clearWatchHistory()
+                    Toast.makeText(context, "تم حذف سجل المشاهدة", Toast.LENGTH_SHORT).show()
+                }) { Text("حذف", color = RColors.Live) }
+            },
+            dismissButton = { TextButton(onClick = { confirmClearHistory = false }) { Text("إلغاء", color = RColors.Text2) } },
+            title = { Text("حذف سجل المشاهدة؟", style = T.h2) },
+            text = {
+                Text(
+                    "يُحذف «تابع المشاهدة» والقنوات التي شوهدت مؤخراً وعلامات المشاهدة لهذا المستخدم. المفضلة تبقى.",
+                    style = T.body(14.sp, color = RColors.Text2)
+                )
+            },
+            containerColor = RColors.Surface
+        )
+    }
+
+    if (showSpeed) {
+        SpeedTestDialog(playlist = playlist, onDismiss = { showSpeed = false })
     }
 
     val mode = pinMode
@@ -552,4 +622,48 @@ private fun PinDialog(title: String, onDismiss: () -> Unit, onSubmit: (String) -
         },
         containerColor = RColors.Surface
     )
+}
+
+@Composable
+private fun UserRow(user: Playlist, current: Boolean, onOpen: () -> Unit, onDelete: () -> Unit) {
+    val source = when {
+        user.type == PlaylistType.XTREAM -> Uri.parse(user.server).let { u -> (u.host ?: user.server) + if (u.port > 0) ":" + u.port else "" }
+        user.m3uUrl.startsWith("content://") -> "ملف من الجهاز"
+        else -> Uri.parse(user.m3uUrl).host ?: user.m3uUrl
+    }
+    val detail = (if (user.type == PlaylistType.XTREAM && user.username.isNotBlank()) user.username + " · " else "") + source
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(end = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Row(
+            Modifier
+                .weight(1f)
+                .heightIn(min = 60.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .tvClickable(RoundedCornerShape(14.dp), onClickLabel = "فتح ${user.name}", onClick = onOpen)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Icon(RIcons.User, contentDescription = null, tint = if (current) RColors.Saffron else RColors.Text3, modifier = Modifier.size(20.dp))
+            Column(Modifier.weight(1f)) {
+                Text(user.name, style = T.body(15.sp, FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(detail, style = T.body(12.5.sp, color = RColors.Text3), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
+            if (current) {
+                Text(
+                    "الحالي",
+                    style = T.body(11.sp, FontWeight.Bold, RColors.Saffron),
+                    modifier = Modifier
+                        .border(1.dp, RColors.Saffron, RoundedCornerShape(6.dp))
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                )
+            }
+        }
+        CircleIconButton(RIcons.Close, "حذف ${user.name}", onDelete)
+    }
 }

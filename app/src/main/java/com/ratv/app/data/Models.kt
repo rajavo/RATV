@@ -26,7 +26,9 @@ data class Channel(
     val logo: String?,
     val categoryId: String,
     val epgId: String?,
-    val url: String
+    val url: String,
+    /** Marked as adult by the provider. */
+    val adult: Boolean = false
 ) {
     val quality: String? get() = qualityOf(name)
 }
@@ -38,7 +40,8 @@ data class Movie(
     val categoryId: String,
     val rating: String?,
     val added: Long,
-    val url: String
+    val url: String,
+    val adult: Boolean = false
 ) {
     val year: String? get() = yearOf(name)
 }
@@ -51,7 +54,8 @@ data class SeriesItem(
     val rating: String?,
     val plot: String?,
     val year: String?,
-    val added: Long
+    val added: Long,
+    val adult: Boolean = false
 )
 
 data class Episode(
@@ -135,7 +139,11 @@ object Keys {
 
 private val QUALITY_REGEX = Regex("""(?<![A-Za-z0-9])(4K|UHD|FHD|HD|SD|HEVC)(?![A-Za-z0-9])""", RegexOption.IGNORE_CASE)
 private val YEAR_REGEX = Regex("""(?<![0-9])(19[5-9][0-9]|20[0-4][0-9])(?![0-9])""")
-private val ADULT_WORDS = listOf("adult", "xxx", "18+", "+18", "porn", "للكبار", "كبار فقط")
+/** Words providers use for adult sections and titles, matched as whole words (not inside "Essex"). */
+private val ADULT_WORD = Regex(
+    """(?<![\p{L}\p{N}])(x{3,}|porn\w*|adults?|erotic\w*|playboy|brazzers|hustler|penthouse|sexy?|hentai|onlyfans|18\s*\+|\+\s*18|١٨\s*\+|\+\s*١٨|للكبار|كبار\s*فقط|اباحي\p{L}*|إباحي\p{L}*|سكس)(?![\p{L}\p{N}])""",
+    RegexOption.IGNORE_CASE
+)
 
 fun qualityOf(name: String): String? {
     val m = QUALITY_REGEX.find(name) ?: return null
@@ -180,10 +188,7 @@ fun channelKey(name: String): String {
 
 fun yearOf(name: String): String? = YEAR_REGEX.find(name)?.value
 
-fun isAdultName(name: String): Boolean {
-    val n = name.lowercase()
-    return ADULT_WORDS.any { n.contains(it) }
-}
+fun isAdultName(name: String): Boolean = ADULT_WORD.containsMatchIn(name)
 
 fun Map<String, List<Programme>>.forChannel(ch: Channel): List<Programme> {
     val id = ch.epgId?.lowercase()?.takeIf { it.isNotBlank() } ?: return emptyList()

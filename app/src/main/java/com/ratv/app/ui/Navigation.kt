@@ -74,6 +74,17 @@ class Navigator(private val nav: NavHostController) {
         }
     }
 
+    /** Login screen for one more user; the current one stays and Back returns to it. */
+    fun addUser() = nav.navigate("adduser")
+
+    /** Loading screen, then home: used after switching users. */
+    fun reload() {
+        nav.navigate("splash") {
+            popUpTo(nav.graph.id) { inclusive = true }
+            launchSingleTop = true
+        }
+    }
+
     fun search() = nav.navigate("search")
     fun guide() = nav.navigate("guide") { launchSingleTop = true }
     fun movie(id: String) = nav.navigate("movie/${Uri.encode(id)}")
@@ -140,6 +151,7 @@ fun RatvRoot() {
                 )
             }
             composable("login") { LoginScreen(onDone = { navigator.home() }) }
+            composable("adduser") { LoginScreen(onDone = { navigator.home() }, onBack = { navigator.back() }) }
             composable("home") { HomeScreen(navigator) }
             composable("live") { LiveScreen(navigator) }
             composable("guide") { GuideScreen(navigator) }

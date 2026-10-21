@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -97,7 +98,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(onDone: () -> Unit) {
+/** [onBack] is set when one more user is being added next to the current one. */
+fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
     val repo = LocalRepo.current
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -195,6 +197,10 @@ fun LoginScreen(onDone: () -> Unit) {
 
     val intro: @Composable () -> Unit = {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            if (onBack != null) {
+                CircleIconButton(RIcons.Back, "رجوع", onBack, tint = RColors.Text2)
+                Spacer(Modifier.width(10.dp))
+            }
             RatvLogo(22.sp)
             Spacer(Modifier.weight(1f))
             CircleIconButton(RIcons.Help, "مساعدة", { showHelp = true }, tint = RColors.Text2)

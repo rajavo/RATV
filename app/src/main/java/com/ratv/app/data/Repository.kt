@@ -60,7 +60,10 @@ class Repository(private val context: Context, val prefs: Prefs) {
     val watched: StateFlow<Set<String>> = _watched.asStateFlow()
 
     private val _history = MutableStateFlow(prefs.loadHistory())
-    val history: StateFlow<List<WatchEntry>> = _history.asStateFlow()
+
+    /** Every saved subscription ("users"); [playlist] is the one in use. */
+    private val _playlists = MutableStateFlow(prefs.playlists)
+    val playlists: StateFlow<List<Playlist>> = _playlists.asStateFlow()
 
     private val _hideAdult = MutableStateFlow(prefs.hideAdult)
     val hideAdult: StateFlow<Boolean> = _hideAdult.asStateFlow()
@@ -91,7 +94,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
     }.stateIn(scope, SharingStarted.Eagerly, emptyList())
 
     val channels: StateFlow<List<Channel>> = combine(_channels, _liveCats, _hideAdult) { list, cats, hide ->
-        filterAdult(list, cats, hide, { it.categoryId }, { it.name })
+        filterAdult(list, cats, hide, { it.categoryId }, { it.name }, { it.adult })
     }.stateIn(scope, SharingStarted.Eagerly, emptyList())
 
     val vodCategories: StateFlow<List<Category>> = combine(_vodCats, _hideAdult) { cats, hide ->
@@ -99,7 +102,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
     }.stateIn(scope, SharingStarted.Eagerly, emptyList())
 
     val movies: StateFlow<List<Movie>> = combine(_movies, _vodCats, _hideAdult) { list, cats, hide ->
-        filterAdult(list, cats, hide, { it.categoryId }, { it.name })
+        filterAdult(list, cats, hide, { it.categoryId }, { it.name }, { it.adult })
     }.stateIn(scope, SharingStarted.Eagerly, emptyList())
 
     val seriesCategories: StateFlow<List<Category>> = combine(_seriesCats, _hideAdult) { cats, hide ->
@@ -107,19 +110,34 @@ class Repository(private val context: Context, val prefs: Prefs) {
     }.stateIn(scope, SharingStarted.Eagerly, emptyList())
 
     val series: StateFlow<List<SeriesItem>> = combine(_series, _seriesCats, _hideAdult) { list, cats, hide ->
-        filterAdult(list, cats, hide, { it.categoryId }, { it.name })
+        filterAdult(list, cats, hide, { it.categoryId }, { it.name }, { it.adult })
     }.stateIn(scope, SharingStarted.Eagerly, emptyList())
+
+    /** "Continue watching"; with the parental filter on, adult films and episodes leave it too. */
+    val history: StateFlow<List<WatchEntry>> = combine(_history, _hideAdult, movies, series) { list, hide, m, s ->
+        if (!hide) return@combine list
+        val films = m.mapTo(HashSet()) { it.id }
+        val shows = s.mapTo(HashSet()) { it.id }
+        list.filter { e ->
+            !isAdultName(e.title) && when (e.kind) {
+                "movie" -> films.isEmpty() || e.itemId in films
+                "episode" -> shows.isEmpty() || e.seriesId == null || e.seriesId in shows
+                else -> true
+            }
+        }
+    }.stateIn(scope, SharingStarted.Eagerly, _history.value)
 
     private fun <T> filterAdult(
         list: List<T>,
         cats: List<Category>,
         hide: Boolean,
         categoryOf: (T) -> String,
-        nameOf: (T) -> String
+        nameOf: (T) -> String,
+        flagOf: (T) -> Boolean
     ): List<T> {
         if (!hide) return list
         val hidden = cats.filter { isAdultName(it.name) }.map { it.id }.toHashSet()
-        return list.filter { categoryOf(it) !in hidden && !isAdultName(nameOf(it)) }
+        return list.filter { !flagOf(it) && categoryOf(it) !in hidden && !isAdultName(nameOf(it)) }
     }
 
     // ------------------------------------------------------------- loading
@@ -151,7 +169,6 @@ class Repository(private val context: Context, val prefs: Prefs) {
     suspend fun addPlaylist(p: Playlist): String? = withContext(Dispatchers.IO) {
         loadJob?.cancel()
         val previousId = _playlist.value?.id
-        if (previousId != p.id) clearCaches()
         try {
             validate(p)
         } catch (e: CancellationException) {
@@ -159,15 +176,10 @@ class Repository(private val context: Context, val prefs: Prefs) {
         } catch (e: Exception) {
             return@withContext friendlyError(e)
         }
-        if (previousId != p.id) {
-            clearData()
-            prefs.clearUserData()
-            _favorites.value = emptySet()
-            _watched.value = emptySet()
-            _history.value = emptyList()
-            _recentChannels.value = emptyList()
-        }
+        if (previousId != p.id) clearData()
+        // Added next to the other users, never in place of them; its own favourites and history come back.
         prefs.savePlaylist(p)
+        reloadUserData()
         _playlist.value = p
         _state.value = LoadState.Loading("جارٍ تحميل القنوات…")
         loadJob = scope.launch { runLoad(p, force = false) }
@@ -175,17 +187,54 @@ class Repository(private val context: Context, val prefs: Prefs) {
         if (result is LoadState.Error) result.message else null
     }
 
+    /** Leaves the current user without deleting any saved user. */
     fun logout() {
         loadJob?.cancel()
-        clearCaches()
         clearData()
-        prefs.clearUserData()
-        _favorites.value = emptySet()
-        _watched.value = emptySet()
-        _history.value = emptyList()
-        _recentChannels.value = emptyList()
+        prefs.savePlaylist(null)
+        reloadUserData()
         _playlist.value = null
         _state.value = LoadState.Idle
+    }
+
+    /** Opens another saved user without signing in again; its favourites and history come back. */
+    fun switchTo(p: Playlist) {
+        if (_playlist.value?.id == p.id && _state.value !is LoadState.Error) return
+        loadJob?.cancel()
+        clearData()
+        prefs.savePlaylist(p)
+        reloadUserData()
+        _playlist.value = p
+        _state.value = LoadState.Loading("جارٍ تحميل القنوات…")
+        loadJob = scope.launch { runLoad(p, force = false) }
+    }
+
+    /** Deletes one saved user with its favourites, history and saved lists. Returns the user now in use, if any. */
+    fun removePlaylist(id: String): Playlist? {
+        val wasCurrent = _playlist.value?.id == id
+        prefs.removePlaylist(id)
+        cacheDir.listFiles()?.filter { it.name.startsWith(id + "_") }?.forEach { it.delete() }
+        _playlists.value = prefs.playlists
+        if (!wasCurrent) return _playlist.value
+        val next = prefs.playlists.firstOrNull()
+        if (next == null) logout() else switchTo(next)
+        return next
+    }
+
+    /** Clears "continue watching", watched marks and recently watched channels of the current user. */
+    fun clearWatchHistory() {
+        prefs.clearWatchHistory()
+        _history.value = emptyList()
+        _watched.value = emptySet()
+        _recentChannels.value = emptyList()
+    }
+
+    private fun reloadUserData() {
+        _favorites.value = prefs.favorites
+        _watched.value = prefs.watched
+        _history.value = prefs.loadHistory()
+        _recentChannels.value = prefs.recentChannels
+        _playlists.value = prefs.playlists
     }
 
     private fun validate(p: Playlist) {
