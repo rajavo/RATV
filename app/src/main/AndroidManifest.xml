@@ -15,6 +15,7 @@
     <application
         android:name=".RatvApp"
         android:allowBackup="true"
+        android:largeHeap="true"
         android:banner="@drawable/tv_banner"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"

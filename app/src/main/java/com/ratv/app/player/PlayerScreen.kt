@@ -99,6 +99,9 @@ import androidx.media3.common.Player
 import androidx.media3.common.Tracks
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.analytics.AnalyticsListener
+import androidx.media3.exoplayer.source.LoadEventInfo
+import androidx.media3.exoplayer.source.MediaLoadData
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.ratv.app.data.Channel
@@ -128,6 +131,7 @@ import com.ratv.app.ui.screens.rememberNow
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 import kotlinx.coroutines.Dispatchers
+import java.io.IOException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
@@ -202,7 +206,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // Channel whose HLS version failed: it goes back to its own address.
     var hlsFailedFor by remember { mutableStateOf<String?>(null) }
     var usingHls by remember { mutableStateOf(false) }
-    var bufferedMs by remember { mutableLongStateOf(0L) }
+    // Reserve stored ahead of the picture, and whether the internet is failing right now.
+    var reserveMs by remember { mutableLongStateOf(0L) }
+    var netTrouble by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val mix = remember { MixController(context, scope, player, repo.prefs.bufferMode) }
     val subs = remember { SubtitleController(scope, repo.prefs) }
@@ -271,8 +277,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         val hlsAllowed = repo.account.value?.formats?.contains("m3u8") == true
         val url = if (item.isLive && hlsFailedFor != item.id) liveStreamUrl(item.url, liveFormat, hlsAllowed) else item.url
         usingHls = url != item.url
-        // Live channels play [cushion] behind live, with that much kept in store against drops.
-        val offset = if (item.isLive) maxOf(cushion * 2, 20_000L) else null
+        // HLS channels start up to the reserve behind live, so the reserve is full at once.
+        val offset = if (item.isLive) cushion else null
         player.setMediaItem(mediaItemFor(url, offset), item.startPosition.coerceAtLeast(0L))
         player.prepare()
         player.playWhenReady = true
@@ -396,12 +402,53 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             }
         }
         player.addListener(listener)
+        val loadWatch = object : AnalyticsListener {
+            override fun onLoadError(
+                eventTime: AnalyticsListener.EventTime,
+                loadEventInfo: LoadEventInfo,
+                mediaLoadData: MediaLoadData,
+                error: IOException,
+                wasCanceled: Boolean
+            ) {
+                netTrouble = true
+            }
+        }
+        player.addAnalyticsListener(loadWatch)
         onDispose {
+            player.removeAnalyticsListener(loadWatch)
             player.removeListener(listener)
             saveProgress()
             mix.release()
             subs.release()
             player.release()
+        }
+    }
+
+    // Builds the reserve while a live channel plays: the stream arrives in real time, so playing
+    // 5% slower stores the difference, until the reserve is full or cannot grow any more
+    // (memory or the server's window). Films and series fill it by downloading ahead.
+    LaunchedEffect(current) {
+        val item = current ?: return@LaunchedEffect
+        var ceiling = Long.MAX_VALUE
+        var lastBuffered = player.bufferedPosition
+        var stuckSeconds = 0
+        while (true) {
+            val buffered = player.totalBufferedDuration
+            reserveMs = buffered
+            val grew = player.bufferedPosition > lastBuffered + 200L
+            lastBuffered = player.bufferedPosition
+            if (grew) netTrouble = false
+            if (item.isLive) {
+                val slowed = player.playbackParameters.speed < 1f
+                stuckSeconds = if (slowed && player.isPlaying && !grew && !netTrouble) stuckSeconds + 1 else 0
+                if (stuckSeconds >= 5) ceiling = buffered // cannot store more than this here
+                if (ceiling != Long.MAX_VALUE && buffered < ceiling / 10 * 7) ceiling = Long.MAX_VALUE
+                val grow = player.isPlaying && mix.channel == null &&
+                    buffered < minOf(cushion, ceiling) - 2_000L
+                val speed = if (grow) 0.95f else 1f
+                if (player.playbackParameters.speed != speed) player.setPlaybackSpeed(speed)
+            }
+            delay(1_000L)
         }
     }
 
@@ -721,22 +768,15 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         )
 
         if (buffering && playerError == null && !notFound) {
-            LaunchedEffect(Unit) {
-                while (true) {
-                    bufferedMs = player.totalBufferedDuration
-                    delay(300L)
-                }
-            }
             Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
                 CircularProgressIndicator(
                     color = RColors.Saffron,
                     strokeWidth = 3.dp,
                     modifier = Modifier.size(48.dp)
                 )
-                if (current?.isLive == true) {
-                    val have = (bufferedMs / 1000L).coerceIn(0L, cushion / 1000L)
+                if (netTrouble) {
                     Text(
-                        "جارٍ التخزين المؤقت ضد التقطيع… $have من ${cushion / 1000L} ث",
+                        "انقطع الإنترنت… يكمل التشغيل فور عودته",
                         style = T.body(14.sp, FontWeight.Bold),
                         modifier = Modifier
                             .padding(top = 14.dp)
@@ -746,6 +786,24 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                     )
                 }
             }
+        }
+
+        // How much reserve there is; while the internet is down, how long the picture can still go on.
+        val showReserve = playerError == null && !notFound && current != null &&
+            ((netTrouble && reserveMs > 0) || (controlsVisible && !buffering))
+        if (showReserve) {
+            val secs = minOf(reserveMs, cushion) / 1000L
+            Text(
+                if (netTrouble) "انقطع الإنترنت — يكمل من الاحتياطي، باقي $secs ث"
+                else "الاحتياطي ضد انقطاع النت: $secs من ${cushion / 1000L} ث",
+                style = T.body(13.sp, FontWeight.Bold, if (netTrouble) Color.White else RColors.Text),
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = if (netTrouble) 24.dp else 72.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(if (netTrouble) RColors.Live.copy(alpha = 0.9f) else Color(0xB30B0C10))
+                    .padding(horizontal = 14.dp, vertical = 7.dp)
+            )
         }
 
         if (reconnecting || (reconnectAttempts > 0 && buffering)) {
