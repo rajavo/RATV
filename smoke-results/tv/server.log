@@ -1,42 +1,30 @@
 mock IPTV server on port 8000
-17:12:40 GET /player_api.php?username=test&password=test
-17:15:44 GET /player_api.php?username=test&password=test
-17:15:44 GET /player_api.php?username=test&password=test
-17:15:44 GET /player_api.php?username=test&password=test&action=get_live_categories
-17:15:44 GET /player_api.php?username=test&password=test&action=get_live_streams
-17:15:44 GET /player_api.php?username=test&password=test&action=get_vod_categories
-17:15:44 GET /player_api.php?username=test&password=test&action=get_series_categories
-17:15:44 GET /player_api.php?username=test&password=test&action=get_series
-17:15:44 GET /player_api.php?username=test&password=test&action=get_vod_streams
-17:15:44 GET /xmltv.php?username=test&password=test
-17:15:44 GET /logo/l1.png
-17:15:58 GET /live/test/test/101.m3u8
-17:15:58 GET /live/test/test/101.m3u8
-17:15:58 GET /live/test/test/101.m3u8
-17:15:58 GET /live/test/test/101.m3u8
-17:15:58 GET /live/test/test/101.m3u8
-17:15:58 GET /live/test/test/101.m3u8
-17:15:58 GET /live/test/test/101.m3u8
-17:15:58 GET /live/test/test/101.m3u8
-17:15:59 GET /live/test/test/101.m3u8
-17:15:59 GET /live/test/test/101.m3u8
-17:16:01 GET /live/test/test/101.m3u8
-17:16:01 GET /live/test/test/101.m3u8
-17:16:04 GET /live/test/test/101.m3u8
-17:16:04 GET /live/test/test/101.m3u8
-17:16:08 GET /live/test/test/101.m3u8
-17:16:08 GET /live/test/test/101.m3u8
-17:16:13 GET /live/test/test/101.m3u8
-17:16:13 GET /live/test/test/101.m3u8
-17:16:18 GET /live/test/test/101.m3u8
-17:16:18 GET /live/test/test/101.m3u8
-17:16:23 GET /live/test/test/101.m3u8
-17:16:23 GET /live/test/test/101.m3u8
-17:16:46 GET /player_api.php?username=test&password=test&action=get_vod_info&vod_id=5001
-17:16:51 GET /movie/test/test/5001.mp4
-17:16:51 GET /movie/test/test/5001.mp4
+17:20:49 GET /player_api.php?username=test&password=test
+17:24:04 GET /player_api.php?username=test&password=test
+17:24:04 GET /player_api.php?username=test&password=test
+17:24:04 GET /player_api.php?username=test&password=test&action=get_live_categories
+17:24:04 GET /player_api.php?username=test&password=test&action=get_live_streams
+17:24:04 GET /player_api.php?username=test&password=test&action=get_vod_categories
+17:24:04 GET /player_api.php?username=test&password=test&action=get_vod_streams
+17:24:04 GET /player_api.php?username=test&password=test&action=get_series_categories
+17:24:04 GET /player_api.php?username=test&password=test&action=get_series
+17:24:04 GET /xmltv.php?username=test&password=test
+17:24:04 GET /logo/l1.png
+17:24:18 GET /live/test/test/101.m3u8
+17:24:18 GET /live/test/test/101.m3u8
+17:24:18 GET /live/test/test/101.ts
+17:24:18 GET /live/test/test/101.ts
+17:24:18 GET /live/test/test/101.ts
+17:24:29 GET /live/test/test/102.m3u8
+17:24:29 GET /live/test/test/102.m3u8
+17:24:29 GET /live/test/test/102.ts
+17:24:29 GET /live/test/test/102.ts
+17:24:29 GET /live/test/test/102.ts
+17:25:02 GET /player_api.php?username=test&password=test&action=get_vod_info&vod_id=5001
+17:25:07 GET /movie/test/test/5001.mp4
+17:25:07 GET /movie/test/test/5001.mp4
 ----------------------------------------
-Exception occurred during processing of request from ('127.0.0.1', 55430)
+Exception occurred during processing of request from ('127.0.0.1', 55038)
 Traceback (most recent call last):
   File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
     self.finish_request(request, client_address)
@@ -58,24 +46,28 @@ Traceback (most recent call last):
            ~~~~~~~~~~~~~~~~~~~~^^^
 ConnectionResetError: [Errno 104] Connection reset by peer
 ----------------------------------------
-17:17:24 GET /logo/l2.png
-17:17:24 GET /logo/l3.png
-17:17:24 GET /logo/l4.png
-17:17:24 GET /logo/missing.png
-17:17:24 GET /logo/missing.png
-17:17:25 GET /live/test/test/101.ts
-17:17:25 GET /live/test/test/101.ts
-17:17:25 GET /live/test/test/101.ts
-17:17:33 GET /live/test/test/102.ts
-17:17:33 GET /live/test/test/102.ts
-17:17:33 GET /live/test/test/102.ts
-17:17:35 GET /live/test/test/103.ts
-17:17:35 GET /live/test/test/103.ts
-17:17:35 GET /live/test/test/103.ts
-17:17:41 GET /live/test/test/102.ts
-17:17:41 GET /live/test/test/102.ts
-17:17:41 GET /live/test/test/102.ts
-17:17:45 GET /live/test/test/101.ts
-17:17:45 GET /live/test/test/101.ts
-17:17:45 GET /live/test/test/101.ts
-17:18:00 GET /player_api.php?username=test&password=test&action=get_series_info&series_id=7001
+17:25:38 GET /logo/l3.png
+17:25:38 GET /logo/l2.png
+17:25:38 GET /logo/missing.png
+17:25:38 GET /logo/missing.png
+17:25:38 GET /logo/l4.png
+17:25:39 GET /live/test/test/102.ts
+17:25:39 GET /live/test/test/102.ts
+17:25:39 GET /live/test/test/102.ts
+17:25:47 GET /live/test/test/103.ts
+17:25:47 GET /live/test/test/103.ts
+17:25:47 GET /live/test/test/103.ts
+17:25:48 GET /logo/l5.png
+17:25:49 GET /live/test/test/201.ts
+17:25:49 GET /live/test/test/201.ts
+17:25:49 GET /live/test/test/201.ts
+17:25:54 GET /live/test/test/103.ts
+17:25:54 GET /live/test/test/103.ts
+17:25:54 GET /live/test/test/103.ts
+17:25:58 GET /live/test/test/102.ts
+17:25:58 GET /live/test/test/102.ts
+17:25:58 GET /live/test/test/102.ts
+17:26:01 GET /live/test/test/101.ts
+17:26:01 GET /live/test/test/101.ts
+17:26:01 GET /live/test/test/101.ts
+17:26:15 GET /player_api.php?username=test&password=test&action=get_series_info&series_id=7001
