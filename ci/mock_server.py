@@ -35,6 +35,8 @@ CHANNELS = [
     (302, 8, "Cartoon Time HD", "3", "cartoon.ratv", None),
     (401, 9, "Nature Docs", "4", "nature.ratv", "l5.png"),
     (402, 10, "History FHD", "4", "history.ratv", None),
+    (204, 11, "Sport 1 4K", "2", "sport1.ratv", "l3.png"),
+    (205, 12, "Sport 1 EN", "2", "sport1.ratv", None),
 ]
 VOD_CATS = [("10", "أفلام عربية"), ("11", "أكشن"), ("12", "دراما")]
 MOVIES = [
@@ -299,7 +301,8 @@ class Handler(BaseHTTPRequestHandler):
         if p in ("/playlist.m3u", "/get.php"):
             return self._send(m3u().encode("utf-8"), "audio/x-mpegurl; charset=utf-8")
         if p.startswith("/live/"):
-            return self.send_file(os.path.join(MEDIA, "live.ts"), "video/mp2t")
+            name = "live_multi.ts" if os.path.basename(p).startswith("201.") else "live.ts"
+            return self.send_file(os.path.join(MEDIA, name), "video/mp2t")
         if p.startswith("/movie/") or p.startswith("/series/"):
             return self.send_file(os.path.join(MEDIA, "movie.mp4"), "video/mp4")
         if p.startswith("/logo/"):

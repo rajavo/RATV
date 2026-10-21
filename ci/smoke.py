@@ -303,6 +303,49 @@ def s_play_live():
     shot("after-live-player")
 
 
+def s_commentator():
+    """Sport 1 HD has two commentators and two other versions (4K and EN)."""
+    tap_where(text="رياضة")
+    time.sleep(1.5)
+    _, n = wait_for(timeout=10, contains="Sport 1 HD")
+    if n is None:
+        raise RuntimeError("Sport 1 HD missing")
+    tap_node(n)
+    time.sleep(12)
+    w, h = shot("player-sport1")
+    tap(w // 2, h // 3)
+    time.sleep(1.2)
+    root = dump("player-sport1-controls")
+    shot("player-sport1-controls")
+    if find(root, text="4K متاح") is None:
+        raise RuntimeError("4K shortcut missing")
+    n = find(root, text="المعلق والجودة")
+    if n is None:
+        raise RuntimeError("commentator button missing")
+    tap_node(n)
+    time.sleep(1.5)
+    root = dump("sources-panel")
+    shot("sources-panel")
+    texts = " | ".join((x.get("text") or "") for x in nodes(root))
+    log("sources: " + texts[:400])
+    for need in ("المعلق في هذا البث", "نسخ أخرى من القناة", "Sport 1 4K", "Sport 1 EN"):
+        if need not in texts:
+            raise RuntimeError("missing in panel: " + need)
+    second = [x for x in nodes(root) if (x.get("text") or "") in ("الإنجليزية", "الإنكليزية", "English")]
+    if not second:
+        raise RuntimeError("second commentator not listed")
+    tap_node(second[0])
+    time.sleep(1.5)
+    shot("sources-second-commentator")
+    _, n = wait_for(timeout=5, text="Sport 1 4K")
+    tap_node(n)
+    time.sleep(10)
+    shot("player-sport1-4k")
+    back()
+    time.sleep(2)
+    tap_where(text="الكل")
+
+
 def s_guide():
     tap_where(text="دليل البرامج")
     time.sleep(4)
@@ -494,6 +537,7 @@ if __name__ == "__main__":
         ("live-category", s_live_category),
         ("favorite", s_favorite),
         ("play-live", s_play_live),
+        ("commentator", s_commentator),
         ("guide", s_guide),
         ("movies", s_movies),
         ("series", s_series),
