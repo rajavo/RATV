@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import android.os.SystemClock
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -44,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.semantics.Role
@@ -147,20 +149,25 @@ fun CatalogWide(
 
     val gridState = rememberLazyGridState()
     val firstFocus = remember { FocusRequester() }
-    var focusedOnce by remember { mutableStateOf(false) }
-    LaunchedEffect(visible.isNotEmpty(), sorting) {
-        if (tv && !focusedOnce && visible.isNotEmpty() && !sorting) {
-            focusedOnce = true
-            repeat(10) {
-                delay(80L)
-                if (runCatching { firstFocus.requestFocus() }.isSuccess) return@LaunchedEffect
-            }
+    // On TV the remote lands on the first poster when the section opens. The list can be
+    // rebuilt right after (sorting, favourites), which drops the focus back to the top bar,
+    // so keep asking until the focus is really inside the screen, for a few seconds only.
+    var contentFocused by remember { mutableStateOf(false) }
+    val openedAt = remember { SystemClock.uptimeMillis() }
+    LaunchedEffect(visible, sorting) {
+        if (!tv || visible.isEmpty() || sorting || contentFocused) return@LaunchedEffect
+        repeat(25) {
+            if (SystemClock.uptimeMillis() - openedAt > 5_000L) return@LaunchedEffect
+            delay(80L)
+            runCatching { firstFocus.requestFocus() }
+            if (contentFocused) return@LaunchedEffect
         }
     }
 
     Row(
         Modifier
             .fillMaxSize()
+            .onFocusChanged { contentFocused = it.hasFocus }
             .background(RColors.Ink)
             .padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
