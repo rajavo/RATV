@@ -209,6 +209,10 @@ def fmt(ts):
     return datetime.fromtimestamp(ts, TZ).strftime("%Y%m%d%H%M%S") + " +0300"
 
 
+MATCH_START = (NOW // 1800) * 1800 - 1800
+MATCH_END = MATCH_START + 7200
+
+
 def xmltv():
     lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<tv generator-info-name="ratv-mock">']
     for sid, num, name, cat, epg, logo in CHANNELS:
@@ -223,8 +227,12 @@ def xmltv():
         while t < NOW + 30 * 3600:
             dur = [1800, 3600, 2700, 5400][(i + num) % 4]
             title = TITLES[(i + num) % len(TITLES)]
-            if epg in MATCH and t <= NOW < t + dur:
-                title = MATCH[epg]
+            if epg in MATCH:
+                # The game has the same start and end on every channel that shows it.
+                if t == MATCH_START:
+                    dur, title = MATCH_END - MATCH_START, MATCH[epg]
+                elif t < MATCH_START < t + dur:
+                    dur = MATCH_START - t
             lines.append(
                 '<programme start="%s" stop="%s" channel="%s"><title lang="ar">%s</title>'
                 '<desc lang="ar">%s</desc></programme>'
