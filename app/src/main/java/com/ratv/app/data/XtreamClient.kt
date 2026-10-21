@@ -69,6 +69,7 @@ class XtreamClient(private val p: Playlist) {
             val id = f["stream_id"] ?: return@readObjectArray
             out.add(
                 Channel(
+                    adult = adultFlag(f["is_adult"]),
                     id = id,
                     num = f["num"]?.toDoubleOrNull()?.toInt() ?: (out.size + 1),
                     name = f["name"]?.trim().orEmpty(),
@@ -89,6 +90,7 @@ class XtreamClient(private val p: Playlist) {
             val id = f["stream_id"] ?: return@readObjectArray
             out.add(
                 Movie(
+                    adult = adultFlag(f["is_adult"]),
                     id = id,
                     name = f["name"]?.trim().orEmpty(),
                     poster = f["stream_icon"]?.takeIf { it.startsWith("http") },
@@ -109,6 +111,7 @@ class XtreamClient(private val p: Playlist) {
             val id = f["series_id"] ?: return@readObjectArray
             out.add(
                 SeriesItem(
+                    adult = adultFlag(f["is_adult"]),
                     id = id,
                     name = f["name"]?.trim().orEmpty(),
                     cover = f["cover"]?.takeIf { it.startsWith("http") },
@@ -204,9 +207,9 @@ class XtreamClient(private val p: Playlist) {
 
     companion object {
         private val CATEGORY_FIELDS = setOf("category_id", "category_name")
-        private val LIVE_FIELDS = setOf("num", "name", "stream_id", "stream_icon", "epg_channel_id", "category_id")
-        private val VOD_FIELDS = setOf("stream_id", "name", "stream_icon", "rating", "added", "category_id", "container_extension")
-        private val SERIES_FIELDS = setOf("series_id", "name", "cover", "rating", "plot", "releaseDate", "release_date", "last_modified", "category_id")
+        private val LIVE_FIELDS = setOf("num", "name", "stream_id", "stream_icon", "epg_channel_id", "category_id", "is_adult")
+        private val VOD_FIELDS = setOf("stream_id", "name", "stream_icon", "rating", "added", "category_id", "container_extension", "is_adult")
+        private val SERIES_FIELDS = setOf("series_id", "name", "cover", "rating", "plot", "releaseDate", "release_date", "last_modified", "category_id", "is_adult")
 
         /** Normalises what the user typed (may be a full get.php link) into a playlist. */
         fun fromUserInput(name: String, serverInput: String, username: String, password: String): Playlist {
@@ -235,6 +238,9 @@ class XtreamClient(private val p: Playlist) {
 }
 
 // -------------------------------------------------------------------- helpers
+
+/** Providers send is_adult as 1, "1" or true. */
+private fun adultFlag(v: String?): Boolean = v != null && (v == "1" || v.startsWith("1.") || v.equals("true", ignoreCase = true))
 
 internal fun JSONObject.str(name: String): String? {
     val v = opt(name) ?: return null
