@@ -502,9 +502,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
 
     // Optional on TVs: switch the screen to the refresh rate that shows this channel evenly
     // (25 and 50 fps on 50 Hz, 30 and 60 on 60 Hz). Put back when the player closes.
-    val view = LocalView.current
     val matchRate = remember { repo.prefs.matchFrameRate }
-    val hostWindow = remember(context) { context.hostActivity()?.window }
+    val hostWindow = remember(activity) { activity?.window }
     LaunchedEffect(measuredFps) {
         if (!matchRate || measuredFps <= 0f) return@LaunchedEffect
         val display = view.display ?: return@LaunchedEffect

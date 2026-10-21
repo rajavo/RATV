@@ -243,7 +243,6 @@ fun episodePlayable(ep: Episode, seriesId: String, seriesName: String?, cover: S
     startPosition = start
 )
 
-@androidx.annotation.OptIn(UnstableApi::class)
 /**
  * The player for one screen. [live] channels arrive in real time, so they keep a steady cushion
  * stored at the start; films and series download ahead up to the reserve chosen in settings.
