@@ -1,111 +1,101 @@
-17:14:17 == launch
-17:14:25 system dialog:  |  |  |  |  |  | Pixel Launcher isn't responding |  |  |  | Close app | Wait
-17:15:14 debug.ratv.subs=http://10.0.2.2:8000
-17:15:16 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+17:22:51 == launch
+17:23:45 debug.ratv.subs=http://10.0.2.2:8000
+17:23:48 Starting: Intent { cmp=com.ratv.app/.MainActivity }
 Status: ok
 LaunchState: COLD
 Activity: com.ratv.app/.MainActivity
-TotalTime: 2449
-WaitTime: 2453
+TotalTime: 2438
+WaitTime: 2444
 Complete
-17:15:19 screenshot 01-splash.png 1080x2400
-17:15:19 == login-screen
-17:15:24 screenshot 02-login.png 1080x2400
-17:15:24 == wrong-password
-17:15:46 screenshot 03-login-error.png 1080x2400
-17:15:46 == xtream-login
-17:15:51 screenshot 04-login-filled.png 1080x2400
-17:16:07 screenshot 05-home.png 1080x2400
-17:16:07 == live
-17:16:15 screenshot 06-live.png 1080x2400
-17:16:15 == live-category
-17:16:22 screenshot 07-live-sport.png 1080x2400
-17:16:25 == favorite
-17:16:34 screenshot 08-live-favorites.png 1080x2400
-17:16:37 == play-live
-17:16:45 cache countdown seen: True
-17:16:56 screenshot 09-player-live.png 2400x1080
-17:16:59 screenshot 10-player-live-controls.png 2400x1080
-17:17:03 screenshot 11-after-live-player.png 1080x2400
-17:17:03 == commentator
-17:17:23 screenshot 12-player-sport1.png 2400x1080
-17:17:28 screenshot 13-player-sport1-controls.png 2400x1080
-17:17:35 !! RuntimeError('4K shortcut missing')
-17:17:36 screenshot 14-fail-commentator.png 1080x2400
-17:17:36 == commentary-mix
-17:17:56 screenshot 15-mix-player.png 2400x1080
-17:18:37 screenshot 16-mix-panel.png 2400x1080
-17:18:37 mix panel:  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
-17:18:44 !! RuntimeError('missing in panel: تنقل نفس المباراة الآن')
-17:18:44 screenshot 17-fail-commentary-mix.png 1080x2400
-17:18:44 == guide
-17:18:54 screenshot 18-guide.png 1080x2400
-17:18:56 == movies
-17:19:03 screenshot 19-movies.png 1080x2400
-17:19:11 screenshot 20-movie-detail.png 1080x2400
-17:19:13 4K copy offered: True
-17:19:39 screenshot 21-player-movie.png 2400x1080
-17:19:43 screenshot 22-player-movie-controls.png 2400x1080
-17:19:49 screenshot 23-movie-detail-resume.png 1080x2400
-17:19:51 == subtitles
-17:20:18 screenshot 24-subs-player.png 2400x1080
-17:20:34 screenshot 25-subs-panel.png 2400x1080
-17:20:34 subtitles panel:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | الترجمة | ترجمة الفيلم أو الحلقة بأي لغة، وتُترجم آلياً إذا لم تتوفر بلغتك |  |  |  |  | لغة الترجمة |  | العربية | اضغط لتغيير اللغة |  | ترجمات متاحة |  | Silent.Sea.2019.AR | العربية · 10 تنزيل |  |  | Silent.Sea.2019.1080p.WEB | الإنجليزية · تُترجم آلياً إلى العربية · 100 تنزيل |  | حجم الخط |  | صغير |  |  | متوسط |  |  | كبير |  |  | كبير جداً |  | التوقيت |  |  |  |  |  | 
-17:20:40 screenshot 26-subs-chosen.png 2400x1080
-17:20:50 screenshot 27-subs-on-screen.png 2400x1080
-17:20:50 subtitle on screen: 'We sail at dawn'
-17:20:50 == subtitles-translated
-17:21:02 screenshot 28-subs-translated.png 2400x1080
-17:21:02 translated line: 'مرحبا بكم في البحر الصامت'
-17:21:09 == series
-17:21:16 screenshot 29-series.png 1080x2400
-17:21:23 screenshot 30-series-detail.png 1080x2400
-17:21:28 screenshot 31-series-season2.png 1080x2400
-17:22:12 screenshot 32-player-episode.png 1080x2400
-17:22:20 screenshot 33-series-detail-after.png 1080x2400
-17:22:22 !! app is not running
-17:22:26 == home-after
-17:22:50 !! RuntimeError("not found: {'text': 'الرئيسية', 'bottom': True}")
-17:22:50 screenshot 34-fail-home-after.png 1080x2400
-17:22:50 !! app is not running
-17:22:54 == search
-17:23:18 !! RuntimeError("not found: {'text': 'بحث'}")
-17:23:18 screenshot 35-fail-search.png 1080x2400
-17:23:18 !! app is not running
-17:23:22 == settings
-17:23:47 !! RuntimeError("not found: {'text': 'حسابي', 'bottom': True}")
-17:23:47 screenshot 36-fail-settings.png 1080x2400
-17:23:47 !! app is not running
-17:23:51 == parental
-17:24:43 !! RuntimeError("not found: {'contains': 'حجب محتوى البالغين'}")
-17:24:43 screenshot 37-fail-parental.png 1080x2400
-17:24:43 !! app is not running
-17:24:47 == adult-hidden
-17:25:12 !! RuntimeError("not found: {'text': 'الرئيسية', 'bottom': True}")
-17:25:12 screenshot 38-fail-adult-hidden.png 1080x2400
-17:25:12 !! app is not running
-17:25:16 == speed-test
-17:25:40 !! RuntimeError("not found: {'text': 'حسابي', 'bottom': True}")
-17:25:40 screenshot 39-fail-speed-test.png 1080x2400
-17:25:40 !! app is not running
-17:25:44 == clear-history
-17:27:20 !! RuntimeError('clear history row missing')
-17:27:20 screenshot 40-fail-clear-history.png 1080x2400
-17:27:20 !! app is not running
-17:27:24 == relaunch
-17:28:12 screenshot 41-relaunch.png 1080x2400
-17:28:12 !! RuntimeError('saved playlist not restored after restart')
-17:28:12 screenshot 42-fail-relaunch.png 1080x2400
-17:28:12 !! app is not running
-17:28:16 == switch-to-m3u
-17:28:40 !! RuntimeError("not found: {'text': 'حسابي', 'bottom': True}")
-17:28:40 screenshot 43-fail-switch-to-m3u.png 1080x2400
-17:28:40 !! app is not running
-17:28:44 == m3u-content
-17:29:08 !! RuntimeError("not found: {'text': 'مباشر', 'bottom': True}")
-17:29:08 screenshot 44-fail-m3u-content.png 1080x2400
-17:29:08 !! app is not running
-17:29:12 == users
-17:29:36 !! RuntimeError("not found: {'text': 'حسابي', 'bottom': True}")
-17:29:36 screenshot 45-fail-users.png 1080x2400
-17:29:36 !! app is not running
+17:23:50 screenshot 01-splash.png 1080x2400
+17:23:50 == login-screen
+17:23:55 screenshot 02-login.png 1080x2400
+17:23:55 == wrong-password
+17:24:19 screenshot 03-login-error.png 1080x2400
+17:24:19 == xtream-login
+17:24:24 screenshot 04-login-filled.png 1080x2400
+17:24:41 screenshot 05-home.png 1080x2400
+17:24:41 == live
+17:24:48 screenshot 06-live.png 1080x2400
+17:24:48 == live-category
+17:24:55 screenshot 07-live-sport.png 1080x2400
+17:24:58 == favorite
+17:25:07 screenshot 08-live-favorites.png 1080x2400
+17:25:10 == play-live
+17:25:27 screenshot 09-player-live.png 2400x1080
+17:25:34 screenshot 10-player-live-controls.png 2400x1080
+17:25:38 screenshot 11-after-live-player.png 1080x2400
+17:25:38 == offline
+17:26:14 screenshot 12-offline.png 2400x1080
+17:26:14 offline:  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+17:26:26 screenshot 13-back-online.png 2400x1080
+17:26:30 == commentator
+17:26:51 screenshot 14-player-sport1.png 2400x1080
+17:26:57 screenshot 15-player-sport1-controls.png 2400x1080
+17:27:07 screenshot 16-sources-panel.png 2400x1080
+17:27:10 sources:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | الاحتياطي ضد انقطاع النت: 60 من 60 ث | المعلق والجودة | اختر المعلق، أو اسمع معلق قناة أخرى على هذه الصورة |  |  |  |  | المعلق في هذا البث |  | العربية |  |  | الإنجليزية |  |  | تنقل نفس المباراة الآن | S | Sky Sports Main | LaLiga: Real Madrid v Barcelona |  | سماع معلقها |  |  | انتقال |  | نسخ أخرى من القناة | Sport 1 4K | 4K | الدوري الإسباني: ريا
+17:27:14 screenshot 17-sources-second-commentator.png 2400x1080
+17:27:31 screenshot 18-player-sport1-4k.png 2400x1080
+17:27:38 == commentary-mix
+17:27:58 screenshot 19-mix-player.png 2400x1080
+17:28:11 screenshot 20-mix-panel.png 2400x1080
+17:28:11 mix panel:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | الاحتياطي ضد انقطاع النت: 60 من 60 ث | المعلق والجودة | اختر المعلق، أو اسمع معلق قناة أخرى على هذه الصورة |  |  |  |  | المعلق في هذا البث |  | العربية |  |  | الإنجليزية |  |  | تنقل نفس المباراة الآن | S | Sky Sports Main | LaLiga: Real Madrid v Barcelona |  | سماع معلقها |  |  | انتقال |  | نسخ أخرى من القناة | Sport 1 4K | 4K | الدوري الإسباني: ريال مدريد × برشلونة |  | سماع معلقها |  |  | انتقال |  |  |  |  | 
+17:28:20 screenshot 21-mix-on.png 2400x1080
+17:28:29 screenshot 22-mix-shifted.png 2400x1080
+17:28:39 screenshot 23-mix-playing.png 2400x1080
+17:28:46 == guide
+17:28:56 screenshot 24-guide.png 1080x2400
+17:28:57 == movies
+17:29:05 screenshot 25-movies.png 1080x2400
+17:29:12 screenshot 26-movie-detail.png 1080x2400
+17:29:15 4K copy offered: True
+17:29:41 screenshot 27-player-movie.png 2400x1080
+17:29:45 screenshot 28-player-movie-controls.png 2400x1080
+17:29:52 screenshot 29-movie-detail-resume.png 1080x2400
+17:29:54 == subtitles
+17:30:21 screenshot 30-subs-player.png 2400x1080
+17:30:39 screenshot 31-subs-panel.png 2400x1080
+17:30:39 subtitles panel:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | الاحتياطي ضد انقطاع النت: 60 من 60 ث | الترجمة | ترجمة الفيلم أو الحلقة بأي لغة، وتُترجم آلياً إذا لم تتوفر بلغتك |  |  |  |  | لغة الترجمة |  | العربية | اضغط لتغيير اللغة |  | ترجمات متاحة |  | Silent.Sea.2019.AR | العربية · 10 تنزيل |  |  | Silent.Sea.2019.1080p.WEB | الإنجليزية · تُترجم آلياً إلى العربية · 100 تنزيل |  | حجم الخط |  | صغير |  |  | متوسط |  |  | كبير |  |  | كبير جداً |  | التوقيت |  |  |  |  |  | 
+17:30:45 screenshot 32-subs-chosen.png 2400x1080
+17:30:54 screenshot 33-subs-on-screen.png 2400x1080
+17:30:54 subtitle on screen: 'We sail at dawn'
+17:30:55 == subtitles-translated
+17:31:14 screenshot 34-subs-translated.png 2400x1080
+17:31:14 translated line: 'نحن تبحرون في الفجر'
+17:31:21 == series
+17:31:29 screenshot 35-series.png 1080x2400
+17:31:36 screenshot 36-series-detail.png 1080x2400
+17:31:40 screenshot 37-series-season2.png 1080x2400
+17:32:01 screenshot 38-player-episode.png 2400x1080
+17:32:07 screenshot 39-series-detail-after.png 1080x2400
+17:32:09 == home-after
+17:32:17 screenshot 40-home-after.png 1080x2400
+17:32:17 == search
+17:32:26 screenshot 41-search.png 1080x2400
+17:32:28 == settings
+17:32:36 screenshot 42-settings.png 1080x2400
+17:32:36 == parental
+17:32:57 screenshot 43-pin-dialog.png 1080x2400
+17:33:01 screenshot 44-settings-parental-on.png 1080x2400
+17:33:01 == adult-hidden
+17:33:15 screenshot 45-search-adult.png 1080x2400
+17:33:17 == speed-test
+17:33:43 screenshot 46-speed-test.png 1080x2400
+17:33:43 speed:  |  |  |  |  |  |  |  | قياس سرعة النت | 26.1 | ميجابت في الثانية | ممتاز: يكفي لبث 4K | زمن الاستجابة | 5 ملي ثانية | استجابة سيرفر الاشتراك | 2 ملي ثانية |  | إغلاق |  |  | إعادة القياس | 
+17:33:46 == clear-history
+17:34:12 screenshot 47-clear-history-dialog.png 1080x2400
+17:34:24 screenshot 48-home-history-cleared.png 1080x2400
+17:34:24 == relaunch
+17:34:33 screenshot 49-relaunch.png 1080x2400
+17:34:33 == switch-to-m3u
+17:34:59 screenshot 50-login-m3u-bad.png 1080x2400
+17:35:05 screenshot 51-login-m3u.png 1080x2400
+17:35:19 screenshot 52-home-m3u.png 1080x2400
+17:35:19 == m3u-content
+17:35:27 screenshot 53-live-m3u.png 1080x2400
+17:35:40 screenshot 54-player-m3u.png 2400x1080
+17:35:49 screenshot 55-series-m3u.png 1080x2400
+17:35:56 screenshot 56-series-detail-m3u.png 1080x2400
+17:35:57 == users
+17:36:05 screenshot 57-users.png 1080x2400
+17:36:27 screenshot 58-user1-favorites.png 1080x2400
