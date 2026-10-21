@@ -22,9 +22,11 @@ import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.HttpDataSource
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.upstream.DefaultLoadErrorHandlingPolicy
 import com.ratv.app.data.Channel
 import com.ratv.app.data.Episode
 import com.ratv.app.data.Http
@@ -137,11 +139,13 @@ fun episodePlayable(ep: Episode, seriesId: String, seriesName: String?, cover: S
 )
 
 @androidx.annotation.OptIn(UnstableApi::class)
-fun createPlayer(context: Context, bufferMode: String): ExoPlayer {
+fun createPlayer(context: Context, bufferMode: String, bestQuality: Boolean): ExoPlayer {
+    // min buffer, max buffer, needed to start, needed to resume after a stall (ms)
     val durations = when (bufferMode) {
         "small" -> intArrayOf(5_000, 20_000, 1_000, 2_000)
-        "large" -> intArrayOf(30_000, 90_000, 3_000, 6_000)
-        else -> intArrayOf(15_000, 50_000, 2_000, 4_000)
+        "medium" -> intArrayOf(15_000, 50_000, 2_000, 4_000)
+        "max" -> intArrayOf(50_000, 150_000, 8_000, 12_000)
+        else -> intArrayOf(30_000, 90_000, 3_000, 6_000)
     }
     val http = DefaultHttpDataSource.Factory()
         .setUserAgent(Http.USER_AGENT)
@@ -156,12 +160,46 @@ fun createPlayer(context: Context, bufferMode: String): ExoPlayer {
         .setUsage(C.USAGE_MEDIA)
         .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
         .build()
-    return ExoPlayer.Builder(context)
-        .setMediaSourceFactory(DefaultMediaSourceFactory(dataSourceFactory))
+    // Retry failed downloads several times before giving up, so short network drops do not stop playback.
+    val mediaSourceFactory = DefaultMediaSourceFactory(dataSourceFactory)
+        .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(8))
+    val player = ExoPlayer.Builder(context)
+        .setMediaSourceFactory(mediaSourceFactory)
         .setLoadControl(loadControl)
         .setAudioAttributes(audioAttributes, true)
         .setHandleAudioBecomingNoisy(true)
         .build()
+    if (bestQuality) {
+        player.trackSelectionParameters = player.trackSelectionParameters.buildUpon()
+            .setForceHighestSupportedBitrate(true)
+            .build()
+    }
+    return player
+}
+
+/** Network hiccups and server overloads are worth reconnecting for; a refused login is not. */
+@androidx.annotation.OptIn(UnstableApi::class)
+fun isRetryable(e: PlaybackException): Boolean = when (e.errorCode) {
+    PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
+    PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT,
+    PlaybackException.ERROR_CODE_IO_UNSPECIFIED,
+    PlaybackException.ERROR_CODE_IO_READ_POSITION_OUT_OF_RANGE,
+    PlaybackException.ERROR_CODE_PARSING_CONTAINER_MALFORMED,
+    PlaybackException.ERROR_CODE_TIMEOUT,
+    PlaybackException.ERROR_CODE_UNSPECIFIED -> true
+    PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS ->
+        ((e.cause as? HttpDataSource.InvalidResponseCodeException)?.responseCode ?: 0) >= 500
+    else -> false
+}
+
+/** The real height of the picture being shown, as people usually name it. */
+fun resolutionLabel(height: Int): String? = when {
+    height <= 0 -> null
+    height >= 2000 -> "4K"
+    height >= 1400 -> "1440p"
+    height >= 1000 -> "1080p"
+    height >= 700 -> "720p"
+    else -> "${height}p"
 }
 
 fun describeError(e: PlaybackException): String = when (e.errorCode) {

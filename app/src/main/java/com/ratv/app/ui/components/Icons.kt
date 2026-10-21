@@ -108,6 +108,7 @@ object RIcons {
         stroke("sliders", "M20 7h-9M6 7H4M20 17h-3M12 17H4", circle(8.5f, 7f, 2.5f), circle(14.5f, 17f, 2.5f))
     }
     val Captions: ImageVector by lazy { stroke("captions", rrect(3f, 5f, 18f, 14f, 2.5f), "M7 14.5h3.5M13.5 14.5H17M7 11h2M12 11h5") }
+    val Mic: ImageVector by lazy { stroke("mic", rrect(9f, 3f, 6f, 11f, 3f), "M5.5 11a6.5 6.5 0 0 0 13 0", "M12 17.5V21", "M8.5 21h7") }
     val Pip: ImageVector by lazy { stroke("pip", rrect(2.5f, 4.5f, 19f, 15f, 2.5f), rrect(12f, 11.5f, 7f, 5.5f, 1.2f)) }
     val Aspect: ImageVector by lazy {
         stroke("aspect", "M8 3.5H5.5a2 2 0 0 0-2 2V8M20.5 8V5.5a2 2 0 0 0-2-2H16M3.5 16v2.5a2 2 0 0 0 2 2H8M16 20.5h2.5a2 2 0 0 0 2-2V16")

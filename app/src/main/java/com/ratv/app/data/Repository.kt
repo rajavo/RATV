@@ -69,6 +69,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
     val lastUpdated: StateFlow<Long> = _lastUpdated.asStateFlow()
 
     @Volatile private var channelIndex: Map<String, Channel> = emptyMap()
+    @Volatile private var siblingIndex: Map<String, List<Channel>> = emptyMap()
     @Volatile private var movieIndex: Map<String, Movie> = emptyMap()
     @Volatile private var seriesIndex: Map<String, SeriesItem> = emptyMap()
     @Volatile private var m3uEpisodes: Map<String, Map<Int, List<Episode>>> = emptyMap()
@@ -370,6 +371,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
     private fun setChannels(list: List<Channel>) {
         val unique = list.distinctBy { it.id }
         channelIndex = unique.associateBy { it.id }
+        siblingIndex = unique.groupBy { channelKey(it.name) }.filterValues { it.size > 1 }
         _channels.value = unique
     }
 
@@ -388,6 +390,15 @@ class Repository(private val context: Context, val prefs: Prefs) {
     // ------------------------------------------------------------- lookups
 
     fun channel(id: String): Channel? = channelIndex[id]
+
+    /** Other versions of the same channel (another quality, language or commentator), best quality first. */
+    fun siblings(ch: Channel): List<Channel> {
+        val group = siblingIndex[channelKey(ch.name)] ?: return emptyList()
+        val hidden = _hideAdult.value
+        return group
+            .filter { it.id != ch.id && (!hidden || !isAdultName(it.name)) }
+            .sortedWith(compareByDescending<Channel> { qualityRank(it.quality) }.thenBy { it.num })
+    }
     fun movie(id: String): Movie? = movieIndex[id]
     fun seriesItem(id: String): SeriesItem? = seriesIndex[id]
     fun cachedSeriesInfo(id: String): SeriesInfo? = seriesInfoCache[id]

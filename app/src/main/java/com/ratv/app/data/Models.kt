@@ -144,6 +144,39 @@ fun qualityOf(name: String): String? {
     }
 }
 
+/** Higher is better: used to list the best version of a channel first. */
+fun qualityRank(quality: String?): Int = when (quality) {
+    "4K" -> 4
+    "FHD" -> 3
+    "HD", "HEVC" -> 2
+    "SD" -> 1
+    else -> 0
+}
+
+private val KEY_PUNCTUATION = Regex("""[\[\](){}|:;,_\-+*/\\#@!~"'.«»]""")
+private val KEY_CODECS = Regex("""h\.?26[45]""")
+private val KEY_SPACES = Regex("""\s+""")
+private val KEY_NOISE = setOf(
+    "4k", "uhd", "fhd", "hd", "sd", "hq", "lq", "hevc", "1080", "1080p", "720", "720p", "2160", "2160p",
+    "50fps", "60fps", "fps", "backup", "vip", "raw", "plus", "multi", "audio", "live",
+    "ar", "en", "fr", "tr", "de", "es", "it", "arabic", "english", "french", "turkish",
+    "عربي", "العربي", "انجليزي", "إنجليزي", "الانجليزي", "فرنسي", "احتياطي", "بديل", "مباشر"
+)
+
+/**
+ * The same channel under different qualities or languages ("AR: beIN SPORTS 1 FHD",
+ * "beIN Sports 1 4K", "beIN SPORTS 1 EN") shares one key.
+ */
+fun channelKey(name: String): String {
+    val cleaned = name.lowercase()
+        .replace(KEY_CODECS, " ")
+        .replace(KEY_PUNCTUATION, " ")
+    val tokens = cleaned.split(KEY_SPACES)
+        .filter { it.isNotBlank() && it !in KEY_NOISE }
+        .map { if (it == "sports") "sport" else it }
+    return if (tokens.isEmpty()) name.lowercase().trim() else tokens.joinToString(" ")
+}
+
 fun yearOf(name: String): String? = YEAR_REGEX.find(name)?.value
 
 fun isAdultName(name: String): Boolean {

@@ -101,8 +101,13 @@ class Prefs(context: Context) {
     }
 
     var bufferMode: String
-        get() = sp.getString("buffer", "medium") ?: "medium"
+        get() = sp.getString("buffer", "large") ?: "large"
         set(value) = sp.edit().putString("buffer", value).apply()
+
+    /** Always take the highest quality an adaptive stream offers. */
+    var bestQuality: Boolean
+        get() = sp.getBoolean("bestQuality", true)
+        set(value) = sp.edit().putBoolean("bestQuality", value).apply()
 
     var autoplayLast: Boolean
         get() = sp.getBoolean("autoplayLast", false)
