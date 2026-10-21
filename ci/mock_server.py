@@ -119,7 +119,7 @@ def user_info(auth=1):
         "user_info": {
             "username": USER, "password": PASS, "message": "", "auth": auth,
             "status": "Active", "exp_date": str(NOW + 30 * 86400), "is_trial": "0",
-            "active_cons": "0", "created_at": str(NOW - 90 * 86400), "max_connections": "2",
+            "active_cons": "0", "created_at": str(NOW - 90 * 86400), "max_connections": "2", "allowed_output_formats": ["m3u8", "ts"],
             "allowed_output_formats": ["m3u8", "ts"],
         },
         "server_info": {
@@ -388,6 +388,9 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(xmltv().encode("utf-8"), "application/xml; charset=utf-8")
         if p in ("/playlist.m3u", "/get.php"):
             return self._send(m3u().encode("utf-8"), "audio/x-mpegurl; charset=utf-8")
+        if p.startswith("/live/") and p.endswith(".m3u8"):
+            # Says it allows HLS but has none: the app must fall back to TS by itself.
+            return self.send_error(404)
         if p.startswith("/live/"):
             name = "live_multi.ts" if os.path.basename(p).startswith("201.") else "live.ts"
             return self.send_file(os.path.join(MEDIA, name), "video/mp2t")

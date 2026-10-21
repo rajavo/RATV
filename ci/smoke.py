@@ -344,7 +344,9 @@ def s_play_live():
     if n is None:
         raise RuntimeError("channel row missing")
     tap_node(n)
-    time.sleep(12)
+    _, c = wait_for(timeout=8, contains="جارٍ التخزين المؤقت")
+    log("cache countdown seen: %s" % (c is not None))
+    time.sleep(10)
     w, h = shot("player-live")
     tap(w // 2, h // 3)
     time.sleep(1)
