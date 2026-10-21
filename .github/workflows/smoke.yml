@@ -1,6 +1,6 @@
 name: Smoke test
 
-# Temporary end-to-end check on an Android emulator against a fake provider.
+# Temporary end-to-end check on Android emulators (phone and TV) against a fake provider.
 on:
   push:
     branches: [ ci-smoke ]
@@ -9,26 +9,55 @@ permissions:
   contents: write
 
 jobs:
-  smoke:
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Java 17
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-
+      - uses: gradle/actions/setup-gradle@v4
       - name: Build release APK
         run: |
           chmod +x gradlew
           ./gradlew --no-daemon assembleRelease
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: |
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/mapping/release/mapping.txt
+
+  emulator:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - device: phone
+            api: 34
+            target: google_apis
+            arch: x86_64
+            profile: pixel_6
+            script: ci/smoke.py
+            hwkeyboard: true
+          - device: tv
+            api: 30
+            target: android-tv
+            arch: x86
+            profile: tv_1080p
+            script: ci/smoke_tv.py
+            hwkeyboard: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: apk
+          path: apk
 
       - name: Prepare test media
         run: |
@@ -39,7 +68,6 @@ jobs:
           for i in 1 2 3 4 5; do
             ffmpeg -hide_banner -loglevel error -f lavfi -i "color=c=0x$(printf '%02x%02x%02x' $((i*45)) $((210-i*30)) $((90+i*25))):s=256x256" -frames:v 1 ci/media/l$i.png
           done
-          ls -la ci/media
 
       - name: Start mock IPTV server
         run: |
@@ -53,30 +81,34 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Run the app on an emulator
+      - name: Run the app on the ${{ matrix.device }} emulator
         uses: reactivecircus/android-emulator-runner@v2
+        env:
+          SMOKE_OUT: smoke-results/${{ matrix.device }}
         with:
-          api-level: 34
-          target: google_apis
-          arch: x86_64
-          profile: pixel_6
+          api-level: ${{ matrix.api }}
+          target: ${{ matrix.target }}
+          arch: ${{ matrix.arch }}
+          profile: ${{ matrix.profile }}
           cores: 3
           ram-size: 3072M
           disable-animations: false
-          enable-hw-keyboard: true
+          enable-hw-keyboard: ${{ matrix.hwkeyboard }}
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: |
-            adb install -r app/build/outputs/apk/release/app-release.apk
-            python3 ci/smoke.py
+            adb install -r apk/apk/release/app-release.apk || adb install -r apk/app-release.apk
+            python3 ${{ matrix.script }}
 
       - name: Save results to the branch
         if: always()
         run: |
-          mkdir -p smoke-results
-          cp ci/server.log smoke-results/server.log 2>/dev/null || true
-          gzip -c app/build/outputs/mapping/release/mapping.txt > smoke-results/mapping.txt.gz 2>/dev/null || true
+          mkdir -p smoke-results/${{ matrix.device }}
+          cp ci/server.log smoke-results/${{ matrix.device }}/server.log 2>/dev/null || true
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f smoke-results
-          git commit -q -m "Smoke test results" || true
-          git push origin HEAD:ci-smoke
+          git commit -q -m "Smoke test results (${{ matrix.device }})" || true
+          for i in 1 2 3 4 5; do
+            git pull -q --rebase origin ci-smoke && git push -q origin HEAD:ci-smoke && break
+            sleep 5
+          done

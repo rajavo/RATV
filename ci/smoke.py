@@ -10,7 +10,7 @@ import subprocess
 import time
 import xml.etree.ElementTree as ET
 
-OUT = os.path.abspath("smoke-results")
+OUT = os.path.abspath(os.environ.get("SMOKE_OUT", "smoke-results"))
 os.makedirs(OUT, exist_ok=True)
 PKG = "com.ratv.app"
 results = []
@@ -234,7 +234,7 @@ def s_login_screen():
 
 
 def s_wrong_password():
-    fill_fields([(1, "http://10.0.2.2:8000"), (2, "test"), (3, "wrong")])
+    fill_fields([(0, "http://10.0.2.2:8000"), (1, "test"), (2, "wrong")])
     tap_where(text="دخول")
     _, n = wait_for(timeout=40, contains="غير صحيحة", save="login-error")
     shot("login-error")
@@ -245,7 +245,7 @@ def s_wrong_password():
 def s_xtream_login():
     root = dump()
     edits = [n for n in nodes(root) if n.get("class") == "android.widget.EditText"]
-    tap_node(edits[3])
+    tap_node(edits[2])
     shell("input keyevent 123")  # move to end
     for _ in range(8):
         shell("input keyevent 67")  # delete "wrong"
@@ -412,7 +412,7 @@ def s_switch_to_m3u():
     if n is None:
         raise RuntimeError("login screen not shown after switching")
     tap_where(text="رابط M3U")
-    fill_fields([(1, "http://10.0.2.2:8000/playlist.m3u")])
+    fill_fields([(0, "http://10.0.2.2:8000/playlist.m3u")])
     shot("login-m3u")
     tap_where(text="إضافة القائمة")
     _, n = wait_for(timeout=90, text="الرئيسية", save="home-m3u")
