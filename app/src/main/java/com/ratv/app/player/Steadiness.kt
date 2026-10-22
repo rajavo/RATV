@@ -89,8 +89,10 @@ class SteadyLoadControl(
     override fun shouldStartPlayback(parameters: LoadControl.Parameters): Boolean {
         val extra = Steadiness.extraMs
         if (extra <= 0L) return super.shouldStartPlayback(parameters)
-        val needMs = if (parameters.rebuffering) afterStallMs + extra else startMs + extra / 2
+        var needUs = (if (parameters.rebuffering) afterStallMs + extra else startMs + extra / 2) * 1000L
+        // An HLS channel cannot store more than its distance from the live edge: wait for half of it at most.
+        if (parameters.targetLiveOffsetUs != C.TIME_UNSET) needUs = minOf(needUs, parameters.targetLiveOffsetUs / 2)
         val buffered = Util.getPlayoutDurationForMediaDuration(parameters.bufferedDurationUs, parameters.playbackSpeed)
-        return buffered >= needMs * 1000L || allocator.totalBytesAllocated >= targetBytes
+        return buffered >= needUs || allocator.totalBytesAllocated >= targetBytes
     }
 }

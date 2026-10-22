@@ -339,6 +339,9 @@ fun isRetryable(e: PlaybackException): Boolean = when (e.errorCode) {
     PlaybackException.ERROR_CODE_IO_READ_POSITION_OUT_OF_RANGE,
     PlaybackException.ERROR_CODE_PARSING_CONTAINER_MALFORMED,
     PlaybackException.ERROR_CODE_TIMEOUT,
+    // Damaged data from the stream can upset the decoder or the sound output for a moment.
+    PlaybackException.ERROR_CODE_DECODING_FAILED,
+    PlaybackException.ERROR_CODE_AUDIO_TRACK_WRITE_FAILED,
     PlaybackException.ERROR_CODE_UNSPECIFIED -> true
     PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS ->
         ((e.cause as? HttpDataSource.InvalidResponseCodeException)?.responseCode ?: 0) >= 500

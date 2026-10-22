@@ -1,6 +1,7 @@
 package com.ratv.app.data
 
 import android.os.SystemClock
+import okhttp3.Dns
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.BufferedInputStream
@@ -8,10 +9,27 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
+import java.net.InetAddress
+import java.net.UnknownHostException
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import java.util.zip.GZIPInputStream
 
 class HttpException(val code: Int) : IOException("HTTP $code")
+
+/**
+ * Name lookups: when one fails (the first thing to fail on a shaky line), the address found last
+ * time is used, so a reconnect does not wait for the name server.
+ */
+object StickyDns : Dns {
+    private val known = ConcurrentHashMap<String, List<InetAddress>>()
+
+    override fun lookup(hostname: String): List<InetAddress> = try {
+        Dns.SYSTEM.lookup(hostname).also { if (it.isNotEmpty()) known[hostname] = it }
+    } catch (e: UnknownHostException) {
+        known[hostname] ?: throw e
+    }
+}
 
 object Http {
     const val USER_AGENT = "RATV/1.0 (Android)"
@@ -23,6 +41,7 @@ object Http {
             .followRedirects(true)
             .followSslRedirects(true)
             .retryOnConnectionFailure(true)
+            .dns(StickyDns)
             .addInterceptor { chain ->
                 val request = chain.request()
                 val withAgent = if (request.header("User-Agent") == null) {
