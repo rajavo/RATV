@@ -111,6 +111,8 @@ fun MatchesScreen(nav: Navigator) {
                     Text("جدول المباريات", style = T.display(26.sp))
                     Text("من دليل البرامج في اشتراكك، مع كل القنوات الناقلة لكل مباراة", style = T.caption)
                 }
+                Spacer(Modifier.width(12.dp))
+                KoraButton()
             }
         }
         item {
