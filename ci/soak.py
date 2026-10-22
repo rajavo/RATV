@@ -9,7 +9,7 @@ os.environ.setdefault("SMOKE_OUT", "soak-results/phone")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import smoke as S  # noqa: E402
 
-MINUTES = 8
+MINUTES = 10
 KEYS = {
     "reconnects": "RATVLive: reconnected",
     "joined": "joined the new connection",
@@ -27,8 +27,19 @@ def counts():
 
 
 def memory():
-    out = S.shell("dumpsys meminfo com.ratv.app | grep -E 'TOTAL PSS|TOTAL:'")
-    return " ".join(out.split())[:160]
+    """Java heap, native heap, graphics and total, in MB, from the app's memory summary."""
+    out = S.shell("dumpsys meminfo com.ratv.app")
+    vals = {}
+    for line in out.splitlines():
+        parts = line.split()
+        for name, key in (("Java Heap:", "java"), ("Native Heap:", "native"), ("Graphics:", "graphics"), ("TOTAL PSS:", "total")):
+            label = name.split()
+            if parts[:len(label)] == label and len(parts) > len(label):
+                try:
+                    vals[key] = round(int(parts[len(label)]) / 1024)
+                except ValueError:
+                    pass
+    return json.dumps(vals)
 
 
 def soak():
@@ -51,7 +62,7 @@ def soak():
     while time.time() < end:
         time.sleep(60)
         minute += 1
-        S.log("minute %d: %s" % (minute, json.dumps(counts())))
+        S.log("minute %d: %s memory %s" % (minute, json.dumps(counts()), memory()))
     w, h = S.shot("soak-end")
     S.open_from_controls("معلومات البث", w, h)
     time.sleep(2)
