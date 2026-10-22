@@ -727,7 +727,10 @@ def s_speed_test():
         raise RuntimeError("speed test gave no result: " + texts[:300])
 
 
-def play_test_channel(name, seconds, tag):
+PLAYER_CONNECTIONS = {}  # server connections counted while the player was still open, by channel
+
+
+def play_test_channel(name, seconds, tag, sid=None):
     """Opens a test channel from the full list, plays it, and returns the stall count it shows."""
     tap_where(text="الكل")
     time.sleep(1)
@@ -758,6 +761,9 @@ def play_test_channel(name, seconds, tag):
                     return stalls
         raise RuntimeError("stall count not shown: " + texts[:200])
     finally:
+        # Counted before leaving: back on the list, a wide layout may start its own preview.
+        if sid is not None:
+            PLAYER_CONNECTIONS[sid] = server_connections(sid)
         back()
         time.sleep(2)
 
@@ -791,8 +797,8 @@ def s_frozen():
 
 def s_chunky():
     """A healthy server that sends in 2 s chunks: no stalls, and no needless reconnects."""
-    stalls = play_test_channel("Chunky Live", 40, "chunky")
-    conns = server_connections(109)
+    stalls = play_test_channel("Chunky Live", 40, "chunky", sid=109)
+    conns = PLAYER_CONNECTIONS.get(109, server_connections(109))
     log("chunky: stalls %d, connections %d" % (stalls, conns))
     if stalls > 0:
         raise RuntimeError("the chunked channel stalled %d times" % stalls)
