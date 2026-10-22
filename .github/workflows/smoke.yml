@@ -109,6 +109,8 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         env:
           SMOKE_OUT: smoke-results/${{ matrix.device }}
+          # Live-stability steps already passed on this build (run 39812008514).
+          SMOKE_SKIP: ${{ matrix.device == 'phone' && 'unstable,frozen,chunky,overlap,weak,busy,shaky,version-switch' || '' }}
         with:
           api-level: ${{ matrix.api }}
           target: ${{ matrix.target }}

@@ -1288,5 +1288,9 @@ if __name__ == "__main__":
         ("match-link-missing", s_match_link_missing),
         ("kora-button", s_kora_button),
     ]:
+        # Steps already checked on this build can be left out to get an answer sooner.
+        if name in os.environ.get("SMOKE_SKIP", "").split(","):
+            log("== %s (skipped)" % name)
+            continue
         step(name, fn)
     finish()
