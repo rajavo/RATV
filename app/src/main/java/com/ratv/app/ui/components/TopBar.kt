@@ -30,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -77,7 +79,8 @@ fun TopBar(current: String, onSelect: (String) -> Unit, onSearch: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             // The slogan beside the logo whenever the screen is as wide as a TV's (960).
-            RatvLogo(fontSize = 22.sp, slogan = width >= 940)
+            // The slogan only where it fits beside the sections (a long translation leaves it out).
+            RatvLogo(fontSize = 22.sp, slogan = width >= 940 && com.ratv.app.ui.theme.SLOGAN.length <= 34)
             Spacer(Modifier.width(20.dp))
             tvNavItems.forEachIndexed { index, item ->
                 if (index > 0) {
@@ -170,6 +173,8 @@ private fun SearchPill(onClick: () -> Unit, modifier: Modifier = Modifier) {
                 .background(RColors.Surface)
                 .border(1.dp, RColors.LineStrong, shape)
                 .tvClickable(shape, onClickLabel = tr("بحث"), onClick = onClick)
+                // Named even when only the icon shows.
+                .semantics { contentDescription = tr("ابحث") }
                 .padding(horizontal = if (hint == null) 0.dp else 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = if (hint == null) Arrangement.Center else Arrangement.spacedBy(10.dp)
