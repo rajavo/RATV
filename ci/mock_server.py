@@ -48,6 +48,10 @@ CHANNELS = [
     (109, 16, "Chunky Live", "1", "", None),
     # Cut every 7 s, and each new connection repeats the last 4 s (a burst, like real servers).
     (110, 17, "Overlap Live", "1", "", None),
+    # A weak server: no burst, and every 12 s it stops for 7 s, then sends what it owes.
+    (112, 19, "Weak Server", "1", "", None),
+    # A busy server: refuses the first two connections (403), then sends normally.
+    (113, 20, "Busy Server", "1", "", None),
 ]
 # The same game, named in Arabic on one channel and in English on another.
 MATCH = {
@@ -392,6 +396,42 @@ class Handler(BaseHTTPRequestHandler):
             note("client-left", channel=sid)
         self.close_connection = True
 
+    def send_live_weak(self, path, sid=112):
+        size = os.path.getsize(path)
+        rate = size / 240.0
+        now = time.time()
+        t0 = CHANNEL_T0.setdefault(sid, now)
+        CONNECTIONS[sid] = CONNECTIONS.get(sid, 0) + 1
+        pos = (int((now - t0) * rate) % size) // 188 * 188
+        note("connect", channel=sid, n=CONNECTIONS[sid])
+        self.send_response(200)
+        self.send_header("Content-Type", "video/mp2t")
+        self.end_headers()
+        started = time.time()
+        sent = 0
+        next_pause = started + 12.0
+        try:
+            with open(path, "rb") as f:
+                f.seek(pos)
+                while True:
+                    if time.time() >= next_pause:
+                        note("pause", channel=sid)
+                        time.sleep(7.0)  # silent; the pacing below then catches up
+                        next_pause = time.time() + 12.0
+                    data = f.read(int(0.05 * rate) // 188 * 188)
+                    if not data:
+                        f.seek(0)
+                        continue
+                    self.wfile.write(data)
+                    self.wfile.flush()
+                    sent += len(data)
+                    ahead = sent / rate - (time.time() - started)
+                    if ahead > 0:
+                        time.sleep(ahead)
+        except (BrokenPipeError, ConnectionResetError, OSError):
+            note("client-left", channel=sid)
+        self.close_connection = True
+
     def send_file(self, path, ctype):
         if not os.path.exists(path):
             self.send_error(404)
@@ -506,6 +546,14 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_live_paced(os.path.join(MEDIA, "live.ts"), 108, stop_after=12.0)
         if p.startswith("/live/") and os.path.basename(p).startswith("109."):
             return self.send_live_paced(os.path.join(MEDIA, "live.ts"), 109, chunk_seconds=2.0)
+        if p.startswith("/live/") and os.path.basename(p).startswith("112."):
+            return self.send_live_weak(os.path.join(MEDIA, "live.ts"))
+        if p.startswith("/live/") and os.path.basename(p).startswith("113."):
+            CONNECTIONS[113] = CONNECTIONS.get(113, 0) + 1
+            if CONNECTIONS[113] <= 2:
+                note("refused", channel=113, n=CONNECTIONS[113])
+                return self.send_error(403)
+            return self.send_live_paced(os.path.join(MEDIA, "live.ts"), 1113)
         if p.startswith("/live/") and os.path.basename(p).startswith("110."):
             return self.send_live_paced(os.path.join(MEDIA, "live.ts"), 110, cut_after=7.0, burst_seconds=4.0)
         if p.startswith("/live/") and os.path.basename(p).startswith("107."):

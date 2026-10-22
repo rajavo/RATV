@@ -821,6 +821,27 @@ def s_overlap():
         raise RuntimeError("the picture jumped back after a reconnect: %s" % delta)
 
 
+def s_weak():
+    """A weak server stops for 7 s every 12 s: after at most one stall RATV stores more and plays on."""
+    before = live_log("steadiness level", "RATVPlayback: stall")
+    stalls = play_test_channel("Weak Server", 90, "weak")
+    after = live_log("steadiness level", "RATVPlayback: stall")
+    log("weak: stalls %d, levels %d, connections %d" % (
+        stalls, after["steadiness level"] - before["steadiness level"], server_connections(112)))
+    if stalls > 2:
+        raise RuntimeError("the weak server's channel stalled %d times in 90 s" % stalls)
+
+
+def s_busy():
+    """A busy server refuses the first two connections: RATV tries again and plays."""
+    stalls = play_test_channel("Busy Server", 25, "busy")
+    with open(os.path.join(OUT, "busy-stats.xml"), encoding="utf-8") as f:
+        texts = f.read()
+    log("busy: stalls %d, refused %d times" % (stalls, server_connections(113)))
+    if "1280×720" not in texts and "1280&#215;720" not in texts:
+        raise RuntimeError("the busy server's channel did not play")
+
+
 def s_matches():
     """The schedule lists the test game once, with every channel showing it; a channel plays."""
     tap_where(text="جدول المباريات")
@@ -1050,6 +1071,8 @@ if __name__ == "__main__":
         ("frozen", s_frozen),
         ("chunky", s_chunky),
         ("overlap", s_overlap),
+        ("weak", s_weak),
+        ("busy", s_busy),
         ("matches", s_matches),
         ("commentator", s_commentator),
         ("commentary-mix", s_commentary_mix),
