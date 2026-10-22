@@ -37,93 +37,53 @@
   },
   {
    "step": "play-live",
-   "ok": true,
-   "error": ""
+   "ok": false,
+   "error": "RuntimeError('reserve not shown with the controls')"
   },
   {
    "step": "offline",
-   "ok": true,
-   "error": ""
-  },
-  {
-   "step": "unstable",
-   "ok": true,
-   "error": ""
-  },
-  {
-   "step": "frozen",
-   "ok": true,
-   "error": ""
-  },
-  {
-   "step": "chunky",
-   "ok": true,
-   "error": ""
-  },
-  {
-   "step": "overlap",
-   "ok": true,
-   "error": ""
-  },
-  {
-   "step": "weak",
-   "ok": true,
-   "error": ""
-  },
-  {
-   "step": "busy",
-   "ok": true,
-   "error": ""
-  },
-  {
-   "step": "shaky",
-   "ok": true,
-   "error": ""
-  },
-  {
-   "step": "version-switch",
-   "ok": true,
-   "error": ""
+   "ok": false,
+   "error": "RuntimeError('channel row missing')"
   },
   {
    "step": "matches",
-   "ok": true,
-   "error": ""
+   "ok": false,
+   "error": "RuntimeError(\"not found: {'text': 'جدول المباريات'}\")"
   },
   {
    "step": "commentator",
-   "ok": true,
-   "error": ""
+   "ok": false,
+   "error": "RuntimeError(\"not found: {'text': 'رياضة'}\")"
   },
   {
    "step": "commentary-mix",
-   "ok": true,
-   "error": ""
+   "ok": false,
+   "error": "RuntimeError(\"not found: {'text': 'رياضة'}\")"
   },
   {
    "step": "guide",
-   "ok": true,
-   "error": ""
+   "ok": false,
+   "error": "RuntimeError(\"not found: {'text': 'دليل البرامج'}\")"
   },
   {
    "step": "movies",
-   "ok": true,
-   "error": ""
+   "ok": false,
+   "error": "RuntimeError(\"not found: {'text': 'أفلام', 'bottom': True}\")"
   },
   {
    "step": "subtitles",
-   "ok": true,
-   "error": ""
+   "ok": false,
+   "error": "RuntimeError(\"not found: {'text': 'أفلام', 'bottom': True}\")"
   },
   {
    "step": "subtitles-translated",
-   "ok": true,
-   "error": ""
+   "ok": false,
+   "error": "RuntimeError('subtitles were not translated into Arabic')"
   },
   {
    "step": "series",
    "ok": false,
-   "error": "APP NOT RUNNING"
+   "error": "RuntimeError('episodes missing') APP NOT RUNNING"
   },
   {
    "step": "home-after",
@@ -209,7 +169,7 @@
  "system_dialogs": [],
  "anr": [],
  "pids": [
-  "6164"
+  "5550"
  ],
  "crash_buffer_lines": 0,
  "fatal": []

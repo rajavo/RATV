@@ -1542,3 +1542,140 @@ Complete
 16:56:53 !! RuntimeError("not found: {'text': 'مباشر', 'bottom': True}")
 16:56:53 screenshot 77-fail-kora-button.png 1080x2400
 16:56:53 !! app is not running
+17:21:10 == launch
+17:22:03 debug.ratv.subs=http://10.0.2.2:8000
+17:22:05 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 1989
+WaitTime: 1992
+Complete
+17:22:08 screenshot 01-splash.png 1080x2400
+17:22:08 == login-screen
+17:22:13 screenshot 02-login.png 1080x2400
+17:22:13 == wrong-password
+17:22:37 screenshot 03-login-error.png 1080x2400
+17:22:37 == xtream-login
+17:22:44 screenshot 04-login-filled.png 1080x2400
+17:23:04 screenshot 05-home.png 1080x2400
+17:23:04 == live
+17:23:12 screenshot 06-live.png 1080x2400
+17:23:12 == live-category
+17:23:19 screenshot 07-live-sport.png 1080x2400
+17:23:22 == favorite
+17:23:31 screenshot 08-live-favorites.png 1080x2400
+17:23:34 == play-live
+17:23:50 screenshot 09-player-live.png 2400x1080
+17:24:00 screenshot 10-player-live-controls.png 2400x1080
+17:24:00 !! RuntimeError('reserve not shown with the controls')
+17:24:01 screenshot 11-fail-play-live.png 2400x1080
+17:24:01 == offline
+17:24:13 !! RuntimeError('channel row missing')
+17:24:14 screenshot 12-fail-offline.png 2400x1080
+17:24:14 == unstable (skipped)
+17:24:14 == frozen (skipped)
+17:24:14 == chunky (skipped)
+17:24:14 == overlap (skipped)
+17:24:14 == weak (skipped)
+17:24:14 == busy (skipped)
+17:24:14 == shaky (skipped)
+17:24:14 == version-switch (skipped)
+17:24:14 == matches
+17:24:34 !! RuntimeError("not found: {'text': 'جدول المباريات'}")
+17:24:35 screenshot 13-fail-matches.png 2400x1080
+17:24:35 == commentator
+17:24:55 !! RuntimeError("not found: {'text': 'رياضة'}")
+17:24:57 screenshot 14-fail-commentator.png 2400x1080
+17:24:57 == commentary-mix
+17:25:21 !! RuntimeError("not found: {'text': 'رياضة'}")
+17:25:22 screenshot 15-fail-commentary-mix.png 2400x1080
+17:25:22 == guide
+17:25:42 !! RuntimeError("not found: {'text': 'دليل البرامج'}")
+17:25:43 screenshot 16-fail-guide.png 2400x1080
+17:25:43 == movies
+17:26:04 !! RuntimeError("not found: {'text': 'أفلام', 'bottom': True}")
+17:26:05 screenshot 17-fail-movies.png 2400x1080
+17:26:05 == subtitles
+17:26:29 !! RuntimeError("not found: {'text': 'أفلام', 'bottom': True}")
+17:26:30 screenshot 18-fail-subtitles.png 2400x1080
+17:26:30 == subtitles-translated
+17:30:38 screenshot 19-subs-translated.png 2400x1080
+17:30:38 translated line: None
+17:30:46 !! RuntimeError('subtitles were not translated into Arabic')
+17:30:46 screenshot 20-fail-subtitles-translated.png 2400x1080
+17:30:46 == series
+17:30:54 screenshot 21-series.png 2400x1080
+17:31:48 screenshot 22-series-detail.png 1080x2400
+17:31:48 !! RuntimeError('episodes missing')
+17:31:48 screenshot 23-fail-series.png 1080x2400
+17:31:48 !! app is not running
+17:31:52 == home-after
+17:32:16 !! RuntimeError("not found: {'text': 'الرئيسية', 'bottom': True}")
+17:32:16 screenshot 24-fail-home-after.png 1080x2400
+17:32:16 !! app is not running
+17:32:20 == search
+17:32:44 !! RuntimeError("not found: {'text': 'بحث'}")
+17:32:44 screenshot 25-fail-search.png 1080x2400
+17:32:44 !! app is not running
+17:32:48 == settings
+17:33:12 !! RuntimeError("not found: {'text': 'حسابي', 'bottom': True}")
+17:33:12 screenshot 26-fail-settings.png 1080x2400
+17:33:12 !! app is not running
+17:33:16 == palette
+17:34:53 !! RuntimeError('the colours row is missing from the settings')
+17:34:53 screenshot 27-fail-palette.png 1080x2400
+17:34:53 !! app is not running
+17:34:57 == parental
+17:35:50 !! RuntimeError("not found: {'contains': 'حجب محتوى البالغين'}")
+17:35:50 screenshot 28-fail-parental.png 1080x2400
+17:35:50 !! app is not running
+17:35:54 == adult-hidden
+17:36:18 !! RuntimeError("not found: {'text': 'الرئيسية', 'bottom': True}")
+17:36:18 screenshot 29-fail-adult-hidden.png 1080x2400
+17:36:18 !! app is not running
+17:36:22 == speed-test
+17:36:46 !! RuntimeError("not found: {'text': 'حسابي', 'bottom': True}")
+17:36:46 screenshot 30-fail-speed-test.png 1080x2400
+17:36:46 !! app is not running
+17:36:50 == clear-history
+17:38:26 !! RuntimeError('clear history row missing')
+17:38:26 screenshot 31-fail-clear-history.png 1080x2400
+17:38:26 !! app is not running
+17:38:30 == update
+17:38:54 !! RuntimeError("not found: {'text': 'حسابي', 'bottom': True}")
+17:38:54 screenshot 32-fail-update.png 1080x2400
+17:38:54 !! app is not running
+17:38:58 == relaunch
+17:39:46 screenshot 33-relaunch.png 1080x2400
+17:39:46 !! RuntimeError('saved playlist not restored after restart')
+17:39:46 screenshot 34-fail-relaunch.png 1080x2400
+17:39:46 !! app is not running
+17:39:50 == switch-to-m3u
+17:40:14 !! RuntimeError("not found: {'text': 'حسابي', 'bottom': True}")
+17:40:14 screenshot 35-fail-switch-to-m3u.png 1080x2400
+17:40:14 !! app is not running
+17:40:18 == m3u-content
+17:40:42 !! RuntimeError("not found: {'text': 'مباشر', 'bottom': True}")
+17:40:42 screenshot 36-fail-m3u-content.png 1080x2400
+17:40:42 !! app is not running
+17:40:46 == users
+17:41:10 !! RuntimeError("not found: {'text': 'حسابي', 'bottom': True}")
+17:41:10 screenshot 37-fail-users.png 1080x2400
+17:41:10 !! app is not running
+17:41:14 == match-link
+17:41:14 
+17:41:49 screenshot 38-match-link.png 1080x2400
+17:41:49 !! RuntimeError('the match link did not open the channels screen')
+17:41:49 screenshot 39-fail-match-link.png 1080x2400
+17:41:49 !! app is not running
+17:41:53 == match-link-missing
+17:41:53 
+17:42:27 screenshot 40-match-link-missing.png 1080x2400
+17:42:27 !! RuntimeError('no message for a match missing from the guide')
+17:42:27 screenshot 41-fail-match-link-missing.png 1080x2400
+17:42:27 !! app is not running
+17:42:31 == kora-button
+17:42:55 !! RuntimeError("not found: {'text': 'مباشر', 'bottom': True}")
+17:42:55 screenshot 42-fail-kora-button.png 1080x2400
+17:42:55 !! app is not running
