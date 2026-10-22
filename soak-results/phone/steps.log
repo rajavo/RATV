@@ -1,0 +1,33 @@
+00:14:36 == launch
+00:15:27 debug.ratv.subs=http://10.0.2.2:8000
+00:15:28 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 1319
+WaitTime: 1320
+Complete
+00:15:30 screenshot 01-splash.png 1080x2400
+00:15:30 == login-screen
+00:15:34 screenshot 02-login.png 1080x2400
+00:15:34 == wrong-password
+00:15:53 screenshot 03-login-error.png 1080x2400
+00:15:53 == xtream-login
+00:15:58 screenshot 04-login-filled.png 1080x2400
+00:16:14 screenshot 05-home.png 1080x2400
+00:16:14 == live
+00:16:21 screenshot 06-live.png 1080x2400
+00:16:21 == soak
+00:16:56 memory at start: TOTAL PSS: 63373 TOTAL RSS: 172488 TOTAL SWAP PSS: 226
+00:17:56 minute 1: {"reconnects": 2, "joined": 2, "not_joined": 0, "cut_stuck": 0, "stalls": 0, "went_back": 0, "jumped_ahead": 0}
+00:18:56 minute 2: {"reconnects": 4, "joined": 4, "not_joined": 0, "cut_stuck": 0, "stalls": 0, "went_back": 0, "jumped_ahead": 0}
+00:19:56 minute 3: {"reconnects": 7, "joined": 7, "not_joined": 0, "cut_stuck": 1, "stalls": 1, "went_back": 0, "jumped_ahead": 1}
+00:20:56 minute 4: {"reconnects": 10, "joined": 9, "not_joined": 0, "cut_stuck": 1, "stalls": 1, "went_back": 0, "jumped_ahead": 1}
+00:21:56 minute 5: {"reconnects": 12, "joined": 11, "not_joined": 1, "cut_stuck": 1, "stalls": 2, "went_back": 0, "jumped_ahead": 1}
+00:22:56 minute 6: {"reconnects": 15, "joined": 14, "not_joined": 1, "cut_stuck": 1, "stalls": 2, "went_back": 0, "jumped_ahead": 1}
+00:23:56 minute 7: {"reconnects": 18, "joined": 17, "not_joined": 1, "cut_stuck": 1, "stalls": 2, "went_back": 0, "jumped_ahead": 1}
+00:24:56 minute 8: {"reconnects": 21, "joined": 20, "not_joined": 1, "cut_stuck": 2, "stalls": 2, "went_back": 0, "jumped_ahead": 1}
+00:24:57 screenshot 07-soak-end.png 2400x1080
+00:25:17 screenshot 08-soak-stats.png 2400x1080
+00:25:17 stats:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | C | Chaos Live | 720p | مباشر |  |  |  |  |  |  |  |  |  |  |  | 10 |  |  |  |  |  |  | 10 |  |  | القنوات |  |  | الدليل |  |  |  | 
+00:25:18 memory at end: TOTAL PSS: 122110 TOTAL RSS: 235800 TOTAL SWAP PSS: 265

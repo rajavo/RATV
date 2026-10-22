@@ -1,0 +1,738 @@
+10-22 00:16:54.852  5562  5594 D EGL_emulation: app_time_stats: avg=3136.18ms min=3136.18ms max=3136.18ms count=1
+10-22 00:16:54.889  5562  5562 I ExoPlayerImpl: Init d380b14 [AndroidXMedia3/1.5.1] [emu64xa, sdk_gphone64_x86_64, Google, 34]
+10-22 00:16:55.165  5562  5562 D CompatibilityChangeReporter: Compat change id reported: 210923482; UID 10192; state: ENABLED
+10-22 00:16:55.495  5562  5562 I Choreographer: Skipped 37 frames!  The application may be doing too much work on its main thread.
+10-22 00:16:55.624  5562  5562 I ExoPlayerImpl: Init 3c2ce72 [AndroidXMedia3/1.5.1] [emu64xa, sdk_gphone64_x86_64, Google, 34]
+10-22 00:16:55.766  5562  6127 I OpenGLRenderer: Davey! duration=812ms; Flags=0, FrameTimelineVsyncId=14088, IntendedVsync=170961575705, Vsync=171578242347, InputEventId=0, HandleInputStart=171585087883, AnimationStart=171585088144, PerformTraversalsStart=171592869994, DrawStart=171595094502, FrameDeadline=171661575677, FrameInterval=171585000593, FrameStartTime=16666666, SyncQueued=171611008645, SyncStart=171624646832, IssueDrawCommandsStart=171625035011, SwapBuffers=171742046183, FrameCompleted=171787418585, DequeueBufferDuration=5288, QueueBufferDuration=898060, GpuCompleted=171787367449, SwapBuffersCompleted=171787418585, DisplayPresentTime=0, CommandSubmissionCompleted=171742046183, 
+10-22 00:16:55.896  5562  5594 D EGL_emulation: app_time_stats: avg=48.51ms min=18.68ms max=173.41ms count=20
+10-22 00:16:55.949  5562  6082 D TrafficStats: tagSocket(104) with statsTag=0xffffffff, statsUid=-1
+10-22 00:16:56.017  5562  5577 I com.ratv.app: Explicit concurrent copying GC freed 38432(2003KB) AllocSpace objects, 4(160KB) LOS objects, 49% free, 8665KB/16MB, paused 4.475ms,16us total 186.676ms
+10-22 00:16:56.135  5562  5562 I ExoPlayerImpl: Release 3c2ce72 [AndroidXMedia3/1.5.1] [emu64xa, sdk_gphone64_x86_64, Google, 34] [media3.common, media3.exoplayer, media3.decoder, media3.ui, media3.datasource, media3.datasource.okhttp, media3.extractor]
+10-22 00:16:56.323  5562  6688 E EGL_emulation: eglQueryContext 32c0  EGL_BAD_ATTRIBUTE
+10-22 00:16:56.323  5562  6688 E EGL_emulation: tid 6688: eglQueryContext(2146): error 0x3004 (EGL_BAD_ATTRIBUTE)
+10-22 00:16:56.324  5562  6608 I DMCodecAdapterFactory: Creating an asynchronous MediaCodec adapter for track type video
+10-22 00:16:56.364  5562  6690 D CCodec  : allocate(c2.goldfish.h264.decoder)
+10-22 00:16:56.384  5562  6690 I Codec2Client: Available Codec2 services: "default" "software"
+10-22 00:16:56.564  5562  5577 I OpenGLRenderer: Davey! duration=933ms; Flags=0, FrameTimelineVsyncId=14437, IntendedVsync=171711575675, Vsync=172194908989, InputEventId=0, HandleInputStart=172210030149, AnimationStart=172210030700, PerformTraversalsStart=172260238931, DrawStart=172278753669, FrameDeadline=172178242323, FrameInterval=172205477807, FrameStartTime=16666666, SyncQueued=172279641884, SyncStart=172279703296, IssueDrawCommandsStart=172280444562, SwapBuffers=172559107015, FrameCompleted=172645464183, DequeueBufferDuration=13564317, QueueBufferDuration=131656, GpuCompleted=172645464183, SwapBuffersCompleted=172635376243, DisplayPresentTime=0, CommandSubmissionCompleted=172559107015, 
+10-22 00:16:56.569  5562  6690 I CCodec  : setting up 'default' as default (vendor) store
+10-22 00:16:56.702  5562  6690 I CCodec  : Created component [c2.goldfish.h264.decoder]
+10-22 00:16:56.703  5562  6690 D CCodecConfig: read media type: video/avc
+10-22 00:16:56.707  5562  6690 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.max-count.values
+10-22 00:16:56.707  5562  6690 D ReflectedParamUpdater: extent() != 1 for single value type: output.subscribed-indices.values
+10-22 00:16:56.707  5562  6690 D ReflectedParamUpdater: extent() != 1 for single value type: input.buffers.allocator-ids.values
+10-22 00:16:56.707  5562  6690 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.allocator-ids.values
+10-22 00:16:56.707  5562  6690 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.allocator-ids.values
+10-22 00:16:56.707  5562  6690 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.pool-ids.values
+10-22 00:16:56.707  5562  6690 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.pool-ids.values
+10-22 00:16:56.707  5562  6690 D ReflectedParamUpdater: ignored struct field coded.color-format.locations
+10-22 00:16:56.707  5562  6690 D CCodecConfig: ignoring local param raw.size (0xd2001800) as it is already supported
+10-22 00:16:56.708  5562  6690 D CCodecConfig: ignoring local param default.color (0x5200180b) as it is already supported
+10-22 00:16:56.708  5562  6690 D ReflectedParamUpdater: ignored struct field raw.hdr-static-info.mastering
+10-22 00:16:56.708  5562  6690 I CCodecConfig: query failed after returning 12 values (BAD_INDEX)
+10-22 00:16:56.708  5562  6690 D CCodecConfig: c2 config diff is Dict {
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 coded.pl.level = 20496
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 coded.pl.profile = 20481
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 coded.vui.color.matrix = 0
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 coded.vui.color.primaries = 0
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 coded.vui.color.range = 2
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 coded.vui.color.transfer = 0
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 default.color.matrix = 0
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 default.color.primaries = 0
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 default.color.range = 0
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 default.color.transfer = 0
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 input.buffers.max-size.value = 6291456
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 input.delay.value = 0
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   string input.media-type.value = "video/avc"
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 output.delay.value = 8
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   string output.media-type.value = "video/raw"
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 raw.color.matrix = 0
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 raw.color.primaries = 0
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 raw.color.range = 2
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 raw.color.transfer = 0
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 raw.max-size.height = 240
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 raw.max-size.width = 320
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 raw.pixel-format.value = 35
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::i32 raw.rotation.flip = 0
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::i32 raw.rotation.value = 0
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 raw.sar.height = 1
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 raw.sar.width = 1
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 raw.size.height = 240
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2::u32 raw.size.width = 320
+10-22 00:16:56.708  5562  6690 D CCodecConfig:   c2:
+10-22 00:16:56.708  5562  6690 W ColorUtils: expected specified color aspects (2:0:0:0)
+10-22 00:16:56.795  5562  6689 I MediaCodec: MediaCodec will operate in async mode
+10-22 00:16:56.795  5562  6689 D MediaCodec: flushMediametrics
+10-22 00:16:56.795  5562  6689 D SurfaceUtils: connecting to surface 0x7da073064c70, reason connectToSurface
+10-22 00:16:56.795  5562  6689 I MediaCodec: [c2.goldfish.h264.decoder] setting surface generation to 5695489
+10-22 00:16:56.795  5562  6689 D SurfaceUtils: disconnecting from surface 0x7da073064c70, reason connectToSurface(reconnect)
+10-22 00:16:56.795  5562  6689 D SurfaceUtils: connecting to surface 0x7da073064c70, reason connectToSurface(reconnect)
+10-22 00:16:56.796  5562  6690 D CCodec  : [c2.goldfish.h264.decoder] buffers are bound to CCodec for this session
+10-22 00:16:56.805  5562  6690 D CCodecConfig: no c2 equivalents for csd-1
+10-22 00:16:56.805  5562  6690 D CCodecConfig: no c2 equivalents for log-session-id
+10-22 00:16:56.805  5562  6690 D CCodecConfig: no c2 equivalents for native-window
+10-22 00:16:56.805  5562  6690 D CCodecConfig: no c2 equivalents for flags
+10-22 00:16:56.806  5562  6690 D CCodecConfig: config failed => CORRUPTED
+10-22 00:16:56.806  5562  6690 D CCodecConfig: c2 config diff is   c2::u32 raw.max-size.height = 720
+10-22 00:16:56.806  5562  6690 D CCodecConfig:   c2::u32 raw.max-size.width = 1280
+10-22 00:16:56.806  5562  6690 D CCodecConfig:   c2::u32 raw.size.height = 720
+10-22 00:16:56.806  5562  6690 D CCodecConfig:   c2::u32 raw.size.width = 1280
+10-22 00:16:56.807  5562  6690 W Codec2Client: query -- param skipped: index = 1107298332.
+10-22 00:16:56.807  5562  6690 D CCodec  : client requested max input size 691200, which is smaller than what component recommended (6291456); overriding with component recommendation.
+10-22 00:16:56.807  5562  6690 W CCodec  : This behavior is subject to change. It is recommended that app developers double check whether the requested max input size is in reasonable range.
+10-22 00:16:56.807  5562  6690 D CCodec  : encoding statistics level = 0
+10-22 00:16:56.807  5562  6690 D CCodec  : setup formats input: AMessage(what = 0x00000000) = {
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t height = 720
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t level = 65536
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t max-input-size = 6291456
+10-22 00:16:56.807  5562  6690 D CCodec  :   string mime = "video/avc"
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t profile = 65536
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t width = 1280
+10-22 00:16:56.807  5562  6690 D CCodec  :   Rect crop(0, 0, 1279, 719)
+10-22 00:16:56.807  5562  6690 D CCodec  : }
+10-22 00:16:56.807  5562  6690 D CCodec  : setup formats output: AMessage(what = 0x00000000) = {
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t android._color-format = 2135033992
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t android._video-scaling = 1
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t rotation-degrees = 0
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t color-standard = 1
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t color-range = 2
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t color-transfer = 3
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t sar-height = 1
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t sar-width = 1
+10-22 00:16:56.807  5562  6690 D CCodec  :   Rect crop(0, 0, 1279, 719)
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t width = 1280
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t height = 720
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t max-height = 720
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t max-width = 1280
+10-22 00:16:56.807  5562  6690 D CCodec  :   string mime = "video/raw"
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t android._dataspace = 260
+10-22 00:16:56.807  5562  6690 D CCodec  :   int32_t color-format = 2130708361
+10-22 00:16:56.807  5562  6690 D CCodec  : }
+10-22 00:16:56.807  5562  6690 I CCodecConfig: query failed after returning 12 values (BAD_INDEX)
+10-22 00:16:56.817  5562  6608 D MediaCodec: keep callback message for reclaim
+10-22 00:16:56.818  5562  6690 W Codec2Client: query -- param skipped: index = 1342179345.
+10-22 00:16:56.818  5562  6690 W Codec2Client: query -- param skipped: index = 2415921170.
+10-22 00:16:56.818  5562  6690 W Codec2Client: query -- param skipped: index = 1610614798.
+10-22 00:16:56.818  5562  6690 W Codec2Client: query -- param skipped: index = 2684356609.
+10-22 00:16:56.832  5562  6690 D C2Store : Using DMABUF Heaps
+10-22 00:16:56.832  5562  6690 D CCodecBufferChannel: [c2.goldfish.h264.decoder#588] Created input block pool with allocatorID 16 => poolID 17 - OK (0)
+10-22 00:16:56.832  5562  6690 D CCodecBufferChannel: [c2.goldfish.h264.decoder#588] Query output surface allocator returned 0 params => BAD_INDEX (6)
+10-22 00:16:56.832  5562  6690 I CCodecBufferChannel: [c2.goldfish.h264.decoder#588] Created output block pool with allocatorID 18 => poolID 17 - OK
+10-22 00:16:56.833  5562  6690 D CCodecBufferChannel: [c2.goldfish.h264.decoder#588] Configured output block pool ids 17 => OK
+10-22 00:16:56.833  5562  6690 D Codec2-OutputBufferQueue: remote graphic buffer migration 0/0
+10-22 00:16:56.833  5562  6690 D Codec2Client: setOutputSurface -- failed to set consumer usage (6/BAD_INDEX)
+10-22 00:16:56.833  5562  6690 D Codec2Client: setOutputSurface -- generation=5695489 consumer usage=0x900
+10-22 00:16:57.009  5562  6690 D Codec2Client: Surface configure completed
+10-22 00:16:57.010  5562  6690 I DMABUFHEAPS: Using DMA-BUF heap named: system
+10-22 00:16:57.021  5562  6608 I DMCodecAdapterFactory: Creating an asynchronous MediaCodec adapter for track type audio
+10-22 00:16:57.051  5562  6700 D CCodec  : allocate(c2.android.aac.decoder)
+10-22 00:16:57.076  5562  6700 I CCodec  : setting up 'default' as default (vendor) store
+10-22 00:16:57.200  5562  6700 I CCodec  : Created component [c2.android.aac.decoder]
+10-22 00:16:57.213  5562  6700 D CCodecConfig: read media type: audio/mp4a-latm
+10-22 00:16:57.213  5562  6700 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.max-count.values
+10-22 00:16:57.213  5562  6700 D ReflectedParamUpdater: extent() != 1 for single value type: output.subscribed-indices.values
+10-22 00:16:57.216  5562  6700 D ReflectedParamUpdater: extent() != 1 for single value type: input.buffers.allocator-ids.values
+10-22 00:16:57.216  5562  6700 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.allocator-ids.values
+10-22 00:16:57.216  5562  6700 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.allocator-ids.values
+10-22 00:16:57.216  5562  6700 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.pool-ids.values
+10-22 00:16:57.216  5562  6700 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.pool-ids.values
+10-22 00:16:57.217  5562  6700 I CCodecConfig: query failed after returning 20 values (BAD_INDEX)
+10-22 00:16:57.217  5562  6700 D CCodecConfig: c2 config diff is Dict {
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::u32 coded.aac-packaging.value = 0
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::u32 coded.bitrate.value = 64000
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::u32 coded.pl.level = 0
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::u32 coded.pl.profile = 8192
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::i32 coding.drc.album-mode.value = 0
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::float coding.drc.attenuation-factor.value = 1
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::float coding.drc.boost-factor.value = 1
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::i32 coding.drc.compression-mode.value = 3
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::i32 coding.drc.effect-type.value = 3
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::float coding.drc.encoded-level.value = 0.25
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::float coding.drc.reference-level.value = -16
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::u32 input.buffers.max-size.value = 8192
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::u32 input.delay.value = 0
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   string input.media-type.value = "audio/mp4a-latm"
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::u32 output.delay.value = 2
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::float output.drc.output-loudness.value = 0.25
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   string output.media-type.value = "audio/raw"
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::u32 raw.channel-count.value = 1
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::u32 raw.channel-mask.value = 0
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::u32 raw.max-channel-count.value = 8
+10-22 00:16:57.217  5562  6700 D CCodecConfig:   c2::u32 raw.sample-rate.value = 44100
+10-22 00:16:57.217  5562  6700 D CCodecConfig: }
+10-22 00:16:57.242  5562  6700 I MediaCodec: MediaCodec will operate in async mode
+10-22 00:16:57.242  5562  6700 D MediaCodec: flushMediametrics
+10-22 00:16:57.242  5562  6700 D CCodec  : [c2.android.aac.decoder] buffers are bound to CCodec for this session
+10-22 00:16:57.242  5562  6700 D CCodecConfig: no c2 equivalents for log-session-id
+10-22 00:16:57.242  5562  6700 D CCodecConfig: no c2 equivalents for flags
+10-22 00:16:57.243  5562  6700 D CCodecConfig: c2 config diff is   c2::u32 raw.sample-rate.value = 48000
+10-22 00:16:57.243  5562  6700 W Codec2Client: query -- param skipped: index = 1107298332.
+10-22 00:16:57.243  5562  6700 D CCodec  : encoding statistics level = 0
+10-22 00:16:57.243  5562  6700 D CCodec  : setup formats input: AMessage(what = 0x00000000) = {
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t aac-drc-album-mode = 0
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t aac-drc-boost-level = 127
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t aac-drc-cut-level = 127
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t aac-drc-effect-type = 3
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t aac-encoded-target-level = -1
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t aac-max-output-channel_count = 8
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t aac-target-ref-level = 64
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t bitrate = 64000
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t channel-count = 1
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t channel-mask = 0
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t level = 0
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t max-input-size = 8192
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t max-output-channel-count = 8
+10-22 00:16:57.243  5562  6700 D CCodec  :   string mime = "audio/mp4a-latm"
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t profile = 2
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t sample-rate = 48000
+10-22 00:16:57.243  5562  6700 D CCodec  : }
+10-22 00:16:57.243  5562  6700 D CCodec  : setup formats output: AMessage(what = 0x00000000) = {
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t aac-drc-album-mode = 0
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t aac-drc-boost-level = 127
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t aac-drc-cut-level = 127
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t aac-drc-effect-type = 3
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t aac-drc-output-loudness = -1
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t aac-encoded-target-level = -1
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t aac-max-output-channel_count = 8
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t aac-target-ref-level = 64
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t channel-count = 1
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t channel-mask = 0
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t max-output-channel-count = 8
+10-22 00:16:57.243  5562  6700 D CCodec  :   string mime = "audio/raw"
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t sample-rate = 48000
+10-22 00:16:57.243  5562  6700 D CCodec  :   int32_t android._config-pcm-encoding = 2
+10-22 00:16:57.243  5562  6700 D CCodec  : }
+10-22 00:16:57.243  5562  6700 I CCodecConfig: query failed after returning 20 values (BAD_INDEX)
+10-22 00:16:57.243  5562  6608 D MediaCodec: keep callback message for reclaim
+10-22 00:16:57.264  5562  6700 W Codec2Client: query -- param skipped: index = 1342179345.
+10-22 00:16:57.264  5562  6700 W Codec2Client: query -- param skipped: index = 2415921170.
+10-22 00:16:57.264  5562  6700 W Codec2Client: query -- param skipped: index = 1610614798.
+10-22 00:16:57.273  5562  6700 D CCodecBufferChannel: [c2.android.aac.decoder#133] Created input block pool with allocatorID 16 => poolID 18 - OK (0)
+10-22 00:16:57.288  5562  6700 I CCodecBufferChannel: [c2.android.aac.decoder#133] Created output block pool with allocatorID 16 => poolID 26 - OK
+10-22 00:16:57.289  5562  6700 D CCodecBufferChannel: [c2.android.aac.decoder#133] Configured output block pool ids 26 => OK
+10-22 00:16:57.295  5562  6689 D SurfaceUtils: connecting to surface 0x7da07305e640, reason connectToSurface
+10-22 00:16:57.295  5562  6689 I MediaCodec: [c2.goldfish.h264.decoder] setting surface generation to 5695490
+10-22 00:16:57.295  5562  6689 D SurfaceUtils: disconnecting from surface 0x7da07305e640, reason connectToSurface(reconnect)
+10-22 00:16:57.295  5562  6689 D SurfaceUtils: connecting to surface 0x7da07305e640, reason connectToSurface(reconnect)
+10-22 00:16:57.297  5562  6689 D Codec2-OutputBufferQueue: remote graphic buffer migration 0/0
+10-22 00:16:57.297  5562  6689 D Codec2Client: setOutputSurface -- failed to set consumer usage (6/BAD_INDEX)
+10-22 00:16:57.297  5562  6689 D Codec2Client: setOutputSurface -- generation=5695490 consumer usage=0x900
+10-22 00:16:57.320  5562  6689 D Codec2Client: Surface configure completed
+10-22 00:16:57.320  5562  6689 I CCodecBufferChannel: Using latch times for frame rendered signals - present fences not supported
+10-22 00:16:57.320  5562  6689 D SurfaceUtils: disconnecting from surface 0x7da073064c70, reason disconnectFromSurface
+10-22 00:16:57.330  5562  6608 D MediaCodec: keep callback message for reclaim
+10-22 00:16:57.330  5562  6689 I CCodecConfig: query failed after returning 12 values (BAD_INDEX)
+10-22 00:16:57.331  5562  6689 W Codec2Client: query -- param skipped: index = 1342179345.
+10-22 00:16:57.331  5562  6689 W Codec2Client: query -- param skipped: index = 2415921170.
+10-22 00:16:57.331  5562  6689 W Codec2Client: query -- param skipped: index = 1610614798.
+10-22 00:16:57.349  5562  6608 D MediaCodec: keep callback message for reclaim
+10-22 00:16:57.349  5562  6700 I CCodecConfig: query failed after returning 20 values (BAD_INDEX)
+10-22 00:16:57.350  5562  6700 W Codec2Client: query -- param skipped: index = 1342179345.
+10-22 00:16:57.350  5562  6700 W Codec2Client: query -- param skipped: index = 2415921170.
+10-22 00:16:57.350  5562  6700 W Codec2Client: query -- param skipped: index = 1610614798.
+10-22 00:16:57.357  5562  6082 D TrafficStats: tagSocket(176) with statsTag=0xffffffff, statsUid=-1
+10-22 00:16:57.540  5562  5594 D EGL_emulation: app_time_stats: avg=75.75ms min=27.09ms max=479.46ms count=18
+10-22 00:16:57.678  5562  6608 D MediaCodec: keep callback message for reclaim
+10-22 00:16:57.678  5562  6689 I CCodecConfig: query failed after returning 12 values (BAD_INDEX)
+10-22 00:16:57.679  5562  6689 W Codec2Client: query -- param skipped: index = 1342179345.
+10-22 00:16:57.679  5562  6689 W Codec2Client: query -- param skipped: index = 2415921170.
+10-22 00:16:57.679  5562  6689 W Codec2Client: query -- param skipped: index = 1610614798.
+10-22 00:16:57.685  5562  6608 D MediaCodec: keep callback message for reclaim
+10-22 00:16:57.685  5562  6700 I CCodecConfig: query failed after returning 20 values (BAD_INDEX)
+10-22 00:16:57.686  5562  6700 W Codec2Client: query -- param skipped: index = 1342179345.
+10-22 00:16:57.686  5562  6700 W Codec2Client: query -- param skipped: index = 2415921170.
+10-22 00:16:57.686  5562  6700 W Codec2Client: query -- param skipped: index = 1610614798.
+10-22 00:16:57.805  5562  6696 D CCodecBufferChannel: [c2.goldfish.h264.decoder#588] Ignoring stale input buffer done callback: last flush index = 2, frameIndex = 2
+10-22 00:16:57.810  5562  6700 D CCodecConfig: c2 config diff is   c2::u32 raw.channel-mask.value = 4
+10-22 00:16:57.810  5562  6700 D CCodecBuffers: [c2.android.aac.decoder#133:Output[N]] popFromStashAndRegister: at 999999850666us, output format changed to AMessage(what = 0x00000000) = {
+10-22 00:16:57.810  5562  6700 D CCodecBuffers:   int32_t aac-drc-album-mode = 0
+10-22 00:16:57.810  5562  6700 D CCodecBuffers:   int32_t aac-drc-boost-level = 127
+10-22 00:16:57.810  5562  6700 D CCodecBuffers:   int32_t aac-drc-cut-level = 127
+10-22 00:16:57.810  5562  6700 D CCodecBuffers:   int32_t aac-drc-effect-type = 3
+10-22 00:16:57.810  5562  6700 D CCodecBuffers:   int32_t aac-drc-output-loudness = -1
+10-22 00:16:57.810  5562  6700 D CCodecBuffers:   int32_t aac-encoded-target-level = -1
+10-22 00:16:57.810  5562  6700 D CCodecBuffers:   int32_t aac-max-output-channel_count = 8
+10-22 00:16:57.810  5562  6700 D CCodecBuffers:   int32_t aac-target-ref-level = 64
+10-22 00:16:57.810  5562  6700 D CCodecBuffers:   int32_t channel-count = 1
+10-22 00:16:57.810  5562  6700 D CCodecBuffers:   int32_t channel-mask = 4
+10-22 00:16:57.810  5562  6700 D CCodecBuffers:   int32_t max-output-channel-count = 8
+10-22 00:16:57.810  5562  6700 D CCodecBuffers:   string mime = "audio/raw"
+10-22 00:16:57.810  5562  6700 D CCodecBuffers:   int32_t sample-rate = 48000
+10-22 00:16:57.810  5562  6700 D CCodecBuffers:   int32_t android._config-pcm-encoding = 2
+10-22 00:16:57.810  5562  6700 D CCodecBuffers: }
+10-22 00:16:57.846  5562  6690 D CCodecConfig: c2 config diff is   c2::u32 raw.crop.height = 720
+10-22 00:16:57.846  5562  6690 D CCodecConfig:   c2::u32 raw.crop.left = 0
+10-22 00:16:57.846  5562  6690 D CCodecConfig:   c2::u32 raw.crop.top = 0
+10-22 00:16:57.846  5562  6690 D CCodecConfig:   c2::u32 raw.crop.width = 1280
+10-22 00:16:58.607  5562  5594 D EGL_emulation: app_time_stats: avg=74.12ms min=23.27ms max=170.26ms count=12
+10-22 00:16:59.624  5562  5594 D EGL_emulation: app_time_stats: avg=45.80ms min=22.96ms max=63.04ms count=19
+10-22 00:17:00.640  5562  5594 D EGL_emulation: app_time_stats: avg=46.18ms min=28.75ms max=60.14ms count=20
+10-22 00:17:01.644  5562  5594 D EGL_emulation: app_time_stats: avg=46.84ms min=30.35ms max=58.29ms count=20
+10-22 00:17:02.667  5562  5594 D EGL_emulation: app_time_stats: avg=49.85ms min=33.66ms max=87.79ms count=19
+10-22 00:17:02.785  5562  6608 D AudioTrack: getTimestamp_l(16): device stall time corrected using current time 178874537200
+10-22 00:17:02.839  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 45/50 (recycle/alloc) - 5/39 (fetch/transfer)
+10-22 00:17:02.990  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 28/33 (recycle/alloc) - 5/24 (fetch/transfer)
+10-22 00:17:04.911  5562  5569 I com.ratv.app: JIT allocated 66KB for compiled code of void n4.c1.e(java.lang.String, java.lang.String, java.lang.String, o4.f, M.p, int)
+10-22 00:17:04.912  5562  5569 I com.ratv.app: Compiler allocated 12MB to compile void n4.c1.e(java.lang.String, java.lang.String, java.lang.String, o4.f, M.p, int)
+10-22 00:17:06.900  5562  5594 D EGL_emulation: app_time_stats: avg=601.90ms min=39.87ms max=3884.75ms count=7
+10-22 00:17:07.674  5562  5562 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::1@0@com.ratv.app>
+10-22 00:17:08.145  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 4(32768 size) used buffers - 297/302 (recycle/alloc) - 9/289 (fetch/transfer)
+10-22 00:17:08.201  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 161/166 (recycle/alloc) - 6/157 (fetch/transfer)
+10-22 00:17:13.399  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 291/296 (recycle/alloc) - 6/287 (fetch/transfer)
+10-22 00:17:13.595  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 551/556 (recycle/alloc) - 9/545 (fetch/transfer)
+10-22 00:17:18.584  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 421/426 (recycle/alloc) - 6/417 (fetch/transfer)
+10-22 00:17:19.069  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 4(32768 size) used buffers - 810/815 (recycle/alloc) - 9/802 (fetch/transfer)
+10-22 00:17:22.568  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:17:23.079  5562  6714 I RATVLive: reconnected
+10-22 00:17:23.203  5562  6714 I RATVLive: joined the new connection after skipping 691276 bytes
+10-22 00:17:23.772  5562  6689 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 4(25165824 size) used buffers - 550/555 (recycle/alloc) - 6/547 (fetch/transfer)
+10-22 00:17:24.428  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 1058/1063 (recycle/alloc) - 9/1052 (fetch/transfer)
+10-22 00:17:28.917  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 678/683 (recycle/alloc) - 6/674 (fetch/transfer)
+10-22 00:17:29.894  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 1314/1319 (recycle/alloc) - 9/1308 (fetch/transfer)
+10-22 00:17:30.647  5562  6696 D PipelineWatcher: onInputBufferReleased: frameIndex not found (1345); ignored
+10-22 00:17:34.029  5562  6689 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 4(25165824 size) used buffers - 805/810 (recycle/alloc) - 6/802 (fetch/transfer)
+10-22 00:17:35.291  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 1567/1572 (recycle/alloc) - 9/1561 (fetch/transfer)
+10-22 00:17:39.198  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 935/940 (recycle/alloc) - 6/931 (fetch/transfer)
+10-22 00:17:40.598  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 1816/1821 (recycle/alloc) - 9/1810 (fetch/transfer)
+10-22 00:17:44.333  5562  6689 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 4(25165824 size) used buffers - 1063/1068 (recycle/alloc) - 6/1060 (fetch/transfer)
+10-22 00:17:46.012  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 2070/2075 (recycle/alloc) - 9/2064 (fetch/transfer)
+10-22 00:17:49.448  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 1191/1196 (recycle/alloc) - 6/1187 (fetch/transfer)
+10-22 00:17:51.337  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 2320/2325 (recycle/alloc) - 9/2314 (fetch/transfer)
+10-22 00:17:51.614  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:17:52.120  5562  6714 I RATVLive: reconnected
+10-22 00:17:52.227  5562  6714 I RATVLive: joined the new connection after skipping 698232 bytes
+10-22 00:17:54.641  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 1321/1326 (recycle/alloc) - 6/1317 (fetch/transfer)
+10-22 00:17:56.584  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 4(32768 size) used buffers - 2568/2573 (recycle/alloc) - 9/2560 (fetch/transfer)
+10-22 00:17:59.810  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 1449/1454 (recycle/alloc) - 6/1445 (fetch/transfer)
+10-22 00:18:01.864  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 4(32768 size) used buffers - 2816/2821 (recycle/alloc) - 9/2808 (fetch/transfer)
+10-22 00:18:05.014  5562  6690 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 1579/1584 (recycle/alloc) - 6/1575 (fetch/transfer)
+10-22 00:18:07.265  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 4(32768 size) used buffers - 3068/3073 (recycle/alloc) - 9/3060 (fetch/transfer)
+10-22 00:18:10.208  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 1709/1714 (recycle/alloc) - 6/1705 (fetch/transfer)
+10-22 00:18:12.640  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 3318/3323 (recycle/alloc) - 9/3312 (fetch/transfer)
+10-22 00:18:15.417  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 1839/1844 (recycle/alloc) - 6/1835 (fetch/transfer)
+10-22 00:18:16.112  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:18:16.617  5562  6714 I RATVLive: reconnected
+10-22 00:18:16.747  5562  6714 I RATVLive: joined the new connection after skipping 1043400 bytes
+10-22 00:18:18.131  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 3576/3581 (recycle/alloc) - 9/3570 (fetch/transfer)
+10-22 00:18:20.614  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 1969/1974 (recycle/alloc) - 6/1965 (fetch/transfer)
+10-22 00:18:23.416  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 3826/3831 (recycle/alloc) - 9/3821 (fetch/transfer)
+10-22 00:18:25.814  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 2098/2103 (recycle/alloc) - 6/2094 (fetch/transfer)
+10-22 00:18:28.875  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 4079/4084 (recycle/alloc) - 9/4073 (fetch/transfer)
+10-22 00:18:30.960  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 2227/2232 (recycle/alloc) - 6/2223 (fetch/transfer)
+10-22 00:18:34.248  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 4331/4336 (recycle/alloc) - 9/4325 (fetch/transfer)
+10-22 00:18:36.120  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 2356/2361 (recycle/alloc) - 6/2352 (fetch/transfer)
+10-22 00:18:39.418  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:18:39.419  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 4573/4578 (recycle/alloc) - 9/4567 (fetch/transfer)
+10-22 00:18:39.897  5562  6714 I RATVLive: reconnected
+10-22 00:18:39.897  5562  6714 I RATVLive: joined the new connection after skipping 1128 bytes
+10-22 00:18:41.238  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 2484/2489 (recycle/alloc) - 6/2480 (fetch/transfer)
+10-22 00:18:44.605  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 4816/4821 (recycle/alloc) - 9/4810 (fetch/transfer)
+10-22 00:18:46.448  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 2613/2618 (recycle/alloc) - 6/2609 (fetch/transfer)
+10-22 00:18:49.999  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 5069/5074 (recycle/alloc) - 9/5063 (fetch/transfer)
+10-22 00:18:51.649  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 2743/2748 (recycle/alloc) - 6/2739 (fetch/transfer)
+10-22 00:18:55.252  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 5316/5321 (recycle/alloc) - 9/5310 (fetch/transfer)
+10-22 00:18:56.813  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 2872/2877 (recycle/alloc) - 6/2868 (fetch/transfer)
+10-22 00:19:00.677  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 5570/5575 (recycle/alloc) - 9/5564 (fetch/transfer)
+10-22 00:19:01.270  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:19:01.773  5562  6714 I RATVLive: reconnected
+10-22 00:19:01.774  5562  6714 I RATVLive: joined the new connection after skipping 7708 bytes
+10-22 00:19:01.923  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 3000/3005 (recycle/alloc) - 6/2996 (fetch/transfer)
+10-22 00:19:06.109  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 5825/5830 (recycle/alloc) - 9/5819 (fetch/transfer)
+10-22 00:19:07.121  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 3128/3133 (recycle/alloc) - 6/3124 (fetch/transfer)
+10-22 00:19:11.398  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 6072/6077 (recycle/alloc) - 9/6066 (fetch/transfer)
+10-22 00:19:12.332  5562  6690 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 3258/3263 (recycle/alloc) - 6/3254 (fetch/transfer)
+10-22 00:19:16.731  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 6322/6327 (recycle/alloc) - 9/6316 (fetch/transfer)
+10-22 00:19:17.521  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 3388/3393 (recycle/alloc) - 6/3384 (fetch/transfer)
+10-22 00:19:22.488  5562  5562 I RATVPlayback: stall 1, reserve 21 ms
+10-22 00:19:22.502  5562  5594 D EGL_emulation: app_time_stats: avg=15059.10ms min=29.29ms max=135178.73ms count=9
+10-22 00:19:23.529  5562  5594 D EGL_emulation: app_time_stats: avg=32.56ms min=15.49ms max=48.55ms count=29
+10-22 00:19:23.592  5562  6611 I RATVLive: no data for 6219 ms (limit 6150 ms): reconnecting
+10-22 00:19:23.596  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:19:24.112  5562  6714 I RATVLive: reconnected
+10-22 00:19:24.286  5562  6714 I RATVLive: joined the new connection after skipping 311892 bytes
+10-22 00:19:24.316  5562  6689 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 4(25165824 size) used buffers - 3502/3507 (recycle/alloc) - 6/3496 (fetch/transfer)
+10-22 00:19:24.342  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 4(32768 size) used buffers - 6569/6574 (recycle/alloc) - 9/6561 (fetch/transfer)
+10-22 00:19:24.368  5562  6608 E MediaCodecAudioRenderer: Audio sink error
+10-22 00:19:24.368  5562  6608 E MediaCodecAudioRenderer:   J1.n: Unexpected audio track timestamp discontinuity: expected 1000139754663, got 1000143978666
+10-22 00:19:24.368  5562  6608 E MediaCodecAudioRenderer:       at J1.A.l(SourceFile:996)
+10-22 00:19:24.368  5562  6608 E MediaCodecAudioRenderer:       at J1.C.k0(SourceFile:39)
+10-22 00:19:24.368  5562  6608 E MediaCodecAudioRenderer:       at O1.t.K(SourceFile:335)
+10-22 00:19:24.368  5562  6608 E MediaCodecAudioRenderer:       at O1.t.z(SourceFile:84)
+10-22 00:19:24.368  5562  6608 E MediaCodecAudioRenderer:       at H1.G.d(SourceFile:1172)
+10-22 00:19:24.368  5562  6608 E MediaCodecAudioRenderer:       at H1.G.handleMessage(SourceFile:274)
+10-22 00:19:24.368  5562  6608 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
+10-22 00:19:24.368  5562  6608 E MediaCodecAudioRenderer:       at android.os.Looper.loopOnce(Looper.java:205)
+10-22 00:19:24.368  5562  6608 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:294)
+10-22 00:19:24.368  5562  6608 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
+10-22 00:19:24.534  5562  5594 D EGL_emulation: app_time_stats: avg=32.83ms min=12.16ms max=66.58ms count=26
+10-22 00:19:25.521  5562  6608 D AudioTrack: getTimestamp_l(16): device stall time corrected using current time 321610316798
+10-22 00:19:25.537  5562  5594 D EGL_emulation: app_time_stats: avg=32.18ms min=18.68ms max=46.17ms count=28
+10-22 00:19:25.553  5562  5562 I RATVPlayback: playing again after stall 1
+10-22 00:19:26.014  5562  5562 I RATVPlayback: position jumped ahead 3663 ms
+10-22 00:19:29.765  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 6789/6794 (recycle/alloc) - 15/6783 (fetch/transfer)
+10-22 00:19:29.797  5562  6690 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 3623/3628 (recycle/alloc) - 8/3619 (fetch/transfer)
+10-22 00:19:34.962  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 3752/3757 (recycle/alloc) - 8/3748 (fetch/transfer)
+10-22 00:19:35.087  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 7039/7044 (recycle/alloc) - 15/7033 (fetch/transfer)
+10-22 00:19:40.153  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 3882/3887 (recycle/alloc) - 8/3878 (fetch/transfer)
+10-22 00:19:40.240  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 7280/7285 (recycle/alloc) - 15/7274 (fetch/transfer)
+10-22 00:19:45.360  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 4012/4017 (recycle/alloc) - 8/4008 (fetch/transfer)
+10-22 00:19:45.559  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 7530/7535 (recycle/alloc) - 15/7524 (fetch/transfer)
+10-22 00:19:49.837  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:19:50.339  5562  6714 I RATVLive: reconnected
+10-22 00:19:50.446  5562  6714 I RATVLive: joined the new connection after skipping 347988 bytes
+10-22 00:19:50.517  5562  6689 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 4(25165824 size) used buffers - 4141/4146 (recycle/alloc) - 8/4138 (fetch/transfer)
+10-22 00:19:50.843  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 7777/7782 (recycle/alloc) - 15/7771 (fetch/transfer)
+10-22 00:19:55.731  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 4270/4275 (recycle/alloc) - 8/4266 (fetch/transfer)
+10-22 00:19:56.216  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 8032/8037 (recycle/alloc) - 15/8027 (fetch/transfer)
+10-22 00:20:00.888  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 4399/4404 (recycle/alloc) - 8/4395 (fetch/transfer)
+10-22 00:20:01.744  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 8289/8294 (recycle/alloc) - 15/8283 (fetch/transfer)
+10-22 00:20:06.035  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 4528/4533 (recycle/alloc) - 8/4524 (fetch/transfer)
+10-22 00:20:07.048  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 8537/8542 (recycle/alloc) - 15/8531 (fetch/transfer)
+10-22 00:20:11.238  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 4658/4663 (recycle/alloc) - 8/4654 (fetch/transfer)
+10-22 00:20:12.428  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 8789/8794 (recycle/alloc) - 15/8783 (fetch/transfer)
+10-22 00:20:13.646  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:20:13.921  5562  6714 I RATVLive: reconnected
+10-22 00:20:14.070  5562  6714 I RATVLive: joined the new connection after skipping 691840 bytes
+10-22 00:20:16.447  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 4788/4793 (recycle/alloc) - 8/4784 (fetch/transfer)
+10-22 00:20:17.813  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 4(32768 size) used buffers - 9044/9049 (recycle/alloc) - 15/9036 (fetch/transfer)
+10-22 00:20:21.609  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 4916/4921 (recycle/alloc) - 8/4912 (fetch/transfer)
+10-22 00:20:23.331  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 9300/9305 (recycle/alloc) - 15/9294 (fetch/transfer)
+10-22 00:20:26.812  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 5046/5051 (recycle/alloc) - 8/5042 (fetch/transfer)
+10-22 00:20:28.625  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 9549/9554 (recycle/alloc) - 15/9543 (fetch/transfer)
+10-22 00:20:32.009  5562  6690 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 4(25165824 size) used buffers - 5176/5181 (recycle/alloc) - 8/5172 (fetch/transfer)
+10-22 00:20:34.093  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 9805/9810 (recycle/alloc) - 15/9799 (fetch/transfer)
+10-22 00:20:36.399  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:20:36.713  5562  6714 I RATVLive: reconnected
+10-22 00:20:36.815  5562  6714 I RATVLive: joined the new connection after skipping 689396 bytes
+10-22 00:20:37.181  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 5305/5310 (recycle/alloc) - 8/5301 (fetch/transfer)
+10-22 00:20:39.321  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 3(24576 size) used buffers - 10055/10060 (recycle/alloc) - 15/10050 (fetch/transfer)
+10-22 00:20:42.327  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 5433/5438 (recycle/alloc) - 8/5429 (fetch/transfer)
+10-22 00:20:44.704  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 10302/10307 (recycle/alloc) - 15/10296 (fetch/transfer)
+10-22 00:20:47.440  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 5561/5566 (recycle/alloc) - 8/5557 (fetch/transfer)
+10-22 00:20:50.121  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 10556/10561 (recycle/alloc) - 15/10550 (fetch/transfer)
+10-22 00:20:52.602  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 5690/5695 (recycle/alloc) - 8/5686 (fetch/transfer)
+10-22 00:20:55.445  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:20:55.552  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 1(8192 size) used buffers - 10811/10816 (recycle/alloc) - 15/10805 (fetch/transfer)
+10-22 00:20:55.948  5562  6714 I RATVLive: reconnected
+10-22 00:20:57.776  5562  6696 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 5(31457280 size) used buffers - 5819/5824 (recycle/alloc) - 8/5815 (fetch/transfer)
+10-22 00:20:59.460  5562  5562 I RATVPlayback: stall 2, reserve 186 ms
+10-22 00:20:59.490  5562  5594 D EGL_emulation: app_time_stats: avg=31314.35ms min=22.13ms max=93877.24ms count=3
+10-22 00:21:00.498  5562  5594 D EGL_emulation: app_time_stats: avg=32.93ms min=8.30ms max=53.65ms count=28
+10-22 00:21:00.959  5562  6714 I RATVLive: could not join the new connection after 959364 bytes: carrying on
+10-22 00:21:01.053  5562  6700 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 4(32768 size) used buffers - 10980/10985 (recycle/alloc) - 15/10972 (fetch/transfer)
+10-22 00:21:01.078  5562  6608 E MediaCodecAudioRenderer: Audio sink error
+10-22 00:21:01.078  5562  6608 E MediaCodecAudioRenderer:   J1.n: Unexpected audio track timestamp discontinuity: expected 1000238079999, got 1000003349333
+10-22 00:21:01.078  5562  6608 E MediaCodecAudioRenderer:       at J1.A.l(SourceFile:996)
+10-22 00:21:01.078  5562  6608 E MediaCodecAudioRenderer:       at J1.C.k0(SourceFile:39)
+10-22 00:21:01.078  5562  6608 E MediaCodecAudioRenderer:       at O1.t.K(SourceFile:335)
+10-22 00:21:01.078  5562  6608 E MediaCodecAudioRenderer:       at O1.t.z(SourceFile:84)
+10-22 00:21:01.078  5562  6608 E MediaCodecAudioRenderer:       at H1.G.d(SourceFile:1172)
+10-22 00:21:01.078  5562  6608 E MediaCodecAudioRenderer:       at H1.G.handleMessage(SourceFile:274)
+10-22 00:21:01.078  5562  6608 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
+10-22 00:21:01.078  5562  6608 E MediaCodecAudioRenderer:       at android.os.Looper.loopOnce(Looper.java:205)
+10-22 00:21:01.078  5562  6608 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:294)
+10-22 00:21:01.078  5562  6608 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
+10-22 00:21:01.528  5562  5594 D EGL_emulation: app_time_stats: avg=32.27ms min=16.54ms max=48.16ms count=29
+10-22 00:21:02.545  5562  5594 D EGL_emulation: app_time_stats: avg=30.71ms min=14.64ms max=47.61ms count=29
+10-22 00:21:03.547  5562  5594 D EGL_emulation: app_time_stats: avg=30.95ms min=14.34ms max=41.23ms count=28
+10-22 00:21:04.569  5562  5594 D EGL_emulation: app_time_stats: avg=33.13ms min=22.18ms max=59.49ms count=27
+10-22 00:21:05.578  5562  5594 D EGL_emulation: app_time_stats: avg=30.58ms min=22.57ms max=39.45ms count=29
+10-22 00:21:06.583  5562  5594 D EGL_emulation: app_time_stats: avg=33.51ms min=23.66ms max=55.35ms count=27
+10-22 00:21:06.943  5562  6695 D BufferPoolAccessor2.0: bufferpool2 0x7da2430a3428 : 5(31457280 size) total buffers - 4(25165824 size) used buffers - 5869/5874 (recycle/alloc) - 9/5866 (fetch/transfer)
+10-22 00:21:06.944  5562  6695 D BufferPoolAccessor2.0: bufferpool2 0x7da243084e88 : 5(40960 size) total buffers - 0(0 size) used buffers - 10999/11004 (recycle/alloc) - 19/10994 (fetch/transfer)
+10-22 00:21:06.944  5562  6695 D BufferPoolAccessor2.0: evictor expired: 2, evicted: 2
+10-22 00:21:07.602  5562  5594 D EGL_emulation: app_time_stats: avg=31.63ms min=16.85ms max=45.64ms count=29
+10-22 00:21:08.612  5562  5594 D EGL_emulation: app_time_stats: avg=31.40ms min=18.10ms max=53.95ms count=28
+10-22 00:21:09.622  5562  5594 D EGL_emulation: app_time_stats: avg=32.15ms min=23.61ms max=44.59ms count=28
+10-22 00:21:10.659  5562  5594 D EGL_emulation: app_time_stats: avg=31.93ms min=16.11ms max=60.96ms count=29
+10-22 00:21:11.677  5562  5594 D EGL_emulation: app_time_stats: avg=32.47ms min=20.49ms max=44.88ms count=28
+10-22 00:21:12.697  5562  5594 D EGL_emulation: app_time_stats: avg=31.74ms min=22.64ms max=42.47ms count=29
+10-22 00:21:13.727  5562  5594 D EGL_emulation: app_time_stats: avg=30.64ms min=14.72ms max=42.27ms count=30
+10-22 00:21:14.747  5562  5594 D EGL_emulation: app_time_stats: avg=30.64ms min=23.10ms max=44.19ms count=29
+10-22 00:21:15.753  5562  5594 D EGL_emulation: app_time_stats: avg=35.25ms min=26.83ms max=50.81ms count=26
+10-22 00:21:16.779  5562  5594 D EGL_emulation: app_time_stats: avg=32.45ms min=23.11ms max=42.21ms count=29
+10-22 00:21:17.785  5562  5594 D EGL_emulation: app_time_stats: avg=31.80ms min=22.17ms max=44.87ms count=28
+10-22 00:21:18.814  5562  5594 D EGL_emulation: app_time_stats: avg=30.51ms min=17.08ms max=40.41ms count=30
+10-22 00:21:19.832  5562  5594 D EGL_emulation: app_time_stats: avg=31.30ms min=18.31ms max=40.01ms count=29
+10-22 00:21:20.851  5562  5594 D EGL_emulation: app_time_stats: avg=31.17ms min=17.32ms max=39.77ms count=29
+10-22 00:21:21.853  5562  5594 D EGL_emulation: app_time_stats: avg=30.52ms min=17.67ms max=43.25ms count=29
+10-22 00:21:22.883  5562  5594 D EGL_emulation: app_time_stats: avg=30.52ms min=18.72ms max=40.71ms count=29
+10-22 00:21:23.887  5562  5594 D EGL_emulation: app_time_stats: avg=31.00ms min=17.03ms max=45.66ms count=29
+10-22 00:21:24.900  5562  5594 D EGL_emulation: app_time_stats: avg=30.07ms min=22.38ms max=46.78ms count=29
+10-22 00:21:25.040  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:21:25.573  5562  6714 I RATVLive: reconnected
+10-22 00:21:25.656  5562  6714 I RATVLive: joined the new connection after skipping 343852 bytes
+10-22 00:21:25.935  5562  5594 D EGL_emulation: app_time_stats: avg=30.76ms min=16.29ms max=48.39ms count=30
+10-22 00:21:26.939  5562  5594 D EGL_emulation: app_time_stats: avg=30.80ms min=20.09ms max=43.10ms count=29
+10-22 00:21:27.946  5562  5594 D EGL_emulation: app_time_stats: avg=31.16ms min=19.41ms max=40.22ms count=28
+10-22 00:21:28.964  5562  5594 D EGL_emulation: app_time_stats: avg=29.57ms min=16.56ms max=46.59ms count=30
+10-22 00:21:29.969  5562  5594 D EGL_emulation: app_time_stats: avg=30.65ms min=18.63ms max=43.29ms count=29
+10-22 00:21:30.998  5562  5594 D EGL_emulation: app_time_stats: avg=31.78ms min=14.63ms max=42.96ms count=29
+10-22 00:21:32.027  5562  5594 D EGL_emulation: app_time_stats: avg=32.39ms min=14.43ms max=44.91ms count=28
+10-22 00:21:33.049  5562  5594 D EGL_emulation: app_time_stats: avg=29.79ms min=10.19ms max=43.71ms count=30
+10-22 00:21:34.092  5562  5594 D EGL_emulation: app_time_stats: avg=32.04ms min=18.33ms max=45.70ms count=29
+10-22 00:21:35.111  5562  5594 D EGL_emulation: app_time_stats: avg=30.76ms min=17.73ms max=53.73ms count=30
+10-22 00:21:36.126  5562  5594 D EGL_emulation: app_time_stats: avg=30.14ms min=16.33ms max=48.98ms count=30
+10-22 00:21:37.131  5562  5594 D EGL_emulation: app_time_stats: avg=31.34ms min=18.85ms max=40.36ms count=28
+10-22 00:21:38.159  5562  5594 D EGL_emulation: app_time_stats: avg=30.19ms min=14.87ms max=44.06ms count=30
+10-22 00:21:39.193  5562  5594 D EGL_emulation: app_time_stats: avg=30.68ms min=15.44ms max=43.13ms count=30
+10-22 00:21:40.195  5562  5594 D EGL_emulation: app_time_stats: avg=30.99ms min=20.11ms max=42.51ms count=29
+10-22 00:21:41.202  5562  5594 D EGL_emulation: app_time_stats: avg=31.84ms min=23.88ms max=47.30ms count=28
+10-22 00:21:42.062  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:21:42.223  5562  5594 D EGL_emulation: app_time_stats: avg=31.13ms min=25.37ms max=38.38ms count=29
+10-22 00:21:42.572  5562  6714 I RATVLive: reconnected
+10-22 00:21:42.942  5562  6714 I RATVLive: joined the new connection after skipping 695788 bytes
+10-22 00:21:43.232  5562  5594 D EGL_emulation: app_time_stats: avg=31.05ms min=16.01ms max=42.16ms count=29
+10-22 00:21:44.234  5562  5594 D EGL_emulation: app_time_stats: avg=31.62ms min=19.73ms max=46.73ms count=28
+10-22 00:21:45.258  5562  5594 D EGL_emulation: app_time_stats: avg=31.99ms min=23.12ms max=41.80ms count=29
+10-22 00:21:46.263  5562  5594 D EGL_emulation: app_time_stats: avg=31.03ms min=20.70ms max=42.81ms count=29
+10-22 00:21:47.275  5562  5594 D EGL_emulation: app_time_stats: avg=30.75ms min=21.36ms max=43.16ms count=29
+10-22 00:21:48.286  5562  5594 D EGL_emulation: app_time_stats: avg=31.04ms min=19.31ms max=41.96ms count=29
+10-22 00:21:49.310  5562  5594 D EGL_emulation: app_time_stats: avg=31.01ms min=19.49ms max=36.38ms count=30
+10-22 00:21:50.336  5562  5594 D EGL_emulation: app_time_stats: avg=31.41ms min=22.28ms max=42.33ms count=29
+10-22 00:21:51.372  5562  5594 D EGL_emulation: app_time_stats: avg=32.96ms min=21.93ms max=47.42ms count=28
+10-22 00:21:52.384  5562  5594 D EGL_emulation: app_time_stats: avg=30.63ms min=22.30ms max=39.88ms count=29
+10-22 00:21:53.414  5562  5594 D EGL_emulation: app_time_stats: avg=31.27ms min=17.48ms max=41.41ms count=29
+10-22 00:21:54.422  5562  5594 D EGL_emulation: app_time_stats: avg=33.03ms min=17.66ms max=45.54ms count=27
+10-22 00:21:55.442  5562  5594 D EGL_emulation: app_time_stats: avg=32.52ms min=12.80ms max=49.46ms count=28
+10-22 00:21:56.446  5562  5594 D EGL_emulation: app_time_stats: avg=32.29ms min=9.17ms max=50.38ms count=28
+10-22 00:21:57.463  5562  5594 D EGL_emulation: app_time_stats: avg=31.42ms min=23.78ms max=43.10ms count=29
+10-22 00:21:58.483  5562  5594 D EGL_emulation: app_time_stats: avg=31.97ms min=10.36ms max=52.60ms count=29
+10-22 00:21:59.508  5562  5594 D EGL_emulation: app_time_stats: avg=30.92ms min=21.55ms max=44.68ms count=29
+10-22 00:22:00.513  5562  5594 D EGL_emulation: app_time_stats: avg=30.62ms min=19.16ms max=41.59ms count=29
+10-22 00:22:01.546  5562  5594 D EGL_emulation: app_time_stats: avg=32.38ms min=15.34ms max=43.86ms count=29
+10-22 00:22:01.990  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:22:02.520  5562  6714 I RATVLive: reconnected
+10-22 00:22:02.522  5562  6714 I RATVLive: joined the new connection after skipping 6016 bytes
+10-22 00:22:02.548  5562  5594 D EGL_emulation: app_time_stats: avg=31.80ms min=14.35ms max=43.85ms count=28
+10-22 00:22:03.575  5562  5594 D EGL_emulation: app_time_stats: avg=30.74ms min=18.23ms max=41.70ms count=29
+10-22 00:22:04.600  5562  5594 D EGL_emulation: app_time_stats: avg=31.46ms min=24.32ms max=46.15ms count=29
+10-22 00:22:05.622  5562  5594 D EGL_emulation: app_time_stats: avg=31.12ms min=14.60ms max=51.35ms count=29
+10-22 00:22:06.645  5562  5594 D EGL_emulation: app_time_stats: avg=29.16ms min=13.44ms max=44.25ms count=30
+10-22 00:22:07.651  5562  5594 D EGL_emulation: app_time_stats: avg=31.80ms min=22.03ms max=47.77ms count=29
+10-22 00:22:08.669  5562  5594 D EGL_emulation: app_time_stats: avg=30.76ms min=22.28ms max=41.77ms count=29
+10-22 00:22:09.682  5562  5594 D EGL_emulation: app_time_stats: avg=28.76ms min=19.40ms max=39.94ms count=30
+10-22 00:22:10.689  5562  5594 D EGL_emulation: app_time_stats: avg=32.85ms min=23.99ms max=45.51ms count=28
+10-22 00:22:11.703  5562  5594 D EGL_emulation: app_time_stats: avg=30.78ms min=17.94ms max=45.59ms count=29
+10-22 00:22:12.728  5562  5594 D EGL_emulation: app_time_stats: avg=32.86ms min=18.24ms max=51.56ms count=28
+10-22 00:22:13.732  5562  5594 D EGL_emulation: app_time_stats: avg=30.72ms min=18.44ms max=48.04ms count=29
+10-22 00:22:14.732  5562  5594 D EGL_emulation: app_time_stats: avg=31.30ms min=15.09ms max=41.99ms count=29
+10-22 00:22:15.768  5562  5594 D EGL_emulation: app_time_stats: avg=31.31ms min=20.02ms max=45.62ms count=29
+10-22 00:22:16.772  5562  5594 D EGL_emulation: app_time_stats: avg=30.65ms min=12.26ms max=48.10ms count=29
+10-22 00:22:17.793  5562  5594 D EGL_emulation: app_time_stats: avg=29.96ms min=18.89ms max=39.13ms count=30
+10-22 00:22:17.926  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:22:18.446  5562  6714 I RATVLive: reconnected
+10-22 00:22:18.661  5562  6714 I RATVLive: joined the new connection after skipping 694472 bytes
+10-22 00:22:18.809  5562  5594 D EGL_emulation: app_time_stats: avg=31.05ms min=15.20ms max=42.95ms count=29
+10-22 00:22:19.821  5562  5594 D EGL_emulation: app_time_stats: avg=31.42ms min=17.09ms max=45.75ms count=28
+10-22 00:22:20.822  5562  5594 D EGL_emulation: app_time_stats: avg=31.04ms min=20.22ms max=38.86ms count=29
+10-22 00:22:21.851  5562  5594 D EGL_emulation: app_time_stats: avg=28.82ms min=14.62ms max=39.51ms count=31
+10-22 00:22:22.855  5562  5594 D EGL_emulation: app_time_stats: avg=31.26ms min=23.03ms max=41.81ms count=29
+10-22 00:22:23.881  5562  5594 D EGL_emulation: app_time_stats: avg=30.51ms min=23.21ms max=43.50ms count=30
+10-22 00:22:24.914  5562  5594 D EGL_emulation: app_time_stats: avg=30.77ms min=16.12ms max=50.61ms count=30
+10-22 00:22:25.944  5562  5594 D EGL_emulation: app_time_stats: avg=30.15ms min=12.83ms max=45.45ms count=30
+10-22 00:22:26.945  5562  5594 D EGL_emulation: app_time_stats: avg=31.67ms min=22.30ms max=49.32ms count=28
+10-22 00:22:27.977  5562  5594 D EGL_emulation: app_time_stats: avg=29.94ms min=15.20ms max=44.51ms count=30
+10-22 00:22:28.981  5562  5594 D EGL_emulation: app_time_stats: avg=31.24ms min=19.14ms max=43.72ms count=29
+10-22 00:22:30.001  5562  5594 D EGL_emulation: app_time_stats: avg=30.79ms min=19.66ms max=43.64ms count=29
+10-22 00:22:31.027  5562  5594 D EGL_emulation: app_time_stats: avg=31.90ms min=17.81ms max=50.71ms count=28
+10-22 00:22:32.051  5562  5594 D EGL_emulation: app_time_stats: avg=30.75ms min=16.02ms max=47.60ms count=30
+10-22 00:22:33.058  5562  5594 D EGL_emulation: app_time_stats: avg=33.08ms min=17.29ms max=46.26ms count=28
+10-22 00:22:34.071  5562  5594 D EGL_emulation: app_time_stats: avg=30.12ms min=18.45ms max=42.50ms count=29
+10-22 00:22:35.094  5562  5594 D EGL_emulation: app_time_stats: avg=30.42ms min=16.01ms max=40.50ms count=30
+10-22 00:22:36.136  5562  5594 D EGL_emulation: app_time_stats: avg=30.96ms min=14.72ms max=46.51ms count=30
+10-22 00:22:37.160  5562  5594 D EGL_emulation: app_time_stats: avg=31.74ms min=15.08ms max=41.28ms count=29
+10-22 00:22:38.168  5562  5594 D EGL_emulation: app_time_stats: avg=30.64ms min=13.30ms max=37.51ms count=29
+10-22 00:22:39.195  5562  5594 D EGL_emulation: app_time_stats: avg=34.05ms min=16.85ms max=59.59ms count=28
+10-22 00:22:40.221  5562  5594 D EGL_emulation: app_time_stats: avg=29.68ms min=20.53ms max=38.14ms count=30
+10-22 00:22:41.233  5562  5594 D EGL_emulation: app_time_stats: avg=30.13ms min=14.46ms max=36.20ms count=30
+10-22 00:22:42.233  5562  5594 D EGL_emulation: app_time_stats: avg=28.10ms min=15.08ms max=38.27ms count=30
+10-22 00:22:42.582  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:22:43.105  5562  6714 I RATVLive: reconnected
+10-22 00:22:43.257  5562  5594 D EGL_emulation: app_time_stats: avg=32.13ms min=22.22ms max=38.94ms count=29
+10-22 00:22:43.618  5562  6714 I RATVLive: joined the new connection after skipping 1031556 bytes
+10-22 00:22:44.283  5562  5594 D EGL_emulation: app_time_stats: avg=31.96ms min=15.12ms max=53.25ms count=28
+10-22 00:22:45.286  5562  5594 D EGL_emulation: app_time_stats: avg=30.75ms min=13.91ms max=38.99ms count=29
+10-22 00:22:46.305  5562  5594 D EGL_emulation: app_time_stats: avg=29.15ms min=16.06ms max=44.48ms count=30
+10-22 00:22:47.325  5562  5594 D EGL_emulation: app_time_stats: avg=31.36ms min=18.68ms max=41.85ms count=28
+10-22 00:22:48.351  5562  5594 D EGL_emulation: app_time_stats: avg=31.03ms min=22.57ms max=44.15ms count=29
+10-22 00:22:49.397  5562  5594 D EGL_emulation: app_time_stats: avg=31.66ms min=12.76ms max=45.77ms count=29
+10-22 00:22:50.407  5562  5594 D EGL_emulation: app_time_stats: avg=30.18ms min=23.06ms max=39.97ms count=29
+10-22 00:22:51.417  5562  5594 D EGL_emulation: app_time_stats: avg=30.97ms min=19.28ms max=43.09ms count=28
+10-22 00:22:52.429  5562  5594 D EGL_emulation: app_time_stats: avg=30.86ms min=15.46ms max=40.62ms count=29
+10-22 00:22:53.450  5562  5594 D EGL_emulation: app_time_stats: avg=29.31ms min=18.66ms max=40.51ms count=30
+10-22 00:22:54.453  5562  5594 D EGL_emulation: app_time_stats: avg=31.47ms min=19.08ms max=45.25ms count=28
+10-22 00:22:55.456  5562  5594 D EGL_emulation: app_time_stats: avg=31.43ms min=19.51ms max=45.07ms count=28
+10-22 00:22:56.461  5562  5594 D EGL_emulation: app_time_stats: avg=31.94ms min=20.93ms max=47.01ms count=28
+10-22 00:22:57.513  5562  5594 D EGL_emulation: app_time_stats: avg=32.76ms min=19.58ms max=66.23ms count=28
+10-22 00:22:58.547  5562  5594 D EGL_emulation: app_time_stats: avg=31.35ms min=22.60ms max=45.77ms count=29
+10-22 00:22:59.557  5562  5594 D EGL_emulation: app_time_stats: avg=31.20ms min=20.33ms max=42.76ms count=29
+10-22 00:23:00.580  5562  5594 D EGL_emulation: app_time_stats: avg=33.24ms min=21.23ms max=56.39ms count=28
+10-22 00:23:01.586  5562  5594 D EGL_emulation: app_time_stats: avg=33.54ms min=21.59ms max=46.76ms count=26
+10-22 00:23:02.622  5562  5594 D EGL_emulation: app_time_stats: avg=33.36ms min=13.95ms max=51.88ms count=27
+10-22 00:23:02.765  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:23:03.006  5562  6714 I RATVLive: reconnected
+10-22 00:23:03.532  5562  6714 I RATVLive: joined the new connection after skipping 1035692 bytes
+10-22 00:23:03.668  5562  5594 D EGL_emulation: app_time_stats: avg=31.83ms min=23.02ms max=39.80ms count=29
+10-22 00:23:04.691  5562  5594 D EGL_emulation: app_time_stats: avg=33.71ms min=17.97ms max=47.49ms count=27
+10-22 00:23:05.710  5562  5594 D EGL_emulation: app_time_stats: avg=32.33ms min=23.31ms max=43.99ms count=28
+10-22 00:23:06.738  5562  5594 D EGL_emulation: app_time_stats: avg=30.90ms min=18.97ms max=48.26ms count=29
+10-22 00:23:07.758  5562  5594 D EGL_emulation: app_time_stats: avg=30.12ms min=19.98ms max=45.00ms count=29
+10-22 00:23:08.789  5562  5594 D EGL_emulation: app_time_stats: avg=32.60ms min=21.19ms max=44.34ms count=28
+10-22 00:23:09.794  5562  5594 D EGL_emulation: app_time_stats: avg=34.18ms min=21.06ms max=48.68ms count=27
+10-22 00:23:10.801  5562  5594 D EGL_emulation: app_time_stats: avg=33.62ms min=27.98ms max=43.52ms count=28
+10-22 00:23:11.816  5562  5594 D EGL_emulation: app_time_stats: avg=35.31ms min=19.46ms max=53.68ms count=27
+10-22 00:23:12.821  5562  5594 D EGL_emulation: app_time_stats: avg=31.93ms min=23.16ms max=39.64ms count=28
+10-22 00:23:13.840  5562  5594 D EGL_emulation: app_time_stats: avg=32.96ms min=21.99ms max=44.40ms count=28
+10-22 00:23:14.875  5562  5594 D EGL_emulation: app_time_stats: avg=31.56ms min=18.19ms max=44.75ms count=28
+10-22 00:23:15.910  5562  5594 D EGL_emulation: app_time_stats: avg=34.17ms min=20.44ms max=52.15ms count=28
+10-22 00:23:16.911  5562  5594 D EGL_emulation: app_time_stats: avg=32.37ms min=19.00ms max=57.63ms count=27
+10-22 00:23:17.943  5562  5594 D EGL_emulation: app_time_stats: avg=31.15ms min=19.48ms max=41.85ms count=29
+10-22 00:23:18.945  5562  5594 D EGL_emulation: app_time_stats: avg=32.75ms min=24.35ms max=46.85ms count=28
+10-22 00:23:19.959  5562  5594 D EGL_emulation: app_time_stats: avg=31.59ms min=19.15ms max=45.87ms count=28
+10-22 00:23:20.982  5562  5594 D EGL_emulation: app_time_stats: avg=32.29ms min=18.10ms max=50.23ms count=28
+10-22 00:23:22.009  5562  5594 D EGL_emulation: app_time_stats: avg=31.51ms min=14.74ms max=40.46ms count=29
+10-22 00:23:23.043  5562  5594 D EGL_emulation: app_time_stats: avg=30.69ms min=16.73ms max=41.31ms count=29
+10-22 00:23:24.065  5562  5594 D EGL_emulation: app_time_stats: avg=31.74ms min=21.34ms max=46.78ms count=29
+10-22 00:23:25.082  5562  5594 D EGL_emulation: app_time_stats: avg=32.53ms min=17.85ms max=47.73ms count=28
+10-22 00:23:26.113  5562  5594 D EGL_emulation: app_time_stats: avg=33.93ms min=16.12ms max=53.19ms count=28
+10-22 00:23:27.130  5562  5594 D EGL_emulation: app_time_stats: avg=31.16ms min=21.08ms max=41.05ms count=29
+10-22 00:23:28.150  5562  5594 D EGL_emulation: app_time_stats: avg=33.06ms min=19.09ms max=45.35ms count=28
+10-22 00:23:29.177  5562  5594 D EGL_emulation: app_time_stats: avg=32.03ms min=19.59ms max=43.95ms count=28
+10-22 00:23:30.208  5562  5594 D EGL_emulation: app_time_stats: avg=33.34ms min=20.39ms max=43.07ms count=28
+10-22 00:23:30.671  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:23:31.180  5562  6714 I RATVLive: reconnected
+10-22 00:23:31.212  5562  5594 D EGL_emulation: app_time_stats: avg=34.26ms min=19.62ms max=45.52ms count=27
+10-22 00:23:31.508  5562  6714 I RATVLive: joined the new connection after skipping 341784 bytes
+10-22 00:23:32.237  5562  5594 D EGL_emulation: app_time_stats: avg=33.19ms min=21.30ms max=44.08ms count=28
+10-22 00:23:33.242  5562  5594 D EGL_emulation: app_time_stats: avg=35.15ms min=27.77ms max=44.34ms count=26
+10-22 00:23:34.267  5562  5594 D EGL_emulation: app_time_stats: avg=31.65ms min=17.78ms max=45.26ms count=28
+10-22 00:23:35.278  5562  5594 D EGL_emulation: app_time_stats: avg=31.74ms min=14.92ms max=47.18ms count=28
+10-22 00:23:36.306  5562  5594 D EGL_emulation: app_time_stats: avg=31.68ms min=23.52ms max=43.35ms count=29
+10-22 00:23:37.329  5562  5594 D EGL_emulation: app_time_stats: avg=32.79ms min=19.36ms max=45.11ms count=28
+10-22 00:23:38.346  5562  5594 D EGL_emulation: app_time_stats: avg=30.53ms min=8.73ms max=44.33ms count=29
+10-22 00:23:39.353  5562  5594 D EGL_emulation: app_time_stats: avg=32.98ms min=15.51ms max=44.56ms count=27
+10-22 00:23:40.369  5562  5594 D EGL_emulation: app_time_stats: avg=33.47ms min=22.85ms max=45.49ms count=27
+10-22 00:23:41.385  5562  5594 D EGL_emulation: app_time_stats: avg=31.49ms min=11.62ms max=51.77ms count=28
+10-22 00:23:42.415  5562  5594 D EGL_emulation: app_time_stats: avg=32.59ms min=17.99ms max=43.61ms count=29
+10-22 00:23:43.434  5562  5594 D EGL_emulation: app_time_stats: avg=31.60ms min=17.88ms max=44.07ms count=28
+10-22 00:23:44.472  5562  5594 D EGL_emulation: app_time_stats: avg=32.54ms min=18.74ms max=44.20ms count=28
+10-22 00:23:45.509  5562  5594 D EGL_emulation: app_time_stats: avg=33.71ms min=20.91ms max=43.70ms count=27
+10-22 00:23:46.528  5562  5594 D EGL_emulation: app_time_stats: avg=32.73ms min=16.95ms max=48.83ms count=27
+10-22 00:23:47.569  5562  5594 D EGL_emulation: app_time_stats: avg=32.92ms min=20.00ms max=52.81ms count=28
+10-22 00:23:48.594  5562  5594 D EGL_emulation: app_time_stats: avg=31.51ms min=12.44ms max=40.11ms count=29
+10-22 00:23:49.617  5562  5594 D EGL_emulation: app_time_stats: avg=34.02ms min=25.60ms max=57.98ms count=27
+10-22 00:23:49.915  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:23:50.455  5562  6714 I RATVLive: reconnected
+10-22 00:23:50.455  5562  6714 I RATVLive: joined the new connection after skipping 1128 bytes
+10-22 00:23:50.484  5562  6714 W PesReader: Unexpected start code prefix: 13314645
+10-22 00:23:50.634  5562  5594 D EGL_emulation: app_time_stats: avg=31.63ms min=14.39ms max=41.60ms count=28
+10-22 00:23:51.646  5562  5594 D EGL_emulation: app_time_stats: avg=34.13ms min=20.89ms max=46.66ms count=27
+10-22 00:23:52.676  5562  5594 D EGL_emulation: app_time_stats: avg=32.25ms min=20.27ms max=39.09ms count=28
+10-22 00:23:53.687  5562  5594 D EGL_emulation: app_time_stats: avg=31.77ms min=18.22ms max=46.30ms count=28
+10-22 00:23:54.700  5562  5594 D EGL_emulation: app_time_stats: avg=30.83ms min=9.26ms max=49.81ms count=28
+10-22 00:23:55.704  5562  5594 D EGL_emulation: app_time_stats: avg=34.29ms min=22.33ms max=49.35ms count=26
+10-22 00:23:56.735  5562  5594 D EGL_emulation: app_time_stats: avg=31.88ms min=18.06ms max=52.26ms count=28
+10-22 00:23:57.771  5562  5594 D EGL_emulation: app_time_stats: avg=32.62ms min=17.35ms max=43.80ms count=28
+10-22 00:23:58.784  5562  5594 D EGL_emulation: app_time_stats: avg=32.56ms min=24.34ms max=41.85ms count=28
+10-22 00:23:59.796  5562  5594 D EGL_emulation: app_time_stats: avg=32.72ms min=16.06ms max=49.90ms count=27
+10-22 00:24:00.814  5562  5594 D EGL_emulation: app_time_stats: avg=33.90ms min=16.68ms max=47.28ms count=26
+10-22 00:24:01.837  5562  5594 D EGL_emulation: app_time_stats: avg=33.36ms min=21.23ms max=43.32ms count=28
+10-22 00:24:02.843  5562  5594 D EGL_emulation: app_time_stats: avg=33.91ms min=21.22ms max=48.62ms count=27
+10-22 00:24:03.855  5562  5594 D EGL_emulation: app_time_stats: avg=33.25ms min=14.24ms max=48.84ms count=27
+10-22 00:24:04.883  5562  5594 D EGL_emulation: app_time_stats: avg=34.67ms min=22.32ms max=45.83ms count=27
+10-22 00:24:05.915  5562  5594 D EGL_emulation: app_time_stats: avg=34.31ms min=20.53ms max=48.85ms count=27
+10-22 00:24:06.946  5562  5594 D EGL_emulation: app_time_stats: avg=31.17ms min=15.41ms max=44.34ms count=30
+10-22 00:24:07.974  5562  5594 D EGL_emulation: app_time_stats: avg=32.33ms min=19.91ms max=40.13ms count=28
+10-22 00:24:09.004  5562  5594 D EGL_emulation: app_time_stats: avg=33.03ms min=23.70ms max=46.40ms count=28
+10-22 00:24:10.040  5562  5594 D EGL_emulation: app_time_stats: avg=33.00ms min=17.56ms max=46.54ms count=28
+10-22 00:24:11.046  5562  5594 D EGL_emulation: app_time_stats: avg=31.24ms min=22.74ms max=39.92ms count=28
+10-22 00:24:12.067  5562  5594 D EGL_emulation: app_time_stats: avg=32.13ms min=19.47ms max=51.59ms count=28
+10-22 00:24:13.068  5562  5594 D EGL_emulation: app_time_stats: avg=31.62ms min=22.38ms max=43.54ms count=28
+10-22 00:24:14.103  5562  5594 D EGL_emulation: app_time_stats: avg=33.13ms min=14.73ms max=50.65ms count=28
+10-22 00:24:15.129  5562  5594 D EGL_emulation: app_time_stats: avg=30.90ms min=19.93ms max=40.45ms count=29
+10-22 00:24:16.130  5562  5594 D EGL_emulation: app_time_stats: avg=33.23ms min=23.50ms max=49.32ms count=27
+10-22 00:24:17.138  5562  5594 D EGL_emulation: app_time_stats: avg=32.00ms min=19.19ms max=46.04ms count=28
+10-22 00:24:17.401  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:24:17.924  5562  6714 I RATVLive: reconnected
+10-22 00:24:18.151  5562  5594 D EGL_emulation: app_time_stats: avg=32.64ms min=19.97ms max=47.85ms count=28
+10-22 00:24:18.181  5562  6714 I RATVLive: joined the new connection after skipping 691652 bytes
+10-22 00:24:19.171  5562  5594 D EGL_emulation: app_time_stats: avg=32.26ms min=20.38ms max=49.53ms count=28
+10-22 00:24:20.203  5562  5594 D EGL_emulation: app_time_stats: avg=34.28ms min=17.69ms max=58.71ms count=27
+10-22 00:24:21.218  5562  5594 D EGL_emulation: app_time_stats: avg=33.41ms min=12.86ms max=49.88ms count=27
+10-22 00:24:22.232  5562  5594 D EGL_emulation: app_time_stats: avg=32.45ms min=14.19ms max=44.01ms count=28
+10-22 00:24:23.260  5562  5594 D EGL_emulation: app_time_stats: avg=33.96ms min=22.79ms max=48.62ms count=28
+10-22 00:24:24.281  5562  5594 D EGL_emulation: app_time_stats: avg=32.50ms min=21.69ms max=44.00ms count=28
+10-22 00:24:25.286  5562  5594 D EGL_emulation: app_time_stats: avg=32.52ms min=16.27ms max=49.60ms count=28
+10-22 00:24:26.313  5562  5594 D EGL_emulation: app_time_stats: avg=31.00ms min=15.17ms max=42.85ms count=29
+10-22 00:24:27.335  5562  5594 D EGL_emulation: app_time_stats: avg=32.16ms min=17.25ms max=47.66ms count=28
+10-22 00:24:28.369  5562  5594 D EGL_emulation: app_time_stats: avg=33.68ms min=17.96ms max=52.61ms count=28
+10-22 00:24:29.384  5562  5594 D EGL_emulation: app_time_stats: avg=33.22ms min=24.05ms max=57.17ms count=27
+10-22 00:24:30.386  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:24:30.414  5562  5594 D EGL_emulation: app_time_stats: avg=30.05ms min=19.22ms max=38.62ms count=29
+10-22 00:24:30.896  5562  6714 I RATVLive: reconnected
+10-22 00:24:30.896  5562  6714 I RATVLive: joined the new connection after skipping 2256 bytes
+10-22 00:24:31.436  5562  5594 D EGL_emulation: app_time_stats: avg=33.35ms min=19.12ms max=53.56ms count=28
+10-22 00:24:32.464  5562  5594 D EGL_emulation: app_time_stats: avg=32.33ms min=21.39ms max=43.55ms count=28
+10-22 00:24:33.496  5562  5594 D EGL_emulation: app_time_stats: avg=33.08ms min=23.73ms max=48.92ms count=28
+10-22 00:24:34.530  5562  5594 D EGL_emulation: app_time_stats: avg=32.80ms min=15.34ms max=52.92ms count=28
+10-22 00:24:35.559  5562  5594 D EGL_emulation: app_time_stats: avg=34.55ms min=23.77ms max=48.91ms count=27
+10-22 00:24:36.582  5562  5594 D EGL_emulation: app_time_stats: avg=32.95ms min=18.73ms max=47.86ms count=28
+10-22 00:24:37.602  5562  5594 D EGL_emulation: app_time_stats: avg=32.33ms min=21.89ms max=44.04ms count=28
+10-22 00:24:38.615  5562  5594 D EGL_emulation: app_time_stats: avg=31.31ms min=15.87ms max=47.73ms count=28
+10-22 00:24:39.630  5562  5594 D EGL_emulation: app_time_stats: avg=34.21ms min=19.56ms max=48.21ms count=27
+10-22 00:24:40.657  5562  5594 D EGL_emulation: app_time_stats: avg=32.23ms min=17.14ms max=52.39ms count=28
+10-22 00:24:41.678  5562  5594 D EGL_emulation: app_time_stats: avg=30.97ms min=23.14ms max=40.37ms count=29
+10-22 00:24:42.698  5562  5594 D EGL_emulation: app_time_stats: avg=30.66ms min=12.80ms max=40.42ms count=29
+10-22 00:24:43.732  5562  5594 D EGL_emulation: app_time_stats: avg=33.36ms min=20.09ms max=48.68ms count=28
+10-22 00:24:44.747  5562  5594 D EGL_emulation: app_time_stats: avg=31.91ms min=19.90ms max=50.29ms count=28
+10-22 00:24:45.788  5562  5594 D EGL_emulation: app_time_stats: avg=32.26ms min=18.64ms max=42.22ms count=29
+10-22 00:24:46.166  5562  6611 I RATVLive: no data for 5890 ms (limit 5847 ms): reconnecting
+10-22 00:24:46.170  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:24:46.675  5562  6714 I RATVLive: reconnected
+10-22 00:24:46.684  5562  6714 I RATVLive: joined the new connection after skipping 21996 bytes
+10-22 00:24:46.805  5562  5594 D EGL_emulation: app_time_stats: avg=33.09ms min=21.80ms max=43.78ms count=27
+10-22 00:24:47.805  5562  5594 D EGL_emulation: app_time_stats: avg=35.72ms min=17.63ms max=56.11ms count=25
+10-22 00:24:48.813  5562  5594 D EGL_emulation: app_time_stats: avg=32.75ms min=23.56ms max=65.28ms count=27
+10-22 00:24:49.819  5562  5594 D EGL_emulation: app_time_stats: avg=34.15ms min=23.79ms max=46.04ms count=27
+10-22 00:24:50.831  5562  5594 D EGL_emulation: app_time_stats: avg=31.22ms min=19.29ms max=49.93ms count=28
+10-22 00:24:51.884  5562  5594 D EGL_emulation: app_time_stats: avg=33.45ms min=21.76ms max=51.27ms count=28
+10-22 00:24:52.894  5562  5594 D EGL_emulation: app_time_stats: avg=32.82ms min=18.96ms max=47.02ms count=27
+10-22 00:24:53.897  5562  5594 D EGL_emulation: app_time_stats: avg=33.96ms min=23.34ms max=44.81ms count=27
+10-22 00:24:54.900  5562  5594 D EGL_emulation: app_time_stats: avg=33.13ms min=18.57ms max=47.15ms count=27
+10-22 00:24:55.909  5562  5594 D EGL_emulation: app_time_stats: avg=31.58ms min=21.91ms max=42.62ms count=28
+10-22 00:24:56.937  5562  5594 D EGL_emulation: app_time_stats: avg=32.73ms min=13.06ms max=48.59ms count=24
+10-22 00:24:57.980  5562  5594 D EGL_emulation: app_time_stats: avg=35.12ms min=11.86ms max=57.34ms count=26
+10-22 00:24:58.557  7104  7104 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-22 00:24:58.568  7104  7104 I AndroidRuntime: Using default boot image
+10-22 00:24:58.568  7104  7104 I AndroidRuntime: Leaving lock profiling enabled
+10-22 00:24:58.771  7104  7104 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-22 00:24:59.000  5562  5594 D EGL_emulation: app_time_stats: avg=43.41ms min=25.48ms max=62.73ms count=21
+10-22 00:25:00.038  5562  5594 D EGL_emulation: app_time_stats: avg=43.72ms min=31.27ms max=60.18ms count=22
+10-22 00:25:01.039  5562  5594 D EGL_emulation: app_time_stats: avg=47.45ms min=26.04ms max=80.23ms count=20
+10-22 00:25:01.252  7104  7104 D AndroidRuntime: Shutting down VM
+10-22 00:25:02.050  5562  5594 D EGL_emulation: app_time_stats: avg=43.14ms min=34.26ms max=65.33ms count=21
+10-22 00:25:03.067  5562  5594 D EGL_emulation: app_time_stats: avg=44.17ms min=28.34ms max=62.66ms count=21
+10-22 00:25:04.080  5562  5594 D EGL_emulation: app_time_stats: avg=43.29ms min=22.48ms max=61.62ms count=22
+10-22 00:25:05.115  5562  5594 D EGL_emulation: app_time_stats: avg=43.93ms min=28.01ms max=69.20ms count=21
+10-22 00:25:06.161  5562  5594 D EGL_emulation: app_time_stats: avg=44.15ms min=32.74ms max=52.83ms count=22
+10-22 00:25:07.211  5562  5594 D EGL_emulation: app_time_stats: avg=41.48ms min=27.31ms max=53.26ms count=23
+10-22 00:25:08.215  5562  5594 D EGL_emulation: app_time_stats: avg=42.48ms min=19.65ms max=63.43ms count=22
+10-22 00:25:08.334  5562  6082 D TrafficStats: tagSocket(93) with statsTag=0xffffffff, statsUid=-1
+10-22 00:25:08.852  5562  6714 I RATVLive: reconnected
+10-22 00:25:08.852  5562  6714 I RATVLive: joined the new connection after skipping 1316 bytes
+10-22 00:25:09.226  5562  5594 D EGL_emulation: app_time_stats: avg=37.34ms min=22.75ms max=61.27ms count=24
+10-22 00:25:10.244  5562  5594 D EGL_emulation: app_time_stats: avg=44.65ms min=32.82ms max=53.34ms count=21
+10-22 00:25:11.265  5562  5594 D EGL_emulation: app_time_stats: avg=42.26ms min=30.72ms max=65.80ms count=22
+10-22 00:25:12.275  5562  5594 D EGL_emulation: app_time_stats: avg=44.73ms min=34.63ms max=54.29ms count=21
+10-22 00:25:12.775  7152  7152 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-22 00:25:12.791  7152  7152 I AndroidRuntime: Using default boot image
+10-22 00:25:12.797  7152  7152 I AndroidRuntime: Leaving lock profiling enabled
+10-22 00:25:12.988  7152  7152 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-22 00:25:13.311  5562  5594 D EGL_emulation: app_time_stats: avg=44.70ms min=29.34ms max=63.46ms count=21
+10-22 00:25:14.314  5562  5570 I com.ratv.app: Background young concurrent copying GC freed 47994(2010KB) AllocSpace objects, 0(0B) LOS objects, 3% free, 51MB/52MB, paused 17.552ms,19us total 75.432ms
+10-22 00:25:14.320  5562  5594 D EGL_emulation: app_time_stats: avg=44.30ms min=28.11ms max=55.73ms count=21
+10-22 00:25:15.361  5562  5594 D EGL_emulation: app_time_stats: avg=46.00ms min=33.55ms max=58.07ms count=21
+10-22 00:25:15.779  7152  7152 D AndroidRuntime: Shutting down VM
+10-22 00:25:16.377  5562  5594 D EGL_emulation: app_time_stats: avg=44.57ms min=28.00ms max=62.53ms count=21
+10-22 00:25:17.408  5562  5594 D EGL_emulation: app_time_stats: avg=46.72ms min=22.21ms max=88.78ms count=20
+10-22 00:25:17.989  5562  5577 I com.ratv.app: Explicit concurrent copying GC freed 21108(1095KB) AllocSpace objects, 20(896KB) LOS objects, 32% free, 50MB/74MB, paused 17us,17us total 143.869ms
