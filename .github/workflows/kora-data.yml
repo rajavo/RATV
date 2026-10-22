@@ -1,0 +1,63 @@
+name: RA Kora data
+
+# The 30-day football schedule of «جدول RA كورة»: built from ESPN every 3 hours and published as
+# fixtures.json in the kora-data release, where the app downloads it.
+on:
+  schedule:
+    - cron: '17 */3 * * *'
+  push:
+    branches: [ main ]
+    paths:
+      - 'kora/data/**'
+      - '.github/workflows/kora-data.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: kora-data
+  cancel-in-progress: false
+
+jobs:
+  data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: kora/data
+      - name: Last published schedule
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download kora-data -p fixtures.json -D previous 2>/dev/null || echo "no earlier schedule"
+      - name: Build the schedule
+        run: python3 kora/data/fetch.py out previous/fixtures.json
+      - name: Publish to the kora-data release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view kora-data >/dev/null 2>&1; then
+            gh release upload kora-data out/fixtures.json out/report.json --clobber
+          else
+            gh release create kora-data out/fixtures.json out/report.json --target "$GITHUB_SHA" \
+              --title "جدول RA كورة: البيانات" --latest=false \
+              --notes "جدول المباريات لتطبيق «جدول RA كورة»، يتحدث تلقائياً كل 3 ساعات."
+          fi
+          gh release edit kora-data --draft=false --prerelease=false --latest=false
+      - name: Check the public link
+        run: |
+          url="https://github.com/${{ github.repository }}/releases/download/kora-data/fixtures.json"
+          for i in 1 2 3 4 5; do
+            if curl -fsL "$url" | python3 -c "import json,sys; d=json.load(sys.stdin); print(len(d['matches']), 'matches online')"; then exit 0; fi
+            sleep 15
+          done
+          echo "fixtures.json is not reachable at $url"
+          exit 1
+      # GitHub stops scheduled workflows of a repository that has been quiet for 60 days; this keeps it on.
+      - name: Keep the schedule running
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/kora-data.yml/enable" || true
