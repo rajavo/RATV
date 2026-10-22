@@ -463,3 +463,88 @@ Status: o
 12:39:32 focus[nav-target]: حسابي
 12:39:37 focus[settings]: إضافة مستخدم
 12:39:37 screenshot 23-settings.png 1920x1080
+13:12:52 == launch
+13:13:40 debug.ratv.subs=http://10.0.2.2:8000
+13:13:41 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 1054
+WaitTime: 1055
+Complete
+13:13:43 screenshot 01-splash.png 1920x1080
+13:13:43 == login-screen
+13:13:49 focus[login-initial]: http://server.example:8080
+13:13:50 screenshot 02-login.png 1920x1080
+13:13:50 == keyboard-on-ok
+13:13:53 screenshot 03-login-keyboard.png 1920x1080
+13:13:57 == fill-with-remote
+13:14:07 focus[login-user]: username
+13:14:23 focus[login-name]: مثال: اشتراك المنزل
+13:14:27 focus[login-submit]: دخول
+13:14:27 screenshot 04-login-filled.png 1920x1080
+13:14:39 screenshot 05-home.png 1920x1080
+13:14:39 == home-focus
+13:14:41 focus[home-focus]: مباشر | RATV News HD | Live Match | بدأ 11:45 · متبقي 0د | شاهد الآن
+13:14:41 screenshot 06-home-focus.png 1920x1080
+13:14:41 == player-remote
+13:14:52 screenshot 07-player.png 1920x1080
+13:14:56 screenshot 08-player-zap.png 1920x1080
+13:14:59 screenshot 09-player-controls.png 1920x1080
+13:15:01 screenshot 10-player-controls-moved.png 1920x1080
+13:15:04 screenshot 11-player-controls-hidden.png 1920x1080
+13:15:11 screenshot 12-home-after-player.png 1920x1080
+13:15:11 == movies
+13:15:12 focus[nav-search]: G2 | مباشر | Gulf 24 FHD | Cartoon Hour | بدأ 12:45 · متبقي 29د | شاهد الآن
+13:15:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+13:15:18 focus[nav-search]: أفلام
+13:15:20 focus[nav-start]: أفلام
+13:15:21 focus[nav-target]: أفلام
+13:15:29 focus[movies]: Desert Night (2023) | 7.4 | Desert Night (2023)
+13:15:29 screenshot 13-movies.png 1920x1080
+13:15:34 focus[movie-detail]: تشغيل
+13:15:34 screenshot 14-movie-detail.png 1920x1080
+13:15:48 screenshot 15-player-movie-seek.png 1920x1080
+13:15:52 screenshot 16-movie-detail-after.png 1920x1080
+13:15:55 == live
+13:15:56 focus[nav-search]: Desert Night (2023) | 7.4 | Desert Night (2023)
+13:15:59 focus[nav-search]: أفلام
+13:16:01 focus[nav-start]: أفلام
+13:16:06 focus[nav-target]: مباشر
+13:16:13 focus[live]: 2 | G2 | Gulf 24 FHD | Cartoon Hour | FHD
+13:16:13 screenshot 17-live.png 1920x1080
+13:16:19 focus[live-moved]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+13:16:19 screenshot 18-live-moved.png 1920x1080
+13:16:19 == series
+13:16:21 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+13:16:24 focus[nav-search]: 3 | قناة الأخبار | Weekly Review
+13:16:28 focus[nav-search]: 2 | G2 | Gulf 24 FHD | Cartoon Hour | FHD
+13:16:32 focus[nav-search]: 1 | RATV News HD | وثائقي الطبيعة | HD
+13:16:35 focus[nav-search]: أفلام
+13:16:36 focus[nav-start]: أفلام
+13:16:40 focus[nav-target]: مسلسلات
+13:16:45 focus[series]: Sands of Time | 8.1 | Sands of Time
+13:16:51 focus[series-detail]: تشغيل الحلقة 1
+13:16:52 screenshot 19-series-detail.png 1920x1080
+13:16:54 == matches
+13:16:56 focus[nav-search]: Sands of Time | 8.1 | Sands of Time
+13:16:59 focus[nav-search]: أفلام
+13:17:00 focus[nav-start]: أفلام
+13:17:03 focus[nav-target]: المباريات
+13:17:09 screenshot 20-matches.png 1920x1080
+13:17:11 == match-link
+13:17:11 Starting: Intent { act=android.intent.action.VIEW dat=ratv://match?home=Real Madrid&away=Barcelona&homeAr=ريال مدريد&awayAr=برشلونة&start=1792674131302&league=الدوري الإسباني pkg=com.ratv.app }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+Status: o
+13:17:14 screenshot 21-match-link.png 1920x1080
+13:17:16 focus[match-link]: Sport 1 4K | الحين: الدوري الإسباني: ريال مدريد × برشلونة
+13:17:24 screenshot 22-match-link-play.png 1920x1080
+13:17:31 == settings
+13:17:32 focus[nav-search]: الآن
+13:17:36 focus[nav-search]: جدول 30 يوم
+13:17:39 focus[nav-search]: ابحث عن قناة أو فيلم أو مسلسل
+13:17:42 focus[nav-search]: حسابي
+13:17:43 focus[nav-start]: حسابي
+13:17:45 focus[nav-target]: حسابي
+13:17:50 focus[settings]: إضافة مستخدم
+13:17:51 screenshot 23-settings.png 1920x1080
