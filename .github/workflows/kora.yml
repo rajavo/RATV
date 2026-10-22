@@ -55,6 +55,24 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: tv
+            api: 30
+            target: android-tv
+            arch: x86
+            profile: tv_1080p
+            script: kora/ci/smoke_kora.py
+            branch: ci-kora-results
+          - name: phone
+            api: 34
+            target: google_apis
+            arch: x86_64
+            profile: pixel_6
+            script: kora/ci/smoke_phone.py
+            branch: ci-kora-results-phone
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -72,20 +90,20 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: Check the app on the TV emulator
+      - name: Check the app on the ${{ matrix.name }} emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 30
-          target: android-tv
-          arch: x86
-          profile: tv_1080p
+          api-level: ${{ matrix.api }}
+          target: ${{ matrix.target }}
+          arch: ${{ matrix.arch }}
+          profile: ${{ matrix.profile }}
           cores: 3
           ram-size: 3072M
           disable-animations: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: |
             adb install -r "$(find apks -name app-release.apk | head -1)"
-            python3 kora/ci/smoke_kora.py
+            python3 ${{ matrix.script }}
       - name: Save results to the ci-kora-results branch
         if: always()
         env:
@@ -94,8 +112,8 @@ jobs:
           mkdir -p kora-results
           cp /tmp/kora-www.log kora-results/server.log 2>/dev/null || true
           cd kora-results && git init -q && git checkout -q -b results && git add -A
-          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qm "RA Kora test results (run ${{ github.run_number }})"
-          git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" results:ci-kora-results
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qm "RA Kora test results, ${{ matrix.name }} (run ${{ github.run_number }})"
+          git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" results:${{ matrix.branch }}
 
   publish:
     needs: emulator

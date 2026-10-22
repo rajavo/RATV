@@ -221,6 +221,16 @@ class Prefs(context: Context) {
         get() = sp.getString("liveSteady", "auto") ?: "auto"
         set(value) = sp.edit().putString("liveSteady", value).apply()
 
+    /** The app's colours (see Palette): "orange", "gold", "blue", "green" or "purple". */
+    var palette: String
+        get() = sp.getString("palette", "orange") ?: "orange"
+        set(value) = sp.edit().putString("palette", value).apply()
+
+    /** A live channel that keeps stalling moves by itself to another version of it (lighter or a backup). */
+    var autoVersion: Boolean
+        get() = sp.getBoolean("autoVersion", true)
+        set(value) = sp.edit().putBoolean("autoVersion", value).apply()
+
     /** On a TV, switch the screen to 50 or 60 Hz to match the channel, for even motion. */
     var matchFrameRate: Boolean
         get() = sp.getBoolean("matchFrameRate", false)

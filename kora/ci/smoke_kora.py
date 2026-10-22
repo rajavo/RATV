@@ -324,12 +324,34 @@ def s_offline():
     expect(root is not None, "without the server the saved schedule did not show")
 
 
+def s_real_data():
+    """The real schedule from GitHub, with real logos and ESPN's live scores (the emulator has internet)."""
+    for prop in ("debug.kora.data", "debug.kora.espn", "debug.kora.update"):
+        sh("setprop %s ''" % prop)
+    sh("pm clear %s" % PKG)
+    time.sleep(1)
+    sh("am start -W -n %s/.MainActivity" % PKG)
+    root = wait_text("مباراة", timeout=60)
+    expect(root is not None, "the real schedule did not load")
+    time.sleep(8)  # logos
+    root = dump("real-today")
+    shot("real-today")
+    t = texts(root)
+    log("real schedule: " + t[:1500])
+    expect("الدوري" in t or "دوري" in t or "كأس" in t or "ما في مباريات" in t, "no competition on the real schedule")
+    # The next days with the remote: right to left, the following day is on the left.
+    for i in range(3):
+        key("DPAD_LEFT", 2.5)
+        shot("real-day-%d" % (i + 1))
+    dump("real-later")
+
+
 def finish():
     full = adb("logcat", "-d", "-v", "threadtime", timeout=90)
     with gzip.open(os.path.join(OUT, "logcat.txt.gz"), "wt", encoding="utf-8") as f:
         f.write(full)
     with open(os.path.join(OUT, "kora-log.txt"), "w", encoding="utf-8") as f:
-        f.write("\n".join(l for l in full.splitlines() if "RAKora" in l or "AndroidRuntime" in l))
+        f.write("\n".join(l for l in full.splitlines() if "RAKora" in l or "FATAL" in l or ("AndroidRuntime" in l and PKG in l)))
     crash = adb("logcat", "-d", "-b", "crash", timeout=30)
     with open(os.path.join(OUT, "crash.txt"), "w", encoding="utf-8") as f:
         f.write(crash)
@@ -351,6 +373,7 @@ if __name__ == "__main__":
         ("filter", s_filter),
         ("details", s_details),
         ("offline", s_offline),
+        ("real-data", s_real_data),
     ]:
         step(name, fn)
     finish()

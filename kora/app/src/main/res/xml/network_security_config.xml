@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Everything real goes over HTTPS. Plain HTTP is allowed only to 10.0.2.2, the computer running
+     the emulator, where the automatic test serves its schedule. -->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.0.2.2</domain>
+    </domain-config>
+</network-security-config>

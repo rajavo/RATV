@@ -32,6 +32,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalConfiguration
 import com.ratv.app.ui.screens.rememberNow
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
@@ -44,6 +48,15 @@ fun TopBar(current: String, onSelect: (String) -> Unit, onSearch: () -> Unit) {
         Modifier
             .fillMaxWidth()
             .background(RColors.NavBg)
+            .drawBehind {
+                drawRect(
+                    Brush.radialGradient(
+                        listOf(RColors.Saffron.copy(alpha = 0.18f), Color.Transparent),
+                        center = Offset(size.width, size.height * 0.5f),
+                        radius = size.width * 0.35f
+                    )
+                )
+            }
             .statusBarsPadding()
     ) {
         Row(
@@ -53,7 +66,8 @@ fun TopBar(current: String, onSelect: (String) -> Unit, onSearch: () -> Unit) {
                 .padding(horizontal = 28.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            RatvLogo(fontSize = 22.sp)
+            // The slogan beside the logo when the screen is wide enough for it and all the sections.
+            RatvLogo(fontSize = 22.sp, slogan = LocalConfiguration.current.screenWidthDp >= 1200)
             Spacer(Modifier.width(28.dp))
             tvNavItems.forEachIndexed { index, item ->
                 if (index > 0) {
@@ -116,7 +130,7 @@ private fun TopTab(label: String, selected: Boolean, onClick: () -> Unit) {
                 .width(22.dp)
                 .height(3.dp)
                 .clip(RoundedCornerShape(2.dp))
-                .background(if (selected) RColors.Saffron else Color.Transparent)
+                .then(if (selected) Modifier.background(RColors.AccentBrush) else Modifier)
         )
     }
 }

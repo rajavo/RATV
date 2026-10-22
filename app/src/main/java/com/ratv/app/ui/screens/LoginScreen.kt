@@ -92,6 +92,7 @@ import com.ratv.app.ui.components.focusRing
 import com.ratv.app.ui.components.rememberIsTv
 import com.ratv.app.ui.components.rememberIsWide
 import com.ratv.app.ui.components.tvClickable
+import com.ratv.app.ui.components.screenBackground
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 import kotlinx.coroutines.delay
@@ -335,7 +336,7 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
                 .fillMaxWidth()
                 .height(54.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .background(RColors.Saffron)
+                .background(RColors.AccentBrush)
                 .tvClickable(RoundedCornerShape(16.dp), enabled = !loading, ringColor = Color.White) { submit() },
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
@@ -365,7 +366,7 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
     Box(
         Modifier
             .fillMaxSize()
-            .background(RColors.Ink)
+            .screenBackground()
     ) {
         if (wide) {
             // TV and landscape: introduction on one side, the form on the other, no scrolling needed.

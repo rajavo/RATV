@@ -34,6 +34,7 @@ import com.ratv.app.player.PlayerScreen
 import com.ratv.app.ui.components.BottomNav
 import com.ratv.app.ui.components.TopBar
 import com.ratv.app.ui.components.rememberIsWide
+import com.ratv.app.ui.components.screenBackground
 import com.ratv.app.ui.screens.FindMatchScreen
 import com.ratv.app.ui.screens.GuideScreen
 import com.ratv.app.ui.screens.HomeScreen
@@ -131,7 +132,7 @@ fun RatvRoot() {
     Column(
         Modifier
             .fillMaxSize()
-            .background(RColors.Ink)
+            .screenBackground()
             // With a remote, Back on a selected item would only clear the selection;
             // send it straight to the normal back handling instead.
             .onKeyEvent { e ->

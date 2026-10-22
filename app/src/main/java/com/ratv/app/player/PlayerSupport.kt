@@ -277,7 +277,9 @@ fun createPlayer(
 ): ExoPlayer {
     val reserve = maxOf(cushionMs(bufferMode).toInt(), 15_000)
     // min buffer, max buffer, stored before starting, stored before resuming after a stall (ms)
-    val durations = if (live) intArrayOf(30_000, 60_000, 5_000, 8_000) else intArrayOf(reserve, reserve + 30_000, 3_000, 5_000)
+    // Films and episodes download faster than they play: read up to 2.5 minutes further ahead (as
+    // memory allows), so a weak or intermittent line does not stop them.
+    val durations = if (live) intArrayOf(30_000, 60_000, 5_000, 8_000) else intArrayOf(reserve, reserve + 150_000, 3_000, 5_000)
     val memoryCap = (Runtime.getRuntime().maxMemory() * 0.45).toLong().coerceIn(32L shl 20, 220L shl 20).toInt()
     // Live TS channels reconnect at once when the connection breaks or gets stuck, as other IPTV
     // players do, instead of stalling once the store runs out (see LiveReconnectingDataSource).

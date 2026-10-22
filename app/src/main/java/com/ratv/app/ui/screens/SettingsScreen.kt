@@ -76,7 +76,12 @@ import com.ratv.app.ui.components.tvClickable
 import com.ratv.app.ui.components.arabicDate
 import com.ratv.app.ui.components.formatCount
 import com.ratv.app.ui.components.relativeTime
+import com.ratv.app.ui.components.screenBackground
 import com.ratv.app.ui.theme.RColors
+import androidx.compose.ui.graphics.Brush
+import com.ratv.app.ui.components.SloganText
+import com.ratv.app.ui.theme.Palette
+import com.ratv.app.ui.theme.AppTheme
 import com.ratv.app.ui.theme.T
 
 private val subtitleSizeLabels = listOf("صغير", "متوسط", "كبير", "كبير جداً")
@@ -127,8 +132,10 @@ fun SettingsScreen(nav: Navigator) {
     var showFormat by remember { mutableStateOf(false) }
     var liveFormat by remember { mutableStateOf(repo.prefs.liveFormat) }
     var showSteady by remember { mutableStateOf(false) }
+    var showPalette by remember { mutableStateOf(false) }
     var liveSteady by remember { mutableStateOf(repo.prefs.liveSteady) }
     var matchFrameRate by remember { mutableStateOf(repo.prefs.matchFrameRate) }
+    var autoVersion by remember { mutableStateOf(repo.prefs.autoVersion) }
     val onTv = rememberIsTv()
     var showAbout by remember { mutableStateOf(false) }
     var confirmDelete by remember { mutableStateOf<Playlist?>(null) }
@@ -145,7 +152,7 @@ fun SettingsScreen(nav: Navigator) {
     Column(
         Modifier
             .fillMaxSize()
-            .background(RColors.Ink)
+            .screenBackground()
             .verticalScroll(rememberScrollState())
     ) {
         ScreenHeader("حسابي", Modifier.statusBarsPadding())
@@ -260,6 +267,15 @@ fun SettingsScreen(nav: Navigator) {
             ValueRow("صيغة البث المباشر", liveFormatLabels[liveFormat] ?: "TS") { showFormat = true }
             Divider()
             ValueRow("ثبات البث المباشر", steadyLabels[liveSteady] ?: "تلقائي") { showSteady = true }
+            Divider()
+            ToggleRow(
+                "نسخة بديلة للقناة لما تقطّع",
+                "لو القناة قطّعت كثير، ينتقل لنسخة ثانية منها في اشتراكك (جودة أخف أو رابط احتياطي)",
+                autoVersion
+            ) {
+                autoVersion = it
+                repo.prefs.autoVersion = it
+            }
             if (onTv) {
                 Divider()
                 ToggleRow(
@@ -331,6 +347,8 @@ fun SettingsScreen(nav: Navigator) {
 
         GroupTitle("التطبيق")
         Group {
+            ValueRow("ألوان التطبيق", AppTheme.palette.label) { showPalette = true }
+            Divider()
             ValueRow(
                 "تحديث التطبيق",
                 when {
@@ -368,9 +386,10 @@ fun SettingsScreen(nav: Navigator) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            AppIcon(40.dp)
+            AppIcon(52.dp)
             Column(Modifier.weight(1f)) {
-                Text("حول RATV", style = T.body(15.sp, FontWeight.Bold))
+                Text("حول RA TV", style = T.body(15.sp, FontWeight.Bold))
+                SloganText(13.sp)
                 Text("الإصدار ${BuildConfig.VERSION_NAME} · مشغّل وسائط فقط", style = T.caption)
             }
             Icon(RIcons.ChevronLeft, contentDescription = null, tint = RColors.Text3, modifier = Modifier.size(18.dp))
@@ -408,6 +427,47 @@ fun SettingsScreen(nav: Navigator) {
                             )
                             Spacer(Modifier.size(8.dp))
                             Text(lang.name, style = T.body(15.sp))
+                        }
+                    }
+                }
+            },
+            containerColor = RColors.Surface
+        )
+    }
+
+    if (showPalette) {
+        AlertDialog(
+            onDismissRequest = { showPalette = false },
+            confirmButton = { TextButton(onClick = { showPalette = false }) { Text("تم", color = RColors.Saffron) } },
+            title = { Text("ألوان التطبيق", style = T.h2) },
+            text = {
+                Column {
+                    Palette.entries.forEach { option ->
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 52.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .tvClickable(RoundedCornerShape(10.dp), role = Role.RadioButton) {
+                                    AppTheme.palette = option
+                                    repo.prefs.palette = option.key
+                                },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = AppTheme.palette == option,
+                                onClick = null,
+                                colors = RadioButtonDefaults.colors(selectedColor = option.accent)
+                            )
+                            Spacer(Modifier.size(8.dp))
+                            Box(
+                                Modifier
+                                    .size(26.dp)
+                                    .clip(CircleShape)
+                                    .background(Brush.linearGradient(listOf(option.light, option.accent, option.deep)))
+                            )
+                            Spacer(Modifier.size(12.dp))
+                            Text(option.label, style = T.body(15.sp))
                         }
                     }
                 }

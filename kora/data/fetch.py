@@ -242,27 +242,21 @@ def yk_day(day):
         return "error", "%s: %s" % (type(e).__name__, e)
 
 
-def yk_parse(html, day, teams, yk_leagues, yk_logos):
-    """Matches of one day's page, of the leagues listed with yk_en / yk_ar in leagues.json."""
-    out = []
+def yk_cards(html, day):
+    """Every match card of one day's page, whatever the competition."""
     blocks = re.split(r'<div class="(\d+) matchCard matchesList">', html)
     for k in range(1, len(blocks) - 1, 2):
         block = blocks[k + 1]
         tour = re.search(r'<img src="([^"]*)" alt="([^"]*)" enName="([^"]*)"', block)
-        lg = yk_league(tour.group(3), tour.group(2), yk_leagues) if tour else None
-        if not lg:
+        if not tour:
             continue
-        yk_logos.setdefault(lg, tour.group(1).replace("\\", "/"))
         for card in block.split('liveScoreMatchId="')[1:]:
             mid = card[:card.find('"')]
             kind = re.search(r'class="item ([^"]*?) ?liItem"', card[:300])
-            kind = kind.group(1).strip() if kind else ""
             status = re.search(r'matchStatus">\s*<span>\s*([^<]*?)\s*</span>', card)
-            status = yk_clean(status.group(1)) if status else ""
             names = [yk_clean(n) for n in re.findall(r"<p>\s*([^<]+?)\s*</p>", card)]
-            logos = re.findall(r'<img src="([^"]+)"', card)
+            logos = [u.replace("\\", "/") for u in re.findall(r'<img src="([^"]+)"', card)]
             when = re.search(r'<span class="time">\s*(\d{1,2}):(\d{2})\s*</span>', card)
-            scores = re.findall(r'<span class="score">\s*([^<]*?)\s*</span>', card)
             round_ = re.search(r'<div class="date">\s*([^<]*?)\s*</div>', card)
             if not mid.isdigit() or len(names) < 2:
                 continue
@@ -271,33 +265,104 @@ def yk_parse(html, day, teams, yk_leagues, yk_logos):
                 t, tbd = int(local.timestamp()), False
             else:
                 t, tbd = int(dt.datetime(day.year, day.month, day.day, 12, tzinfo=YK_ZONE).timestamp()), True
-            ids = []
-            for side in range(2):
-                tid = "y:" + names[side]
-                if tid not in teams:
-                    url = logos[side].replace("\\", "/") if side < len(logos) else ""
-                    teams[tid] = {"en": "", "s": "", "ar": names[side], "logo": url, "leagues": set(), "yk": True}
-                teams[tid]["leagues"].add(lg)
-                ids.append(tid)
-            if "finish" in kind or "end" in kind or "انته" in status:
-                state, name = "post", "FULL_TIME"
-            elif "now" in kind or "live" in kind or "جار" in status or "مباشر" in status or "الشوط" in status:
-                state, name = "in", "IN_PROGRESS"
-            else:
-                state, name = "pre", "SCHEDULED"
-            if "تأجل" in status or "مؤجل" in status:
-                state, name = "post", "POSTPONED"
-            elif "ألغي" in status or "الغاء" in status or "إلغاء" in status:
-                state, name = "post", "CANCELED"
-            m = {"id": "y" + mid, "lg": lg, "t": t, "h": ids[0], "a": ids[1], "st": state, "sn": name}
-            if tbd:
-                m["tbd"] = 1
-            if state != "pre" and len(scores) >= 2 and scores[0].isdigit() and scores[1].isdigit():
-                m["hs"], m["as"] = int(scores[0]), int(scores[1])
-            if round_ and yk_clean(round_.group(1)):
-                m["n"] = yk_clean(round_.group(1))
-            out.append(m)
-    return out
+            yield {
+                "tour_en": tour.group(3), "tour_ar": tour.group(2), "tour_logo": tour.group(1).replace("\\", "/"),
+                "mid": mid, "kind": kind.group(1).strip() if kind else "", "status": yk_clean(status.group(1)) if status else "",
+                "names": names[:2], "logos": (logos + ["", ""])[:2], "t": t, "tbd": tbd,
+                "scores": re.findall(r'<span class="score">\s*([^<]*?)\s*</span>', card),
+                "round": yk_clean(round_.group(1)) if round_ else "",
+            }
+
+
+def yk_match(c, lg, teams):
+    """A schedule entry from one card of a league ESPN lacks."""
+    ids = []
+    for side in range(2):
+        tid = "y:" + c["names"][side]
+        if tid not in teams:
+            teams[tid] = {"en": "", "s": "", "ar": c["names"][side], "logo": c["logos"][side], "leagues": set(), "yk": True}
+        teams[tid]["leagues"].add(lg)
+        ids.append(tid)
+    kind, status = c["kind"], c["status"]
+    if "finish" in kind or "end" in kind or "انته" in status:
+        state, name = "post", "FULL_TIME"
+    elif "now" in kind or "live" in kind or "جار" in status or "مباشر" in status or "الشوط" in status:
+        state, name = "in", "IN_PROGRESS"
+    else:
+        state, name = "pre", "SCHEDULED"
+    if "تأجل" in status or "مؤجل" in status:
+        state, name = "post", "POSTPONED"
+    elif "ألغي" in status or "الغاء" in status or "إلغاء" in status:
+        state, name = "post", "CANCELED"
+    m = {"id": "y" + c["mid"], "lg": lg, "t": c["t"], "h": ids[0], "a": ids[1], "st": state, "sn": name}
+    if c["tbd"]:
+        m["tbd"] = 1
+    sc = c["scores"]
+    if state != "pre" and len(sc) >= 2 and sc[0].isdigit() and sc[1].isdigit():
+        m["hs"], m["as"] = int(sc[0]), int(sc[1])
+    if c["round"]:
+        m["n"] = c["round"]
+    return m
+
+
+# Yallakora competitions that ESPN also has, for learning Arabic names of new teams.
+YK_TO_ESPN = {
+    "epl": "eng.1", "la-liga": "esp.1", "serie-a": "ita.1", "bundesliga": "ger.1", "ligue1": "fra.1",
+    "primeira-liga": "por.1", "turkish super lig": "tur.1", "europa-league": "uefa.europa",
+    "uefa europa conference league": "uefa.europa.conf", "african-champions-league": "caf.champions",
+    "african-confederation-cup": "caf.confed", "ksa-league": "ksa.1", "uefa": "uefa.champions",
+    "carabao cup": "eng.league_cup", "can-qualifiers": "caf.nations_qual",
+}
+
+
+def yk_espn_league(en):
+    en = (en or "").strip().lower()
+    if en in YK_TO_ESPN:
+        return YK_TO_ESPN[en]
+    if "champions" in en and "afric" not in en:
+        return "afc.champions" if ("asia" in en or "afc" in en) else "uefa.champions"
+    return None
+
+
+def ar_words(s):
+    s = re.sub("[\u064B-\u065F\u0670\u0640]", "", s or "")
+    for a, b in (("أ", "ا"), ("إ", "ا"), ("آ", "ا"), ("ة", "ه"), ("ى", "ي")):
+        s = s.replace(a, b)
+    return {w[2:] if w.startswith("ال") and len(w) > 3 else w for w in re.split(r"[\s\-.]+", s) if w}
+
+
+def same_team(a, b):
+    wa, wb = ar_words(a), ar_words(b)
+    return bool(wa) and bool(wb) and (wa <= wb or wb <= wa)
+
+
+def learn_names(matches, teams, cards):
+    """
+    Arabic names for ESPN teams that have none yet (a new club in a cup draw, say), from the same
+    match on Yallakora: same competition, same kick-off, and the other team already known.
+    """
+    by_minute = {}
+    for c in cards:
+        lg = yk_espn_league(c["tour_en"])
+        if lg and not c["tbd"]:
+            by_minute.setdefault((lg, c["t"] // 60), []).append(c)
+    learned = {}
+    for m in matches.values():
+        if m["id"].startswith("y"):
+            continue
+        h, a = teams.get(m["h"]), teams.get(m["a"])
+        if not h or not a or bool(h.get("ar")) == bool(a.get("ar")):
+            continue
+        near = [c for d in range(-10, 11) for c in by_minute.get((m["lg"], m["t"] // 60 + d), [])]
+        for c in near:
+            yh, ya = c["names"]
+            if h.get("ar") and same_team(h["ar"], yh) and not same_team(h["ar"], ya):
+                learned[m["a"]] = ya
+            elif a.get("ar") and same_team(a["ar"], ya) and not same_team(a["ar"], yh):
+                learned[m["h"]] = yh
+    for tid, name in learned.items():
+        teams[tid]["ar"] = name
+    return learned
 
 
 # ------------------------------------------------------------------ checks for the report
@@ -401,16 +466,24 @@ def main():
     yk_errors = []
     yk_count = 0
     yk_logos = {}
+    yk_all = []
     for day, (state, html) in sorted(yk_pages.items()):
         if state != "ok":
             yk_errors.append("%s %s" % (day, html))
             continue
         try:
-            for m in yk_parse(html, day, teams, yk_leagues, yk_logos):
+            for c in yk_cards(html, day):
+                yk_all.append(c)
+                lg = yk_league(c["tour_en"], c["tour_ar"], yk_leagues)
+                if not lg:
+                    continue
+                yk_logos.setdefault(lg, c["tour_logo"])
+                m = yk_match(c, lg, teams)
                 matches[(m["lg"], m["id"])] = m
                 yk_count += 1
         except Exception as e:
             yk_errors.append("%s parse: %r" % (day, e))
+    learned = learn_names(matches, teams, yk_all)
     if yk_leagues and (yk_errors or yk_count == 0):
         failed_leagues.update(lg["id"] for lg in yk_leagues)
     errors.extend("yallakora " + e for e in yk_errors)
@@ -513,7 +586,9 @@ def main():
         "leagues": per_league,
         "day_grouping": {"events": total, "same_utc_date": same_utc, "same_new_york_date": same_et},
         "logo_probe": logo_probe,
-        "yallakora": {"pages": len(yk_pages), "matches": yk_count, "errors": yk_errors[:10]},
+        "yallakora": {"pages": len(yk_pages), "matches": yk_count, "errors": yk_errors[:10],
+                      "competitions": sorted({"%s | %s" % (c["tour_en"], c["tour_ar"]) for c in yk_all})},
+        "learned_names": {tid: {"en": teams[tid]["en"], "ar": ar} for tid, ar in learned.items()},
         "espn_leagues": discover_leagues(),
         "teams": sorted(({"id": tid, "en": t["en"], "ar": t.get("ar"), "leagues": sorted(t["leagues"])}
                          for tid, t in teams.items()), key=lambda x: (x["leagues"], x["en"])),

@@ -67,6 +67,7 @@ import com.ratv.app.ui.components.TvInitialFocus
 import com.ratv.app.ui.components.tvClickable
 import com.ratv.app.ui.components.hm
 import com.ratv.app.ui.components.minutesLeft
+import com.ratv.app.ui.components.screenBackground
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 import java.util.Calendar
@@ -144,7 +145,7 @@ fun GuideScreen(nav: Navigator) {
     Column(
         Modifier
             .fillMaxSize()
-            .background(RColors.Ink)
+            .screenBackground()
     ) {
         ScreenHeader("دليل البرامج", Modifier.statusBarsPadding(), onBack = { nav.back() }) {
             CircleIconButton(RIcons.Search, "بحث", { nav.search() })
@@ -468,7 +469,7 @@ private fun ProgrammeDetail(
                 Modifier
                     .size(52.dp)
                     .clip(CircleShape)
-                    .background(RColors.Saffron)
+                    .background(RColors.AccentBrush)
                     .tvClickable(CircleShape, onClickLabel = "شاهد ${channel.name}", ringColor = androidx.compose.ui.graphics.Color.White, onClick = onPlay),
                 contentAlignment = Alignment.Center
             ) {

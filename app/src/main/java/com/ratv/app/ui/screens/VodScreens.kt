@@ -54,6 +54,7 @@ import com.ratv.app.ui.components.ScreenHeader
 import com.ratv.app.ui.components.TvInitialFocus
 import com.ratv.app.ui.components.rememberIsWide
 import com.ratv.app.ui.components.tvClickable
+import com.ratv.app.ui.components.screenBackground
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 
@@ -193,7 +194,7 @@ private fun CatalogScreen(
         columns = GridCells.Adaptive(96.dp),
         modifier = Modifier
             .fillMaxSize()
-            .background(RColors.Ink),
+            .screenBackground(),
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 20.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)

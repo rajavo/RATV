@@ -69,6 +69,7 @@ import com.ratv.app.ui.components.focusRing
 import com.ratv.app.ui.components.formatCount
 import com.ratv.app.ui.components.rememberIsTv
 import com.ratv.app.ui.components.tvClickable
+import com.ratv.app.ui.components.screenBackground
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 import kotlinx.coroutines.Dispatchers
@@ -177,7 +178,7 @@ fun CatalogWide(
                 if (e.type == KeyEventType.KeyDown) userMoved = true
                 false
             }
-            .background(RColors.Ink)
+            .screenBackground()
             .padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {

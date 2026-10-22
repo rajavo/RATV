@@ -68,6 +68,7 @@ import com.ratv.app.ui.components.tvClickable
 import com.ratv.app.ui.components.formatCount
 import com.ratv.app.ui.components.hm
 import com.ratv.app.ui.components.minutesLeft
+import com.ratv.app.ui.components.screenBackground
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 import kotlinx.coroutines.delay
@@ -118,7 +119,7 @@ fun HomeScreen(nav: Navigator) {
     LazyColumn(
         Modifier
             .fillMaxSize()
-            .background(RColors.Ink),
+            .screenBackground(),
         contentPadding = PaddingValues(bottom = 24.dp)
     ) {
         // Always an item (empty without an update), so the banner appearing later does not move
@@ -130,7 +131,7 @@ fun HomeScreen(nav: Navigator) {
                         .padding(start = 20.dp, end = 20.dp, top = 12.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(RColors.Saffron)
+                        .background(RColors.AccentBrush)
                         .tvClickable(RoundedCornerShape(16.dp)) { showUpdate = true }
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -386,7 +387,7 @@ private fun HeroCard(
             .fillMaxWidth()
             .height(200.dp)
             .clip(RoundedCornerShape(22.dp))
-            .background(Brush.verticalGradient(listOf(Color(0xFF1E1A13), RColors.Surface)))
+            .background(Brush.verticalGradient(listOf(RColors.SaffronDeep.copy(alpha = 0.32f), RColors.Surface)))
             .tvClickable(RoundedCornerShape(22.dp), onClick = onWatch)
     ) {
         RingsArt(Modifier.fillMaxSize())
@@ -442,7 +443,7 @@ private fun HeroCard(
                 Modifier
                     .height(44.dp)
                     .clip(RoundedCornerShape(22.dp))
-                    .background(RColors.Saffron)
+                    .background(RColors.AccentBrush)
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -460,7 +461,7 @@ private fun CategoryTile(icon: ImageVector, label: String, count: String, modifi
         modifier
             .height(108.dp)
             .clip(RoundedCornerShape(18.dp))
-            .background(RColors.Surface)
+            .background(Brush.verticalGradient(listOf(RColors.Surface2, RColors.Surface)))
             .border(1.dp, RColors.Line, RoundedCornerShape(18.dp))
             .tvClickable(RoundedCornerShape(18.dp), onClick = onClick)
             .padding(14.dp),
@@ -470,10 +471,10 @@ private fun CategoryTile(icon: ImageVector, label: String, count: String, modifi
             Modifier
                 .size(40.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(RColors.SaffronTint),
+                .background(RColors.AccentBrush),
             contentAlignment = Alignment.Center
         ) {
-            Icon(icon, contentDescription = null, tint = RColors.Saffron, modifier = Modifier.size(22.dp))
+            Icon(icon, contentDescription = null, tint = RColors.OnSaffron, modifier = Modifier.size(22.dp))
         }
         Column {
             Text(label, style = T.title)

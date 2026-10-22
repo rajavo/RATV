@@ -59,6 +59,7 @@ import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.components.artSeed
 import com.ratv.app.ui.components.formatClock
 import com.ratv.app.ui.components.monogramOf
+import com.ratv.app.ui.components.screenBackground
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 
@@ -108,7 +109,7 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
     Column(
         Modifier
             .fillMaxSize()
-            .background(RColors.Ink)
+            .screenBackground()
             .verticalScroll(rememberScrollState())
     ) {
         Box(
@@ -326,7 +327,7 @@ fun MissingItem(title: String, nav: Navigator) {
     Column(
         Modifier
             .fillMaxSize()
-            .background(RColors.Ink)
+            .screenBackground()
             .statusBarsPadding()
     ) {
         Row(Modifier.padding(16.dp)) { CircleIconButton(RIcons.Back, "رجوع", { nav.back() }) }
