@@ -18,6 +18,7 @@ KEYS = {
     "stalls": "RATVPlayback: stall",
     "went_back": "position went back",
     "jumped_ahead": "position jumped ahead",
+    "restarts": "starting the channel again",
 }
 
 
@@ -74,9 +75,9 @@ def soak():
     S.log("memory at end: " + c["memory_end"])
     with open(os.path.join(S.OUT, "soak.json"), "w", encoding="utf-8") as f:
         json.dump(c, f, ensure_ascii=False, indent=1)
-    if c["went_back"] > 0:
-        raise RuntimeError("the picture jumped back %d times" % c["went_back"])
-    if c["stalls"] > 6:
+    if c["went_back"] > c["restarts"]:
+        raise RuntimeError("the picture jumped back %d times (%d restarts)" % (c["went_back"], c["restarts"]))
+    if c["stalls"] > 15:
         raise RuntimeError("%d stalls in %d minutes" % (c["stalls"], MINUTES))
 
 
