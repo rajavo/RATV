@@ -310,7 +310,8 @@ YK_TO_ESPN = {
     "epl": "eng.1", "la-liga": "esp.1", "serie-a": "ita.1", "bundesliga": "ger.1", "ligue1": "fra.1",
     "primeira-liga": "por.1", "turkish super lig": "tur.1", "europa-league": "uefa.europa",
     "uefa europa conference league": "uefa.europa.conf", "african-champions-league": "caf.champions",
-    "african-confederation-cup": "caf.confed", "ksa-league": "ksa.1",
+    "african-confederation-cup": "caf.confed", "ksa-league": "ksa.1", "uefa": "uefa.champions",
+    "carabao cup": "eng.league_cup", "can-qualifiers": "caf.nations_qual",
 }
 
 
