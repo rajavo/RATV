@@ -110,7 +110,9 @@ jobs:
         env:
           SMOKE_OUT: smoke-results/${{ matrix.device }}
           # Live-stability steps already passed on this build (run 39812008514).
-          SMOKE_SKIP: ${{ matrix.device == 'phone' && 'unstable,frozen,chunky,overlap,weak,busy,shaky,version-switch' || '' }}
+          SMOKE_SKIP: ${{ matrix.device == 'phone' && 'unstable,frozen,chunky,overlap,weak,busy,shaky,version-switch,commentator,commentary-mix,subtitles,subtitles-translated' || '' }}
+          # The series screens stopped the phone emulator three times: checked last, after everything else.
+          SMOKE_LAST: ${{ matrix.device == 'phone' && 'series' || '' }}
         with:
           api-level: ${{ matrix.api }}
           target: ${{ matrix.target }}

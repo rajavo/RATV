@@ -1245,7 +1245,7 @@ def finish():
 
 
 if __name__ == "__main__":
-    for name, fn in [
+    order = [
         ("launch", s_launch),
         ("login-screen", s_login_screen),
         ("wrong-password", s_wrong_password),
@@ -1287,7 +1287,11 @@ if __name__ == "__main__":
         ("match-link", s_match_link),
         ("match-link-missing", s_match_link_missing),
         ("kora-button", s_kora_button),
-    ]:
+    ]
+    # Steps named in SMOKE_LAST run at the end, in that order.
+    last = [n for n in os.environ.get("SMOKE_LAST", "").split(",") if n]
+    order = [x for x in order if x[0] not in last] + [x for n in last for x in order if x[0] == n]
+    for name, fn in order:
         # Steps already checked on this build can be left out to get an answer sooner.
         if name in os.environ.get("SMOKE_SKIP", "").split(","):
             log("== %s (skipped)" % name)
