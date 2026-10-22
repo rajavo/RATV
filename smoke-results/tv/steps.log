@@ -1245,3 +1245,98 @@ Status: o
 18:21:39 focus[nav-target]: حسابي
 18:21:44 focus[settings]: إضافة مستخدم
 18:21:44 screenshot 23-settings.png 1920x1080
+20:01:44 == launch
+20:02:31 debug.ratv.subs=http://10.0.2.2:8000
+20:02:32 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 1122
+WaitTime: 1124
+Complete
+20:02:34 screenshot 01-splash.png 1920x1080
+20:02:34 == login-screen
+20:02:41 focus[login-initial]: http://server.example:8080
+20:02:41 screenshot 02-login.png 1920x1080
+20:02:41 == keyboard-on-ok
+20:02:44 screenshot 03-login-keyboard.png 1920x1080
+20:02:48 == fill-with-remote
+20:02:57 focus[login-user]: username
+20:03:14 focus[login-name]: مثال: اشتراك المنزل
+20:03:17 focus[login-submit]: دخول
+20:03:18 screenshot 04-login-filled.png 1920x1080
+20:03:30 screenshot 05-home.png 1920x1080
+20:03:30 == home-focus
+20:03:31 focus[home-focus]: مباشر | RATV News HD | Live Match | بدأ 18:45 · متبقي 11د | شاهد الآن
+20:03:31 screenshot 06-home-focus.png 1920x1080
+20:03:31 == player-remote
+20:03:43 screenshot 07-player.png 1920x1080
+20:03:46 screenshot 08-player-zap.png 1920x1080
+20:03:49 screenshot 09-player-controls.png 1920x1080
+20:03:52 screenshot 10-player-controls-moved.png 1920x1080
+20:03:56 screenshot 11-player-controls-hidden.png 1920x1080
+20:04:03 screenshot 12-home-after-player.png 1920x1080
+20:04:03 == movies
+20:04:04 focus[nav-search]: مباشر | Gulf 24 FHD | Cartoon Hour | بدأ 19:45 · متبقي 41د | شاهد الآن
+20:04:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+20:04:10 focus[nav-search]: أفلام
+20:04:12 focus[nav-start]: أفلام
+20:04:14 focus[nav-target]: أفلام
+20:04:21 focus[movies]: Desert Night (2023) | 7.4 | Desert Night (2023)
+20:04:21 screenshot 13-movies.png 1920x1080
+20:04:26 focus[movie-detail]: تشغيل
+20:04:26 screenshot 14-movie-detail.png 1920x1080
+20:04:41 screenshot 15-player-movie-seek.png 1920x1080
+20:04:45 screenshot 16-movie-detail-after.png 1920x1080
+20:04:47 == live
+20:04:49 focus[nav-search]: Desert Night (2023) | 7.4 | Desert Night (2023)
+20:04:52 focus[nav-search]: المباريات
+20:04:53 focus[nav-start]: المباريات
+20:04:56 focus[nav-target]: مباشر
+20:05:04 focus[live]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+20:05:04 screenshot 17-live.png 1920x1080
+20:05:10 focus[live-moved]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+20:05:11 screenshot 18-live-moved.png 1920x1080
+20:05:11 == series
+20:05:12 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+20:05:16 focus[nav-search]: 3 | قناة الأخبار | Weekly Review
+20:05:20 focus[nav-search]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+20:05:24 focus[nav-search]: 1 | RATV News HD | Live Match | HD
+20:05:27 focus[nav-search]: المباريات
+20:05:29 focus[nav-start]: المباريات
+20:05:33 focus[nav-target]: مسلسلات
+20:05:39 focus[series]: Sands of Time | 8.1 | Sands of Time
+20:05:45 focus[series-detail]: تشغيل الحلقة 1
+20:05:45 screenshot 19-series-detail.png 1920x1080
+20:05:48 == matches
+20:05:50 focus[nav-search]: Sands of Time | 8.1 | Sands of Time
+20:05:53 focus[nav-search]: المباريات
+20:05:54 focus[nav-start]: المباريات
+20:05:56 focus[nav-target]: المباريات
+20:06:02 screenshot 20-matches.png 1920x1080
+20:06:03 == match-link
+20:06:03 Starting: Intent { act=android.intent.action.VIEW dat=ratv://match?home=Real Madrid&away=Barcelona&homeAr=ريال مدريد&awayAr=برشلونة&start=1792698663702&league=الدوري الإسباني pkg=com.ratv.app }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+Status: o
+20:06:07 screenshot 21-match-link.png 1920x1080
+20:06:08 focus[match-link]: Sport 1 4K | الحين: الدوري الإسباني: ريال مدريد × برشلونة
+20:06:17 screenshot 22-match-link-play.png 1920x1080
+20:06:24 == settings
+20:06:25 focus[nav-search]: الآن
+20:06:28 focus[nav-search]: جدول 30 يوم
+20:06:31 focus[nav-search]: ابحث
+20:06:34 focus[nav-search]: حسابي
+20:06:36 focus[nav-start]: حسابي
+20:06:38 focus[nav-target]: حسابي
+20:06:43 focus[settings]: إضافة مستخدم
+20:06:43 screenshot 23-settings.png 1920x1080
+20:06:43 == languages
+20:06:51 screenshot 24-home-en.png 1920x1080
+20:06:53 focus[nav-search]: Live | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة | Started 19:30 · 1h 23m left | Watch now
+20:06:56 focus[nav-search]: New update available (9.9.9) — press to update
+20:06:59 focus[nav-search]: Matches
+20:07:01 focus[nav-start]: Matches
+20:07:07 focus[nav-target]: My account
+20:07:13 screenshot 25-settings-en.png 1920x1080
+20:07:18 !! RuntimeError('en: no language row in the settings')
+20:07:18 screenshot 26-fail-languages.png 1920x1080
