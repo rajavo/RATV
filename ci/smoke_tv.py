@@ -71,6 +71,8 @@ def go_tab(label, nav=NAV, tries=15):
         searching = f and ("ابحث" in f or "Search" in f or "Busca" in f)
         key(("DPAD_RIGHT" if rtl else "DPAD_LEFT") if searching else "DPAD_UP")
     _, f = log_focus("nav-start")
+    if f not in nav:
+        S.shot("stuck-before-" + label)
     expect(f in nav, "top bar not reached (focus: %s)" % f)
     step = nav.index(label) - nav.index(f)
     if step:
@@ -247,6 +249,33 @@ def restart_app():
     S.shell("am start -W -n %s/.MainActivity" % S.PKG)
 
 
+def deep_settings_and_back(nav, tag):
+    """Down the settings to the language row, then up to the top bar again (both ways with the remote)."""
+    go_tab(nav[-1], nav)
+    time.sleep(2)
+    found = False
+    for _ in range(24):
+        _, f = log_focus("deep-" + tag)
+        if f and "Language" in f:
+            found = True
+            break
+        key("DPAD_DOWN", pause=0.6)
+    expect(found, "%s: no language row in the settings" % tag)
+    for i in range(30):
+        _, f = log_focus("up-" + tag)
+        if f in nav:
+            break
+        if i in (6, 12):
+            S.shot("up-%s-%d" % (tag, i))
+        key("DPAD_UP", pause=0.6)
+    expect(f in nav, "%s: stuck going up the settings (focus: %s)" % (tag, f))
+
+
+def t_settings_deep():
+    """Arabic: to the bottom of the settings and back up to the top bar with the remote."""
+    deep_settings_and_back(NAV, "ar")
+
+
 def t_languages():
     """The interface in English and in Spanish (chosen for the test with debug.ratv.lang), then Arabic again."""
     try:
@@ -299,6 +328,7 @@ if __name__ == "__main__":
         ("matches", t_matches),
         ("match-link", t_match_link),
         ("settings", t_settings),
+        ("settings-deep", t_settings_deep),
         ("languages", t_languages),
     ]:
         S.step(name, fn)
