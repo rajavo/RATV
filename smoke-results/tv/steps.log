@@ -919,15 +919,100 @@ Complete
 16:28:51 Starting: Intent { act=android.intent.action.VIEW dat=ratv://match?home=Real Madrid&away=Barcelona&homeAr=ريال مدريد&awayAr=برشلونة&start=1792685631415&league=الدوري الإسباني pkg=com.ratv.app }
 Warning: Activity not started, intent has been delivered to currently running top-most instance.
 Status: o
-16:28:54 screenshot 21-match-link.png 1920x1080
-16:28:56 focus[match-link]: Sport 1 4K | الحين: الدوري الإسباني: ريال مدريد × برشلونة
-16:29:04 screenshot 22-match-link-play.png 1920x1080
-16:29:10 == settings
-16:29:12 focus[nav-search]: الآن
-16:29:15 focus[nav-search]: جدول 30 يوم
-16:29:18 focus[nav-search]: ابحث
-16:29:21 focus[nav-search]: حسابي
-16:29:22 focus[nav-start]: حسابي
-16:29:24 focus[nav-target]: حسابي
-16:29:29 focus[settings]: إضافة مستخدم
-16:29:29 screenshot 23-settings.png 1920x1080
+16:24:23 screenshot 21-match-link.png 1920x1080
+16:24:24 focus[match-link]: Sport 1 4K | الحين: الدوري الإسباني: ريال مدريد × برشلونة
+16:24:32 screenshot 22-match-link-play.png 1920x1080
+16:24:39 == settings
+16:24:41 focus[nav-search]: الآن
+16:24:44 focus[nav-search]: جدول 30 يوم
+16:24:47 focus[nav-search]: ابحث
+16:24:50 focus[nav-search]: حسابي
+16:24:52 focus[nav-start]: حسابي
+16:24:53 focus[nav-target]: حسابي
+16:24:59 focus[settings]: إضافة مستخدم
+16:24:59 screenshot 23-settings.png 1920x1080
+16:34:39 == launch
+16:35:30 debug.ratv.subs=http://10.0.2.2:8000
+16:35:31 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 1175
+WaitTime: 1177
+Complete
+16:35:34 screenshot 01-splash.png 1920x1080
+16:35:34 == login-screen
+16:35:41 focus[login-initial]: http://server.example:8080
+16:35:41 screenshot 02-login.png 1920x1080
+16:35:41 == keyboard-on-ok
+16:35:44 screenshot 03-login-keyboard.png 1920x1080
+16:35:48 == fill-with-remote
+16:35:57 focus[login-user]: username
+16:36:14 focus[login-name]: مثال: اشتراك المنزل
+16:36:17 focus[login-submit]: دخول
+16:36:18 screenshot 04-login-filled.png 1920x1080
+16:36:29 screenshot 05-home.png 1920x1080
+16:36:29 == home-focus
+16:36:31 focus[home-focus]: مباشر | RATV News HD | Live Match | بدأ 15:15 · متبقي 8د | شاهد الآن
+16:36:31 screenshot 06-home-focus.png 1920x1080
+16:36:31 == player-remote
+16:36:43 screenshot 07-player.png 1920x1080
+16:36:46 screenshot 08-player-zap.png 1920x1080
+16:36:49 screenshot 09-player-controls.png 1920x1080
+16:36:51 screenshot 10-player-controls-moved.png 1920x1080
+16:36:55 screenshot 11-player-controls-hidden.png 1920x1080
+16:37:02 screenshot 12-home-after-player.png 1920x1080
+16:37:02 == movies
+16:37:03 focus[nav-search]: G2 | مباشر | Gulf 24 FHD | Cartoon Hour | بدأ 16:15 · متبقي 38د | شاهد الآن
+16:37:06 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:37:09 focus[nav-search]: أفلام
+16:37:11 focus[nav-start]: أفلام
+16:37:13 focus[nav-target]: أفلام
+16:37:20 focus[movies]: Desert Night (2023) | 7.4 | Desert Night (2023)
+16:37:20 screenshot 13-movies.png 1920x1080
+16:37:25 focus[movie-detail]: تشغيل
+16:37:25 screenshot 14-movie-detail.png 1920x1080
+16:37:40 screenshot 15-player-movie-seek.png 1920x1080
+16:37:44 screenshot 16-movie-detail-after.png 1920x1080
+16:37:46 == live
+16:37:48 focus[nav-search]: Desert Night (2023) | 7.4 | Desert Night (2023)
+16:37:51 focus[nav-search]: المباريات
+16:37:52 focus[nav-start]: المباريات
+16:37:55 focus[nav-target]: مباشر
+16:38:03 focus[live]: 2 | G2 | Gulf 24 FHD | Cartoon Hour | FHD
+16:38:03 screenshot 17-live.png 1920x1080
+16:38:09 focus[live-moved]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+16:38:10 screenshot 18-live-moved.png 1920x1080
+16:38:10 == series
+16:38:11 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+16:38:15 focus[nav-search]: 3 | قناة الأخبار | Weekly Review
+16:38:19 focus[nav-search]: 2 | G2 | Gulf 24 FHD | Cartoon Hour | FHD
+16:38:23 focus[nav-search]: 1 | RATV News HD | Live Match | HD
+16:38:26 focus[nav-search]: المباريات
+16:38:27 focus[nav-start]: المباريات
+16:38:32 focus[nav-target]: مسلسلات
+16:38:38 focus[series]: Sands of Time | 8.1 | Sands of Time
+16:38:44 focus[series-detail]: تشغيل الحلقة 1
+16:38:44 screenshot 19-series-detail.png 1920x1080
+16:38:47 == matches
+16:38:48 focus[nav-search]: Sands of Time | 8.1 | Sands of Time
+16:38:51 focus[nav-search]: المباريات
+16:38:53 focus[nav-start]: المباريات
+16:38:55 focus[nav-target]: المباريات
+16:39:00 screenshot 20-matches.png 1920x1080
+16:39:02 == match-link
+16:39:02 Starting: Intent { act=android.intent.action.VIEW dat=ratv://match?home=Real Madrid&away=Barcelona&homeAr=ريال مدريد&awayAr=برشلونة&start=1792686242546&league=الدوري الإسباني pkg=com.ratv.app }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+Status: o
+16:39:06 screenshot 21-match-link.png 1920x1080
+16:39:08 focus[match-link]: Sport 1 4K | الحين: الدوري الإسباني: ريال مدريد × برشلونة
+16:39:16 screenshot 22-match-link-play.png 1920x1080
+16:39:23 == settings
+16:39:24 focus[nav-search]: الآن
+16:39:27 focus[nav-search]: جدول 30 يوم
+16:39:30 focus[nav-search]: ابحث
+16:39:33 focus[nav-search]: حسابي
+16:39:35 focus[nav-start]: حسابي
+16:39:36 focus[nav-target]: حسابي
+16:39:42 focus[settings]: إضافة مستخدم
+16:39:42 screenshot 23-settings.png 1920x1080
