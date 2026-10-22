@@ -57,8 +57,8 @@
   },
   {
    "step": "chunky",
-   "ok": false,
-   "error": "RuntimeError('a healthy chunked stream was cut 2 times')"
+   "ok": true,
+   "error": ""
   },
   {
    "step": "overlap",
@@ -82,8 +82,8 @@
   },
   {
    "step": "version-switch",
-   "ok": false,
-   "error": "RuntimeError('the stalling channel did not move to its other version')"
+   "ok": true,
+   "error": ""
   },
   {
    "step": "matches",
@@ -123,7 +123,7 @@
   {
    "step": "series",
    "ok": false,
-   "error": "RuntimeError('episodes missing') APP NOT RUNNING"
+   "error": "APP NOT RUNNING"
   },
   {
    "step": "home-after",
@@ -206,12 +206,10 @@
    "error": "RuntimeError(\"not found: {'text': 'مباشر', 'bottom': True}\") APP NOT RUNNING"
   }
  ],
- "system_dialogs": [
-  " |  |  |  |  |  | Pixel Launcher isn't responding |  |  |  | Close app | Wait"
- ],
+ "system_dialogs": [],
  "anr": [],
  "pids": [
-  "6160"
+  "6164"
  ],
  "crash_buffer_lines": 0,
  "fatal": []
