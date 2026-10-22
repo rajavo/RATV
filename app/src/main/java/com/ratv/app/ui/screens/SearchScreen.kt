@@ -55,6 +55,7 @@ import com.ratv.app.ui.components.EmptyState
 import com.ratv.app.ui.components.PosterImage
 import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.components.tvClickable
+import com.ratv.app.ui.components.screenBackground
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 import kotlinx.coroutines.Dispatchers
@@ -107,7 +108,7 @@ fun SearchScreen(nav: Navigator) {
     Column(
         Modifier
             .fillMaxSize()
-            .background(RColors.Ink)
+            .screenBackground()
             .statusBarsPadding()
             .imePadding()
     ) {

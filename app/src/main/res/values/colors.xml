@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ratv_ink">#FF0B0C10</color>
-    <color name="ratv_saffron">#FFFF9F1C</color>
-    <color name="ic_launcher_background">#FFFF9F1C</color>
+    <color name="ratv_saffron">#FFFF8A1F</color>
+    <color name="ratv_black">#FF050505</color>
+    <color name="ic_launcher_background">#FF050505</color>
 </resources>

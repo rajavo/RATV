@@ -4,7 +4,12 @@ import android.app.UiModeManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import androidx.compose.foundation.Canvas
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -37,7 +42,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -45,23 +49,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.ratv.app.R
 import com.ratv.app.ui.theme.Alexandria
+import com.ratv.app.ui.theme.SLOGAN
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 import java.text.SimpleDateFormat
@@ -93,8 +102,32 @@ fun rememberIsWide(): Boolean {
 }
 
 /** Draws a ring while an element has the remote's focus. */
-fun Modifier.focusRing(focused: Boolean, shape: Shape, color: Color = RColors.Saffron, width: Dp = 2.5.dp): Modifier =
-    if (focused) border(width, color, shape) else this
+fun Modifier.focusRing(focused: Boolean, shape: Shape, color: Color? = null, width: Dp = 2.5.dp): Modifier = when {
+    !focused -> this
+    color != null -> border(width, color, shape)
+    else -> border(width + 0.5.dp, RColors.RingBrush, shape)
+}
+
+/** The backdrop of every screen: ink with soft glows of the accent colour in two corners. */
+fun Modifier.screenBackground(): Modifier = this
+    .background(RColors.Ink)
+    .drawBehind {
+        val reach = size.maxDimension
+        drawRect(
+            Brush.radialGradient(
+                listOf(RColors.Saffron.copy(alpha = 0.15f), Color.Transparent),
+                center = Offset(size.width, 0f),
+                radius = reach * 0.55f
+            )
+        )
+        drawRect(
+            Brush.radialGradient(
+                listOf(RColors.SaffronDeep.copy(alpha = 0.09f), Color.Transparent),
+                center = Offset(0f, size.height),
+                radius = reach * 0.5f
+            )
+        )
+    }
 
 /** Clickable that shows a clear ring when selected with a TV remote or a keyboard. */
 fun Modifier.tvClickable(
@@ -102,7 +135,7 @@ fun Modifier.tvClickable(
     enabled: Boolean = true,
     role: Role? = Role.Button,
     onClickLabel: String? = null,
-    ringColor: Color = RColors.Saffron,
+    ringColor: Color? = null,
     onClick: () -> Unit
 ): Modifier = composed {
     val source = remember { MutableInteractionSource() }
@@ -134,56 +167,57 @@ fun TvInitialFocus(requester: FocusRequester, key: Any? = Unit) {
 
 // ----------------------------------------------------------------- logo
 
-/** The "A" of RATV drawn as a rounded triangle with a play cut-out. */
+/** Width over height of the logo image (res/drawable-nodpi/ratv_logo.png). */
+const val LOGO_RATIO = 982f / 931f
+
+/** The RA TV logo, [height] tall. */
 @Composable
-fun LogoMark(modifier: Modifier = Modifier, triangle: Color = RColors.Saffron, cutout: Color = RColors.Ink) {
-    Canvas(modifier) {
-        val s = size.minDimension / 24f
-        val tri = Path().apply {
-            moveTo(13.03f * s, 4.94f * s)
-            lineTo(19.97f * s, 18.06f * s)
-            quadraticBezierTo(21f * s, 20f * s, 18.8f * s, 20f * s)
-            lineTo(5.2f * s, 20f * s)
-            quadraticBezierTo(3f * s, 20f * s, 4.03f * s, 18.06f * s)
-            lineTo(10.97f * s, 4.94f * s)
-            quadraticBezierTo(12f * s, 3f * s, 13.03f * s, 4.94f * s)
-            close()
+fun BrandLogo(height: Dp, modifier: Modifier = Modifier) {
+    Image(
+        painterResource(R.drawable.ratv_logo),
+        contentDescription = "RA TV",
+        modifier = modifier
+            .height(height)
+            .width(height * LOGO_RATIO),
+        contentScale = ContentScale.Fit
+    )
+}
+
+/** «بيتك الأول للترفيه» in the accent gradient. */
+@Composable
+fun SloganText(size: TextUnit, modifier: Modifier = Modifier, align: TextAlign? = null) {
+    Text(
+        SLOGAN,
+        style = TextStyle(
+            brush = RColors.AccentBrush,
+            fontFamily = Alexandria,
+            fontWeight = FontWeight.Bold,
+            fontSize = size,
+            lineHeight = size * 1.35f,
+            textAlign = align ?: TextAlign.Unspecified
+        ),
+        maxLines = 1,
+        modifier = modifier
+    )
+}
+
+/** The logo with the slogan beside it, sized from [fontSize] as the old word mark was. */
+@Composable
+fun RatvLogo(fontSize: TextUnit = 24.sp, modifier: Modifier = Modifier, slogan: Boolean = true) {
+    val h = with(LocalDensity.current) { fontSize.toDp() } * 1.9f
+    Row(modifier, verticalAlignment = Alignment.CenterVertically) {
+        BrandLogo(h)
+        if (slogan) {
+            Spacer(Modifier.width(10.dp))
+            SloganText(fontSize * 0.62f)
         }
-        drawPath(tri, triangle)
-        val play = Path().apply {
-            moveTo(10.5f * s, 11.8f * s)
-            lineTo(14.9f * s, 14.6f * s)
-            lineTo(10.5f * s, 17.4f * s)
-            close()
-        }
-        drawPath(play, cutout)
     }
 }
 
-@Composable
-fun RatvLogo(fontSize: TextUnit = 24.sp, modifier: Modifier = Modifier) {
-    val markSize = with(LocalDensity.current) { fontSize.toDp() }
-    val style = T.display(fontSize, FontWeight.ExtraBold)
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-        Row(modifier, verticalAlignment = Alignment.CenterVertically) {
-            Text("R", style = style)
-            LogoMark(Modifier.size(markSize))
-            Text("TV", style = style)
-        }
-    }
-}
-
+/** The logo alone, as the app's icon. */
 @Composable
 fun AppIcon(size: Dp, modifier: Modifier = Modifier) {
-    Box(
-        modifier
-            .size(size)
-            .clip(RoundedCornerShape(size * 0.29f))
-            .background(RColors.Saffron),
-        contentAlignment = Alignment.Center
-    ) {
-        LogoMark(Modifier.size(size * 0.62f), triangle = RColors.Ink, cutout = RColors.Saffron)
-    }
+    BrandLogo(size / LOGO_RATIO, modifier)
 }
 
 // -------------------------------------------------------------- buttons
@@ -224,7 +258,7 @@ fun PrimaryButton(
         modifier
             .height(height)
             .clip(RoundedCornerShape(16.dp))
-            .background(if (enabled) RColors.Saffron else RColors.Surface3)
+            .then(if (enabled) Modifier.background(RColors.AccentBrush) else Modifier.background(RColors.Surface3))
             .tvClickable(RoundedCornerShape(16.dp), enabled = enabled, ringColor = Color.White, onClick = onClick)
             .padding(horizontal = 18.dp),
         horizontalArrangement = Arrangement.Center,
@@ -284,7 +318,7 @@ fun Chip(label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifi
             Modifier
                 .height(34.dp)
                 .clip(RoundedCornerShape(17.dp))
-                .background(if (selected) RColors.Saffron else RColors.Surface)
+                .then(if (selected) Modifier.background(RColors.AccentBrush) else Modifier.background(RColors.Surface))
                 .border(
                     if (focused) 2.5.dp else 1.dp,
                     when {
@@ -331,7 +365,15 @@ fun LiveBadge(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-        Box(Modifier.size(6.dp).clip(CircleShape).background(Color.White))
+        val pulse = rememberInfiniteTransition(label = "live")
+        val glow = pulse.animateFloat(1f, 0.3f, infiniteRepeatable(tween(850), RepeatMode.Reverse), label = "dot")
+        Box(
+            Modifier
+                .size(6.dp)
+                .graphicsLayer { alpha = glow.value }
+                .clip(CircleShape)
+                .background(Color.White)
+        )
         Text("مباشر", style = T.body(11.sp, FontWeight.Bold, Color.White).copy(lineHeight = 14.sp))
     }
 }
@@ -455,7 +497,17 @@ fun SectionHeader(title: String, modifier: Modifier = Modifier, action: String? 
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(title, style = T.h2)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                Modifier
+                    .width(4.dp)
+                    .height(18.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(Brush.verticalGradient(listOf(RColors.SaffronLight, RColors.SaffronDeep)))
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(title, style = T.h2)
+        }
         if (action != null && onAction != null) {
             Row(
                 Modifier
@@ -541,7 +593,11 @@ val tvNavItems: List<NavItem> = navItems.toMutableList().apply { add(2, NavItem(
 private fun NavEntry(item: NavItem, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
     val source = remember { MutableInteractionSource() }
     val focused by source.collectIsFocusedAsState()
-    val color = if (selected || focused) RColors.Saffron else RColors.Text3
+    val color = when {
+        selected -> RColors.OnSaffron
+        focused -> RColors.Saffron
+        else -> RColors.Text3
+    }
     Column(
         modifier.clickable(interactionSource = source, indication = null, role = Role.Tab, onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -552,7 +608,7 @@ private fun NavEntry(item: NavItem, selected: Boolean, modifier: Modifier, onCli
                 .width(56.dp)
                 .height(30.dp)
                 .clip(RoundedCornerShape(15.dp))
-                .background(if (selected) RColors.SaffronSoft else Color.Transparent)
+                .then(if (selected) Modifier.background(RColors.AccentBrush) else Modifier)
                 .focusRing(focused, RoundedCornerShape(15.dp), width = 2.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -561,7 +617,11 @@ private fun NavEntry(item: NavItem, selected: Boolean, modifier: Modifier, onCli
         Spacer(Modifier.height(4.dp))
         Text(
             item.label,
-            style = T.body(11.5.sp, if (selected || focused) FontWeight.Bold else FontWeight.Medium, color).copy(lineHeight = 14.sp)
+            style = T.body(
+                11.5.sp,
+                if (selected || focused) FontWeight.Bold else FontWeight.Medium,
+                if (selected || focused) RColors.Saffron else RColors.Text3
+            ).copy(lineHeight = 14.sp)
         )
     }
 }

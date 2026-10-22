@@ -1,6 +1,12 @@
 package com.ratv.app.ui.screens
 
-import androidx.compose.foundation.Canvas
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,31 +18,38 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ratv.app.data.LoadState
 import com.ratv.app.ui.LocalRepo
-import com.ratv.app.ui.components.AppIcon
+import com.ratv.app.ui.components.BrandLogo
 import com.ratv.app.ui.components.OutlineButton
 import com.ratv.app.ui.components.PrimaryButton
 import com.ratv.app.ui.components.RIcons
-import com.ratv.app.ui.components.RatvLogo
+import com.ratv.app.ui.components.SloganText
+import com.ratv.app.ui.components.rememberIsTv
 import com.ratv.app.ui.components.TvInitialFocus
+import com.ratv.app.ui.components.screenBackground
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 import kotlinx.coroutines.delay
@@ -63,22 +76,42 @@ fun SplashScreen(onNeedLogin: () -> Unit, onReady: () -> Unit, onAutoPlay: (Stri
         }
     }
 
+    val tv = rememberIsTv()
+    var shown by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { shown = true }
+    val appear by animateFloatAsState(if (shown) 1f else 0f, tween(750, easing = FastOutSlowInEasing), label = "appear")
+    val breathing = rememberInfiniteTransition(label = "glow")
+    val pulse = breathing.animateFloat(0.55f, 1f, infiniteRepeatable(tween(1600, easing = FastOutSlowInEasing), RepeatMode.Reverse), label = "pulse")
+
     Box(
         Modifier
             .fillMaxSize()
-            .background(RColors.Ink),
+            .screenBackground(),
         contentAlignment = Alignment.Center
     ) {
-        Canvas(Modifier.fillMaxSize()) {
-            val c = Offset(size.width / 2f, size.height / 2f)
-            val unit = 1.dp.toPx()
-            drawCircle(RColors.Surface, radius = 280f * unit, center = c, style = Stroke(width = unit))
-            drawCircle(RColors.Surface2, radius = 200f * unit, center = c, style = Stroke(width = unit))
-            drawCircle(RColors.Surface3, radius = 128f * unit, center = c, style = Stroke(width = unit))
-            drawCircle(RColors.Saffron, radius = 4f * unit, center = Offset(c.x + 90.5f * unit, c.y - 90.5f * unit))
+        // A soft light behind the logo, breathing while the app loads.
+        Box(
+            Modifier
+                .size(if (tv) 460.dp else 340.dp)
+                .graphicsLayer {
+                    alpha = pulse.value * appear
+                    scaleX = 0.88f + 0.12f * pulse.value
+                    scaleY = 0.88f + 0.12f * pulse.value
+                }
+                .background(Brush.radialGradient(listOf(RColors.Saffron.copy(alpha = 0.34f), Color.Transparent)), CircleShape)
+        )
+        Column(
+            Modifier.graphicsLayer {
+                alpha = appear
+                scaleX = 0.86f + 0.14f * appear
+                scaleY = 0.86f + 0.14f * appear
+            },
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            BrandLogo(if (tv) 200.dp else 156.dp)
+            Spacer(Modifier.height(18.dp))
+            SloganText(if (tv) 30.sp else 22.sp)
         }
-
-        AppIcon(124.dp)
 
         Column(
             Modifier
@@ -105,10 +138,6 @@ fun SplashScreen(onNeedLogin: () -> Unit, onReady: () -> Unit, onAutoPlay: (Stri
                     OutlineButton("تغيير الاشتراك", onClick = onNeedLogin, icon = RIcons.Swap)
                 }
             } else {
-                RatvLogo(30.sp)
-                Spacer(Modifier.height(12.dp))
-                Text("كل قنواتك في مكان واحد", style = T.body(15.sp, color = RColors.Text2))
-                Spacer(Modifier.height(24.dp))
                 LinearProgressIndicator(
                     modifier = Modifier
                         .width(132.dp)

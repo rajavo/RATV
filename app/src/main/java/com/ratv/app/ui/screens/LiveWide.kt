@@ -74,6 +74,7 @@ import com.ratv.app.ui.components.TvInitialFocus
 import com.ratv.app.ui.components.formatCount
 import com.ratv.app.ui.components.hm
 import com.ratv.app.ui.components.tvClickable
+import com.ratv.app.ui.components.screenBackground
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 import kotlinx.coroutines.delay
@@ -200,7 +201,7 @@ fun LiveWideScreen(nav: Navigator) {
     Box(
         Modifier
             .fillMaxSize()
-            .background(RColors.Ink)
+            .screenBackground()
     ) {
         Row(
             Modifier
@@ -435,7 +436,7 @@ private fun PreviewPane(
         Row(
             Modifier
                 .clip(RoundedCornerShape(14.dp))
-                .background(RColors.Saffron)
+                .background(RColors.AccentBrush)
                 .tvClickable(RoundedCornerShape(14.dp), ringColor = Color.White, onClick = onOpen)
                 .padding(horizontal = 16.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,

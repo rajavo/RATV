@@ -63,6 +63,7 @@ import com.ratv.app.ui.components.TvInitialFocus
 import com.ratv.app.ui.components.rememberIsWide
 import com.ratv.app.ui.components.tvClickable
 import com.ratv.app.ui.components.hm
+import com.ratv.app.ui.components.screenBackground
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 
@@ -114,7 +115,7 @@ private fun LivePhoneScreen(nav: Navigator) {
     LazyColumn(
         Modifier
             .fillMaxSize()
-            .background(RColors.Ink),
+            .screenBackground(),
         contentPadding = PaddingValues(bottom = 16.dp)
     ) {
         item {
@@ -304,7 +305,7 @@ private fun PreviewCard(
                 Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(RColors.Saffron),
+                    .background(RColors.AccentBrush),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(RIcons.Play, contentDescription = null, tint = RColors.OnSaffron, modifier = Modifier.size(18.dp))

@@ -12,6 +12,8 @@ import com.ratv.app.data.MatchLinks
 import com.ratv.app.data.MatchRequest
 import com.ratv.app.ui.LocalRepo
 import com.ratv.app.ui.RatvRoot
+import com.ratv.app.ui.theme.AppTheme
+import com.ratv.app.ui.theme.Palette
 import com.ratv.app.ui.theme.RatvTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,6 +24,7 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
         )
         val repository = (application as RatvApp).repository
+        AppTheme.palette = Palette.of(repository.prefs.palette)
         setContent {
             CompositionLocalProvider(LocalRepo provides repository) {
                 RatvTheme {

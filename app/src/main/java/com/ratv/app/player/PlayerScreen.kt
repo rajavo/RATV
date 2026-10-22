@@ -142,6 +142,9 @@ import kotlinx.coroutines.withContext
 
 private val Glass = Color(0x1FFFFFFF)
 private const val MAX_RECONNECTS = 5
+
+/** Stalls counted toward moving to another version of the channel: those of the last 4 minutes. */
+private const val VERSION_WINDOW_MS = 4L * 60L * 1000L
 private val SoftText = Color(0xFFD9D4CC)
 
 private class ResizeMode(val label: String, val resize: Int, val ratio: Float?)
@@ -218,6 +221,16 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     var hlsPreferredFor by remember { mutableStateOf<String?>(null) }
     val hlsAfterStalls = remember { com.ratv.app.data.debugProperty("debug.ratv.hlsafter")?.toIntOrNull() ?: 3 }
     var usingHls by remember { mutableStateOf(false) }
+    // A channel that keeps stalling (or failing) moves to another version of itself from the
+    // subscription, a lighter quality or a backup link, when there is one. Versions already tried
+    // in this chain are skipped; a version the viewer picked by hand is never left automatically.
+    val autoVersion = remember { repo.prefs.autoVersion }
+    val versionAfterStalls = remember { com.ratv.app.data.debugProperty("debug.ratv.versionafter")?.toIntOrNull() ?: 3 }
+    val versionsTried = remember { HashSet<String>() }
+    var keepVersionFor by remember { mutableStateOf<String?>(null) }
+    val stallTimes = remember { ArrayDeque<Long>() }
+    // What the player did by itself about a bad stream (switched to HLS, to another version).
+    var streamNotice by remember { mutableStateOf<String?>(null) }
     // Reserve stored ahead of the picture, and whether the internet is failing right now.
     var reserveMs by remember { mutableLongStateOf(0L) }
     var netTrouble by remember { mutableStateOf(false) }
@@ -265,7 +278,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         )
     }
 
-    fun play(item: Playable, showControls: Boolean = true) {
+    fun play(item: Playable, showControls: Boolean = true, auto: Boolean = false) {
+        if (!auto) versionsTried.clear()
         saveProgress()
         mix.stop()
         current = item
@@ -277,6 +291,26 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         videoHeight = 0
         controlsVisible = showControls
         touch()
+    }
+
+    /** True when the device is on a network: switching versions does not help while the internet is down. */
+    fun onNetwork(): Boolean {
+        val cm = context.applicationContext.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as? android.net.ConnectivityManager
+            ?: return true
+        val caps = cm.getNetworkCapabilities(cm.activeNetwork ?: return false) ?: return false
+        return caps.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
+    /** Moves a struggling channel to its next version (lighter quality first, then a backup). False when there is none. */
+    fun switchVersion(item: Playable, why: String): Boolean {
+        val ch = item.channel ?: return false
+        if (!autoVersion || keepVersionFor == ch.id || !onNetwork()) return false
+        versionsTried.add(ch.id)
+        val next = nextVersion(ch, repo.siblings(ch), versionsTried) ?: return false
+        Log.i("RATVPlayback", "$why: switching to another version, ${next.name}")
+        streamNotice = "البث كان يقطّع، فانتقلنا لـ «${next.name}». ترجع للأصلية من «المعلق والجودة»."
+        play(liveToPlayable(next), showControls = false, auto = true)
+        return true
     }
 
     // ------------------------------------------------------------ resolve
@@ -300,6 +334,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         val url = if (item.isLive && hlsFailedFor != item.id) liveStreamUrl(item.url, format, hlsAllowed) else item.url
         usingHls = url != item.url
         stalls = 0
+        stallTimes.clear()
         droppedFrames = 0
         measuredFps = 0f
         player.setMediaItem(mediaItemFor(url, live = item.isLive), item.startPosition.coerceAtLeast(0L))
@@ -360,6 +395,13 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         while (subs.isOn) {
             subPos = player.currentPosition
             delay(120L)
+        }
+    }
+
+    LaunchedEffect(streamNotice) {
+        if (streamNotice != null) {
+            delay(7_000L)
+            streamNotice = null
         }
     }
 
@@ -442,9 +484,17 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                         player.prepare()
                     }
                     // A live channel never gives up: it keeps trying (10 s apart at most) until the line is back.
+                    // After four failed tries with the internet up, its other version is tried instead.
                     isRetryable(error) && (reconnectAttempts < MAX_RECONNECTS || now?.isLive == true) -> {
                         reconnectAttempts++
-                        reconnecting = true
+                        if (now?.isLive == true && reconnectAttempts >= 4 && switchVersion(now, "the channel keeps failing")) {
+                            reconnecting = false
+                        } else {
+                            reconnecting = true
+                        }
+                    }
+                    now?.isLive == true && switchVersion(now, "the channel failed") -> {
+                        reconnecting = false
                     }
                     else -> {
                         reconnecting = false
@@ -489,6 +539,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                     val now = current
                     if (now?.isLive == true) {
                         Steadiness.onStall()
+                        val t = SystemClock.elapsedRealtime()
+                        stallTimes.addLast(t)
+                        while (stallTimes.isNotEmpty() && t - stallTimes.first() > VERSION_WINDOW_MS) stallTimes.removeFirst()
                         // Third stall as TS: try the channel as HLS once, if the server offers it.
                         val hlsAllowed = repo.account.value?.formats?.contains("m3u8") == true
                         if (stalls >= hlsAfterStalls && !usingHls && hlsAllowed && hlsPreferredFor != now.id && hlsFailedFor != now.id &&
@@ -496,7 +549,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                         ) {
                             Log.i("RATVPlayback", "stalls keep coming as TS: trying HLS")
                             hlsPreferredFor = now.id
-                            resizeNotice = "البث يتقطع: جرّبنا صيغة HLS لهذي القناة"
+                            streamNotice = "البث يتقطع: جرّبنا صيغة HLS لهذي القناة"
+                        } else if (stallTimes.size >= versionAfterStalls) {
+                            // Still stalling (in a few minutes): another version of the channel, if it has one.
+                            switchVersion(now, "stalls keep coming")
                         }
                     }
                     Log.i("RATVPlayback", "stall $stalls, reserve ${player.totalBufferedDuration} ms")
@@ -1030,6 +1086,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         if (notice != null && !inPip) {
             TopNotice("حجم الصورة: $notice", RIcons.Aspect)
         }
+        val told = streamNotice
+        if (told != null && notice == null && !inPip) {
+            TopNotice(told, RIcons.Swap)
+        }
 
         val zapped = banner
         if (zapped != null && !controlsVisible && !inPip) {
@@ -1205,7 +1265,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                             audioVersion++
                         },
                         onMix = { ch -> mix.start(ch, repo.account.value?.maxCons) },
-                        onSwitch = { ch -> play(liveToPlayable(ch)) },
+                        onSwitch = { ch ->
+                            keepVersionFor = ch.id
+                            play(liveToPlayable(ch))
+                        },
                         onClose = { sourcesOpen = false },
                         tv = isTv
                     )
@@ -1377,7 +1440,7 @@ private fun Controls(
                     Modifier
                         .height(40.dp)
                         .clip(RoundedCornerShape(20.dp))
-                        .background(RColors.Saffron)
+                        .background(RColors.AccentBrush)
                         .tvClickable(RoundedCornerShape(20.dp), onClickLabel = "شاهد $fourKName", ringColor = Color.White, onClick = onFourK)
                         .padding(horizontal = 14.dp),
                     verticalAlignment = Alignment.CenterVertically

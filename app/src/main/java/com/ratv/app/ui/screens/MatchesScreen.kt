@@ -46,6 +46,7 @@ import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.components.TvInitialFocus
 import com.ratv.app.ui.components.rememberIsTv
 import com.ratv.app.ui.components.tvClickable
+import com.ratv.app.ui.components.screenBackground
 import com.ratv.app.ui.theme.RColors
 import com.ratv.app.ui.theme.T
 import java.text.SimpleDateFormat
@@ -92,7 +93,7 @@ fun MatchesScreen(nav: Navigator) {
     LazyColumn(
         Modifier
             .fillMaxSize()
-            .background(RColors.Ink),
+            .screenBackground(),
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp, bottom = 28.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
