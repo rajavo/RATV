@@ -78,6 +78,9 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import com.ratv.app.ui.components.BrandLogo
+import androidx.compose.foundation.layout.absolutePadding
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.Role
@@ -969,6 +972,18 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             update = { it.resizeMode = resizeModes[resizeIndex].resize },
             modifier = resizeModes[resizeIndex].ratio?.let { Modifier.align(Alignment.Center).aspectRatio(it) } ?: Modifier.fillMaxSize()
         )
+
+        // RA TV's mark in the corner of the picture, as channels show theirs (hidden with the controls up).
+        if (!controlsVisible && !inPip) {
+            BrandLogo(
+                if (isTv) 44.dp else 30.dp,
+                Modifier
+                    .align(AbsoluteAlignment.TopRight)
+                    .absolutePadding(top = if (isTv) 26.dp else 14.dp, right = if (isTv) 34.dp else 16.dp),
+                alpha = 0.6f,
+                small = true
+            )
+        }
 
         Box(
             Modifier

@@ -228,7 +228,7 @@ class Prefs(context: Context) {
 
     /** A live channel that keeps stalling moves by itself to another version of it (lighter or a backup). */
     var autoVersion: Boolean
-        get() = sp.getBoolean("autoVersion", true)
+        get() = sp.getBoolean("autoVersion", false)
         set(value) = sp.edit().putBoolean("autoVersion", value).apply()
 
     /** On a TV, switch the screen to 50 or 60 Hz to match the channel, for even motion. */
