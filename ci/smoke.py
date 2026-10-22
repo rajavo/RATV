@@ -1171,9 +1171,6 @@ if __name__ == "__main__":
         ("busy", s_busy),
         ("shaky", s_shaky),
         ("matches", s_matches),
-        ("match-link", s_match_link),
-        ("match-link-missing", s_match_link_missing),
-        ("kora-button", s_kora_button),
         ("commentator", s_commentator),
         ("commentary-mix", s_commentary_mix),
         ("guide", s_guide),
@@ -1193,6 +1190,9 @@ if __name__ == "__main__":
         ("switch-to-m3u", s_switch_to_m3u),
         ("m3u-content", s_m3u_content),
         ("users", s_users),
+        ("match-link", s_match_link),
+        ("match-link-missing", s_match_link_missing),
+        ("kora-button", s_kora_button),
     ]:
         step(name, fn)
     finish()
