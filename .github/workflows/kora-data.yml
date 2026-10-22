@@ -55,16 +55,6 @@ jobs:
           done
           echo "fixtures.json is not reachable at $url"
           exit 1
-      - name: Pages of other sources, for development
-        if: github.event_name == 'push' && hashFiles('kora/data/sample.py') != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          python3 kora/data/sample.py samples
-          cp out/report.json samples/ 2>/dev/null || true
-          cd samples && git init -q && git checkout -q -b samples && git add -A
-          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qm "Source samples (run ${{ github.run_number }})"
-          git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" samples:ci-kora-samples
       # GitHub stops scheduled workflows of a repository that has been quiet for 60 days; this keeps it on.
       - name: Keep the schedule running
         if: always()
