@@ -7,6 +7,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.drawBehind
@@ -59,6 +61,13 @@ fun TopBar(current: String, onSelect: (String) -> Unit, onSearch: () -> Unit) {
             }
             .statusBarsPadding()
     ) {
+        val width = LocalConfiguration.current.screenWidthDp
+        // Tighter sections on smaller screens, so the logo, the slogan and the time all fit.
+        val tabPadding = when {
+            width >= 1100 -> 16.dp
+            width >= 760 -> 12.dp
+            else -> 8.dp
+        }
         Row(
             Modifier
                 .fillMaxWidth()
@@ -66,9 +75,9 @@ fun TopBar(current: String, onSelect: (String) -> Unit, onSearch: () -> Unit) {
                 .padding(horizontal = 28.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // The slogan beside the logo when the screen is wide enough for it and all the sections.
-            RatvLogo(fontSize = 22.sp, slogan = LocalConfiguration.current.screenWidthDp >= 1200)
-            Spacer(Modifier.width(28.dp))
+            // The slogan beside the logo whenever the screen is as wide as a TV's (960).
+            RatvLogo(fontSize = 22.sp, slogan = width >= 940)
+            Spacer(Modifier.width(20.dp))
             tvNavItems.forEachIndexed { index, item ->
                 if (index > 0) {
                     Box(
@@ -79,12 +88,19 @@ fun TopBar(current: String, onSelect: (String) -> Unit, onSearch: () -> Unit) {
                             .background(RColors.LineStrong)
                     )
                 }
-                TopTab(item.label, item.route == current) { onSelect(item.route) }
+                TopTab(item.label, item.route == current, tabPadding) { onSelect(item.route) }
             }
-            Spacer(Modifier.weight(1f))
-            SearchPill(onSearch)
-            Spacer(Modifier.width(20.dp))
-            Text(hm(now), style = T.display(19.sp, FontWeight.Bold, RColors.Text2))
+            // Search takes what is left, so it shrinks before anything else is squeezed.
+            Box(
+                Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                SearchPill(onSearch, Modifier.widthIn(max = 360.dp).fillMaxWidth())
+            }
+            Spacer(Modifier.width(16.dp))
+            Text(hm(now), style = T.display(19.sp, FontWeight.Bold, RColors.Text2), maxLines = 1, softWrap = false)
         }
         Box(
             Modifier
@@ -96,7 +112,7 @@ fun TopBar(current: String, onSelect: (String) -> Unit, onSearch: () -> Unit) {
 }
 
 @Composable
-private fun TopTab(label: String, selected: Boolean, onClick: () -> Unit) {
+private fun TopTab(label: String, selected: Boolean, padding: Dp, onClick: () -> Unit) {
     val source = remember { MutableInteractionSource() }
     val focused by source.collectIsFocusedAsState()
     val shape = RoundedCornerShape(12.dp)
@@ -107,7 +123,7 @@ private fun TopTab(label: String, selected: Boolean, onClick: () -> Unit) {
             .background(if (focused) RColors.Surface2 else Color.Transparent)
             .focusRing(focused, shape)
             .clickable(interactionSource = source, indication = null, role = Role.Tab, onClick = onClick)
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = padding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -136,26 +152,36 @@ private fun TopTab(label: String, selected: Boolean, onClick: () -> Unit) {
 }
 
 @Composable
-private fun SearchPill(onClick: () -> Unit) {
+private fun SearchPill(onClick: () -> Unit, modifier: Modifier = Modifier) {
     val shape = RoundedCornerShape(24.dp)
-    Row(
-        Modifier
-            .widthIn(min = 220.dp, max = 360.dp)
-            .height(46.dp)
-            .clip(shape)
-            .background(RColors.Surface)
-            .border(1.dp, RColors.LineStrong, shape)
-            .tvClickable(shape, onClickLabel = "بحث", onClick = onClick)
-            .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        Icon(RIcons.Search, contentDescription = null, tint = RColors.Text2, modifier = Modifier.size(20.dp))
-        Text(
-            "ابحث عن قناة أو فيلم أو مسلسل",
-            style = T.body(14.sp, color = RColors.Text3),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+    BoxWithConstraints(modifier) {
+        // The full hint when it fits, a short one when it doesn't, the icon alone when space is tight.
+        val hint = when {
+            maxWidth >= 250.dp -> "ابحث عن قناة أو فيلم أو مسلسل"
+            maxWidth >= 96.dp -> "ابحث"
+            else -> null
+        }
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .height(46.dp)
+                .clip(shape)
+                .background(RColors.Surface)
+                .border(1.dp, RColors.LineStrong, shape)
+                .tvClickable(shape, onClickLabel = "بحث", onClick = onClick)
+                .padding(horizontal = if (hint == null) 0.dp else 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = if (hint == null) Arrangement.Center else Arrangement.spacedBy(10.dp)
+        ) {
+            Icon(RIcons.Search, contentDescription = if (hint == null) "ابحث" else null, tint = RColors.Text2, modifier = Modifier.size(20.dp))
+            if (hint != null) {
+                Text(
+                    hint,
+                    style = T.body(14.sp, color = RColors.Text3),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
     }
 }
