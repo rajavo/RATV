@@ -49,6 +49,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -166,15 +170,28 @@ const val LOGO_RATIO = 982f / 931f
 
 /** The RA TV logo, [height] tall. */
 @Composable
-fun BrandLogo(height: Dp, modifier: Modifier = Modifier) {
+fun BrandLogo(height: Dp, modifier: Modifier = Modifier, alpha: Float = 1f, small: Boolean = false) {
     Image(
-        painterResource(R.drawable.ratv_logo),
-        contentDescription = "RA TV",
+        if (small) smallLogoPainter() else painterResource(R.drawable.ratv_logo),
+        contentDescription = if (small) null else "RA TV",
         modifier = modifier
             .height(height)
             .width(height * LOGO_RATIO),
-        contentScale = ContentScale.Fit
+        contentScale = ContentScale.Fit,
+        alpha = alpha
     )
+}
+
+// The logo at a small size (channel tiles, the mark on the picture), decoded once for the whole app:
+// a list of channels must not decode an image for every row.
+private var smallLogo: ImageBitmap? = null
+
+@Composable
+private fun smallLogoPainter(): Painter {
+    val res = LocalContext.current.resources
+    return remember {
+        BitmapPainter(smallLogo ?: ImageBitmap.imageResource(res, R.drawable.ratv_logo_small).also { smallLogo = it })
+    }
 }
 
 /** «بيتك الأول للترفيه» in the accent gradient. */
@@ -395,11 +412,6 @@ fun ProgressLine(
 
 // --------------------------------------------------------------- images
 
-private val monogramColors = listOf(
-    Color(0xFF1F6F5C), Color(0xFF2B4C8C), Color(0xFF5A3D8A), Color(0xFF8C3B2B),
-    Color(0xFF8C2B5A), Color(0xFF2B7A8C), Color(0xFF6B5A2B), Color(0xFF7A2B2B), Color(0xFF8C6A1F)
-)
-
 fun monogramOf(name: String): String {
     val words = name.trim().split(' ').filter { w -> w.isNotEmpty() && w.any { it.isLetterOrDigit() } }
     if (words.isEmpty()) return "TV"
@@ -408,24 +420,20 @@ fun monogramOf(name: String): String {
     return if (digit != null) first + digit.take(1) else first
 }
 
-/** Channel logo from the provider, falling back to a coloured monogram. */
+/** Channel logo from the provider, falling back to the RA TV logo. */
 @Composable
 fun ChannelLogo(name: String, url: String?, size: Dp, modifier: Modifier = Modifier, corner: Dp = 12.dp) {
     var state by remember(url) { mutableIntStateOf(if (url.isNullOrBlank()) 2 else 0) }
-    val color = monogramColors[artSeed(name) % monogramColors.size]
     Box(
         modifier
             .size(size)
             .clip(RoundedCornerShape(corner))
-            .background(if (state == 2) color else RColors.Surface2),
+            .background(RColors.Surface2),
         contentAlignment = Alignment.Center
     ) {
         if (state == 2) {
-            Text(
-                monogramOf(name),
-                style = T.display((size.value * 0.32f).sp, FontWeight.ExtraBold, Color.White),
-                maxLines = 1
-            )
+            // No logo from the provider (or it did not load): RA TV's logo instead of letters.
+            BrandLogo(size * 0.8f, small = true)
         } else {
             AsyncImage(
                 model = url,
