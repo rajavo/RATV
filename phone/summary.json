@@ -1,0 +1,25 @@
+{
+ "results": [
+  {
+   "step": "phone-setup",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "phone-today",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "phone-tomorrow",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "phone-details",
+   "ok": true,
+   "error": ""
+  }
+ ],
+ "kora_crashed": false
+}

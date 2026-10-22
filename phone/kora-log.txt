@@ -1,0 +1,4 @@
+10-22 12:48:00.199  5500  5654 I RAKora  : schedule: 6 matches, 5 competitions
+10-22 12:48:00.235  5500  5654 I RAKora  : schedule: 6 matches, 5 competitions
+10-22 12:48:00.737  5500  5662 I RAKora  : live: 1 of 1 matches
+10-22 12:48:38.466  5500  5500 I RAKora  : watch NOT_INSTALLED: ratv://match?home=Al%20Hilal&away=Al%20Nassr&homeAr=%D8%A7%D9%84%D9%87%D9%84%D8%A7%D9%84&awayAr=%D8%A7%D9%84%D9%86%D8%B5%D8%B1&start=1792673878000&league=%D8%AF%D9%88%D8%B1%D9%8A%20%D8%B1%D9%88%D8%B4%D9%86%20%D8%A7%D9%84%D8%B3%D8%B9%D9%88%D8%AF%D9%8A&leagueEn=Saudi%20Pro%20League&id=9001

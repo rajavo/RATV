@@ -1,0 +1,17 @@
+serving /tmp/kora-www on port 8000
+22/Oct/2026 13:45:18 "GET /update/version.json HTTP/1.1" 200 -
+22/Oct/2026 13:48:00 "GET /fixtures.json HTTP/1.1" 200 -
+22/Oct/2026 13:48:00 "GET /update/version.json HTTP/1.1" 200 -
+22/Oct/2026 13:48:00 "GET /fixtures.json HTTP/1.1" 200 -
+22/Oct/2026 13:48:00 "GET /apis/site/v2/sports/soccer/ksa.1/scoreboard?dates=20261022 HTTP/1.1" 200 -
+22/Oct/2026 13:48:01 "GET /logo/929.png HTTP/1.1" 200 -
+22/Oct/2026 13:48:01 "GET /logo/359.png HTTP/1.1" 200 -
+22/Oct/2026 13:48:01 "GET /logo/eng.png HTTP/1.1" 200 -
+22/Oct/2026 13:48:01 "GET /logo/eng.png HTTP/1.1" 200 -
+22/Oct/2026 13:48:01 "GET /logo/ksa.png HTTP/1.1" 200 -
+22/Oct/2026 13:48:01 "GET /logo/ksa.png HTTP/1.1" 200 -
+22/Oct/2026 13:48:01 "GET /logo/817.png HTTP/1.1" 200 -
+22/Oct/2026 13:48:15 "GET /logo/83.png HTTP/1.1" 200 -
+22/Oct/2026 13:48:15 "GET /logo/86.png HTTP/1.1" 200 -
+22/Oct/2026 13:48:25 "GET /logo/ksa.png HTTP/1.1" 200 -
+22/Oct/2026 13:48:25 "GET /logo/eng.png HTTP/1.1" 200 -

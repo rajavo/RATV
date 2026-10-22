@@ -1,0 +1,13 @@
+13:47:05 == phone-setup
+13:47:58 time zone -0100 (wanted Etc/GMT+1), device time Thu Oct 22 12:47:57 -01 2026
+13:47:58 schedule written: local midnight 2026-10-22 01:00:00+00:00 UTC
+13:48:00 Starting: Intent { cmp=com.ratv.kora/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.kora/.MainActivity
+TotalTime: 1768
+WaitTime: 1785
+Complete
+13:48:06 == phone-today
+13:48:13 == phone-tomorrow
+13:48:28 == phone-details
