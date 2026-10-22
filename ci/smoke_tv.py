@@ -138,6 +138,9 @@ def t_player_remote():
     S.shot("player-controls")
     key("DPAD_LEFT", pause=1)
     S.shot("player-controls-moved")
+    # The controls hide 4 s after the last key; a slow screenshot can take that long,
+    # so wake them right before Back (Left only moves the focus, or shows them again).
+    key("DPAD_LEFT", pause=0.5)
     key("BACK", pause=1.5)
     S.shot("player-controls-hidden")
     key("BACK", pause=2.5)
