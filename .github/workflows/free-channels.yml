@@ -56,7 +56,7 @@ jobs:
           set +e
           {
             npm ci --no-audit --no-fund &&
-            npm run grab -- --channels=../out/channels.xml --output=../out/guide.xml --days=3 --maxConnections=10 --timeout=15000
+            npm run grab -- --channels=../out/channels.xml --output=../out/guide.xml --days=3 --maxConnections=3 --delay=300 --timeout=20000
           } > ../out/guide-full.log 2>&1
           echo "collector exit code: $?" >> ../out/guide-full.log
           tail -n 80 ../out/guide-full.log > ../out/guide-log.txt
