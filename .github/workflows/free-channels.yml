@@ -1,0 +1,99 @@
+name: Free channels
+
+# The free Arabic channels list RATV opens without any server, as an M3U link:
+#   https://github.com/<repo>/releases/download/free/tv.m3u
+# Built every day by tools/free-list.js on the "server" branch from public lists (pay TV and adult
+# channels are always left out), with its programme guide collected by iptv-org/epg, and published
+# in the "free" release (never marked latest, so RATV's own releases are not affected).
+on:
+  schedule:
+    - cron: '41 0 * * *'
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/free-channels.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: free-channels
+  cancel-in-progress: false
+
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: List builder (server branch)
+        uses: actions/checkout@v4
+        with:
+          ref: server
+          path: srv
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build the channel list
+        run: node srv/tools/free-list.js out "https://github.com/${{ github.repository }}/releases/download/free/guide.xml.gz"
+
+      - name: Guide collector (iptv-org/epg)
+        uses: actions/checkout@v4
+        with:
+          repository: iptv-org/epg
+          path: epg
+
+      # The list is published even when the guide cannot be collected (the last guide then stays).
+      # The end of the collector's output goes into the release as guide-log.txt.
+      - name: Collect the programme guide
+        continue-on-error: true
+        timeout-minutes: 60
+        working-directory: epg
+        run: |
+          set +e
+          {
+            npm ci --no-audit --no-fund &&
+            npm run grab -- --channels=../out/channels.xml --output=../out/guide.xml --days=3 --maxConnections=3 --delay=300 --timeout=20000
+          } > ../out/guide-full.log 2>&1
+          echo "collector exit code: $?" >> ../out/guide-full.log
+          tail -n 80 ../out/guide-full.log > ../out/guide-log.txt
+          cat ../out/guide-log.txt
+          if [ -s ../out/guide.xml ]; then gzip -9 -f ../out/guide.xml; fi
+          exit 0
+
+      - name: Publish to the free release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          files="out/tv.m3u out/status.json out/guide-log.txt"
+          if [ -s out/guide.xml.gz ]; then files="$files out/guide.xml.gz"; else echo "No new guide this time; the last one stays."; fi
+          if gh release view free >/dev/null 2>&1; then
+            gh release upload free $files --clobber
+          else
+            gh release create free $files --target "$GITHUB_SHA" \
+              --title "RATV: القنوات المجانية" --latest=false \
+              --notes "قائمة القنوات العربية المجانية لتطبيق RATV مع دليل البرامج، تتحدث تلقائياً كل يوم. القنوات المدفوعة ما تدخل فيها."
+          fi
+          gh release edit free --draft=false --prerelease=false --latest=false
+          cat out/status.json
+
+      - name: Check the public link
+        run: |
+          url="https://github.com/${{ github.repository }}/releases/download/free/tv.m3u"
+          for i in 1 2 3 4 5; do
+            if n=$(curl -fsL "$url" | grep -c '^#EXTINF'); then echo "$n channels online"; exit 0; fi
+            sleep 15
+          done
+          echo "tv.m3u is not reachable at $url"
+          exit 1
+
+      # GitHub stops scheduled workflows of a repository that has been quiet for 60 days; this keeps it on.
+      - name: Keep the schedule running
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/free-channels.yml/enable" || true

@@ -3,15 +3,16 @@ name: Build APK
 on:
   push:
     branches: [ main, master ]
-    # RA Net (net/) and جدول RA كورة (kora/) have their own workflows: changing them must not publish
-    # a new RATV for the customers. Edits of this file alone do not publish either; run it by hand
-    # (workflow_dispatch) if needed.
+    # RA Net (net/), جدول RA كورة (kora/) and the free channels list have their own workflows:
+    # changing them must not publish a new RATV for the customers. Edits of this file alone do not
+    # publish either; run it by hand (workflow_dispatch) if needed.
     paths-ignore:
       - 'net/**'
       - 'kora/**'
       - '.github/workflows/net.yml'
       - '.github/workflows/kora.yml'
       - '.github/workflows/kora-data.yml'
+      - '.github/workflows/free-channels.yml'
       - '.github/workflows/build.yml'
   workflow_dispatch:
 
