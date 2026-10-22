@@ -204,6 +204,22 @@ def t_matches():
     expect("Sky Sports Main" in texts, "Sky Sports Main not listed as showing the game: " + texts[:300])
 
 
+def t_match_link():
+    """A match from the schedule app: with the remote, the best channel is selected and plays."""
+    S.open_match_link(S.match_uri("Real Madrid", "Barcelona", "ريال مدريد", "برشلونة", "الدوري الإسباني"))
+    _, n = S.wait_for(timeout=25, text="Sky Sports Main", save="match-link")
+    S.shot("match-link")
+    expect(n is not None, "the match link did not list the channels showing the game")
+    _, f = log_focus("match-link")
+    expect(f is not None and ("Sport" in f or "Sky" in f), "no channel selected for the remote (focus: %s)" % f)
+    key("DPAD_CENTER", pause=7)
+    S.shot("match-link-play")
+    root = S.dump("match-link-play")
+    expect(S.find(root, contains="وين تنعرض المباراة") is None, "the selected channel did not open")
+    key("BACK", pause=2)
+    key("BACK", pause=2)
+
+
 def t_settings():
     go_tab("حسابي")
     time.sleep(1.5)
@@ -224,6 +240,7 @@ if __name__ == "__main__":
         ("live", t_live),
         ("series", t_series),
         ("matches", t_matches),
+        ("match-link", t_match_link),
         ("settings", t_settings),
     ]:
         S.step(name, fn)

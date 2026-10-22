@@ -888,6 +888,77 @@ def s_matches():
     time.sleep(2)
 
 
+def match_uri(home, away, home_ar, away_ar, league="", minutes_from_now=-15):
+    """The link the schedule app (جدول RA كورة) opens RATV with."""
+    from urllib.parse import quote
+    start = int((time.time() + minutes_from_now * 60) * 1000)
+    return "ratv://match?home=%s&away=%s&homeAr=%s&awayAr=%s&start=%d&league=%s" % (
+        quote(home), quote(away), quote(home_ar), quote(away_ar), start, quote(league))
+
+
+def open_match_link(uri):
+    # Single quotes keep the "&" of the link away from the device's shell.
+    log(shell("am start -W -a android.intent.action.VIEW -p com.ratv.app -d '%s'" % uri).strip()[:300])
+
+
+def s_match_link():
+    """A match from the schedule app: RATV lists the channels of the test guide showing it, one plays."""
+    open_match_link(match_uri("Real Madrid", "Barcelona", "ريال مدريد", "برشلونة", "الدوري الإسباني"))
+    _, n = wait_for(timeout=25, contains="وين تنعرض المباراة", save="match-link")
+    shot("match-link")
+    if n is None:
+        raise RuntimeError("the match link did not open the channels screen")
+    _, n = wait_for(timeout=20, text="Sky Sports Main", save="match-link-found")
+    root = dump()
+    texts = all_texts(root)
+    log("match link: " + texts[:500])
+    for need in ("ريال مدريد × برشلونة", "Sky Sports Main", "Sport 1 HD", "بتعرض المباراة"):
+        if need not in texts:
+            raise RuntimeError("the channels screen is missing " + need)
+    if "News" in texts or "Kids Fun" in texts:
+        raise RuntimeError("channels that do not show the match are listed: " + texts[:300])
+    tap_where(text="Sky Sports Main")
+    time.sleep(8)
+    shot("match-link-play")
+    root = dump("match-link-play")
+    if find(root, contains="وين تنعرض المباراة") is not None:
+        raise RuntimeError("the channel did not open from the match link")
+    back()
+    time.sleep(2)
+
+
+def s_match_link_missing():
+    """A match the guide does not have: RATV says so and offers the sports channels."""
+    open_match_link(match_uri("Al Hilal", "Al Nassr", "الهلال", "النصر", "دوري روشن السعودي", minutes_from_now=3 * 24 * 60 + 60))
+    _, n = wait_for(timeout=25, contains="ما لقينا المباراة", save="match-link-missing")
+    shot("match-link-missing")
+    if n is None:
+        raise RuntimeError("no message for a match missing from the guide")
+    texts = all_texts(dump())
+    for need in ("الهلال × النصر", "بعد 3 أيام", "قنوات الرياضة في اشتراكك", "Sport 1 HD"):
+        if need not in texts:
+            raise RuntimeError("the missing-match screen lacks " + need + ": " + texts[:400])
+    back()
+    time.sleep(2)
+
+
+def s_kora_button():
+    """«جدول 30 يوم» on the matches screen: the schedule app is not installed, so RATV offers it."""
+    tap_where(text="الرئيسية", bottom=True)
+    time.sleep(2)
+    tap_where(text="جدول المباريات")
+    time.sleep(2)
+    tap_where(text="جدول 30 يوم")
+    _, n = wait_for(timeout=10, text="ثبّت التطبيق", save="kora-offer")
+    shot("kora-offer")
+    if n is None:
+        raise RuntimeError("no offer to install the schedule app")
+    tap_where(text="لاحقاً")
+    time.sleep(1)
+    tap_where(text="الرئيسية", bottom=True)
+    time.sleep(2)
+
+
 def s_update():
     """Account > Update the app: finds the newer version, downloads it, opens Android's installer."""
     tap_where(text="حسابي", bottom=True)
@@ -1099,6 +1170,9 @@ if __name__ == "__main__":
         ("busy", s_busy),
         ("shaky", s_shaky),
         ("matches", s_matches),
+        ("match-link", s_match_link),
+        ("match-link-missing", s_match_link_missing),
+        ("kora-button", s_kora_button),
         ("commentator", s_commentator),
         ("commentary-mix", s_commentary_mix),
         ("guide", s_guide),
