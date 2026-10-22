@@ -59,11 +59,11 @@ NAV_LANG = {
 }
 
 
-def go_tab(label, nav=NAV):
+def go_tab(label, nav=NAV, tries=15):
     """Moves up to the top bar with the remote and opens a section."""
     rtl = nav is NAV
     f = None
-    for _ in range(15):
+    for _ in range(tries):
         _, f = log_focus("nav-search")
         if f in nav:
             break
@@ -276,7 +276,7 @@ def t_languages():
             texts = S.all_texts(root)
             expect("English" in texts and "Español" in texts and "العربية" in texts, "%s: the language list is incomplete" % lang)
             key("BACK", pause=1.5)
-            go_tab(nav[1], nav)
+            go_tab(nav[1], nav, tries=40)  # from far down the settings
             time.sleep(3)
             S.shot("live-" + lang)
     finally:
