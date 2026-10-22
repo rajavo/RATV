@@ -1679,3 +1679,34 @@ Complete
 17:42:55 !! RuntimeError("not found: {'text': 'مباشر', 'bottom': True}")
 17:42:55 screenshot 42-fail-kora-button.png 1080x2400
 17:42:55 !! app is not running
+17:55:08 == launch
+17:55:16 system dialog:  |  |  |  |  |  | Pixel Launcher isn't responding |  |  |  | Close app | Wait
+17:56:03 debug.ratv.subs=http://10.0.2.2:8000
+17:56:05 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 1284
+WaitTime: 1308
+Complete
+17:56:07 screenshot 01-splash.png 1080x2400
+17:56:07 == login-screen
+17:56:12 screenshot 02-login.png 1080x2400
+17:56:12 == wrong-password
+17:56:33 screenshot 03-login-error.png 1080x2400
+17:56:33 == xtream-login
+17:56:38 screenshot 04-login-filled.png 1080x2400
+17:56:54 screenshot 05-home.png 1080x2400
+17:56:54 == live
+17:57:02 screenshot 06-live.png 1080x2400
+17:57:02 == live-category
+17:57:09 screenshot 07-live-sport.png 1080x2400
+17:57:12 == favorite
+17:57:20 screenshot 08-live-favorites.png 1080x2400
+17:57:23 == play-live
+17:57:39 screenshot 09-player-live.png 2400x1080
+17:57:45 screenshot 10-player-live-controls.png 2400x1080
+17:58:03 screenshot 11-stats.png 2400x1080
+17:58:03 stats:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | معلومات البث | الصيغة | TS | الصورة | 1280×720 · 25 إطار/ث | الشاشة | 60 هرتز | الترميز | AVC · صوت MP4A-LATM | فك الترميز | c2.goldfish.h264.decoder | سرعة الاتصال | — | الاحتياطي | 35 ث | التوقفات | 0 | إعادة الاتصال | 0 | إطارات ساقطة | 0 | البث 25 إطار والشاشة 60 هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات.
+17:58:08 screenshot 12-after-live-player.png 1080x2400
+17:58:08 == offline
