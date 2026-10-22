@@ -260,9 +260,22 @@ def t_languages():
             expect(n is not None, "%s: the top bar shows no %s" % (lang, nav[0]))
             go_tab(nav[-1], nav)
             time.sleep(2)
-            root = S.dump("settings-" + lang)
             S.shot("settings-" + lang)
-            expect("Language" in S.all_texts(root), "%s: no language row in the settings" % lang)
+            # Down the settings to the language row, then open its list.
+            found = False
+            for _ in range(24):
+                _, f = log_focus("settings-" + lang)
+                if f and "Language" in f:
+                    found = True
+                    break
+                key("DPAD_DOWN", pause=0.6)
+            expect(found, "%s: no language row in the settings" % lang)
+            key("DPAD_CENTER", pause=2)
+            root = S.dump("language-" + lang)
+            S.shot("language-" + lang)
+            texts = S.all_texts(root)
+            expect("English" in texts and "Español" in texts and "العربية" in texts, "%s: the language list is incomplete" % lang)
+            key("BACK", pause=1.5)
             go_tab(nav[1], nav)
             time.sleep(3)
             S.shot("live-" + lang)
