@@ -363,11 +363,14 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         if (!live || closed || !receiving) return
         val since = waitingSince
         if (since == 0L) return // not reading now (store full), nothing to watch
-        val limit = if (now - openedAt < LEARN_MS) {
+        val learned = if (now - openedAt < LEARN_MS) {
             STALL_MAX_MS
         } else {
             (maxOf(windowMax, previousMax) * 3).coerceIn(STALL_MIN_MS, STALL_MAX_MS)
         }
+        // With a big store there is time for the server to carry on by itself (and send what it
+        // owes, which a new connection would skip); with a small one, a new connection is better.
+        val limit = maxOf(learned, minOf(STALL_MAX_MS, Steadiness.reserveMs - 2_000L))
         if (now - since > limit) {
             receiving = false
             Log.i(TAG, "no data for ${now - since} ms (limit $limit ms): reconnecting")

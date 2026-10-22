@@ -216,6 +216,11 @@ class Prefs(context: Context) {
         get() = sp.getString("liveFormat2", "ts") ?: "ts"
         set(value) = sp.edit().putString("liveFormat2", value).apply()
 
+    /** Live channels: "auto" (store more after a stall), "fast" (open fastest) or "max" (store most). */
+    var liveSteady: String
+        get() = sp.getString("liveSteady", "auto") ?: "auto"
+        set(value) = sp.edit().putString("liveSteady", value).apply()
+
     /** On a TV, switch the screen to 50 or 60 Hz to match the channel, for even motion. */
     var matchFrameRate: Boolean
         get() = sp.getBoolean("matchFrameRate", false)

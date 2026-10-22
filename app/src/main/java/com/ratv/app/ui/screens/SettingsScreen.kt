@@ -88,6 +88,12 @@ private val bufferLabels = linkedMapOf(
     "180" to "يكمل 3 دقائق بدون إنترنت"
 )
 
+private val steadyLabels = linkedMapOf(
+    "auto" to "تلقائي (موصى به)",
+    "fast" to "سريع: القنوات تفتح أسرع",
+    "max" to "أقصى ثبات: للنت أو السيرفر الضعيف"
+)
+
 private val liveFormatLabels = linkedMapOf(
     "ts" to "TS (موصى به)",
     "hls" to "HLS",
@@ -120,6 +126,8 @@ fun SettingsScreen(nav: Navigator) {
     var showBuffer by remember { mutableStateOf(false) }
     var showFormat by remember { mutableStateOf(false) }
     var liveFormat by remember { mutableStateOf(repo.prefs.liveFormat) }
+    var showSteady by remember { mutableStateOf(false) }
+    var liveSteady by remember { mutableStateOf(repo.prefs.liveSteady) }
     var matchFrameRate by remember { mutableStateOf(repo.prefs.matchFrameRate) }
     val onTv = rememberIsTv()
     var showAbout by remember { mutableStateOf(false) }
@@ -250,6 +258,8 @@ fun SettingsScreen(nav: Navigator) {
             ValueRow("الاحتياطي ضد انقطاع النت", bufferLabels[bufferMode] ?: "يكمل دقيقة بدون إنترنت") { showBuffer = true }
             Divider()
             ValueRow("صيغة البث المباشر", liveFormatLabels[liveFormat] ?: "TS") { showFormat = true }
+            Divider()
+            ValueRow("ثبات البث المباشر", steadyLabels[liveSteady] ?: "تلقائي") { showSteady = true }
             if (onTv) {
                 Divider()
                 ToggleRow(
@@ -400,6 +410,45 @@ fun SettingsScreen(nav: Navigator) {
                             Text(lang.name, style = T.body(15.sp))
                         }
                     }
+                }
+            },
+            containerColor = RColors.Surface
+        )
+    }
+
+    if (showSteady) {
+        AlertDialog(
+            onDismissRequest = { showSteady = false },
+            confirmButton = { TextButton(onClick = { showSteady = false }) { Text("تم", color = RColors.Saffron) } },
+            title = { Text("ثبات البث المباشر", style = T.h2) },
+            text = {
+                Column {
+                    steadyLabels.forEach { (key, label) ->
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 48.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .tvClickable(RoundedCornerShape(10.dp), role = Role.RadioButton) {
+                                    liveSteady = key
+                                    repo.prefs.liveSteady = key
+                                    com.ratv.app.player.Steadiness.mode = key
+                                },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = liveSteady == key,
+                                onClick = null,
+                                colors = RadioButtonDefaults.colors(selectedColor = RColors.Saffron)
+                            )
+                            Spacer(Modifier.size(8.dp))
+                            Text(label, style = T.body(15.sp))
+                        }
+                    }
+                    Text(
+                        "مع «تلقائي»: إذا وقف البث، يجمع التطبيق احتياطياً أكبر قبل ما يكمل (5 ثوانٍ زيادة، لين 10)، فتقل التوقفات مع النت المتقطع أو السيرفر الضعيف، ويرجع لطبيعته بعد 10 دقائق بدون تقطيع. «أقصى ثبات» يجمع أكبر احتياطي دائماً، والقنوات تفتح أبطأ بثوانٍ.",
+                        style = T.caption
+                    )
                 }
             },
             containerColor = RColors.Surface
