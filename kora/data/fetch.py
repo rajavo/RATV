@@ -242,6 +242,50 @@ def probe_logo(sample):
     return out
 
 
+ARAB = {"AE", "QA", "EG", "MA", "KW", "IQ", "BH", "OM", "JO", "SA", "DZ", "TN", "LY", "SY", "LB", "PS", "SD"}
+
+
+def probe_other_sources(day):
+    """ESPN has no UAE, Qatari, Egyptian or Moroccan league: can other public sources be read from here?"""
+    out = {}
+    browser = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36"
+    url = "https://api.sofascore.com/api/v1/sport/football/scheduled-events/%s" % day.isoformat()
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": browser, "Accept": "application/json",
+                                                   "Referer": "https://www.sofascore.com/"})
+        with urllib.request.urlopen(req, timeout=25) as r:
+            data = json.loads(r.read().decode("utf-8"))
+        evs = data.get("events") or []
+        tours = {}
+        sample = None
+        for e in evs:
+            ut = (e.get("tournament") or {}).get("uniqueTournament") or {}
+            cat = (e.get("tournament") or {}).get("category") or {}
+            if cat.get("alpha2") in ARAB:
+                key = "%s %s (%s)" % (ut.get("id"), ut.get("name"), cat.get("alpha2"))
+                tours[key] = tours.get(key, 0) + 1
+                if sample is None:
+                    sample = {"home": (e.get("homeTeam") or {}).get("name"),
+                              "translations": (e.get("homeTeam") or {}).get("fieldTranslations")}
+        out["sofascore"] = {"ok": True, "events": len(evs), "arab_tournaments": tours, "sample": sample}
+    except urllib.error.HTTPError as e:
+        out["sofascore"] = {"ok": False, "http": e.code}
+    except Exception as e:
+        out["sofascore"] = {"ok": False, "error": str(e)}
+    url = "https://www.yallakora.com/match-center/?date=%d/%d/%d" % (day.month, day.day, day.year)
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": browser, "Accept": "text/html"})
+        with urllib.request.urlopen(req, timeout=25) as r:
+            html = r.read().decode("utf-8", "replace")
+        out["yallakora"] = {"ok": True, "bytes": len(html), "match_cards": html.count("liItem"),
+                            "leagues": re.findall(r'<h2>([^<]{3,60})</h2>', html)[:30]}
+    except urllib.error.HTTPError as e:
+        out["yallakora"] = {"ok": False, "http": e.code}
+    except Exception as e:
+        out["yallakora"] = {"ok": False, "error": str(e)}
+    return out
+
+
 def probe_range(league_id, first, last, per_day_ids):
     """Does ESPN answer a whole range of days in one request? (for the app's own fallback)"""
     url = SCOREBOARD % (league_id, first.strftime("%Y%m%d") + "-" + last.strftime("%Y%m%d"))
@@ -412,6 +456,7 @@ def main():
         "day_grouping": {"events": total, "same_utc_date": same_utc, "same_new_york_date": same_et},
         "logo_probe": logo_probe,
         "range_probe": probe_range("eng.1", days[1], days[-1], eng_ids),
+        "other_sources": probe_other_sources(today + dt.timedelta(days=1)),
         "espn_leagues": discover_leagues(),
         "teams": sorted(({"id": tid, "en": t["en"], "ar": t.get("ar"), "leagues": sorted(t["leagues"])}
                          for tid, t in teams.items()), key=lambda x: (x["leagues"], x["en"])),
