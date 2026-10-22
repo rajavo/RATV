@@ -1,11 +1,7 @@
 package com.ratv.app.ui.screens
 
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -80,8 +76,8 @@ fun SplashScreen(onNeedLogin: () -> Unit, onReady: () -> Unit, onAutoPlay: (Stri
     var shown by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { shown = true }
     val appear by animateFloatAsState(if (shown) 1f else 0f, tween(750, easing = FastOutSlowInEasing), label = "appear")
-    val breathing = rememberInfiniteTransition(label = "glow")
-    val pulse = breathing.animateFloat(0.55f, 1f, infiniteRepeatable(tween(1600, easing = FastOutSlowInEasing), RepeatMode.Reverse), label = "pulse")
+    // The light blooms once and stays: an endless animation would keep a weak TV busy while it loads.
+    val bloom by animateFloatAsState(if (shown) 1f else 0f, tween(1400, delayMillis = 150, easing = FastOutSlowInEasing), label = "bloom")
 
     Box(
         Modifier
@@ -89,14 +85,14 @@ fun SplashScreen(onNeedLogin: () -> Unit, onReady: () -> Unit, onAutoPlay: (Stri
             .screenBackground(),
         contentAlignment = Alignment.Center
     ) {
-        // A soft light behind the logo, breathing while the app loads.
+        // A soft light behind the logo.
         Box(
             Modifier
                 .size(if (tv) 460.dp else 340.dp)
                 .graphicsLayer {
-                    alpha = pulse.value * appear
-                    scaleX = 0.88f + 0.12f * pulse.value
-                    scaleY = 0.88f + 0.12f * pulse.value
+                    alpha = bloom
+                    scaleX = 0.7f + 0.3f * bloom
+                    scaleY = 0.7f + 0.3f * bloom
                 }
                 .background(Brush.radialGradient(listOf(RColors.Saffron.copy(alpha = 0.34f), Color.Transparent)), CircleShape)
         )
