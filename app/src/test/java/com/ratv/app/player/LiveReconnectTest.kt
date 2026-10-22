@@ -14,6 +14,18 @@ class LiveReconnectTest {
     }
 
     @Test
+    fun clockJumpsAreNoticed() {
+        val second = 90_000L
+        assertFalse(LiveReconnectingDataSource.clockJumped(100 * second + 3_600L, 100 * second)) // next picture
+        assertFalse(LiveReconnectingDataSource.clockJumped(105 * second, 100 * second)) // 5 s gap
+        assertTrue(LiveReconnectingDataSource.clockJumped(111 * second, 100 * second)) // 11 s ahead
+        assertTrue(LiveReconnectingDataSource.clockJumped(2 * second, 240 * second)) // back to the start
+        assertFalse(LiveReconnectingDataSource.clockJumped(99 * second + 50_000L, 100 * second)) // a frame back
+        val max = 0x1FFFFFFFFL
+        assertFalse(LiveReconnectingDataSource.clockJumped(1_000L, max - 2_000L)) // wraps after 26 h
+    }
+
+    @Test
     fun timeStampsWrapAroundAfter26Hours() {
         val max = 0x1FFFFFFFFL
         assertTrue(LiveReconnectingDataSource.newer(1_000L, max - 1_000L))

@@ -41,6 +41,10 @@ import java.util.concurrent.atomic.AtomicInteger
  * pictures were lost in between (the server jumped ahead) does it wait, at most 1.5 s, for a key
  * frame, so the picture is not smeared until the next one.
  *
+ * If the stream's clock itself jumps (the server restarted the channel's source, a common thing
+ * with IPTV), the player would take the new times for minutes of stored picture and freeze for
+ * good. Such a jump ends the load at that point, and the player starts the channel again.
+ *
  * Only live streams (no known length, not HLS) are handled this way.
  */
 @UnstableApi
@@ -98,6 +102,11 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
     private var pendingOffset = 0
     private var foundDts = 0L
     private var foundKey = false
+    private var foundPid = -1
+    private var videoPid = -1 // the one picture stream followed
+
+    /** The stream's clock jumped: the next read ends the load, so the player starts the channel again. */
+    private var timelineJumped = false
 
     override fun addTransferListener(transferListener: TransferListener) {
         listeners.add(transferListener)
@@ -114,6 +123,8 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         incomingFill = 0
         lastVideoDts = -1L
         keyFramesMarked = false
+        timelineJumped = false
+        videoPid = -1
         val source = newSource()
         val length = source.open(dataSpec)
         current = source
@@ -134,13 +145,13 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
 
     override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
         if (length == 0) return 0
+        if (timelineJumped) throw IOException(CLOCK_JUMPED)
         pending?.let { p ->
             val n = minOf(length, p.size - pendingOffset)
             System.arraycopy(p, pendingOffset, buffer, offset, n)
             pendingOffset += n
             if (pendingOffset >= p.size) pending = null
-            track(buffer, offset, n)
-            return n
+            return deliver(buffer, offset, n)
         }
         var failures = 0
         while (true) {
@@ -160,12 +171,10 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
                 if (n > 0) {
                     if (!live) return n
                     noteWait(SystemClock.elapsedRealtime() - started)
-                    if (!joining) {
-                        track(buffer, offset, n)
-                        return n
-                    }
+                    if (!joining) return deliver(buffer, offset, n)
                     val out = join(n) ?: continue // still in what the player already has
                     splicing = false
+                    if (timelineJumped) throw IOException(CLOCK_JUMPED)
                     if (out.isEmpty()) continue
                     val k = minOf(length, out.size)
                     System.arraycopy(out, 0, buffer, offset, k)
@@ -173,8 +182,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
                         pending = out
                         pendingOffset = k
                     }
-                    track(buffer, offset, k)
-                    return k
+                    return deliver(buffer, offset, k)
                 }
                 if (n != LOST && (n != C.RESULT_END_OF_INPUT || !live)) return n
                 receiving = false
@@ -206,9 +214,21 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         }
     }
 
-    /** Follows the packets passed to the player: time of the last picture, and whether key frames are marked. */
-    private fun track(buf: ByteArray, off: Int, n: Int) {
-        if (!live) return
+    /** Passes [n] bytes already in [buffer], up to a jump of the stream's clock (then the load ends). */
+    private fun deliver(buffer: ByteArray, offset: Int, n: Int): Int {
+        val ok = track(buffer, offset, n)
+        if (ok < n) pending = null
+        if (ok > 0) return ok
+        throw IOException(CLOCK_JUMPED)
+    }
+
+    /**
+     * Follows the packets passed to the player (time of the last picture, whether key frames are
+     * marked) and returns how many of the [n] bytes keep the stream's clock: all of them, or those
+     * before a packet where the clock jumps.
+     */
+    private fun track(buf: ByteArray, off: Int, n: Int): Int {
+        if (!live) return n
         var i = off
         val end = off + n
         while (i < end) {
@@ -216,18 +236,26 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
                 i++
                 continue
             }
+            val packetStart = i - deliveredFill
             val k = minOf(TS_PACKET - deliveredFill, end - i)
             System.arraycopy(buf, i, delivered, deliveredFill, k)
             deliveredFill += k
             i += k
             if (deliveredFill == TS_PACKET) {
                 deliveredFill = 0
-                if (videoPesStart(delivered)) {
+                if (videoPesStart(delivered) && (videoPid < 0 || foundPid == videoPid)) {
+                    videoPid = foundPid
+                    if (lastVideoDts >= 0L && clockJumped(foundDts, lastVideoDts)) {
+                        timelineJumped = true
+                        Log.i(TAG, "the stream's clock jumped: starting the channel again")
+                        return maxOf(0, packetStart - off)
+                    }
                     lastVideoDts = foundDts
                     if (foundKey) keyFramesMarked = true
                 }
             }
         }
+        return n
     }
 
     /**
@@ -247,9 +275,23 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
             i += k
             if (incomingFill < TS_PACKET) break
             incomingFill = 0
-            if (videoPesStart(incoming) && newer(foundDts, lastVideoDts)) {
+            val picture = videoPesStart(incoming) && foundPid == videoPid
+            if (picture && !newer(foundDts, lastVideoDts) &&
+                distance(foundDts, lastVideoDts) > OVERLAP_LIMIT
+            ) {
+                // Far behind what was shown: the server restarted the channel on another clock.
+                timelineJumped = true
+                Log.i(TAG, "the new connection runs on another clock: starting the channel again")
+                return ByteArray(0)
+            }
+            if (picture && newer(foundDts, lastVideoDts)) {
+                if (distance(foundDts, lastVideoDts) > FORWARD_LIMIT) {
+                    timelineJumped = true
+                    Log.i(TAG, "the new connection runs on another clock: starting the channel again")
+                    return ByteArray(0)
+                }
                 // The very next picture joins seamlessly; after a gap, wait a little for a key frame.
-                val continuous = ((foundDts - lastVideoDts) and 0x1FFFFFFFFL) <= CONTINUOUS_GAP
+                val continuous = distance(foundDts, lastVideoDts) <= CONTINUOUS_GAP
                 val waitForKey = !continuous && keyFramesMarked &&
                     SystemClock.elapsedRealtime() - spliceStartedAt < KEY_WAIT_MS
                 if (foundKey || !waitForKey) {
@@ -263,8 +305,9 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
             spliceDropped += TS_PACKET
         }
         if (spliceDropped > GIVE_UP_BYTES || SystemClock.elapsedRealtime() - spliceStartedAt > GIVE_UP_MS) {
-            // The server restarted the channel on another timeline: carry on from here.
-            Log.i(TAG, "could not join the new connection after $spliceDropped bytes: carrying on")
+            // Nothing newer came: the server restarted the channel on another clock. Start it again.
+            Log.i(TAG, "could not join the new connection after $spliceDropped bytes: starting the channel again")
+            timelineJumped = true
             return ByteArray(0)
         }
         return null
@@ -290,6 +333,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         // The decode time (DTS) when given, as it grows picture after picture; else the PTS.
         foundDts = timeStamp(p, if (flags == 0xC0) i + 14 else i + 9)
         foundKey = key
+        foundPid = ((p[1].toInt() and 0x1F) shl 8) or (p[2].toInt() and 0xFF)
         return true
     }
 
@@ -359,6 +403,11 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         private const val LEARN_MS = 12_000L
         private const val KEY_WAIT_MS = 1_500L
         private const val CONTINUOUS_GAP = 45_000L // 0.5 s in 90 kHz ticks
+        private const val BACK_LIMIT = 90_000L // the clock going back more than 1 s
+        private const val FORWARD_LIMIT = 900_000L // or jumping ahead more than 10 s
+        private const val OVERLAP_LIMIT = 5_400_000L // a new connection more than 60 s behind
+        private const val CLOCK_JUMPED = "The live stream's clock jumped"
+        private const val MASK33 = 0x1FFFFFFFFL
         private const val GIVE_UP_MS = 5_000L
         private const val GIVE_UP_BYTES = 16L shl 20
         private const val TS_PACKET = 188
@@ -368,6 +417,16 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
 
         /** Reconnections of live channels since the app started (shown in the stream information). */
         val reconnects = AtomicInteger()
+
+        /** Distance between two 33-bit time stamps, whichever comes first. */
+        fun distance(a: Long, b: Long): Long {
+            val d = (a - b) and MASK33
+            return if (d < 0x100000000L) d else MASK33 + 1 - d
+        }
+
+        /** True when [dts] is not the next picture's time after [last]: back over 1 s, or ahead over 10 s. */
+        fun clockJumped(dts: Long, last: Long): Boolean =
+            if (newer(dts, last)) distance(dts, last) > FORWARD_LIMIT else distance(dts, last) > BACK_LIMIT
 
         /** True when the 33-bit time stamp [pts] comes after [last]. */
         fun newer(pts: Long, last: Long): Boolean {
