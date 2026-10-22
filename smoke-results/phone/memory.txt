@@ -1,237 +1,350 @@
-00:57:01 host used 4940 MB of 15983 guest avail 1454 MB
-00:57:06 host used 4923 MB of 15983 guest avail 1586 MB
-00:57:11 host used 4953 MB of 15983 guest avail 1529 MB
-00:57:16 host used 4957 MB of 15983 guest avail 1412 MB
-00:57:21 host used 4959 MB of 15983 guest avail 1418 MB
-00:57:26 host used 4964 MB of 15983 guest avail 1348 MB
-00:57:31 host used 4958 MB of 15983 guest avail 1448 MB
-00:57:36 host used 4960 MB of 15983 guest avail 1452 MB
-00:57:41 host used 4962 MB of 15983 guest avail 1438 MB
-00:57:46 host used 4979 MB of 15983 guest avail 1422 MB
-00:57:51 host used 5025 MB of 15983 guest avail 1409 MB
-00:57:56 host used 5008 MB of 15983 guest avail 1428 MB
-00:58:01 host used 5078 MB of 15983 guest avail 1446 MB
-00:58:06 host used 5078 MB of 15983 guest avail 1478 MB
-00:58:11 host used 5076 MB of 15983 guest avail 1440 MB
-00:58:17 host used 5077 MB of 15983 guest avail 1477 MB
-00:58:22 host used 5080 MB of 15983 guest avail 1494 MB
-00:58:27 host used 5080 MB of 15983 guest avail 1484 MB
-00:58:32 host used 5080 MB of 15983 guest avail 1495 MB
-00:58:37 host used 5081 MB of 15983 guest avail 1468 MB
-00:58:42 host used 5081 MB of 15983 guest avail 1453 MB
-00:58:47 host used 5082 MB of 15983 guest avail 1504 MB
-00:58:52 host used 5083 MB of 15983 guest avail 1521 MB
-00:58:57 host used 5083 MB of 15983 guest avail 1452 MB
-00:59:02 host used 5083 MB of 15983 guest avail 1453 MB
-00:59:07 host used 5086 MB of 15983 guest avail 1508 MB
-00:59:12 host used 5193 MB of 15983 guest avail 1449 MB
-00:59:17 host used 5193 MB of 15983 guest avail 1456 MB
-00:59:22 host used 5213 MB of 15983 guest avail 1400 MB
-00:59:27 host used 5229 MB of 15983 guest avail 1391 MB
-00:59:32 host used 5254 MB of 15983 guest avail 1399 MB
-00:59:37 host used 5253 MB of 15983 guest avail 1406 MB
-00:59:42 host used 5252 MB of 15983 guest avail 1465 MB
-00:59:47 host used 5250 MB of 15983 guest avail 1452 MB
-00:59:52 host used 5250 MB of 15983 guest avail 1450 MB
-00:59:57 host used 5251 MB of 15983 guest avail 1450 MB
-01:00:02 host used 5251 MB of 15983 guest avail 1451 MB
-01:00:07 host used 5250 MB of 15983 guest avail 1470 MB
-01:00:12 host used 5265 MB of 15983 guest avail 1459 MB
-01:00:17 host used 5273 MB of 15983 guest avail 1464 MB
-01:00:22 host used 5272 MB of 15983 guest avail 1459 MB
-01:00:27 host used 5272 MB of 15983 guest avail 1456 MB
-01:00:33 host used 5272 MB of 15983 guest avail 1425 MB
-01:00:38 host used 5272 MB of 15983 guest avail 1492 MB
-01:00:43 host used 5272 MB of 15983 guest avail 1499 MB
-01:00:48 host used 5272 MB of 15983 guest avail 1487 MB
-01:00:53 host used 5271 MB of 15983 guest avail 1491 MB
-01:00:58 host used 5272 MB of 15983 guest avail 1463 MB
-01:01:03 host used 5272 MB of 15983 guest avail 1460 MB
-01:01:08 host used 5272 MB of 15983 guest avail 1459 MB
-01:01:13 host used 5272 MB of 15983 guest avail 1458 MB
-01:01:18 host used 5273 MB of 15983 guest avail 1458 MB
-01:01:23 host used 5273 MB of 15983 guest avail 1457 MB
-01:01:28 host used 5271 MB of 15983 guest avail 1457 MB
-01:01:33 host used 5271 MB of 15983 guest avail 1456 MB
-01:01:38 host used 5286 MB of 15983 guest avail 1409 MB
-01:01:43 host used 5286 MB of 15983 guest avail 1462 MB
-01:01:48 host used 5284 MB of 15983 guest avail 1461 MB
-01:01:53 host used 5304 MB of 15983 guest avail 1451 MB
-01:01:58 host used 5304 MB of 15983 guest avail 1447 MB
-01:02:03 host used 5299 MB of 15983 guest avail 1498 MB
-01:02:09 host used 5299 MB of 15983 guest avail 1494 MB
-01:02:14 host used 5297 MB of 15983 guest avail 1486 MB
-01:02:19 host used 5297 MB of 15983 guest avail 1484 MB
-01:02:24 host used 5296 MB of 15983 guest avail 1458 MB
-01:02:29 host used 5297 MB of 15983 guest avail 1457 MB
-01:02:34 host used 5297 MB of 15983 guest avail 1454 MB
-01:02:39 host used 5298 MB of 15983 guest avail 1453 MB
-01:02:44 host used 5298 MB of 15983 guest avail 1453 MB
-01:02:49 host used 5298 MB of 15983 guest avail 1437 MB
-01:02:54 host used 5298 MB of 15983 guest avail 1367 MB
-01:02:59 host used 5298 MB of 15983 guest avail 1365 MB
-01:03:04 host used 5298 MB of 15983 guest avail 1385 MB
-01:03:09 host used 5299 MB of 15983 guest avail 1393 MB
-01:03:14 host used 5299 MB of 15983 guest avail 1379 MB
-01:03:19 host used 5299 MB of 15983 guest avail 1429 MB
-01:03:24 host used 5300 MB of 15983 guest avail 1453 MB
-01:03:29 host used 5302 MB of 15983 guest avail 1454 MB
-01:03:34 host used 5307 MB of 15983 guest avail 1460 MB
-01:03:39 host used 5306 MB of 15983 guest avail 1473 MB
-01:03:44 host used 5307 MB of 15983 guest avail 1472 MB
-01:03:49 host used 5308 MB of 15983 guest avail 1446 MB
-01:03:54 host used 5307 MB of 15983 guest avail 1486 MB
-01:03:59 host used 5308 MB of 15983 guest avail 1428 MB
-01:04:04 host used 5308 MB of 15983 guest avail 1428 MB
-01:04:09 host used 5307 MB of 15983 guest avail 1428 MB
-01:04:15 host used 5306 MB of 15983 guest avail 1428 MB
-01:04:20 host used 5307 MB of 15983 guest avail 1427 MB
-01:04:25 host used 5309 MB of 15983 guest avail 1426 MB
-01:04:30 host used 5308 MB of 15983 guest avail 1426 MB
-01:04:35 host used 5307 MB of 15983 guest avail 1423 MB
-01:04:40 host used 5309 MB of 15983 guest avail 1409 MB
-01:04:45 host used 5310 MB of 15983 guest avail 1457 MB
-01:04:50 host used 5310 MB of 15983 guest avail 1456 MB
-01:04:55 host used 5315 MB of 15983 guest avail 1463 MB
-01:05:00 host used 5318 MB of 15983 guest avail 1495 MB
-01:05:05 host used 5316 MB of 15983 guest avail 1487 MB
-01:05:10 host used 5317 MB of 15983 guest avail 1487 MB
-01:05:15 host used 5318 MB of 15983 guest avail 1463 MB
-01:05:20 host used 5318 MB of 15983 guest avail 1497 MB
-01:05:25 host used 5318 MB of 15983 guest avail 1456 MB
-01:05:30 host used 5319 MB of 15983 guest avail 1472 MB
-01:05:35 host used 5319 MB of 15983 guest avail 1488 MB
-01:05:40 host used 5318 MB of 15983 guest avail 1460 MB
-01:05:45 host used 5317 MB of 15983 guest avail 1457 MB
-01:05:50 host used 5320 MB of 15983 guest avail 1457 MB
-01:05:55 host used 5316 MB of 15983 guest avail 1457 MB
-01:06:00 host used 5318 MB of 15983 guest avail 1457 MB
-01:06:05 host used 5318 MB of 15983 guest avail 1457 MB
-01:06:10 host used 5318 MB of 15983 guest avail 1456 MB
-01:06:15 host used 5319 MB of 15983 guest avail 1484 MB
-01:06:20 host used 5320 MB of 15983 guest avail 1482 MB
-01:06:25 host used 5321 MB of 15983 guest avail 1481 MB
-01:06:31 host used 5336 MB of 15983 guest avail 1485 MB
-01:06:36 host used 5335 MB of 15983 guest avail 1445 MB
-01:06:41 host used 5331 MB of 15983 guest avail 1428 MB
-01:06:46 host used 5355 MB of 15983 guest avail 1449 MB
-01:06:51 host used 5354 MB of 15983 guest avail 1584 MB
-01:06:56 host used 5371 MB of 15983 guest avail 1619 MB
-01:07:01 host used 5367 MB of 15983 guest avail 1576 MB
-01:07:06 host used 5363 MB of 15983 guest avail 1569 MB
-01:07:11 host used 5363 MB of 15983 guest avail 1574 MB
-01:07:16 host used 5364 MB of 15983 guest avail 1582 MB
-01:07:21 host used 5364 MB of 15983 guest avail 1538 MB
-01:07:26 host used 5365 MB of 15983 guest avail 1579 MB
-01:07:31 host used 5364 MB of 15983 guest avail 1578 MB
-01:07:36 host used 5365 MB of 15983 guest avail 1544 MB
-01:07:41 host used 5367 MB of 15983 guest avail 1567 MB
-01:07:46 host used 5367 MB of 15983 guest avail 1567 MB
-01:07:51 host used 5367 MB of 15983 guest avail 1570 MB
-01:07:56 host used 5368 MB of 15983 guest avail 1610 MB
-01:08:01 host used 5368 MB of 15983 guest avail 1609 MB
-01:08:06 host used 5386 MB of 15983 guest avail 1582 MB
-01:08:11 host used 5385 MB of 15983 guest avail 1577 MB
-01:08:16 host used 5382 MB of 15983 guest avail 1569 MB
-01:08:21 host used 5381 MB of 15983 guest avail 1579 MB
-01:08:26 host used 5381 MB of 15983 guest avail 1576 MB
-01:08:31 host used 5384 MB of 15983 guest avail 1568 MB
-01:08:37 host used 5382 MB of 15983 guest avail 1531 MB
-01:08:42 host used 5383 MB of 15983 guest avail 1532 MB
-01:08:47 host used 5383 MB of 15983 guest avail 1569 MB
-01:08:52 host used 5384 MB of 15983 guest avail 1561 MB
-01:08:57 host used 5383 MB of 15983 guest avail 1553 MB
-01:09:02 host used 5425 MB of 15983 guest avail 1587 MB
-01:09:07 host used 5405 MB of 15983 guest avail 1591 MB
-01:09:12 host used 5393 MB of 15983 guest avail 1576 MB
-01:09:17 host used 5390 MB of 15983 guest avail 1575 MB
-01:09:22 host used 5388 MB of 15983 guest avail 1569 MB
-01:09:27 host used 5388 MB of 15983 guest avail 1557 MB
-01:09:32 host used 5388 MB of 15983 guest avail 1588 MB
-01:09:37 host used 5386 MB of 15983 guest avail 1578 MB
-01:09:42 host used 5387 MB of 15983 guest avail 1590 MB
-01:09:47 host used 5388 MB of 15983 guest avail 1590 MB
-01:09:52 host used 5387 MB of 15983 guest avail 1589 MB
-01:09:57 host used 5388 MB of 15983 guest avail 1589 MB
-01:10:02 host used 5389 MB of 15983 guest avail 1599 MB
-01:10:07 host used 5390 MB of 15983 guest avail 1584 MB
-01:10:12 host used 5390 MB of 15983 guest avail 1577 MB
-01:10:17 host used 5389 MB of 15983 guest avail 1572 MB
-01:10:23 host used 5396 MB of 15983 guest avail 1569 MB
-01:10:28 host used 5396 MB of 15983 guest avail 1564 MB
-01:10:33 host used 5395 MB of 15983 guest avail 1575 MB
-01:10:38 host used 5395 MB of 15983 guest avail 1568 MB
-01:10:43 host used 5395 MB of 15983 guest avail 1585 MB
-01:10:48 host used 5394 MB of 15983 guest avail 1583 MB
-01:10:53 host used 5395 MB of 15983 guest avail 1569 MB
-01:10:58 host used 5395 MB of 15983 guest avail 1564 MB
-01:11:03 host used 5393 MB of 15983 guest avail 1504 MB
-01:11:08 host used 5395 MB of 15983 guest avail 1517 MB
-01:11:13 host used 5395 MB of 15983 guest avail 1547 MB
-01:11:18 host used 5395 MB of 15983 guest avail 1517 MB
-01:11:23 host used 5396 MB of 15983 guest avail 1539 MB
-01:11:28 host used 5396 MB of 15983 guest avail 1545 MB
-01:11:33 host used 5397 MB of 15983 guest avail 1540 MB
-01:11:38 host used 5397 MB of 15983 guest avail 1542 MB
-01:11:44 host used 5396 MB of 15983 guest avail 1540 MB
-01:11:49 host used 5396 MB of 15983 guest avail 1540 MB
-01:11:54 host used 5396 MB of 15983 guest avail 1570 MB
-01:11:59 host used 5395 MB of 15983 guest avail 1577 MB
-01:12:04 host used 5397 MB of 15983 guest avail 1534 MB
-01:12:09 host used 5396 MB of 15983 guest avail 1535 MB
-01:12:14 host used 5413 MB of 15983 guest avail 1577 MB
-01:12:19 host used 5421 MB of 15983 guest avail 1537 MB
-01:12:24 host used 5420 MB of 15983 guest avail 1529 MB
-01:12:29 host used 5419 MB of 15983 guest avail 1567 MB
-01:12:34 host used 5418 MB of 15983 guest avail 1566 MB
-01:12:39 host used 5418 MB of 15983 guest avail 1538 MB
-01:12:44 host used 5418 MB of 15983 guest avail 1541 MB
-01:12:49 host used 5417 MB of 15983 guest avail 1593 MB
-01:12:54 host used 5431 MB of 15983 guest avail 1592 MB
-01:12:59 host used 5429 MB of 15983 guest avail 1585 MB
-01:13:04 host used 5428 MB of 15983 guest avail 1573 MB
-01:13:09 host used 5427 MB of 15983 guest avail 1568 MB
-01:13:14 host used 5427 MB of 15983 guest avail 1513 MB
-01:13:19 host used 5427 MB of 15983 guest avail 1589 MB
-01:13:24 host used 5428 MB of 15983 guest avail 1609 MB
-01:13:29 host used 5428 MB of 15983 guest avail 1563 MB
-01:13:34 host used 5428 MB of 15983 guest avail 1565 MB
-01:13:39 host used 5429 MB of 15983 guest avail 1597 MB
-01:13:44 host used 5428 MB of 15983 guest avail 1588 MB
-01:13:50 host used 5428 MB of 15983 guest avail 1582 MB
-01:13:55 host used 5429 MB of 15983 guest avail 1553 MB
-01:14:00 host used 5429 MB of 15983 guest avail 1601 MB
-01:14:05 host used 5430 MB of 15983 guest avail 1595 MB
-01:14:10 host used 5430 MB of 15983 guest avail 1606 MB
-01:14:15 host used 5429 MB of 15983 guest avail 1634 MB
-01:14:20 host used 5430 MB of 15983 guest avail 1569 MB
-01:14:25 host used 5430 MB of 15983 guest avail 1586 MB
-01:14:30 host used 5431 MB of 15983 guest avail 1625 MB
-01:14:35 host used 5430 MB of 15983 guest avail 1618 MB
-01:14:40 host used 5441 MB of 15983 guest avail 1593 MB
-01:14:45 host used 5442 MB of 15983 guest avail 1649 MB
-01:14:50 host used 5504 MB of 15983 guest avail 1686 MB
-01:14:55 host used 5516 MB of 15983 guest avail 1722 MB
-01:15:00 host used 5538 MB of 15983 guest avail 1743 MB
-01:15:05 host used 5535 MB of 15983 guest avail 1689 MB
-01:15:10 host used 5530 MB of 15983 guest avail 1732 MB
-01:15:15 host used 5526 MB of 15983 guest avail 1697 MB
-01:15:20 host used 5525 MB of 15983 guest avail 1724 MB
-01:15:25 host used 5525 MB of 15983 guest avail 1693 MB
-01:15:30 host used 5526 MB of 15983 guest avail 1693 MB
-01:15:35 host used 5525 MB of 15983 guest avail 1732 MB
-01:15:40 host used 5525 MB of 15983 guest avail 1715 MB
-01:15:45 host used 5526 MB of 15983 guest avail 1698 MB
-01:15:50 host used 5559 MB of 15983 guest avail 1644 MB
-01:15:55 host used 5555 MB of 15983 guest avail 1644 MB
-01:16:00 host used 5607 MB of 15983 guest avail 1650 MB
-01:16:05 host used 5606 MB of 15983 guest avail 1652 MB
-01:16:11 host used 5599 MB of 15983 guest avail 1681 MB
-01:16:16 host used 5596 MB of 15983 guest avail 1650 MB
-01:16:21 host used 5595 MB of 15983 guest avail 1646 MB
-01:16:26 host used 5595 MB of 15983 guest avail 1656 MB
-01:16:31 host used 5596 MB of 15983 guest avail 1685 MB
-01:16:36 host used 5595 MB of 15983 guest avail 1695 MB
-01:16:41 host used 5597 MB of 15983 guest avail 1711 MB
-01:16:46 host used 5596 MB of 15983 guest avail 1662 MB
-01:16:51 host used 5497 MB of 15983 
+10:16:57 host used 5083 MB of 15987 guest avail 1565 MB
+10:17:02 host used 5132 MB of 15987 guest avail 1504 MB
+10:17:07 host used 5124 MB of 15987 guest avail 1341 MB
+10:17:12 host used 5125 MB of 15987 guest avail 1364 MB
+10:17:17 host used 5122 MB of 15987 guest avail 1378 MB
+10:17:22 host used 5117 MB of 15987 guest avail 1348 MB
+10:17:27 host used 5118 MB of 15987 guest avail 1330 MB
+10:17:32 host used 5122 MB of 15987 guest avail 1351 MB
+10:17:37 host used 5122 MB of 15987 guest avail 1448 MB
+10:17:42 host used 5120 MB of 15987 guest avail 1440 MB
+10:17:47 host used 5149 MB of 15987 guest avail 1356 MB
+10:17:52 host used 5187 MB of 15987 guest avail 1323 MB
+10:17:57 host used 5196 MB of 15987 guest avail 1362 MB
+10:18:02 host used 5235 MB of 15987 guest avail 1392 MB
+10:18:07 host used 5211 MB of 15987 guest avail 1437 MB
+10:18:12 host used 5229 MB of 15987 guest avail 1389 MB
+10:18:17 host used 5226 MB of 15987 guest avail 1404 MB
+10:18:22 host used 5224 MB of 15987 guest avail 1452 MB
+10:18:27 host used 5223 MB of 15987 guest avail 1414 MB
+10:18:32 host used 5222 MB of 15987 guest avail 1441 MB
+10:18:38 host used 5226 MB of 15987 guest avail 1426 MB
+10:18:43 host used 5226 MB of 15987 guest avail 1424 MB
+10:18:48 host used 5227 MB of 15987 guest avail 1450 MB
+10:18:53 host used 5228 MB of 15987 guest avail 1449 MB
+10:18:58 host used 5228 MB of 15987 guest avail 1433 MB
+10:19:03 host used 5227 MB of 15987 guest avail 1427 MB
+10:19:08 host used 5227 MB of 15987 guest avail 1449 MB
+10:19:13 host used 5331 MB of 15987 guest avail 1399 MB
+10:19:18 host used 5334 MB of 15987 guest avail 1393 MB
+10:19:23 host used 5345 MB of 15987 guest avail 1383 MB
+10:19:28 host used 5378 MB of 15987 guest avail 1369 MB
+10:19:33 host used 5401 MB of 15987 guest avail 1412 MB
+10:19:38 host used 5395 MB of 15987 guest avail 1394 MB
+10:19:43 host used 5393 MB of 15987 guest avail 1355 MB
+10:19:48 host used 5390 MB of 15987 guest avail 1419 MB
+10:19:53 host used 5433 MB of 15987 guest avail 1389 MB
+10:19:59 host used 5431 MB of 15987 guest avail 1389 MB
+10:20:04 host used 5426 MB of 15987 guest avail 1386 MB
+10:20:09 host used 5422 MB of 15987 guest avail 1390 MB
+10:20:14 host used 5439 MB of 15987 guest avail 1390 MB
+10:20:19 host used 5443 MB of 15987 guest avail 1390 MB
+10:20:24 host used 5442 MB of 15987 guest avail 1401 MB
+10:20:29 host used 5444 MB of 15987 guest avail 1402 MB
+10:20:34 host used 5449 MB of 15987 guest avail 1396 MB
+10:20:39 host used 5461 MB of 15987 guest avail 1388 MB
+10:20:44 host used 5459 MB of 15987 guest avail 1446 MB
+10:20:49 host used 5459 MB of 15987 guest avail 1476 MB
+10:20:54 host used 5458 MB of 15987 guest avail 1444 MB
+10:20:59 host used 5467 MB of 15987 guest avail 1444 MB
+10:21:04 host used 5464 MB of 15987 guest avail 1441 MB
+10:21:09 host used 5465 MB of 15987 guest avail 1437 MB
+10:21:14 host used 5463 MB of 15987 guest avail 1435 MB
+10:21:20 host used 5462 MB of 15987 guest avail 1435 MB
+10:21:25 host used 5463 MB of 15987 guest avail 1434 MB
+10:21:30 host used 5464 MB of 15987 guest avail 1424 MB
+10:21:35 host used 5463 MB of 15987 guest avail 1424 MB
+10:21:40 host used 5463 MB of 15987 guest avail 1423 MB
+10:21:45 host used 5463 MB of 15987 guest avail 1407 MB
+10:21:50 host used 5463 MB of 15987 guest avail 1435 MB
+10:21:55 host used 5464 MB of 15987 guest avail 1456 MB
+10:22:00 host used 5464 MB of 15987 guest avail 1471 MB
+10:22:05 host used 5476 MB of 15987 guest avail 1437 MB
+10:22:10 host used 5471 MB of 15987 guest avail 1479 MB
+10:22:15 host used 5473 MB of 15987 guest avail 1474 MB
+10:22:20 host used 5474 MB of 15987 guest avail 1466 MB
+10:22:25 host used 5474 MB of 15987 guest avail 1482 MB
+10:22:30 host used 5473 MB of 15987 guest avail 1457 MB
+10:22:35 host used 5473 MB of 15987 guest avail 1442 MB
+10:22:41 host used 5474 MB of 15987 guest avail 1383 MB
+10:22:46 host used 5474 MB of 15987 guest avail 1358 MB
+10:22:51 host used 5474 MB of 15987 guest avail 1365 MB
+10:22:56 host used 5475 MB of 15987 guest avail 1364 MB
+10:23:01 host used 5474 MB of 15987 guest avail 1363 MB
+10:23:06 host used 5474 MB of 15987 guest avail 1362 MB
+10:23:11 host used 5474 MB of 15987 guest avail 1362 MB
+10:23:16 host used 5476 MB of 15987 guest avail 1362 MB
+10:23:21 host used 5476 MB of 15987 guest avail 1339 MB
+10:23:26 host used 5477 MB of 15987 guest avail 1347 MB
+10:23:31 host used 5477 MB of 15987 guest avail 1352 MB
+10:23:36 host used 5493 MB of 15987 guest avail 1399 MB
+10:23:41 host used 5498 MB of 15987 guest avail 1405 MB
+10:23:46 host used 5496 MB of 15987 guest avail 1431 MB
+10:23:51 host used 5493 MB of 15987 guest avail 1474 MB
+10:23:57 host used 5494 MB of 15987 guest avail 1490 MB
+10:24:02 host used 5491 MB of 15987 guest avail 1488 MB
+10:24:07 host used 5493 MB of 15987 guest avail 1494 MB
+10:24:12 host used 5494 MB of 15987 guest avail 1489 MB
+10:24:17 host used 5494 MB of 15987 guest avail 1458 MB
+10:24:22 host used 5518 MB of 15987 guest avail 1437 MB
+10:24:27 host used 5518 MB of 15987 guest avail 1436 MB
+10:24:32 host used 5517 MB of 15987 guest avail 1435 MB
+10:24:37 host used 5517 MB of 15987 guest avail 1435 MB
+10:24:42 host used 5516 MB of 15987 guest avail 1438 MB
+10:24:47 host used 5515 MB of 15987 guest avail 1442 MB
+10:24:52 host used 5515 MB of 15987 guest avail 1439 MB
+10:24:57 host used 5534 MB of 15987 guest avail 1457 MB
+10:25:03 host used 5531 MB of 15987 guest avail 1429 MB
+10:25:08 host used 5527 MB of 15987 guest avail 1429 MB
+10:25:13 host used 5526 MB of 15987 guest avail 1397 MB
+10:25:18 host used 5527 MB of 15987 guest avail 1454 MB
+10:25:23 host used 5527 MB of 15987 guest avail 1431 MB
+10:25:28 host used 5528 MB of 15987 guest avail 1473 MB
+10:25:33 host used 5528 MB of 15987 guest avail 1428 MB
+10:25:38 host used 5528 MB of 15987 guest avail 1461 MB
+10:25:43 host used 5530 MB of 15987 guest avail 1458 MB
+10:25:48 host used 5529 MB of 15987 guest avail 1459 MB
+10:25:53 host used 5527 MB of 15987 guest avail 1431 MB
+10:25:58 host used 5528 MB of 15987 guest avail 1416 MB
+10:26:03 host used 5529 MB of 15987 guest avail 1416 MB
+10:26:08 host used 5529 MB of 15987 guest avail 1415 MB
+10:26:13 host used 5528 MB of 15987 guest avail 1415 MB
+10:26:18 host used 5528 MB of 15987 guest avail 1414 MB
+10:26:23 host used 5529 MB of 15987 guest avail 1414 MB
+10:26:28 host used 5531 MB of 15987 guest avail 1413 MB
+10:26:34 host used 5530 MB of 15987 guest avail 1401 MB
+10:26:39 host used 5530 MB of 15987 guest avail 1431 MB
+10:26:44 host used 5530 MB of 15987 guest avail 1429 MB
+10:26:49 host used 5529 MB of 15987 guest avail 1522 MB
+10:26:54 host used 5531 MB of 15987 guest avail 1609 MB
+10:26:59 host used 5532 MB of 15987 guest avail 1563 MB
+10:27:04 host used 5532 MB of 15987 guest avail 1585 MB
+10:27:09 host used 5531 MB of 15987 guest avail 1604 MB
+10:27:14 host used 5531 MB of 15987 guest avail 1637 MB
+10:27:19 host used 5531 MB of 15987 guest avail 1597 MB
+10:27:24 host used 5532 MB of 15987 guest avail 1628 MB
+10:27:29 host used 5532 MB of 15987 guest avail 1617 MB
+10:27:34 host used 5531 MB of 15987 guest avail 1601 MB
+10:27:39 host used 5530 MB of 15987 guest avail 1586 MB
+10:27:44 host used 5532 MB of 15987 guest avail 1586 MB
+10:27:49 host used 5532 MB of 15987 guest avail 1585 MB
+10:27:54 host used 5531 MB of 15987 guest avail 1584 MB
+10:27:59 host used 5532 MB of 15987 guest avail 1597 MB
+10:28:05 host used 5532 MB of 15987 guest avail 1597 MB
+10:28:10 host used 5532 MB of 15987 guest avail 1591 MB
+10:28:15 host used 5532 MB of 15987 guest avail 1591 MB
+10:28:20 host used 5532 MB of 15987 guest avail 1590 MB
+10:28:25 host used 5533 MB of 15987 guest avail 1590 MB
+10:28:30 host used 5535 MB of 15987 guest avail 1590 MB
+10:28:35 host used 5534 MB of 15987 guest avail 1590 MB
+10:28:40 host used 5535 MB of 15987 guest avail 1590 MB
+10:28:45 host used 5536 MB of 15987 guest avail 1590 MB
+10:28:50 host used 5535 MB of 15987 guest avail 1590 MB
+10:28:55 host used 5535 MB of 15987 guest avail 1590 MB
+10:29:00 host used 5537 MB of 15987 guest avail 1626 MB
+10:29:05 host used 5538 MB of 15987 guest avail 1573 MB
+10:29:10 host used 5537 MB of 15987 guest avail 1612 MB
+10:29:15 host used 5536 MB of 15987 guest avail 1609 MB
+10:29:21 host used 5539 MB of 15987 guest avail 1619 MB
+10:29:26 host used 5537 MB of 15987 guest avail 1661 MB
+10:29:31 host used 5545 MB of 15987 guest avail 1665 MB
+10:29:36 host used 5542 MB of 15987 guest avail 1659 MB
+10:29:41 host used 5542 MB of 15987 guest avail 1622 MB
+10:29:46 host used 5542 MB of 15987 guest avail 1657 MB
+10:29:51 host used 5543 MB of 15987 guest avail 1608 MB
+10:29:56 host used 5543 MB of 15987 guest avail 1606 MB
+10:30:01 host used 5543 MB of 15987 guest avail 1628 MB
+10:30:06 host used 5544 MB of 15987 guest avail 1627 MB
+10:30:11 host used 5542 MB of 15987 guest avail 1627 MB
+10:30:16 host used 5543 MB of 15987 guest avail 1625 MB
+10:30:21 host used 5543 MB of 15987 guest avail 1625 MB
+10:30:26 host used 5543 MB of 15987 guest avail 1589 MB
+10:30:31 host used 5544 MB of 15987 guest avail 1648 MB
+10:30:36 host used 5542 MB of 15987 guest avail 1646 MB
+10:30:41 host used 5543 MB of 15987 guest avail 1629 MB
+10:30:47 host used 5549 MB of 15987 guest avail 1593 MB
+10:30:52 host used 5546 MB of 15987 guest avail 1612 MB
+10:30:57 host used 5549 MB of 15987 guest avail 1652 MB
+10:31:02 host used 5548 MB of 15987 guest avail 1627 MB
+10:31:07 host used 5564 MB of 15987 guest avail 1629 MB
+10:31:12 host used 5564 MB of 15987 guest avail 1629 MB
+10:31:17 host used 5560 MB of 15987 guest avail 1644 MB
+10:31:22 host used 5561 MB of 15987 guest avail 1617 MB
+10:31:27 host used 5559 MB of 15987 guest avail 1593 MB
+10:31:32 host used 5560 MB of 15987 guest avail 1591 MB
+10:31:37 host used 5562 MB of 15987 guest avail 1567 MB
+10:31:43 host used 5559 MB of 15987 guest avail 1597 MB
+10:31:48 host used 5561 MB of 15987 guest avail 1590 MB
+10:31:53 host used 5562 MB of 15987 guest avail 1590 MB
+10:31:58 host used 5562 MB of 15987 guest avail 1606 MB
+10:32:03 host used 5562 MB of 15987 guest avail 1606 MB
+10:32:08 host used 5561 MB of 15987 guest avail 1599 MB
+10:32:13 host used 5570 MB of 15987 guest avail 1580 MB
+10:32:18 host used 5571 MB of 15987 guest avail 1621 MB
+10:32:23 host used 5570 MB of 15987 guest avail 1599 MB
+10:32:28 host used 5570 MB of 15987 guest avail 1596 MB
+10:32:33 host used 5570 MB of 15987 guest avail 1595 MB
+10:32:38 host used 5569 MB of 15987 guest avail 1592 MB
+10:32:43 host used 5570 MB of 15987 guest avail 1590 MB
+10:32:49 host used 5568 MB of 15987 guest avail 1546 MB
+10:32:54 host used 5586 MB of 15987 guest avail 1575 MB
+10:32:59 host used 5587 MB of 15987 guest avail 1572 MB
+10:33:04 host used 5585 MB of 15987 guest avail 1584 MB
+10:33:09 host used 5586 MB of 15987 guest avail 1573 MB
+10:33:14 host used 5585 MB of 15987 guest avail 1605 MB
+10:33:19 host used 5585 MB of 15987 guest avail 1590 MB
+10:33:24 host used 5586 MB of 15987 guest avail 1573 MB
+10:33:29 host used 5586 MB of 15987 guest avail 1576 MB
+10:33:34 host used 5586 MB of 15987 guest avail 1594 MB
+10:33:39 host used 5586 MB of 15987 guest avail 1602 MB
+10:33:44 host used 5585 MB of 15987 guest avail 1573 MB
+10:33:49 host used 5586 MB of 15987 guest avail 1561 MB
+10:33:54 host used 5586 MB of 15987 guest avail 1558 MB
+10:33:59 host used 5589 MB of 15987 guest avail 1591 MB
+10:34:04 host used 5592 MB of 15987 guest avail 1587 MB
+10:34:09 host used 5592 MB of 15987 guest avail 1587 MB
+10:34:14 host used 5592 MB of 15987 guest avail 1570 MB
+10:34:19 host used 5593 MB of 15987 guest avail 1570 MB
+10:34:25 host used 5593 MB of 15987 guest avail 1579 MB
+10:34:30 host used 5594 MB of 15987 guest avail 1587 MB
+10:34:35 host used 5594 MB of 15987 guest avail 1608 MB
+10:34:40 host used 5595 MB of 15987 guest avail 1597 MB
+10:34:45 host used 5597 MB of 15987 guest avail 1610 MB
+10:34:50 host used 5598 MB of 15987 guest avail 1608 MB
+10:34:55 host used 5595 MB of 15987 guest avail 1608 MB
+10:35:00 host used 5597 MB of 15987 guest avail 1629 MB
+10:35:05 host used 5598 MB of 15987 guest avail 1614 MB
+10:35:10 host used 5597 MB of 15987 guest avail 1612 MB
+10:35:15 host used 5597 MB of 15987 guest avail 1598 MB
+10:35:20 host used 5597 MB of 15987 guest avail 1591 MB
+10:35:25 host used 5596 MB of 15987 guest avail 1554 MB
+10:35:30 host used 5597 MB of 15987 guest avail 1572 MB
+10:35:36 host used 5597 MB of 15987 guest avail 1509 MB
+10:35:41 host used 5598 MB of 15987 guest avail 1552 MB
+10:35:46 host used 5598 MB of 15987 guest avail 1537 MB
+10:35:51 host used 5596 MB of 15987 guest avail 1555 MB
+10:35:56 host used 5596 MB of 15987 guest avail 1585 MB
+10:36:01 host used 5596 MB of 15987 guest avail 1537 MB
+10:36:06 host used 5595 MB of 15987 guest avail 1533 MB
+10:36:11 host used 5596 MB of 15987 guest avail 1570 MB
+10:36:16 host used 5596 MB of 15987 guest avail 1569 MB
+10:36:21 host used 5516 MB of 15987 guest avail 1568 MB
+10:36:26 host used 5521 MB of 15987 
+10:37:19 host used 1099 MB of 15987 
+10:37:24 host used 1094 MB of 15987 
+10:37:29 host used 1093 MB of 15987 
+10:37:34 host used 1093 MB of 15987 
+10:37:39 host used 1093 MB of 15987 
+10:37:44 host used 1093 MB of 15987 
+10:37:49 host used 1093 MB of 15987 
+10:37:54 host used 1093 MB of 15987 
+10:37:59 host used 1093 MB of 15987 
+10:38:04 host used 1093 MB of 15987 
+10:38:09 host used 1093 MB of 15987 
+10:38:14 host used 1093 MB of 15987 
+10:38:19 host used 1093 MB of 15987 
+10:38:24 host used 1093 MB of 15987 
+10:38:29 host used 1094 MB of 15987 
+10:38:34 host used 1094 MB of 15987 
+10:38:39 host used 1094 MB of 15987 
+10:38:44 host used 1094 MB of 15987 
+10:38:49 host used 1094 MB of 15987 
+10:38:54 host used 1093 MB of 15987 
+10:38:59 host used 1094 MB of 15987 
+10:39:04 host used 1094 MB of 15987 
+10:39:09 host used 1097 MB of 15987 
+10:39:14 host used 1096 MB of 15987 
+10:39:19 host used 1096 MB of 15987 
+10:39:24 host used 1097 MB of 15987 
+10:39:29 host used 1097 MB of 15987 
+10:39:34 host used 1097 MB of 15987 
+10:39:39 host used 1097 MB of 15987 
+10:39:44 host used 1097 MB of 15987 
+10:39:49 host used 1097 MB of 15987 
+10:39:55 host used 1097 MB of 15987 
+10:40:00 host used 1097 MB of 15987 
+10:40:05 host used 1098 MB of 15987 
+10:40:10 host used 1097 MB of 15987 
+10:40:15 host used 1098 MB of 15987 
+10:40:20 host used 1097 MB of 15987 
+10:40:25 host used 1097 MB of 15987 
+10:40:30 host used 1098 MB of 15987 
+10:40:35 host used 1098 MB of 15987 
+10:40:40 host used 1098 MB of 15987 
+10:40:45 host used 1098 MB of 15987 
+10:40:50 host used 1098 MB of 15987 
+10:40:55 host used 1098 MB of 15987 
+10:41:00 host used 1098 MB of 15987 
+10:41:05 host used 1098 MB of 15987 
+10:41:10 host used 1098 MB of 15987 
+10:41:15 host used 1098 MB of 15987 
+10:41:20 host used 1098 MB of 15987 
+10:41:25 host used 1098 MB of 15987 
+10:41:30 host used 1098 MB of 15987 
+10:41:35 host used 1098 MB of 15987 
+10:41:40 host used 1098 MB of 15987 
+10:41:45 host used 1098 MB of 15987 
+10:41:50 host used 1098 MB of 15987 
+10:41:55 host used 1098 MB of 15987 
+10:42:00 host used 1098 MB of 15987 
+10:42:05 host used 1098 MB of 15987 
+10:42:10 host used 1098 MB of 15987 
+10:42:15 host used 1098 MB of 15987 
+10:42:20 host used 1098 MB of 15987 
+10:42:25 host used 1098 MB of 15987 
+10:42:30 host used 1098 MB of 15987 
+10:42:35 host used 1098 MB of 15987 
+10:42:40 host used 1098 MB of 15987 
+10:42:45 host used 1098 MB of 15987 
+10:42:50 host used 1098 MB of 15987 
+10:42:55 host used 1098 MB of 15987 
+10:43:00 host used 1098 MB of 15987 
+10:43:05 host used 1098 MB of 15987 
+10:43:10 host used 1099 MB of 15987 
+10:43:15 host used 1099 MB of 15987 
+10:43:20 host used 1099 MB of 15987 
+10:43:25 host used 1099 MB of 15987 
+10:43:30 host used 1099 MB of 15987 
+10:43:35 host used 1099 MB of 15987 
+10:43:40 host used 1098 MB of 15987 
+10:43:45 host used 1099 MB of 15987 
+10:43:50 host used 1099 MB of 15987 
+10:43:55 host used 1098 MB of 15987 
+10:44:00 host used 1099 MB of 15987 
+10:44:05 host used 1098 MB of 15987 
+10:44:10 host used 1098 MB of 15987 
+10:44:15 host used 1098 MB of 15987 
+10:44:20 host used 1098 MB of 15987 
+10:44:25 host used 1098 MB of 15987 
+10:44:30 host used 1098 MB of 15987 
+10:44:35 host used 1098 MB of 15987 
+10:44:40 host used 1098 MB of 15987 
+10:44:45 host used 1098 MB of 15987 
+10:44:50 host used 1098 MB of 15987 
+10:44:55 host used 1098 MB of 15987 
+10:45:00 host used 1098 MB of 15987 
+10:45:05 host used 1098 MB of 15987 
+10:45:10 host used 1098 MB of 15987 
+10:45:15 host used 1099 MB of 15987 
+10:45:20 host used 1099 MB of 15987 
+10:45:25 host used 1099 MB of 15987 
+10:45:30 host used 1099 MB of 15987 
+10:45:35 host used 1099 MB of 15987 
+10:45:40 host used 1099 MB of 15987 
+10:45:45 host used 1099 MB of 15987 
+10:45:50 host used 1099 MB of 15987 
+10:45:55 host used 1098 MB of 15987 
+10:46:00 host used 1099 MB of 15987 
+10:46:05 host used 1099 MB of 15987 
+10:46:10 host used 1098 MB of 15987 
+10:46:15 host used 1098 MB of 15987 
+10:46:20 host used 1098 MB of 15987 
+10:46:25 host used 1098 MB of 15987 
+10:46:30 host used 1098 MB of 15987 
+10:46:35 host used 1098 MB of 15987 
+10:46:40 host used 1098 MB of 15987 
+10:46:45 host used 1098 MB of 15987 
+10:46:50 host used 1098 MB of 15987 
+10:46:55 host used 1098 MB of 15987 
+10:47:00 host used 1098 MB of 15987 
+10:47:05 host used 1098 MB of 15987 
