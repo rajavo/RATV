@@ -1,49 +1,75 @@
 mock IPTV server on port 8000
-11:09:21 GET /player_api.php?username=test&password=test
-11:12:18 GET /player_api.php?username=test&password=test
-11:12:18 GET /player_api.php?username=test&password=test
-11:12:19 GET /player_api.php?username=test&password=test&action=get_live_categories
-11:12:19 GET /player_api.php?username=test&password=test&action=get_live_streams
-11:12:19 GET /player_api.php?username=test&password=test&action=get_vod_categories
-11:12:19 GET /player_api.php?username=test&password=test&action=get_vod_streams
-11:12:19 GET /player_api.php?username=test&password=test&action=get_series_categories
-11:12:19 GET /update/version.json
-11:12:19 GET /player_api.php?username=test&password=test&action=get_series
-11:12:19 GET /logo/l1.png
-11:12:19 GET /xmltv.php?username=test&password=test
-11:12:32 GET /live/test/test/101.ts
-11:12:32 GET /live/test/test/101.ts
-11:12:32 GET /live/test/test/101.ts
-11:12:32 GET /live/test/test/101.ts
-11:12:32 GET /live/test/test/101.ts
-11:12:43 GET /live/test/test/102.ts
-11:12:43 GET /live/test/test/102.ts
-11:12:43 GET /live/test/test/102.ts
-11:13:18 GET /player_api.php?username=test&password=test&action=get_vod_info&vod_id=5001
-11:13:23 GET /movie/test/test/5001.mp4
-11:13:23 GET /movie/test/test/5001.mp4
-11:13:54 GET /logo/l2.png
-11:13:54 GET /logo/l3.png
-11:13:54 GET /logo/l4.png
-11:13:54 GET /logo/missing.png
-11:13:54 GET /logo/missing.png
-11:13:55 GET /live/test/test/102.ts
-11:13:55 GET /live/test/test/102.ts
-11:13:55 GET /live/test/test/102.ts
-11:14:03 GET /live/test/test/103.ts
-11:14:03 GET /live/test/test/103.ts
-11:14:03 GET /live/test/test/103.ts
-11:14:03 GET /logo/l5.png
-11:14:04 GET /live/test/test/201.ts
-11:14:04 GET /live/test/test/201.ts
-11:14:05 GET /live/test/test/201.ts
-11:14:10 GET /live/test/test/103.ts
-11:14:10 GET /live/test/test/103.ts
-11:14:10 GET /live/test/test/103.ts
-11:14:13 GET /live/test/test/102.ts
-11:14:13 GET /live/test/test/102.ts
-11:14:13 GET /live/test/test/102.ts
-11:14:17 GET /live/test/test/101.ts
-11:14:17 GET /live/test/test/101.ts
-11:14:17 GET /live/test/test/101.ts
-11:14:33 GET /player_api.php?username=test&password=test&action=get_series_info&series_id=7001
+12:33:20 GET /player_api.php?username=test&password=test
+12:36:22 GET /player_api.php?username=test&password=test
+12:36:22 GET /player_api.php?username=test&password=test
+12:36:22 GET /player_api.php?username=test&password=test&action=get_live_categories
+12:36:22 GET /player_api.php?username=test&password=test&action=get_live_streams
+12:36:22 GET /player_api.php?username=test&password=test&action=get_series_categories
+12:36:22 GET /player_api.php?username=test&password=test&action=get_vod_categories
+12:36:22 GET /player_api.php?username=test&password=test&action=get_vod_streams
+12:36:22 GET /player_api.php?username=test&password=test&action=get_series
+12:36:22 GET /update/version.json
+12:36:22 GET /logo/l1.png
+12:36:22 GET /xmltv.php?username=test&password=test
+12:36:36 GET /live/test/test/101.ts
+12:36:36 GET /live/test/test/101.ts
+12:36:36 GET /live/test/test/101.ts
+12:36:36 GET /live/test/test/101.ts
+12:36:46 GET /live/test/test/102.ts
+12:36:46 GET /live/test/test/102.ts
+12:36:47 GET /live/test/test/102.ts
+12:37:20 GET /player_api.php?username=test&password=test&action=get_vod_info&vod_id=5001
+12:37:25 GET /movie/test/test/5001.mp4
+12:37:25 GET /movie/test/test/5001.mp4
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 33266)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 498, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 464, in handle_one_request
+    self.raw_requestline = self.rfile.readline(65537)
+                           ~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/usr/lib/python3.14/socket.py", line 725, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+----------------------------------------
+12:37:56 GET /logo/l2.png
+12:37:56 GET /logo/missing.png
+12:37:56 GET /logo/missing.png
+12:37:56 GET /logo/l4.png
+12:37:56 GET /logo/l3.png
+12:37:57 GET /live/test/test/102.ts
+12:37:57 GET /live/test/test/102.ts
+12:37:57 GET /live/test/test/102.ts
+12:38:05 GET /live/test/test/103.ts
+12:38:05 GET /live/test/test/103.ts
+12:38:05 GET /live/test/test/103.ts
+12:38:05 GET /logo/l5.png
+12:38:06 GET /live/test/test/201.ts
+12:38:06 GET /live/test/test/201.ts
+12:38:06 GET /live/test/test/201.ts
+12:38:11 GET /live/test/test/103.ts
+12:38:11 GET /live/test/test/103.ts
+12:38:12 GET /live/test/test/103.ts
+12:38:15 GET /live/test/test/102.ts
+12:38:15 GET /live/test/test/102.ts
+12:38:15 GET /live/test/test/102.ts
+12:38:18 GET /live/test/test/101.ts
+12:38:18 GET /live/test/test/101.ts
+12:38:18 GET /live/test/test/101.ts
+12:38:34 GET /player_api.php?username=test&password=test&action=get_series_info&series_id=7001
+12:39:04 GET /live/test/test/204.ts
+12:39:04 GET /live/test/test/204.ts
+12:39:04 GET /live/test/test/204.ts
+12:39:04 GET /live/test/test/204.ts
