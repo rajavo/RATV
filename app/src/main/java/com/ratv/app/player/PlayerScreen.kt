@@ -212,6 +212,11 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val liveFormat = remember { repo.prefs.liveFormat }
     // Channel whose HLS version failed: it goes back to its own address.
     var hlsFailedFor by remember { mutableStateOf<String?>(null) }
+
+    // A channel that keeps stalling as TS is tried as HLS (when the server offers it): HLS can store
+    // much more ahead, as its pieces come faster than they are shown.
+    var hlsPreferredFor by remember { mutableStateOf<String?>(null) }
+    val hlsAfterStalls = remember { com.ratv.app.data.debugProperty("debug.ratv.hlsafter")?.toIntOrNull() ?: 3 }
     var usingHls by remember { mutableStateOf(false) }
     // Reserve stored ahead of the picture, and whether the internet is failing right now.
     var reserveMs by remember { mutableLongStateOf(0L) }
@@ -286,12 +291,13 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // ------------------------------------------------- start the stream
-    LaunchedEffect(current, hlsFailedFor) {
+    LaunchedEffect(current, hlsFailedFor, hlsPreferredFor) {
         val item = current ?: return@LaunchedEffect
         playerError = null
         ended = false
         val hlsAllowed = repo.account.value?.formats?.contains("m3u8") == true
-        val url = if (item.isLive && hlsFailedFor != item.id) liveStreamUrl(item.url, liveFormat, hlsAllowed) else item.url
+        val format = if (hlsPreferredFor == item.id) "hls" else liveFormat
+        val url = if (item.isLive && hlsFailedFor != item.id) liveStreamUrl(item.url, format, hlsAllowed) else item.url
         usingHls = url != item.url
         stalls = 0
         droppedFrames = 0
@@ -365,6 +371,30 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // ------------------------------------------------------- listeners
+    // When the network comes back, a live channel waiting to reconnect tries at once.
+    DisposableEffect(Unit) {
+        val cm = context.applicationContext.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as? android.net.ConnectivityManager
+        val main = android.os.Handler(android.os.Looper.getMainLooper())
+        val callback = object : android.net.ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: android.net.Network) {
+                main.post {
+                    if (current?.isLive == true && player.mediaItemCount > 0 &&
+                        (reconnecting || playerError != null || player.playbackState == Player.STATE_IDLE)
+                    ) {
+                        Log.i("RATVPlayback", "network back: reconnecting now")
+                        playerError = null
+                        reconnecting = false
+                        player.seekToDefaultPosition()
+                        player.prepare()
+                        player.playWhenReady = true
+                    }
+                }
+            }
+        }
+        runCatching { cm?.registerDefaultNetworkCallback(callback) }
+        onDispose { runCatching { cm?.unregisterNetworkCallback(callback) } }
+    }
+
     // Wi-Fi without its power saving pauses while something plays (Android 10 and later).
     DisposableEffect(Unit) {
         val lock = if (Build.VERSION.SDK_INT >= 29) {
@@ -411,7 +441,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                         player.seekToDefaultPosition()
                         player.prepare()
                     }
-                    isRetryable(error) && reconnectAttempts < MAX_RECONNECTS -> {
+                    // A live channel never gives up: it keeps trying (10 s apart at most) until the line is back.
+                    isRetryable(error) && (reconnectAttempts < MAX_RECONNECTS || now?.isLive == true) -> {
                         reconnectAttempts++
                         reconnecting = true
                     }
@@ -455,7 +486,19 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                     readyOnce = true
                 } else if (state == Player.STATE_BUFFERING && readyOnce) {
                     stalls++
-                    if (current?.isLive == true) Steadiness.onStall()
+                    val now = current
+                    if (now?.isLive == true) {
+                        Steadiness.onStall()
+                        // Third stall as TS: try the channel as HLS once, if the server offers it.
+                        val hlsAllowed = repo.account.value?.formats?.contains("m3u8") == true
+                        if (stalls >= hlsAfterStalls && !usingHls && hlsAllowed && hlsPreferredFor != now.id && hlsFailedFor != now.id &&
+                            liveStreamUrl(now.url, "hls", true) != now.url
+                        ) {
+                            Log.i("RATVPlayback", "stalls keep coming as TS: trying HLS")
+                            hlsPreferredFor = now.id
+                            resizeNotice = "البث يتقطع: جرّبنا صيغة HLS لهذي القناة"
+                        }
+                    }
                     Log.i("RATVPlayback", "stall $stalls, reserve ${player.totalBufferedDuration} ms")
                 }
                 if (state == Player.STATE_IDLE) readyOnce = false
@@ -564,7 +607,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // Reconnect by itself after a network drop instead of stopping with an error.
     LaunchedEffect(reconnectAttempts, reconnecting) {
         if (!reconnecting) return@LaunchedEffect
-        delay(1_500L * reconnectAttempts)
+        delay(minOf(1_500L * reconnectAttempts, 10_000L))
         val playing = current ?: return@LaunchedEffect
         if (playing.isLive) player.seekToDefaultPosition()
         player.prepare()
@@ -955,7 +998,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             ) {
                 Icon(RIcons.Refresh, contentDescription = null, tint = RColors.Saffron, modifier = Modifier.size(16.dp))
                 Text(
-                    "انقطع البث، جارٍ إعادة الاتصال… ($reconnectAttempts/$MAX_RECONNECTS)",
+                    if (current?.isLive == true) "انقطع البث، جارٍ إعادة الاتصال… ($reconnectAttempts)"
+                    else "انقطع البث، جارٍ إعادة الاتصال… ($reconnectAttempts/$MAX_RECONNECTS)",
                     style = T.body(13.sp, FontWeight.Medium)
                 )
             }
