@@ -869,7 +869,9 @@ def s_shaky():
 def s_version_switch():
     """A channel that keeps stalling moves by itself to its lighter version (Stutter TV HD to SD)."""
     shell("setprop debug.ratv.hlsafter 99")  # straight to the other version, not HLS first
-    before = live_log("switching to another version")["switching to another version"]
+    keys = ("switching to another version", "stalled after the load ended", "starting the channel again")
+    start = live_log(*keys)
+    before = start["switching to another version"]
     tap_where(text="الكل")
     time.sleep(1)
     n = None
@@ -885,7 +887,8 @@ def s_version_switch():
     try:
         switched = False
         notice = False
-        for _ in range(48):  # up to about 2 minutes
+        deadline = time.time() + 150  # up to 2.5 minutes, however slow the emulator is
+        while time.time() < deadline:
             time.sleep(2.5)
             if not notice:
                 root = dump()
@@ -899,6 +902,8 @@ def s_version_switch():
                     break
         lines = [l for l in adb("logcat", "-d", "-s", "RATVPlayback:I", timeout=30).splitlines() if "another version" in l]
         log("version switch: %s" % (lines[-1] if lines else "(none)"))
+        end = live_log(*keys)
+        log("version switch: %s" % {k: end[k] - start[k] for k in keys})
         if not switched:
             raise RuntimeError("the stalling channel did not move to its other version")
         if not lines or "Stutter TV SD" not in lines[-1]:
