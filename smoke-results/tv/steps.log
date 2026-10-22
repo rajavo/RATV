@@ -150,3 +150,79 @@ Complete
 23:42:05 focus[nav-target]: حسابي
 23:42:10 focus[settings]: إضافة مستخدم
 23:42:10 screenshot 21-settings.png 1920x1080
+00:57:02 == launch
+00:57:47 debug.ratv.subs=http://10.0.2.2:8000
+00:57:48 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 963
+WaitTime: 965
+Complete
+00:57:50 screenshot 01-splash.png 1920x1080
+00:57:50 == login-screen
+00:57:56 focus[login-initial]: http://server.example:8080
+00:57:57 screenshot 02-login.png 1920x1080
+00:57:57 == keyboard-on-ok
+00:58:00 screenshot 03-login-keyboard.png 1920x1080
+00:58:04 == fill-with-remote
+00:58:13 focus[login-user]: username
+00:58:28 focus[login-name]: مثال: اشتراك المنزل
+00:58:31 focus[login-submit]: دخول
+00:58:32 screenshot 04-login-filled.png 1920x1080
+00:58:43 screenshot 05-home.png 1920x1080
+00:58:43 == home-focus
+00:58:45 focus[home-focus]: مباشر | RATV News HD | وثائقي الطبيعة | بدأ 00:45 · متبقي 16د | شاهد الآن
+00:58:45 screenshot 06-home-focus.png 1920x1080
+00:58:45 == player-remote
+00:58:56 screenshot 07-player.png 1920x1080
+00:58:59 screenshot 08-player-zap.png 1920x1080
+00:59:02 screenshot 09-player-controls.png 1920x1080
+00:59:05 screenshot 10-player-controls-moved.png 1920x1080
+00:59:07 screenshot 11-player-controls-hidden.png 1920x1080
+00:59:13 screenshot 12-home-after-player.png 1920x1080
+00:59:13 == movies
+00:59:15 focus[nav-search]: G2 | مباشر | Gulf 24 FHD | Cartoon Hour | بدأ 00:15 · متبقي 15د | شاهد الآن
+00:59:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+00:59:21 focus[nav-search]: أفلام
+00:59:22 focus[nav-start]: أفلام
+00:59:24 focus[nav-target]: أفلام
+00:59:31 focus[movies]: Desert Night (2023) | 7.4 | Desert Night (2023)
+00:59:31 screenshot 13-movies.png 1920x1080
+00:59:36 focus[movie-detail]: تشغيل
+00:59:36 screenshot 14-movie-detail.png 1920x1080
+00:59:50 screenshot 15-player-movie-seek.png 1920x1080
+00:59:54 screenshot 16-movie-detail-after.png 1920x1080
+00:59:56 == live
+00:59:58 focus[nav-search]: Desert Night (2023) | 7.4 | Desert Night (2023)
+01:00:01 focus[nav-search]: أفلام
+01:00:03 focus[nav-start]: أفلام
+01:00:07 focus[nav-target]: مباشر
+01:00:14 focus[live]: 2 | G2 | Gulf 24 FHD | Cartoon Hour | FHD
+01:00:14 screenshot 17-live.png 1920x1080
+01:00:20 focus[live-moved]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+01:00:20 screenshot 18-live-moved.png 1920x1080
+01:00:20 == series
+01:00:21 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+01:00:25 focus[nav-search]: 3 | قناة الأخبار | Weekly Review
+01:00:28 focus[nav-search]: 2 | G2 | Gulf 24 FHD | Cartoon Hour | FHD
+01:00:32 focus[nav-search]: 1 | RATV News HD | وثائقي الطبيعة | HD
+01:00:35 focus[nav-search]: أفلام
+01:00:36 focus[nav-start]: أفلام
+01:00:40 focus[nav-target]: مسلسلات
+01:00:45 focus[series]: Sands of Time | 8.1 | Sands of Time
+01:00:51 focus[series-detail]: تشغيل الحلقة 1
+01:00:51 screenshot 19-series-detail.png 1920x1080
+01:00:54 == matches
+01:00:55 focus[nav-search]: Sands of Time | 8.1 | Sands of Time
+01:00:58 focus[nav-search]: أفلام
+01:01:00 focus[nav-start]: أفلام
+01:01:03 focus[nav-target]: المباريات
+01:01:09 screenshot 20-matches.png 1920x1080
+01:01:10 == settings
+01:01:12 focus[nav-search]: الآن
+01:01:15 focus[nav-search]: الرئيسية
+01:01:16 focus[nav-start]: الرئيسية
+01:01:25 focus[nav-target]: حسابي
+01:01:31 focus[settings]: إضافة مستخدم
+01:01:31 screenshot 21-settings.png 1920x1080
