@@ -204,7 +204,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val playPauseFocus = remember { FocusRequester() }
     val retryFocus = remember { FocusRequester() }
 
-    val player = remember { createPlayer(context, repo.prefs.bufferMode, repo.prefs.bestQuality, live = kind == "live") }
+    val player = remember {
+        Steadiness.mode = repo.prefs.liveSteady
+        createPlayer(context, repo.prefs.bufferMode, repo.prefs.bestQuality, live = kind == "live")
+    }
     val cushion = remember { cushionMs(repo.prefs.bufferMode) }
     val liveFormat = remember { repo.prefs.liveFormat }
     // Channel whose HLS version failed: it goes back to its own address.
@@ -362,6 +365,23 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // ------------------------------------------------------- listeners
+    // Wi-Fi without its power saving pauses while something plays (Android 10 and later).
+    DisposableEffect(Unit) {
+        val lock = if (Build.VERSION.SDK_INT >= 29) {
+            runCatching {
+                (context.applicationContext.getSystemService(android.content.Context.WIFI_SERVICE) as? android.net.wifi.WifiManager)
+                    ?.createWifiLock(android.net.wifi.WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "ratv:playback")
+                    ?.apply {
+                        setReferenceCounted(false)
+                        acquire()
+                    }
+            }.getOrNull()
+        } else {
+            null
+        }
+        onDispose { runCatching { lock?.release() } }
+    }
+
     DisposableEffect(player) {
         val listener = object : Player.Listener {
             override fun onIsPlayingChanged(playing: Boolean) {
@@ -435,6 +455,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                     readyOnce = true
                 } else if (state == Player.STATE_BUFFERING && readyOnce) {
                     stalls++
+                    if (current?.isLive == true) Steadiness.onStall()
                     Log.i("RATVPlayback", "stall $stalls, reserve ${player.totalBufferedDuration} ms")
                 }
                 if (state == Player.STATE_IDLE) readyOnce = false
@@ -502,6 +523,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             lastPos = pos
             lastPosAt = posAt
             reserveMs = player.totalBufferedDuration
+            Steadiness.reserveMs = reserveMs
             val grew = player.bufferedPosition > lastBuffered + 200L
             lastBuffered = player.bufferedPosition
             if (grew) netTrouble = false
@@ -889,6 +911,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 reserveMs = reserveMs,
                 stalls = stalls,
                 reconnects = liveReconnects,
+                steadyExtraMs = if (current?.isLive == true) Steadiness.extraMs else 0L,
                 dropped = droppedFrames,
                 offline = netTrouble,
                 modifier = Modifier
@@ -1634,6 +1657,7 @@ private fun StatsPanel(
     reserveMs: Long,
     stalls: Int,
     reconnects: Int,
+    steadyExtraMs: Long,
     dropped: Int,
     offline: Boolean,
     modifier: Modifier = Modifier
@@ -1644,7 +1668,8 @@ private fun StatsPanel(
     val verdict = when {
         dropped > 50 -> "الجهاز لا يلحق على فك هذا البث ($dropped إطار سقط): جرّب نسخة HD من القناة."
         stalls > 0 && offline -> "التوقفات من انقطاع الاتصال بالإنترنت."
-        stalls > 0 -> "توقف البث $stalls مرة: الاتصال أو السيرفر لم يرسل البث بسرعة كافية."
+        stalls > 0 && reconnects > 5 -> "توقف البث $stalls مرة والاتصال بالسيرفر انقطع $reconnects مرة: غالباً من الواي فاي أو من السيرفر. التطبيق يجمع احتياطياً أكبر تلقائياً، وجرّب «أقصى ثبات» أو صيغة HLS من الإعدادات."
+        stalls > 0 -> "توقف البث $stalls مرة: الاتصال أو السيرفر لم يرسل البث بسرعة كافية. التطبيق يجمع احتياطياً أكبر تلقائياً."
         uneven -> "البث $fpsText إطار والشاشة ${refresh.toInt()} هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات."
         reconnects > 0 -> "البث سليم: انقطع الاتصال $reconnects مرة ورجع على طول بدون توقف."
         else -> "البث سليم: لا توقفات ولا إطارات ساقطة."
@@ -1664,7 +1689,7 @@ private fun StatsPanel(
             "الترميز" to "${codec(video)} · صوت ${codec(audio)}",
             "فك الترميز" to (decoder ?: "—"),
             "سرعة الاتصال" to (if (bandwidthBps > 0 && bandwidthBps != 12_000_000L) String.format(java.util.Locale.US, "%.1f ميجابت", bandwidthBps / 1_000_000.0) else "—"),
-            "الاحتياطي" to "${reserveMs / 1000L} ث",
+            "الاحتياطي" to "${reserveMs / 1000L} ث" + (if (steadyExtraMs > 0) " (يجمع ${steadyExtraMs / 1000L} ث زيادة)" else ""),
             "التوقفات" to "$stalls",
             "إعادة الاتصال" to "$reconnects",
             "إطارات ساقطة" to "$dropped"

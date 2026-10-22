@@ -194,7 +194,14 @@ fun cushionMs(bufferMode: String): Long = (bufferMode.toIntOrNull() ?: 60).coerc
 private class PatientLoadErrorPolicy : DefaultLoadErrorHandlingPolicy() {
     override fun getRetryDelayMsFor(loadErrorInfo: LoadErrorHandlingPolicy.LoadErrorInfo): Long {
         val e = loadErrorInfo.exception
-        if (e is HttpDataSource.InvalidResponseCodeException && e.responseCode in 400..499) return C.TIME_UNSET
+        if (e is HttpDataSource.InvalidResponseCodeException && e.responseCode in 400..499) {
+            // A busy server refuses for a moment (too many connections right after changing channel):
+            // three more tries, 2 s apart. Not a refused login, nor a missing HLS playlist (that falls
+            // back to TS at once).
+            val path = loadErrorInfo.loadEventInfo.uri.path.orEmpty().lowercase()
+            val retry = e.responseCode != 401 && !path.endsWith(".m3u8") && loadErrorInfo.errorCount <= 3
+            return if (retry) 2_000L else C.TIME_UNSET
+        }
         return if (super.getRetryDelayMsFor(loadErrorInfo) == C.TIME_UNSET) C.TIME_UNSET else 2_000L
     }
 
@@ -270,16 +277,21 @@ fun createPlayer(
 ): ExoPlayer {
     val reserve = maxOf(cushionMs(bufferMode).toInt(), 15_000)
     // min buffer, max buffer, stored before starting, stored before resuming after a stall (ms)
-    val durations = if (live) intArrayOf(20_000, 60_000, 5_000, 8_000) else intArrayOf(reserve, reserve + 30_000, 3_000, 5_000)
+    val durations = if (live) intArrayOf(30_000, 60_000, 5_000, 8_000) else intArrayOf(reserve, reserve + 30_000, 3_000, 5_000)
     val memoryCap = (Runtime.getRuntime().maxMemory() * 0.45).toLong().coerceIn(32L shl 20, 220L shl 20).toInt()
     // Live TS channels reconnect at once when the connection breaks or gets stuck, as other IPTV
     // players do, instead of stalling once the store runs out (see LiveReconnectingDataSource).
     val dataSourceFactory = LiveReconnectingDataSource.Factory(context, mediaClient, Http.USER_AGENT)
-    val loadControl = DefaultLoadControl.Builder()
-        .setBufferDurationsMs(durations[0], durations[1], durations[2], durations[3])
-        .setTargetBufferBytes(memoryCap)
-        .setPrioritizeTimeOverSizeThresholds(false)
-        .build()
+    // Live channels wait for a bigger store after they stalled (see Steadiness).
+    val loadControl = if (live) {
+        SteadyLoadControl(durations[0], durations[1], durations[2], durations[3], memoryCap)
+    } else {
+        DefaultLoadControl.Builder()
+            .setBufferDurationsMs(durations[0], durations[1], durations[2], durations[3])
+            .setTargetBufferBytes(memoryCap)
+            .setPrioritizeTimeOverSizeThresholds(false)
+            .build()
+    }
     val audioAttributes = AudioAttributes.Builder()
         .setUsage(C.USAGE_MEDIA)
         .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
