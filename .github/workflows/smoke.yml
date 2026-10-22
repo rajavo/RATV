@@ -133,9 +133,16 @@ jobs:
           cp ci/server.log smoke-results/${{ matrix.device }}/server.log 2>/dev/null || true
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -f smoke-results
-          git commit -q -m "Smoke test results (${{ matrix.device }})" || true
-          for i in 1 2 3 4 5; do
-            git pull -q --rebase -X theirs origin ci-smoke && git push -q origin HEAD:ci-smoke && break
-            sleep 5
+          # This device's folder goes on top of the branch as it is now, so runs saving at the same
+          # time (or code pushed meanwhile) never make the push fail or lose results.
+          dev=${{ matrix.device }}
+          rm -rf "/tmp/results-$dev" && cp -r "smoke-results/$dev" "/tmp/results-$dev"
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            git fetch -q origin ci-smoke || { sleep 5; continue; }
+            git checkout -q -f -B save-results FETCH_HEAD
+            rm -rf "smoke-results/$dev" && mkdir -p smoke-results && cp -r "/tmp/results-$dev" "smoke-results/$dev"
+            git add -A -f "smoke-results/$dev"
+            git commit -q -m "Smoke test results ($dev)" || break
+            git push -q origin HEAD:ci-smoke && break
+            sleep $((5 + RANDOM % 10))
           done
