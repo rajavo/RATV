@@ -60,12 +60,16 @@ object Updater {
     }
 
     /** Downloads the new APK, reporting progress from 0 to 1 on the main thread. */
-    suspend fun download(context: Context, info: Info, onProgress: (Float) -> Unit): File = withContext(Dispatchers.IO) {
+    suspend fun download(context: Context, info: Info, onProgress: (Float) -> Unit): File =
+        downloadApk(context, info.apkUrl, "RATV-${info.versionCode}.apk", onProgress)
+
+    /** Downloads an APK (this app's update, or another RA app) into the folder Android's installer reads from. */
+    suspend fun downloadApk(context: Context, url: String, name: String, onProgress: (Float) -> Unit): File = withContext(Dispatchers.IO) {
         val dir = File(context.cacheDir, "updates").apply { mkdirs() }
-        val file = File(dir, "RATV-${info.versionCode}.apk")
+        val file = File(dir, name)
         dir.listFiles()?.filter { it != file }?.forEach { it.delete() }
         val part = File(dir, file.name + ".part")
-        Http.client.newCall(Request.Builder().url(info.apkUrl).build()).execute().use { response ->
+        Http.client.newCall(Request.Builder().url(url).build()).execute().use { response ->
             if (!response.isSuccessful) throw HttpException(response.code)
             val body = response.body ?: throw IOException("Empty response")
             val total = body.contentLength()
@@ -89,7 +93,7 @@ object Updater {
             }
         }
         if (file.exists()) file.delete()
-        if (!part.renameTo(file)) throw IOException("Could not save the update")
+        if (!part.renameTo(file)) throw IOException("Could not save the download")
         withContext(Dispatchers.Main) { onProgress(1f) }
         file
     }

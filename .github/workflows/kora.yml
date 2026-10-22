@@ -1,0 +1,136 @@
+name: RA Kora
+
+# Builds جدول RA كورة (kora/), checks it on an Android TV emulator, then publishes RAKora.apk.
+# Results of the check go to the ci-kora-results branch. The schedule itself is built by kora-data.yml.
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'kora/**'
+      - '!kora/data/**'
+      - '.github/workflows/kora.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# A newer push replaces a run still in progress, so only the latest version is published.
+concurrency:
+  group: rakora-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Unit tests and APK
+        run: |
+          chmod +x gradlew
+          set -o pipefail
+          ./gradlew --no-daemon -p kora :app:testReleaseUnitTest :app:assembleRelease 2>&1 | tee build.log
+      - name: Save the build error
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p kora-results
+          { grep -E "^e: |error:|FAILED|AssertionError|Exception" build.log | head -80; echo ----; tail -80 build.log; } > kora-results/build-error.txt || true
+          for f in $(find kora/app/build/test-results -name "*.xml" 2>/dev/null); do grep -q "<failure" "$f" && cat "$f" >> kora-results/build-error.txt; done; true
+          cd kora-results && git init -q && git checkout -q -b results && git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qm "RA Kora build error (run ${{ github.run_number }})"
+          git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" results:ci-kora-results
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kora-apk
+          path: kora/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+
+  emulator:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: kora-apk
+          path: apks
+      - name: Test server
+        run: |
+          mkdir -p /tmp/kora-www
+          nohup python3 kora/ci/mock_server.py /tmp/kora-www 8000 > /tmp/kora-www.log 2>&1 &
+          sleep 1
+          curl -s http://127.0.0.1:8000/update/version.json
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Check the app on the TV emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: android-tv
+          arch: x86
+          profile: tv_1080p
+          cores: 3
+          ram-size: 3072M
+          disable-animations: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: |
+            adb install -r "$(find apks -name app-release.apk | head -1)"
+            python3 kora/ci/smoke_kora.py
+      - name: Save results to the ci-kora-results branch
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p kora-results
+          cp /tmp/kora-www.log kora-results/server.log 2>/dev/null || true
+          cd kora-results && git init -q && git checkout -q -b results && git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qm "RA Kora test results (run ${{ github.run_number }})"
+          git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" results:ci-kora-results
+
+  publish:
+    needs: emulator
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: kora-apk
+          path: apks
+      - name: Publish to the kora-latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp "$(find apks -name app-release.apk | head -1)" RAKora.apk
+          n=${{ github.run_number }}
+          printf '{"versionCode": %d, "versionName": "1.0.%d", "apk": "RAKora.apk"}\n' "$n" "$n" > version.json
+          # One release named "kora-latest" whose files are swapped, so the download link never changes.
+          git push -f origin HEAD:refs/tags/kora-latest
+          if gh release view kora-latest >/dev/null 2>&1; then
+            gh release upload kora-latest RAKora.apk version.json --clobber
+          else
+            gh release create kora-latest RAKora.apk version.json --title "جدول RA كورة" --latest=false \
+              --notes "تطبيق «جدول RA كورة»: مباريات 30 يوم تتحدث تلقائياً، مربوط بـ RA TV. نزّل RAKora.apk وثبّته."
+          fi
+          gh release edit kora-latest --draft=false --prerelease=false --title "جدول RA كورة" --latest=false
+      - name: Check the public download link
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          url="https://github.com/${{ github.repository }}/releases/download/kora-latest/RAKora.apk"
+          for i in 1 2 3 4 5 6; do
+            if curl -fsIL -o /dev/null "$url"; then echo "Download link works: $url"; exit 0; fi
+            gh release edit kora-latest --draft=false --prerelease=false || true
+            sleep 20
+          done
+          echo "Download link still not public: $url"
+          exit 1

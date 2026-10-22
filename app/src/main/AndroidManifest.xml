@@ -8,6 +8,11 @@
     <!-- Installs updates downloaded from the app's GitHub release. -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
+    <!-- The schedule app (جدول RA كورة), opened from the matches screen. -->
+    <queries>
+        <package android:name="com.ratv.kora" />
+    </queries>
+
     <!-- Works on phones and on Android TV / Google TV / Fire TV boxes with a remote. -->
     <uses-feature
         android:name="android.software.leanback"
@@ -40,6 +45,13 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+            <!-- A match opened from the schedule app (جدول RA كورة): ratv://match?home=…&away=…&start=… -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="ratv" android:host="match" />
             </intent-filter>
         </activity>
 

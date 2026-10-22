@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -26,11 +28,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.ratv.app.data.MatchLinks
 import com.ratv.app.data.Repository
 import com.ratv.app.player.PlayerScreen
 import com.ratv.app.ui.components.BottomNav
 import com.ratv.app.ui.components.TopBar
 import com.ratv.app.ui.components.rememberIsWide
+import com.ratv.app.ui.screens.FindMatchScreen
 import com.ratv.app.ui.screens.GuideScreen
 import com.ratv.app.ui.screens.HomeScreen
 import com.ratv.app.ui.screens.LiveScreen
@@ -87,6 +91,9 @@ class Navigator(private val nav: NavHostController) {
     }
 
     fun matches() = nav.navigate("matches") { launchSingleTop = true }
+
+    /** The channels showing a match sent by the schedule app (جدول RA كورة). */
+    fun findMatch() = nav.navigate("findmatch") { launchSingleTop = true }
     fun search() = nav.navigate("search")
     fun guide() = nav.navigate("guide") { launchSingleTop = true }
     fun movie(id: String) = nav.navigate("movie/${Uri.encode(id)}")
@@ -110,6 +117,16 @@ fun RatvRoot() {
     val wide = rememberIsWide()
     val currentTab = if (route == "guide") "live" else (route ?: "home")
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+
+    // A match from the schedule app opens once the app is ready (signed in, past the loading screen).
+    val pendingMatch by MatchLinks.pending.collectAsState()
+    LaunchedEffect(pendingMatch, route) {
+        val req = pendingMatch ?: return@LaunchedEffect
+        if (route == null || route in setOf("splash", "login", "adduser")) return@LaunchedEffect
+        MatchLinks.pending.value = null
+        MatchLinks.current.value = req
+        if (route != "findmatch") navigator.findMatch()
+    }
 
     Column(
         Modifier
@@ -158,6 +175,7 @@ fun RatvRoot() {
             composable("live") { LiveScreen(navigator) }
             composable("guide") { GuideScreen(navigator) }
             composable("matches") { MatchesScreen(navigator) }
+            composable("findmatch") { FindMatchScreen(navigator) }
             composable("movies") { MoviesScreen(navigator) }
             composable("series") { SeriesScreen(navigator) }
             composable("settings") { SettingsScreen(navigator) }
