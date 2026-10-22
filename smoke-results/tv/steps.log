@@ -1681,3 +1681,212 @@ Status: o
 20:41:29 focus[nav-start]: (android.view.View, no text)
 20:41:35 !! RuntimeError('top bar not reached (focus: (android.view.View, no text))')
 20:41:35 screenshot 31-fail-languages.png 1920x1080
+20:50:39 == launch
+20:51:25 debug.ratv.subs=http://10.0.2.2:8000
+20:51:26 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 1028
+WaitTime: 1030
+Complete
+20:51:28 screenshot 01-splash.png 1920x1080
+20:51:28 == login-screen
+20:51:36 focus[login-initial]: http://server.example:8080
+20:51:36 screenshot 02-login.png 1920x1080
+20:51:36 == keyboard-on-ok
+20:51:40 screenshot 03-login-keyboard.png 1920x1080
+20:51:44 == fill-with-remote
+20:51:54 focus[login-user]: username
+20:52:11 focus[login-name]: مثال: اشتراك المنزل
+20:52:14 focus[login-submit]: دخول
+20:52:14 screenshot 04-login-filled.png 1920x1080
+20:52:26 screenshot 05-home.png 1920x1080
+20:52:26 == home-focus
+20:52:27 focus[home-focus]: مباشر | RATV News HD | وثائقي الطبيعة | بدأ 20:45 · متبقي 22د | شاهد الآن
+20:52:28 screenshot 06-home-focus.png 1920x1080
+20:52:28 == player-remote
+20:52:39 screenshot 07-player.png 1920x1080
+20:52:42 screenshot 08-player-zap.png 1920x1080
+20:52:45 screenshot 09-player-controls.png 1920x1080
+20:52:48 screenshot 10-player-controls-moved.png 1920x1080
+20:52:52 screenshot 11-player-controls-hidden.png 1920x1080
+20:52:59 screenshot 12-home-after-player.png 1920x1080
+20:52:59 == movies
+20:53:00 focus[nav-search]: مباشر | Gulf 24 FHD | Cartoon Hour | بدأ 20:15 · متبقي 22د | شاهد الآن
+20:53:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+20:53:07 focus[nav-search]: أفلام
+20:53:08 focus[nav-start]: أفلام
+20:53:10 focus[nav-target]: أفلام
+20:53:17 focus[movies]: Desert Night (2023) | 7.4 | Desert Night (2023)
+20:53:17 screenshot 13-movies.png 1920x1080
+20:53:22 focus[movie-detail]: تشغيل
+20:53:22 screenshot 14-movie-detail.png 1920x1080
+20:53:37 screenshot 15-player-movie-seek.png 1920x1080
+20:53:41 screenshot 16-movie-detail-after.png 1920x1080
+20:53:43 == live
+20:53:45 focus[nav-search]: Desert Night (2023) | 7.4 | Desert Night (2023)
+20:53:48 focus[nav-search]: المباريات
+20:53:50 focus[nav-start]: المباريات
+20:53:53 focus[nav-target]: مباشر
+20:54:00 focus[live]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+20:54:01 screenshot 17-live.png 1920x1080
+20:54:07 focus[live-moved]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+20:54:07 screenshot 18-live-moved.png 1920x1080
+20:54:07 == series
+20:54:09 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+20:54:13 focus[nav-search]: 3 | قناة الأخبار | Weekly Review
+20:54:16 focus[nav-search]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+20:54:20 focus[nav-search]: 1 | RATV News HD | وثائقي الطبيعة | HD
+20:54:23 focus[nav-search]: المباريات
+20:54:25 focus[nav-start]: المباريات
+20:54:29 focus[nav-target]: مسلسلات
+20:54:35 focus[series]: Sands of Time | 8.1 | Sands of Time
+20:54:41 focus[series-detail]: تشغيل الحلقة 1
+20:54:42 screenshot 19-series-detail.png 1920x1080
+20:54:44 == matches
+20:54:46 focus[nav-search]: Sands of Time | 8.1 | Sands of Time
+20:54:49 focus[nav-search]: المباريات
+20:54:50 focus[nav-start]: المباريات
+20:54:52 focus[nav-target]: المباريات
+20:54:58 screenshot 20-matches.png 1920x1080
+20:54:59 == match-link
+20:54:59 Starting: Intent { act=android.intent.action.VIEW dat=ratv://match?home=Real Madrid&away=Barcelona&homeAr=ريال مدريد&awayAr=برشلونة&start=1792701599817&league=الدوري الإسباني pkg=com.ratv.app }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+Status: o
+20:55:03 screenshot 21-match-link.png 1920x1080
+20:55:04 focus[match-link]: Sport 1 4K | الحين: الدوري الإسباني: ريال مدريد × برشلونة
+20:55:13 screenshot 22-match-link-play.png 1920x1080
+20:55:19 == settings
+20:55:21 focus[nav-search]: الآن
+20:55:24 focus[nav-search]: جدول 30 يوم
+20:55:27 focus[nav-search]: ابحث | ابحث
+20:55:30 focus[nav-search]: حسابي
+20:55:32 focus[nav-start]: حسابي
+20:55:33 focus[nav-target]: حسابي
+20:55:39 focus[settings]: إضافة مستخدم
+20:55:39 screenshot 23-settings.png 1920x1080
+20:55:39 == languages
+20:55:47 screenshot 24-home-en.png 1920x1080
+20:55:49 focus[nav-search]: Live | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة | Started 20:00 · 1h 4m left | Watch now
+20:55:52 focus[nav-search]: New update available (9.9.9) — press to update
+20:55:55 focus[nav-search]: Matches
+20:55:57 focus[nav-start]: Matches
+20:56:03 focus[nav-target]: My account
+20:56:08 screenshot 25-settings-en.png 1920x1080
+20:56:09 focus[settings-en]: Add user
+20:56:12 focus[settings-en]: اشتراكي | test · 10.0.2.2:8000 | Current
+20:56:14 focus[settings-en]: Add user | Other users stay as they are
+20:56:17 focus[settings-en]: Internet speed test
+20:56:20 focus[settings-en]: Buffer against internet drops | Keeps playing 1 minute without internet (recommended)
+20:56:22 focus[settings-en]: Live stream format | TS (recommended)
+20:56:25 focus[settings-en]: Live stream steadiness | Automatic (recommended)
+20:56:28 focus[settings-en]: Backup version when a channel stalls | If a channel stalls a lot, switch to another version of it in your subscription (lighter quality or a backup link)
+20:56:31 focus[settings-en]: Match frame rate | Sets the screen to 50 or 60 Hz to suit the channel so motion is smooth; the screen may go black for a moment when a channel starts
+20:56:33 focus[settings-en]: Always the highest quality available | Picks the highest quality your provider sends
+20:56:36 focus[settings-en]: Open the last channel on start
+20:56:39 focus[settings-en]: Channel preview in the live list | On TV, the selected channel plays in a small window
+20:56:41 focus[settings-en]: Subtitle language | Arabic
+20:56:44 focus[settings-en]: Subtitle font size | Medium
+20:56:47 focus[settings-en]: Turn on subtitles automatically | Looks for subtitles in your language when any movie or episode starts, and translates them automatically if there are none
+20:56:49 focus[settings-en]: Update the guide automatically | Every 12 hours
+20:56:52 focus[settings-en]: Update the guide now
+20:56:55 focus[settings-en]: Block adult content | Hides adult sections, channels, movies and series for all users; a PIN is needed to show them
+20:56:57 focus[settings-en]: Delete watch history
+20:57:00 focus[settings-en]: Language | English
+20:57:04 screenshot 26-language-en.png 1920x1080
+20:57:08 focus[nav-search]: Language | English
+20:57:11 focus[nav-search]: Delete watch history
+20:57:14 focus[nav-search]: Block adult content | Hides adult sections, channels, movies and series for all users; a PIN is needed to show them
+20:57:17 focus[nav-search]: Update the guide now
+20:57:20 focus[nav-search]: Update the guide automatically | Every 12 hours
+20:57:24 focus[nav-search]: Turn on subtitles automatically | Looks for subtitles in your language when any movie or episode starts, and translates them automatically if there are none
+20:57:27 focus[nav-search]: Subtitle font size | Medium
+20:57:30 focus[nav-search]: Subtitle language | Arabic
+20:57:33 focus[nav-search]: Channel preview in the live list | On TV, the selected channel plays in a small window
+20:57:36 focus[nav-search]: Open the last channel on start
+20:57:39 focus[nav-search]: Always the highest quality available | Picks the highest quality your provider sends
+20:57:42 focus[nav-search]: Match frame rate | Sets the screen to 50 or 60 Hz to suit the channel so motion is smooth; the screen may go black for a moment when a channel starts
+20:57:45 focus[nav-search]: Backup version when a channel stalls | If a channel stalls a lot, switch to another version of it in your subscription (lighter quality or a backup link)
+20:57:48 focus[nav-search]: Live stream steadiness | Automatic (recommended)
+20:57:51 focus[nav-search]: Live stream format | TS (recommended)
+20:57:54 focus[nav-search]: Buffer against internet drops | Keeps playing 1 minute without internet (recommended)
+20:57:57 focus[nav-search]: Internet speed test
+20:58:00 focus[nav-search]: Add user | Other users stay as they are
+20:58:04 focus[nav-search]: اشتراكي | test · 10.0.2.2:8000 | Current
+20:58:07 focus[nav-search]: Add user
+20:58:10 focus[nav-search]: Home
+20:58:11 focus[nav-start]: Home
+20:58:14 focus[nav-target]: Live
+20:58:20 screenshot 27-live-en.png 1920x1080
+20:58:28 screenshot 28-home-es.png 1920x1080
+20:58:30 focus[nav-search]: En vivo | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة | Empezó 20:00 · quedan 1 h 1 min | Ver ahora
+20:58:33 focus[nav-search]: Nueva actualización disponible (9.9.9) — pulsa para actualizar
+20:58:36 focus[nav-search]: Series
+20:58:38 focus[nav-start]: Series
+20:58:41 focus[nav-target]: Mi cuenta
+20:58:45 screenshot 29-settings-es.png 1920x1080
+20:58:47 focus[settings-es]: Añadir usuario
+20:58:50 focus[settings-es]: اشتراكي | test · 10.0.2.2:8000 | Actual
+20:58:52 focus[settings-es]: Añadir usuario | Los demás usuarios no cambian
+20:58:55 focus[settings-es]: Test de velocidad
+20:58:58 focus[settings-es]: Búfer contra cortes de internet | Sigue 1 minuto sin internet (recomendado)
+20:59:00 focus[settings-es]: Formato en vivo | TS (recomendado)
+20:59:03 focus[settings-es]: Estabilidad en vivo | Automático (recomendado)
+20:59:06 focus[settings-es]: Versión alternativa si el canal se corta | Si un canal se corta mucho, pasa a otra versión del mismo en tu suscripción (calidad más ligera o enlace de respaldo)
+20:59:09 focus[settings-es]: Igualar la frecuencia de imagen | Ajusta la pantalla a 50 o 60 Hz según el canal para un movimiento suave; la pantalla puede quedarse en negro un momento al iniciar un canal
+20:59:11 focus[settings-es]: Siempre la máxima calidad disponible | Elige la máxima calidad que envía tu proveedor
+20:59:14 focus[settings-es]: Abrir el último canal al iniciar
+20:59:17 focus[settings-es]: Vista previa del canal en la lista en vivo | En la TV, el canal elegido se muestra en una ventana pequeña
+20:59:19 focus[settings-es]: Idioma de subtítulos | Árabe
+20:59:22 focus[settings-es]: Tamaño de los subtítulos | Mediano
+20:59:25 focus[settings-es]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+20:59:27 focus[settings-es]: Actualizar la guía automáticamente | Cada 12 horas
+20:59:30 focus[settings-es]: Actualizar la guía ahora
+20:59:33 focus[settings-es]: Bloquear contenido para adultos | Oculta secciones, canales, películas y series para adultos en todos los usuarios; hace falta un PIN para mostrarlos
+20:59:35 focus[settings-es]: Borrar historial
+20:59:38 focus[settings-es]: Idioma de la app · Language | Español
+20:59:42 screenshot 30-language-es.png 1920x1080
+20:59:46 focus[nav-search]: Idioma de la app · Language | Español
+20:59:49 focus[nav-search]: Borrar historial
+20:59:52 focus[nav-search]: Bloquear contenido para adultos | Oculta secciones, canales, películas y series para adultos en todos los usuarios; hace falta un PIN para mostrarlos
+20:59:55 focus[nav-search]: Actualizar la guía ahora
+20:59:58 focus[nav-search]: Actualizar la guía automáticamente | Cada 12 horas
+21:00:01 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:04 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:07 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:10 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:13 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:17 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:20 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:23 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:26 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:29 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:32 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:35 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:38 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:41 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:44 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:47 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:50 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:53 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:56 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:00:59 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:03 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:06 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:09 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:12 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:15 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:18 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:21 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:24 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:27 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:30 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:33 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:36 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:39 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:42 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:45 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:49 focus[nav-start]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+21:01:55 !! RuntimeError('top bar not reached (focus: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay)')
+21:01:55 screenshot 31-fail-languages.png 1920x1080
