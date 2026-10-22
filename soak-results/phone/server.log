@@ -1,66 +1,136 @@
 mock IPTV server on port 8000
-00:32:16 GET /player_api.php?username=test&password=test
-00:35:09 GET /player_api.php?username=test&password=wrong
-00:35:23 GET /player_api.php?username=test&password=test
-00:35:23 GET /player_api.php?username=test&password=test
-00:35:24 GET /player_api.php?username=test&password=test&action=get_live_categories
-00:35:24 GET /player_api.php?username=test&password=test&action=get_live_streams
-00:35:24 GET /player_api.php?username=test&password=test&action=get_vod_categories
-00:35:24 GET /player_api.php?username=test&password=test&action=get_vod_streams
-00:35:24 GET /player_api.php?username=test&password=test&action=get_series_categories
-00:35:24 GET /player_api.php?username=test&password=test&action=get_series
-00:35:24 GET /logo/l1.png
-00:35:24 GET /xmltv.php?username=test&password=test
-00:35:24 GET /update/version.json
-00:35:44 GET /logo/l2.png
-00:35:44 GET /logo/l3.png
-00:35:44 GET /logo/missing.png
-00:35:44 GET /logo/missing.png
-00:35:44 GET /logo/l4.png
-00:36:01 GET /logo/l5.png
-00:36:25 EVENT chaos {"channel": 111, "n": 1, "burst": 4, "run": 19.4, "then": "freeze"}
-00:36:25 GET /live/test/test/111.ts
-00:36:27 EVENT chaos {"channel": 111, "n": 2, "burst": 0, "run": 13.1, "then": "dip"}
-00:36:27 GET /live/test/test/111.ts
-00:36:27 EVENT client-left {"channel": 111}
-00:36:40 EVENT dip {"channel": 111}
-00:36:52 EVENT cut {"channel": 111}
-00:36:52 EVENT chaos {"channel": 111, "n": 3, "burst": 4, "run": 17.0, "then": "dip"}
-00:36:52 GET /live/test/test/111.ts
-00:37:09 EVENT dip {"channel": 111}
-00:37:21 EVENT cut {"channel": 111}
-00:37:21 EVENT chaos {"channel": 111, "n": 4, "burst": 4, "run": 12.4, "then": "dip"}
-00:37:21 GET /live/test/test/111.ts
-00:37:34 EVENT dip {"channel": 111}
-00:37:46 EVENT cut {"channel": 111}
-00:37:46 EVENT chaos {"channel": 111, "n": 5, "burst": 6, "run": 9.2, "then": "pause"}
-00:37:46 GET /live/test/test/111.ts
-00:37:55 EVENT pause {"channel": 111}
-00:38:09 EVENT cut {"channel": 111}
-00:38:09 EVENT chaos {"channel": 111, "n": 6, "burst": 0, "run": 7.8, "then": "pause"}
-00:38:09 GET /live/test/test/111.ts
-00:38:17 EVENT pause {"channel": 111}
-00:38:31 EVENT cut {"channel": 111}
-00:38:31 EVENT chaos {"channel": 111, "n": 7, "burst": 0, "run": 16.1, "then": "freeze"}
-00:38:31 GET /live/test/test/111.ts
-00:38:47 EVENT frozen {"channel": 111}
-00:38:53 EVENT chaos {"channel": 111, "n": 8, "burst": 4, "run": 14.1, "then": "dip"}
-00:38:53 GET /live/test/test/111.ts
-00:39:07 EVENT dip {"channel": 111}
-00:39:19 EVENT cut {"channel": 111}
-00:39:19 EVENT chaos {"channel": 111, "n": 9, "burst": 2, "run": 9.7, "then": "pause"}
-00:39:19 GET /live/test/test/111.ts
-00:39:29 EVENT pause {"channel": 111}
-00:39:43 EVENT cut {"channel": 111}
-00:39:43 EVENT chaos {"channel": 111, "n": 10, "burst": 4, "run": 8.7, "then": "pause"}
-00:39:43 GET /live/test/test/111.ts
-00:39:52 EVENT pause {"channel": 111}
-00:40:06 EVENT cut {"channel": 111}
-00:40:06 EVENT chaos {"channel": 111, "n": 11, "burst": 4, "run": 6.4, "then": "chunks"}
-00:40:06 GET /live/test/test/111.ts
-00:40:13 EVENT chunks {"channel": 111}
-00:40:27 EVENT cut {"channel": 111}
-00:40:27 EVENT chaos {"channel": 111, "n": 12, "burst": 0, "run": 15.6, "then": "chunks"}
-00:40:27 GET /live/test/test/111.ts
-00:40:42 EVENT chunks {"channel": 111}
-00:40:56 EVENT cut {"channel": 111}
+00:53:40 GET /player_api.php?username=test&password=test
+00:56:32 GET /player_api.php?username=test&password=wrong
+00:56:45 GET /player_api.php?username=test&password=test
+00:56:45 GET /player_api.php?username=test&password=test
+00:56:45 GET /player_api.php?username=test&password=test&action=get_live_categories
+00:56:45 GET /player_api.php?username=test&password=test&action=get_live_streams
+00:56:45 GET /player_api.php?username=test&password=test&action=get_series_categories
+00:56:45 GET /player_api.php?username=test&password=test&action=get_series
+00:56:45 GET /player_api.php?username=test&password=test&action=get_vod_categories
+00:56:46 GET /player_api.php?username=test&password=test&action=get_vod_streams
+00:56:46 GET /logo/l1.png
+00:56:46 GET /xmltv.php?username=test&password=test
+00:56:46 GET /update/version.json
+00:57:01 GET /logo/l2.png
+00:57:01 GET /logo/l3.png
+00:57:01 GET /logo/missing.png
+00:57:01 GET /logo/missing.png
+00:57:01 GET /logo/l4.png
+00:57:18 GET /logo/l5.png
+00:57:42 EVENT chaos {"channel": 111, "n": 1, "burst": 4, "run": 19.4, "then": "freeze"}
+00:57:42 GET /live/test/test/111.ts
+00:57:43 EVENT chaos {"channel": 111, "n": 2, "burst": 0, "run": 13.1, "then": "dip"}
+00:57:43 GET /live/test/test/111.ts
+00:57:44 EVENT client-left {"channel": 111}
+00:57:57 EVENT dip {"channel": 111}
+00:58:09 EVENT cut {"channel": 111}
+00:58:09 EVENT chaos {"channel": 111, "n": 3, "burst": 4, "run": 17.0, "then": "dip"}
+00:58:09 GET /live/test/test/111.ts
+00:58:26 EVENT dip {"channel": 111}
+00:58:38 EVENT cut {"channel": 111}
+00:58:38 EVENT chaos {"channel": 111, "n": 4, "burst": 4, "run": 12.4, "then": "dip"}
+00:58:38 GET /live/test/test/111.ts
+00:58:50 EVENT dip {"channel": 111}
+00:59:02 EVENT cut {"channel": 111}
+00:59:02 EVENT chaos {"channel": 111, "n": 5, "burst": 6, "run": 9.2, "then": "pause"}
+00:59:02 GET /live/test/test/111.ts
+00:59:11 EVENT pause {"channel": 111}
+00:59:26 EVENT cut {"channel": 111}
+00:59:26 EVENT chaos {"channel": 111, "n": 6, "burst": 0, "run": 7.8, "then": "pause"}
+00:59:26 GET /live/test/test/111.ts
+00:59:33 EVENT pause {"channel": 111}
+00:59:47 EVENT cut {"channel": 111}
+00:59:47 EVENT chaos {"channel": 111, "n": 7, "burst": 0, "run": 16.1, "then": "freeze"}
+00:59:47 GET /live/test/test/111.ts
+01:00:04 EVENT frozen {"channel": 111}
+01:00:10 EVENT chaos {"channel": 111, "n": 8, "burst": 4, "run": 14.1, "then": "dip"}
+01:00:10 GET /live/test/test/111.ts
+01:00:24 EVENT dip {"channel": 111}
+01:00:36 EVENT cut {"channel": 111}
+01:00:36 EVENT chaos {"channel": 111, "n": 9, "burst": 2, "run": 9.7, "then": "pause"}
+01:00:36 GET /live/test/test/111.ts
+01:00:46 EVENT pause {"channel": 111}
+01:01:00 EVENT cut {"channel": 111}
+01:01:00 EVENT chaos {"channel": 111, "n": 10, "burst": 4, "run": 8.7, "then": "pause"}
+01:01:00 GET /live/test/test/111.ts
+01:01:08 EVENT pause {"channel": 111}
+01:01:22 EVENT cut {"channel": 111}
+01:01:22 EVENT chaos {"channel": 111, "n": 11, "burst": 4, "run": 6.4, "then": "chunks"}
+01:01:22 GET /live/test/test/111.ts
+01:01:29 EVENT chunks {"channel": 111}
+01:01:42 EVENT cut {"channel": 111}
+01:01:42 EVENT chaos {"channel": 111, "n": 12, "burst": 0, "run": 15.6, "then": "chunks"}
+01:01:42 GET /live/test/test/111.ts
+01:01:42 EVENT client-left {"channel": 111}
+01:01:47 EVENT chaos {"channel": 111, "n": 13, "burst": 2, "run": 17.0, "then": "cut"}
+01:01:47 GET /live/test/test/111.ts
+01:02:04 EVENT cut {"channel": 111}
+01:02:04 EVENT chaos {"channel": 111, "n": 14, "burst": 4, "run": 7.8, "then": "dip"}
+01:02:04 GET /live/test/test/111.ts
+01:02:12 EVENT dip {"channel": 111}
+01:02:24 EVENT cut {"channel": 111}
+01:02:24 EVENT chaos {"channel": 111, "n": 15, "burst": 0, "run": 15.9, "then": "cut"}
+01:02:24 GET /live/test/test/111.ts
+01:02:40 EVENT cut {"channel": 111}
+01:02:40 EVENT chaos {"channel": 111, "n": 16, "burst": 4, "run": 10.6, "then": "pause"}
+01:02:40 GET /live/test/test/111.ts
+01:02:51 EVENT pause {"channel": 111}
+01:03:05 EVENT cut {"channel": 111}
+01:03:05 EVENT chaos {"channel": 111, "n": 17, "burst": 6, "run": 6.1, "then": "pause"}
+01:03:05 GET /live/test/test/111.ts
+01:03:11 EVENT pause {"channel": 111}
+01:03:25 EVENT cut {"channel": 111}
+01:03:25 EVENT chaos {"channel": 111, "n": 18, "burst": 6, "run": 13.9, "then": "chunks"}
+01:03:25 GET /live/test/test/111.ts
+01:03:39 EVENT chunks {"channel": 111}
+01:03:53 EVENT cut {"channel": 111}
+01:03:53 EVENT chaos {"channel": 111, "n": 19, "burst": 2, "run": 19.2, "then": "cut"}
+01:03:53 GET /live/test/test/111.ts
+01:04:12 EVENT cut {"channel": 111}
+01:04:12 EVENT chaos {"channel": 111, "n": 20, "burst": 0, "run": 13.4, "then": "chunks"}
+01:04:12 GET /live/test/test/111.ts
+01:04:25 EVENT chunks {"channel": 111}
+01:04:39 EVENT cut {"channel": 111}
+01:04:39 EVENT chaos {"channel": 111, "n": 21, "burst": 4, "run": 12.9, "then": "cut"}
+01:04:39 GET /live/test/test/111.ts
+01:04:52 EVENT cut {"channel": 111}
+01:04:52 EVENT chaos {"channel": 111, "n": 22, "burst": 0, "run": 9.9, "then": "freeze"}
+01:04:52 GET /live/test/test/111.ts
+01:05:02 EVENT frozen {"channel": 111}
+01:05:08 EVENT chaos {"channel": 111, "n": 23, "burst": 6, "run": 10.1, "then": "dip"}
+01:05:08 GET /live/test/test/111.ts
+01:05:19 EVENT dip {"channel": 111}
+01:05:31 EVENT cut {"channel": 111}
+01:05:31 EVENT chaos {"channel": 111, "n": 24, "burst": 0, "run": 7.2, "then": "pause"}
+01:05:31 GET /live/test/test/111.ts
+01:05:38 EVENT pause {"channel": 111}
+01:05:42 EVENT client-left {"channel": 111}
+01:05:49 EVENT chaos {"channel": 111, "n": 25, "burst": 0, "run": 13.8, "then": "pause"}
+01:05:49 GET /live/test/test/111.ts
+01:06:03 EVENT pause {"channel": 111}
+01:06:17 EVENT cut {"channel": 111}
+01:06:17 EVENT chaos {"channel": 111, "n": 26, "burst": 2, "run": 15.9, "then": "cut"}
+01:06:17 GET /live/test/test/111.ts
+01:06:33 EVENT cut {"channel": 111}
+01:06:33 EVENT chaos {"channel": 111, "n": 27, "burst": 0, "run": 12.4, "then": "dip"}
+01:06:33 GET /live/test/test/111.ts
+01:06:46 EVENT dip {"channel": 111}
+01:06:58 EVENT cut {"channel": 111}
+01:06:58 EVENT chaos {"channel": 111, "n": 28, "burst": 0, "run": 14.7, "then": "cut"}
+01:06:58 GET /live/test/test/111.ts
+01:07:13 EVENT cut {"channel": 111}
+01:07:13 EVENT chaos {"channel": 111, "n": 29, "burst": 2, "run": 10.6, "then": "cut"}
+01:07:13 GET /live/test/test/111.ts
+01:07:23 EVENT cut {"channel": 111}
+01:07:23 EVENT chaos {"channel": 111, "n": 30, "burst": 4, "run": 14.0, "then": "dip"}
+01:07:23 GET /live/test/test/111.ts
+01:07:37 EVENT dip {"channel": 111}
+01:07:49 EVENT cut {"channel": 111}
+01:07:49 EVENT chaos {"channel": 111, "n": 31, "burst": 4, "run": 8.2, "then": "cut"}
+01:07:49 GET /live/test/test/111.ts
+01:07:57 EVENT cut {"channel": 111}
+01:07:58 EVENT chaos {"channel": 111, "n": 32, "burst": 0, "run": 5.8, "then": "dip"}
+01:07:58 GET /live/test/test/111.ts
+01:08:03 EVENT dip {"channel": 111}
+01:08:11 EVENT client-left {"channel": 111}
