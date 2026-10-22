@@ -1,5 +1,6 @@
 package com.ratv.app
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,6 +8,8 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.CompositionLocalProvider
+import com.ratv.app.data.MatchLinks
+import com.ratv.app.data.MatchRequest
 import com.ratv.app.ui.LocalRepo
 import com.ratv.app.ui.RatvRoot
 import com.ratv.app.ui.theme.RatvTheme
@@ -26,5 +29,17 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        // A match opened from the schedule app (not again when the activity is only recreated).
+        if (savedInstanceState == null) takeMatchLink(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        takeMatchLink(intent)
+    }
+
+    private fun takeMatchLink(intent: Intent?) {
+        MatchRequest.from(intent?.data)?.let { MatchLinks.pending.value = it }
     }
 }

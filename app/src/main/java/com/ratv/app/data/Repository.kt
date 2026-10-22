@@ -511,6 +511,11 @@ class Repository(private val context: Context, val prefs: Prefs) {
         buildMatches(sportsChannels(null), _epg.value, from, to)
     }
 
+    /** The channels showing a match sent by the schedule app, from the programme guide. */
+    suspend fun channelsForMatch(req: MatchRequest): MatchEvent? = withContext(Dispatchers.Default) {
+        findMatch(req, channels.value, _epg.value)
+    }
+
     fun isSportsChannel(ch: Channel): Boolean =
         looksSports(ch.name) || looksSports(liveCategoryName(ch.categoryId).orEmpty())
 
