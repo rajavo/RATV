@@ -37,11 +37,14 @@ class Invalid(Exception):
     """ESPN has no such league."""
 
 
-def get(url, tries=4):
+BROWSER = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36"
+
+
+def get(url, tries=4, ua=UA):
     last = None
     for i in range(tries):
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
+            req = urllib.request.Request(url, headers={"User-Agent": ua, "Accept": "*/*"})
             with urllib.request.urlopen(req, timeout=25) as r:
                 return r.status, dict(r.headers), r.read()
         except urllib.error.HTTPError as e:
@@ -214,6 +217,89 @@ def fetch_day(league_id, day):
     return "ok", data
 
 
+# ------------------------------------------------------------------ Yallakora, for the Arab leagues ESPN lacks
+
+YK_URL = "https://www.yallakora.com/match-center/?date=%d/%d/%d"
+YK_ZONE = ZoneInfo("Africa/Cairo")  # the times on the page are Cairo's
+
+
+def yk_league(en, ar, yk_leagues):
+    en, ar = (en or "").strip().lower(), (ar or "").strip()
+    for lg in yk_leagues:
+        if ar in lg.get("yk_ar", []) or any(w in en for w in lg.get("yk_en", [])):
+            return lg["id"]
+    return None
+
+
+def yk_clean(s):
+    return re.sub(r"\s+", " ", (s or "").replace("ـ", "")).strip()
+
+
+def yk_day(day):
+    try:
+        return "ok", get(YK_URL % (day.month, day.day, day.year), ua=BROWSER)[2].decode("utf-8", "replace")
+    except Exception as e:
+        return "error", "%s: %s" % (type(e).__name__, e)
+
+
+def yk_parse(html, day, teams, yk_leagues, yk_logos):
+    """Matches of one day's page, of the leagues listed with yk_en / yk_ar in leagues.json."""
+    out = []
+    blocks = re.split(r'<div class="(\d+) matchCard matchesList">', html)
+    for k in range(1, len(blocks) - 1, 2):
+        block = blocks[k + 1]
+        tour = re.search(r'<img src="([^"]*)" alt="([^"]*)" enName="([^"]*)"', block)
+        lg = yk_league(tour.group(3), tour.group(2), yk_leagues) if tour else None
+        if not lg:
+            continue
+        yk_logos.setdefault(lg, tour.group(1).replace("\\", "/"))
+        for card in block.split('liveScoreMatchId="')[1:]:
+            mid = card[:card.find('"')]
+            kind = re.search(r'class="item ([^"]*?) ?liItem"', card[:300])
+            kind = kind.group(1).strip() if kind else ""
+            status = re.search(r'matchStatus">\s*<span>\s*([^<]*?)\s*</span>', card)
+            status = yk_clean(status.group(1)) if status else ""
+            names = [yk_clean(n) for n in re.findall(r"<p>\s*([^<]+?)\s*</p>", card)]
+            logos = re.findall(r'<img src="([^"]+)"', card)
+            when = re.search(r'<span class="time">\s*(\d{1,2}):(\d{2})\s*</span>', card)
+            scores = re.findall(r'<span class="score">\s*([^<]*?)\s*</span>', card)
+            round_ = re.search(r'<div class="date">\s*([^<]*?)\s*</div>', card)
+            if not mid.isdigit() or len(names) < 2:
+                continue
+            if when:
+                local = dt.datetime(day.year, day.month, day.day, int(when.group(1)), int(when.group(2)), tzinfo=YK_ZONE)
+                t, tbd = int(local.timestamp()), False
+            else:
+                t, tbd = int(dt.datetime(day.year, day.month, day.day, 12, tzinfo=YK_ZONE).timestamp()), True
+            ids = []
+            for side in range(2):
+                tid = "y:" + names[side]
+                if tid not in teams:
+                    url = logos[side].replace("\\", "/") if side < len(logos) else ""
+                    teams[tid] = {"en": "", "s": "", "ar": names[side], "logo": url, "leagues": set(), "yk": True}
+                teams[tid]["leagues"].add(lg)
+                ids.append(tid)
+            if "finish" in kind or "end" in kind or "انته" in status:
+                state, name = "post", "FULL_TIME"
+            elif "now" in kind or "live" in kind or "جار" in status or "مباشر" in status or "الشوط" in status:
+                state, name = "in", "IN_PROGRESS"
+            else:
+                state, name = "pre", "SCHEDULED"
+            if "تأجل" in status or "مؤجل" in status:
+                state, name = "post", "POSTPONED"
+            elif "ألغي" in status or "الغاء" in status or "إلغاء" in status:
+                state, name = "post", "CANCELED"
+            m = {"id": "y" + mid, "lg": lg, "t": t, "h": ids[0], "a": ids[1], "st": state, "sn": name}
+            if tbd:
+                m["tbd"] = 1
+            if state != "pre" and len(scores) >= 2 and scores[0].isdigit() and scores[1].isdigit():
+                m["hs"], m["as"] = int(scores[0]), int(scores[1])
+            if round_ and yk_clean(round_.group(1)):
+                m["n"] = yk_clean(round_.group(1))
+            out.append(m)
+    return out
+
+
 # ------------------------------------------------------------------ checks for the report
 
 def discover_leagues():
@@ -242,62 +328,6 @@ def probe_logo(sample):
     return out
 
 
-ARAB = {"AE", "QA", "EG", "MA", "KW", "IQ", "BH", "OM", "JO", "SA", "DZ", "TN", "LY", "SY", "LB", "PS", "SD"}
-
-
-def probe_other_sources(day):
-    """ESPN has no UAE, Qatari, Egyptian or Moroccan league: can other public sources be read from here?"""
-    out = {}
-    browser = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36"
-    url = "https://api.sofascore.com/api/v1/sport/football/scheduled-events/%s" % day.isoformat()
-    try:
-        req = urllib.request.Request(url, headers={"User-Agent": browser, "Accept": "application/json",
-                                                   "Referer": "https://www.sofascore.com/"})
-        with urllib.request.urlopen(req, timeout=25) as r:
-            data = json.loads(r.read().decode("utf-8"))
-        evs = data.get("events") or []
-        tours = {}
-        sample = None
-        for e in evs:
-            ut = (e.get("tournament") or {}).get("uniqueTournament") or {}
-            cat = (e.get("tournament") or {}).get("category") or {}
-            if cat.get("alpha2") in ARAB:
-                key = "%s %s (%s)" % (ut.get("id"), ut.get("name"), cat.get("alpha2"))
-                tours[key] = tours.get(key, 0) + 1
-                if sample is None:
-                    sample = {"home": (e.get("homeTeam") or {}).get("name"),
-                              "translations": (e.get("homeTeam") or {}).get("fieldTranslations")}
-        out["sofascore"] = {"ok": True, "events": len(evs), "arab_tournaments": tours, "sample": sample}
-    except urllib.error.HTTPError as e:
-        out["sofascore"] = {"ok": False, "http": e.code}
-    except Exception as e:
-        out["sofascore"] = {"ok": False, "error": str(e)}
-    url = "https://www.yallakora.com/match-center/?date=%d/%d/%d" % (day.month, day.day, day.year)
-    try:
-        req = urllib.request.Request(url, headers={"User-Agent": browser, "Accept": "text/html"})
-        with urllib.request.urlopen(req, timeout=25) as r:
-            html = r.read().decode("utf-8", "replace")
-        out["yallakora"] = {"ok": True, "bytes": len(html), "match_cards": html.count("liItem"),
-                            "leagues": re.findall(r'<h2>([^<]{3,60})</h2>', html)[:30]}
-    except urllib.error.HTTPError as e:
-        out["yallakora"] = {"ok": False, "http": e.code}
-    except Exception as e:
-        out["yallakora"] = {"ok": False, "error": str(e)}
-    return out
-
-
-def probe_range(league_id, first, last, per_day_ids):
-    """Does ESPN answer a whole range of days in one request? (for the app's own fallback)"""
-    url = SCOREBOARD % (league_id, first.strftime("%Y%m%d") + "-" + last.strftime("%Y%m%d"))
-    try:
-        data = get_json(url)
-        ids = {str(e.get("id")) for e in data.get("events") or []}
-        return {"league": league_id, "range_events": len(ids), "per_day_events": len(per_day_ids),
-                "range_covers_all": per_day_ids <= ids}
-    except Exception as e:
-        return {"league": league_id, "error": str(e)}
-
-
 # ------------------------------------------------------------------ main
 
 def main():
@@ -311,14 +341,18 @@ def main():
         except Exception as e:
             print("previous fixtures unreadable: %s" % e)
     with open(os.path.join(HERE, "leagues.json"), encoding="utf-8") as f:
-        leagues = json.load(f)
-    order = {lg["id"]: i for i, lg in enumerate(leagues)}
+        all_leagues = json.load(f)
+    order = {lg["id"]: i for i, lg in enumerate(all_leagues)}
+    leagues = [lg for lg in all_leagues if lg.get("source", "espn") == "espn"]
+    yk_leagues = [lg for lg in all_leagues if lg.get("source") == "yallakora"]
     started = time.time()
     today = dt.datetime.now(dt.timezone.utc).date()
     days = [today + dt.timedelta(days=d) for d in range(-DAYS_BACK, DAYS_AHEAD + 1)]
 
     results = {}
+    yk_pages = {}
     with concurrent.futures.ThreadPoolExecutor(WORKERS) as pool:
+        yk_jobs = {pool.submit(yk_day, d): d for d in days} if yk_leagues else {}
         # First today's request of every league: a league ESPN does not know is not asked again.
         first = {pool.submit(fetch_day, lg["id"], today): lg["id"] for lg in leagues}
         for f in concurrent.futures.as_completed(first):
@@ -327,6 +361,8 @@ def main():
         rest = {pool.submit(fetch_day, lg_id, d): (lg_id, d) for lg_id in valid for d in days if d != today}
         for f in concurrent.futures.as_completed(rest):
             results[rest[f]] = f.result()
+        for f in concurrent.futures.as_completed(yk_jobs):
+            yk_pages[yk_jobs[f]] = f.result()
 
     events = {}  # (league, event id) -> event
     seen_day = {}  # event id -> days whose request returned it
@@ -361,6 +397,24 @@ def main():
         if m:
             matches[(lg_id, m["id"])] = m
 
+    # The Arab leagues ESPN lacks, from Yallakora's day pages.
+    yk_errors = []
+    yk_count = 0
+    yk_logos = {}
+    for day, (state, html) in sorted(yk_pages.items()):
+        if state != "ok":
+            yk_errors.append("%s %s" % (day, html))
+            continue
+        try:
+            for m in yk_parse(html, day, teams, yk_leagues, yk_logos):
+                matches[(m["lg"], m["id"])] = m
+                yk_count += 1
+        except Exception as e:
+            yk_errors.append("%s parse: %r" % (day, e))
+    if yk_leagues and (yk_errors or yk_count == 0):
+        failed_leagues.update(lg["id"] for lg in yk_leagues)
+    errors.extend("yallakora " + e for e in yk_errors)
+
     # Requests that failed: keep that league's coming matches from the last good schedule.
     kept = 0
     if previous and failed_leagues:
@@ -380,17 +434,17 @@ def main():
     match_list = sorted(matches.values(), key=lambda m: (m["t"], order.get(m["lg"], 99), m["id"]))
     used = {m["lg"] for m in match_list}
     league_out = []
-    for lg in leagues:
+    for lg in all_leagues:
         if lg["id"] not in used:
             continue
         info = meta.get(lg["id"]) or {}
-        lg_logo = ((info.get("logos") or [{}])[0]).get("href", "")
+        lg_logo = ((info.get("logos") or [{}])[0]).get("href", "") or yk_logos.get(lg["id"], "")
         prev_lg = next((p for p in (previous or {}).get("leagues", []) if p.get("id") == lg["id"]), {})
         league_out.append({
             "id": lg["id"],
             "ar": lg["ar"],
             "short": lg["short"],
-            "en": info.get("name") or prev_lg.get("en", ""),
+            "en": info.get("name") or lg.get("en") or prev_lg.get("en", ""),
             "logo": logo(lg_logo) if lg_logo else prev_lg.get("logo", ""),
         })
     team_out = {}
@@ -438,7 +492,11 @@ def main():
             "failed_days": sum(1 for s in states if s == "error"),
             "why": results[(lg["id"], today)][1] if status == "invalid" else "",
         })
-    eng_ids = {eid for (lg_id, eid) in events if lg_id == "eng.1"}
+    for lg in yk_leagues:
+        per_league.append({
+            "id": lg["id"], "ar": lg["ar"], "status": "partial" if yk_errors else "ok", "espn": "(yallakora)",
+            "matches": sum(1 for m in match_list if m["lg"] == lg["id"]), "failed_days": len(yk_errors), "why": "",
+        })
     report = {
         "updated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "seconds": round(time.time() - started, 1),
@@ -455,8 +513,7 @@ def main():
         "leagues": per_league,
         "day_grouping": {"events": total, "same_utc_date": same_utc, "same_new_york_date": same_et},
         "logo_probe": logo_probe,
-        "range_probe": probe_range("eng.1", days[1], days[-1], eng_ids),
-        "other_sources": probe_other_sources(today + dt.timedelta(days=1)),
+        "yallakora": {"pages": len(yk_pages), "matches": yk_count, "errors": yk_errors[:10]},
         "espn_leagues": discover_leagues(),
         "teams": sorted(({"id": tid, "en": t["en"], "ar": t.get("ar"), "leagues": sorted(t["leagues"])}
                          for tid, t in teams.items()), key=lambda x: (x["leagues"], x["en"])),
