@@ -1,0 +1,124 @@
+name: Soak test
+
+# Plays one channel for minutes while the fake server misbehaves at random (CI only).
+on:
+  push:
+    branches: [ ci-soak ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Unit tests and release APK
+        run: |
+          chmod +x gradlew
+          set -o pipefail
+          ./gradlew --no-daemon testReleaseUnitTest assembleRelease 2>&1 | tee build.log
+      - name: Save build errors to the branch
+        if: failure()
+        run: |
+          mkdir -p soak-results
+          { grep -E "^e: |error:|FAILED|AssertionError|ComparisonFailure" build.log | head -60; echo ----; tail -80 build.log; } > soak-results/build-error.txt || true
+          for f in $(find app/build/test-results -name "*.xml" 2>/dev/null); do grep -q "<failure" "$f" && cat "$f" >> soak-results/build-error.txt; done; true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f soak-results/build-error.txt
+          git commit -q -m "Build error" || true
+          for i in 1 2 3; do git pull -q --rebase -X theirs origin ci-soak && git push -q origin HEAD:ci-soak && break; sleep 5; done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: |
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/mapping/release/mapping.txt
+
+  emulator:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - device: phone
+            api: 34
+            target: google_apis
+            arch: x86_64
+            profile: pixel_6
+            script: ci/soak.py
+            hwkeyboard: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: apk
+          path: apk
+
+      - name: Prepare test media
+        run: |
+          if ! command -v ffmpeg >/dev/null; then sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg; fi
+          mkdir -p ci/media
+          cp apk/apk/release/app-release.apk ci/media/RATV.apk 2>/dev/null || cp apk/app-release.apk ci/media/RATV.apk 2>/dev/null || true
+          ffmpeg -hide_banner -loglevel error -f lavfi -i testsrc2=size=1280x720:rate=25 -f lavfi -i sine=frequency=440:sample_rate=48000 -t 240 -c:v libx264 -preset veryfast -pix_fmt yuv420p -b:v 1200k -g 50 -c:a aac -b:a 96k -f mpegts ci/media/live.ts
+          ffmpeg -hide_banner -loglevel error -f lavfi -i testsrc2=size=1280x720:rate=25 -f lavfi -i sine=frequency=440:sample_rate=48000 -f lavfi -i sine=frequency=880:sample_rate=48000 -t 240 -map 0:v -map 1:a -map 2:a -c:v libx264 -preset veryfast -pix_fmt yuv420p -b:v 1200k -g 50 -c:a aac -b:a 96k -metadata:s:a:0 language=ara -metadata:s:a:1 language=eng -f mpegts ci/media/live_multi.ts
+          ffmpeg -hide_banner -loglevel error -f lavfi -i testsrc=size=1280x720:rate=25 -f lavfi -i sine=frequency=660:sample_rate=48000 -t 120 -c:v libx264 -preset veryfast -pix_fmt yuv420p -b:v 1200k -g 50 -c:a aac -b:a 96k -movflags +faststart ci/media/movie.mp4
+          for i in 1 2 3 4 5; do
+            ffmpeg -hide_banner -loglevel error -f lavfi -i "color=c=0x$(printf '%02x%02x%02x' $((i*45)) $((210-i*30)) $((90+i*25))):s=256x256" -frames:v 1 ci/media/l$i.png
+          done
+
+      - name: Start mock IPTV server
+        run: |
+          nohup python3 ci/mock_server.py > ci/server.log 2>&1 &
+          sleep 2
+          curl -s "http://127.0.0.1:8000/player_api.php?username=test&password=test" | head -c 200; echo
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run the app on the ${{ matrix.device }} emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          SMOKE_OUT: soak-results/${{ matrix.device }}
+        with:
+          api-level: ${{ matrix.api }}
+          target: ${{ matrix.target }}
+          arch: ${{ matrix.arch }}
+          profile: ${{ matrix.profile }}
+          cores: 3
+          ram-size: 3072M
+          disable-animations: false
+          enable-hw-keyboard: ${{ matrix.hwkeyboard }}
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: |
+            adb install -r apk/apk/release/app-release.apk || adb install -r apk/app-release.apk
+            mkdir -p soak-results/${{ matrix.device }}
+            adb logcat -v threadtime > soak-results/${{ matrix.device }}/logcat-live.txt 2>&1 &
+            (while sleep 5; do echo "$(date +%T) $(free -m | awk '/Mem/{print "host used " $3 " MB of " $2}') $(adb shell cat /proc/meminfo 2>/dev/null | awk '/MemAvailable/{print "guest avail " int($2/1024) " MB"}')"; done) > soak-results/${{ matrix.device }}/memory.txt 2>&1 &
+            python3 ${{ matrix.script }}
+
+      - name: Save results to the branch
+        if: always()
+        run: |
+          mkdir -p soak-results/${{ matrix.device }}
+          cp ci/server.log soak-results/${{ matrix.device }}/server.log 2>/dev/null || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f soak-results
+          git commit -q -m "Soak test results (${{ matrix.device }})" || true
+          for i in 1 2 3 4 5; do
+            git pull -q --rebase -X theirs origin ci-soak && git push -q origin HEAD:ci-soak && break
+            sleep 5
+          done
