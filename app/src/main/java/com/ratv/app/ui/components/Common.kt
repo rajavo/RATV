@@ -4,11 +4,6 @@ import android.app.UiModeManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
@@ -53,7 +48,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -365,12 +359,10 @@ fun LiveBadge(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-        val pulse = rememberInfiniteTransition(label = "live")
-        val glow = pulse.animateFloat(1f, 0.3f, infiniteRepeatable(tween(850), RepeatMode.Reverse), label = "dot")
+        // A still dot: an endless pulse would redraw the screen every frame, over the video too.
         Box(
             Modifier
                 .size(6.dp)
-                .graphicsLayer { alpha = glow.value }
                 .clip(CircleShape)
                 .background(Color.White)
         )
