@@ -1472,3 +1472,212 @@ Status: o
 20:21:49 focus[nav-start]: Buffer against internet drops | Keeps playing 1 minute without internet (recommended)
 20:21:54 !! RuntimeError('top bar not reached (focus: Buffer against internet drops | Keeps playing 1 minute without internet (recommended))')
 20:21:54 screenshot 27-fail-languages.png 1920x1080
+20:30:11 == launch
+20:31:00 debug.ratv.subs=http://10.0.2.2:8000
+20:31:01 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 958
+WaitTime: 960
+Complete
+20:31:03 screenshot 01-splash.png 1920x1080
+20:31:03 == login-screen
+20:31:09 focus[login-initial]: http://server.example:8080
+20:31:10 screenshot 02-login.png 1920x1080
+20:31:10 == keyboard-on-ok
+20:31:13 screenshot 03-login-keyboard.png 1920x1080
+20:31:17 == fill-with-remote
+20:31:28 focus[login-user]: username
+20:31:44 focus[login-name]: مثال: اشتراك المنزل
+20:31:48 focus[login-submit]: دخول
+20:31:48 screenshot 04-login-filled.png 1920x1080
+20:32:00 screenshot 05-home.png 1920x1080
+20:32:00 == home-focus
+20:32:02 focus[home-focus]: مباشر | RATV News HD | وثائقي الطبيعة | بدأ 20:15 · متبقي 13د | شاهد الآن
+20:32:02 screenshot 06-home-focus.png 1920x1080
+20:32:02 == player-remote
+20:32:14 screenshot 07-player.png 1920x1080
+20:32:17 screenshot 08-player-zap.png 1920x1080
+20:32:21 screenshot 09-player-controls.png 1920x1080
+20:32:23 screenshot 10-player-controls-moved.png 1920x1080
+20:32:27 screenshot 11-player-controls-hidden.png 1920x1080
+20:32:34 screenshot 12-home-after-player.png 1920x1080
+20:32:34 == movies
+20:32:36 focus[nav-search]: مباشر | Gulf 24 FHD | Cartoon Hour | بدأ 19:45 · متبقي 12د | شاهد الآن
+20:32:39 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+20:32:43 focus[nav-search]: أفلام
+20:32:44 focus[nav-start]: أفلام
+20:32:46 focus[nav-target]: أفلام
+20:32:53 focus[movies]: Desert Night (2023) | 7.4 | Desert Night (2023)
+20:32:53 screenshot 13-movies.png 1920x1080
+20:32:58 focus[movie-detail]: تشغيل
+20:32:58 screenshot 14-movie-detail.png 1920x1080
+20:33:13 screenshot 15-player-movie-seek.png 1920x1080
+20:33:17 screenshot 16-movie-detail-after.png 1920x1080
+20:33:19 == live
+20:33:21 focus[nav-search]: Desert Night (2023) | 7.4 | Desert Night (2023)
+20:33:24 focus[nav-search]: المباريات
+20:33:25 focus[nav-start]: المباريات
+20:33:29 focus[nav-target]: مباشر
+20:33:36 focus[live]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+20:33:36 screenshot 17-live.png 1920x1080
+20:33:42 focus[live-moved]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+20:33:43 screenshot 18-live-moved.png 1920x1080
+20:33:43 == series
+20:33:44 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+20:33:48 focus[nav-search]: 3 | قناة الأخبار | Weekly Review
+20:33:52 focus[nav-search]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+20:33:56 focus[nav-search]: 1 | RATV News HD | وثائقي الطبيعة | HD
+20:33:59 focus[nav-search]: المباريات
+20:34:00 focus[nav-start]: المباريات
+20:34:05 focus[nav-target]: مسلسلات
+20:34:11 focus[series]: Sands of Time | 8.1 | Sands of Time
+20:34:17 focus[series-detail]: تشغيل الحلقة 1
+20:34:17 screenshot 19-series-detail.png 1920x1080
+20:34:20 == matches
+20:34:21 focus[nav-search]: Sands of Time | 8.1 | Sands of Time
+20:34:24 focus[nav-search]: المباريات
+20:34:26 focus[nav-start]: المباريات
+20:34:28 focus[nav-target]: المباريات
+20:34:33 screenshot 20-matches.png 1920x1080
+20:34:35 == match-link
+20:34:35 Starting: Intent { act=android.intent.action.VIEW dat=ratv://match?home=Real Madrid&away=Barcelona&homeAr=ريال مدريد&awayAr=برشلونة&start=1792700375570&league=الدوري الإسباني pkg=com.ratv.app }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+Status: o
+20:34:39 screenshot 21-match-link.png 1920x1080
+20:34:40 focus[match-link]: Sport 1 4K | الحين: الدوري الإسباني: ريال مدريد × برشلونة
+20:34:48 screenshot 22-match-link-play.png 1920x1080
+20:34:55 == settings
+20:34:57 focus[nav-search]: الآن
+20:35:00 focus[nav-search]: جدول 30 يوم
+20:35:03 focus[nav-search]: ابحث
+20:35:06 focus[nav-search]: حسابي
+20:35:08 focus[nav-start]: حسابي
+20:35:09 focus[nav-target]: حسابي
+20:35:15 focus[settings]: إضافة مستخدم
+20:35:15 screenshot 23-settings.png 1920x1080
+20:35:15 == languages
+20:35:23 screenshot 24-home-en.png 1920x1080
+20:35:25 focus[nav-search]: Live | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة | Started 19:30 · 54m left | Watch now
+20:35:28 focus[nav-search]: New update available (9.9.9) — press to update
+20:35:31 focus[nav-search]: Matches
+20:35:32 focus[nav-start]: Matches
+20:35:38 focus[nav-target]: My account
+20:35:43 screenshot 25-settings-en.png 1920x1080
+20:35:45 focus[settings-en]: Add user
+20:35:47 focus[settings-en]: اشتراكي | test · 10.0.2.2:8000 | Current
+20:35:50 focus[settings-en]: Add user | Other users stay as they are
+20:35:53 focus[settings-en]: Internet speed test
+20:35:55 focus[settings-en]: Buffer against internet drops | Keeps playing 1 minute without internet (recommended)
+20:35:58 focus[settings-en]: Live stream format | TS (recommended)
+20:36:01 focus[settings-en]: Live stream steadiness | Automatic (recommended)
+20:36:03 focus[settings-en]: Backup version when a channel stalls | If a channel stalls a lot, switch to another version of it in your subscription (lighter quality or a backup link)
+20:36:06 focus[settings-en]: Match frame rate | Sets the screen to 50 or 60 Hz to suit the channel so motion is smooth; the screen may go black for a moment when a channel starts
+20:36:09 focus[settings-en]: Always the highest quality available | Picks the highest quality your provider sends
+20:36:12 focus[settings-en]: Open the last channel on start
+20:36:14 focus[settings-en]: Channel preview in the live list | On TV, the selected channel plays in a small window
+20:36:17 focus[settings-en]: Subtitle language | Arabic
+20:36:20 focus[settings-en]: Subtitle font size | Medium
+20:36:22 focus[settings-en]: Turn on subtitles automatically | Looks for subtitles in your language when any movie or episode starts, and translates them automatically if there are none
+20:36:25 focus[settings-en]: Update the guide automatically | Every 12 hours
+20:36:28 focus[settings-en]: Update the guide now
+20:36:30 focus[settings-en]: Block adult content | Hides adult sections, channels, movies and series for all users; a PIN is needed to show them
+20:36:33 focus[settings-en]: Delete watch history
+20:36:36 focus[settings-en]: Language | English
+20:36:40 screenshot 26-language-en.png 1920x1080
+20:36:44 focus[nav-search]: Language | English
+20:36:47 focus[nav-search]: Delete watch history
+20:36:50 focus[nav-search]: Block adult content | Hides adult sections, channels, movies and series for all users; a PIN is needed to show them
+20:36:53 focus[nav-search]: Update the guide now
+20:36:56 focus[nav-search]: Update the guide automatically | Every 12 hours
+20:36:59 focus[nav-search]: Turn on subtitles automatically | Looks for subtitles in your language when any movie or episode starts, and translates them automatically if there are none
+20:37:02 focus[nav-search]: Subtitle font size | Medium
+20:37:05 focus[nav-search]: Subtitle language | Arabic
+20:37:08 focus[nav-search]: Channel preview in the live list | On TV, the selected channel plays in a small window
+20:37:11 focus[nav-search]: Open the last channel on start
+20:37:14 focus[nav-search]: Always the highest quality available | Picks the highest quality your provider sends
+20:37:17 focus[nav-search]: Match frame rate | Sets the screen to 50 or 60 Hz to suit the channel so motion is smooth; the screen may go black for a moment when a channel starts
+20:37:21 focus[nav-search]: Backup version when a channel stalls | If a channel stalls a lot, switch to another version of it in your subscription (lighter quality or a backup link)
+20:37:24 focus[nav-search]: Live stream steadiness | Automatic (recommended)
+20:37:27 focus[nav-search]: Live stream format | TS (recommended)
+20:37:30 focus[nav-search]: Buffer against internet drops | Keeps playing 1 minute without internet (recommended)
+20:37:33 focus[nav-search]: Internet speed test
+20:37:36 focus[nav-search]: Add user | Other users stay as they are
+20:37:39 focus[nav-search]: اشتراكي | test · 10.0.2.2:8000 | Current
+20:37:42 focus[nav-search]: Add user
+20:37:45 focus[nav-search]: Home
+20:37:47 focus[nav-start]: Home
+20:37:50 focus[nav-target]: Live
+20:37:56 screenshot 27-live-en.png 1920x1080
+20:38:04 screenshot 28-home-es.png 1920x1080
+20:38:06 focus[nav-search]: En vivo | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة | Empezó 19:30 · quedan 52 min | Ver ahora
+20:38:09 focus[nav-search]: Nueva actualización disponible (9.9.9) — pulsa para actualizar
+20:38:12 focus[nav-search]: En vivo
+20:38:13 focus[nav-start]: En vivo
+20:38:21 focus[nav-target]: Mi cuenta
+20:38:26 screenshot 29-settings-es.png 1920x1080
+20:38:27 focus[settings-es]: Añadir usuario
+20:38:30 focus[settings-es]: اشتراكي | test · 10.0.2.2:8000 | Actual
+20:38:33 focus[settings-es]: Añadir usuario | Los demás usuarios no cambian
+20:38:35 focus[settings-es]: Test de velocidad
+20:38:38 focus[settings-es]: Búfer contra cortes de internet | Sigue 1 minuto sin internet (recomendado)
+20:38:41 focus[settings-es]: Formato en vivo | TS (recomendado)
+20:38:43 focus[settings-es]: Estabilidad en vivo | Automático (recomendado)
+20:38:46 focus[settings-es]: Versión alternativa si el canal se corta | Si un canal se corta mucho, pasa a otra versión del mismo en tu suscripción (calidad más ligera o enlace de respaldo)
+20:38:49 focus[settings-es]: Igualar la frecuencia de imagen | Ajusta la pantalla a 50 o 60 Hz según el canal para un movimiento suave; la pantalla puede quedarse en negro un momento al iniciar un canal
+20:38:51 focus[settings-es]: Siempre la máxima calidad disponible | Elige la máxima calidad que envía tu proveedor
+20:38:54 focus[settings-es]: Abrir el último canal al iniciar
+20:38:57 focus[settings-es]: Vista previa del canal en la lista en vivo | En la TV, el canal elegido se muestra en una ventana pequeña
+20:38:59 focus[settings-es]: Idioma de subtítulos | Árabe
+20:39:02 focus[settings-es]: Tamaño de los subtítulos | Mediano
+20:39:05 focus[settings-es]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+20:39:07 focus[settings-es]: Actualizar la guía automáticamente | Cada 12 horas
+20:39:10 focus[settings-es]: Actualizar la guía ahora
+20:39:13 focus[settings-es]: Bloquear contenido para adultos | Oculta secciones, canales, películas y series para adultos en todos los usuarios; hace falta un PIN para mostrarlos
+20:39:16 focus[settings-es]: Borrar historial
+20:39:18 focus[settings-es]: Idioma de la app · Language | Español
+20:39:23 screenshot 30-language-es.png 1920x1080
+20:39:26 focus[nav-search]: Idioma de la app · Language | Español
+20:39:29 focus[nav-search]: Borrar historial
+20:39:32 focus[nav-search]: Bloquear contenido para adultos | Oculta secciones, canales, películas y series para adultos en todos los usuarios; hace falta un PIN para mostrarlos
+20:39:35 focus[nav-search]: Actualizar la guía ahora
+20:39:38 focus[nav-search]: Actualizar la guía automáticamente | Cada 12 horas
+20:39:41 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+20:39:45 focus[nav-search]: (android.view.View, no text)
+20:39:48 focus[nav-search]: (android.view.View, no text)
+20:39:51 focus[nav-search]: (android.view.View, no text)
+20:39:54 focus[nav-search]: (android.view.View, no text)
+20:39:57 focus[nav-search]: (android.view.View, no text)
+20:40:00 focus[nav-search]: (android.view.View, no text)
+20:40:03 focus[nav-search]: (android.view.View, no text)
+20:40:06 focus[nav-search]: (android.view.View, no text)
+20:40:09 focus[nav-search]: (android.view.View, no text)
+20:40:12 focus[nav-search]: (android.view.View, no text)
+20:40:15 focus[nav-search]: (android.view.View, no text)
+20:40:18 focus[nav-search]: (android.view.View, no text)
+20:40:21 focus[nav-search]: (android.view.View, no text)
+20:40:24 focus[nav-search]: (android.view.View, no text)
+20:40:27 focus[nav-search]: (android.view.View, no text)
+20:40:31 focus[nav-search]: (android.view.View, no text)
+20:40:34 focus[nav-search]: (android.view.View, no text)
+20:40:37 focus[nav-search]: (android.view.View, no text)
+20:40:40 focus[nav-search]: (android.view.View, no text)
+20:40:43 focus[nav-search]: (android.view.View, no text)
+20:40:46 focus[nav-search]: (android.view.View, no text)
+20:40:49 focus[nav-search]: (android.view.View, no text)
+20:40:52 focus[nav-search]: (android.view.View, no text)
+20:40:55 focus[nav-search]: (android.view.View, no text)
+20:40:58 focus[nav-search]: (android.view.View, no text)
+20:41:01 focus[nav-search]: (android.view.View, no text)
+20:41:04 focus[nav-search]: (android.view.View, no text)
+20:41:07 focus[nav-search]: (android.view.View, no text)
+20:41:10 focus[nav-search]: (android.view.View, no text)
+20:41:14 focus[nav-search]: (android.view.View, no text)
+20:41:17 focus[nav-search]: (android.view.View, no text)
+20:41:20 focus[nav-search]: (android.view.View, no text)
+20:41:23 focus[nav-search]: (android.view.View, no text)
+20:41:26 focus[nav-search]: (android.view.View, no text)
+20:41:29 focus[nav-start]: (android.view.View, no text)
+20:41:35 !! RuntimeError('top bar not reached (focus: (android.view.View, no text))')
+20:41:35 screenshot 31-fail-languages.png 1920x1080
