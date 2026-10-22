@@ -112,5 +112,11 @@ class DataTest {
         assertEquals("12:30 ص", Fmt.time(today + 30 * 60_000))
         assertEquals("قبل 5 دقايق", Fmt.ago(ms - 5 * 60_000, ms))
         assertEquals("قبل ساعتين", Fmt.ago(ms - 150 * 60_000, ms))
+        assertEquals("مباراة وحدة", Fmt.matches(1))
+        assertEquals("مباراتين", Fmt.matches(2))
+        assertEquals("7 مباريات", Fmt.matches(7))
+        assertEquals("811 مباراة", Fmt.matches(811))
+        assertEquals("\u200E67'\u200E", Fmt.ltr("67'"))
+        assertEquals("استراحة", Fmt.ltr("استراحة"))
     }
 }

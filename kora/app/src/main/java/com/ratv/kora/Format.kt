@@ -52,6 +52,18 @@ object Fmt {
     /** "الخميس 23 أكتوبر" */
     fun fullDate(ms: Long): String = weekday(ms) + " " + date(ms)
 
+    /** "مباراة وحدة", "مباراتين", "5 مباريات", "37 مباراة" */
+    fun matches(n: Int): String = when {
+        n <= 0 -> "ما في"
+        n == 1 -> "مباراة وحدة"
+        n == 2 -> "مباراتين"
+        n <= 10 -> "$n مباريات"
+        else -> "$n مباراة"
+    }
+
+    /** Text without Arabic letters ("67'", "90'+3'") kept left to right inside the Arabic layout. */
+    fun ltr(s: String): String = if (s.any { it in '\u0600'..'\u06FF' }) s else "\u200E$s\u200E"
+
     /** "قبل 5 دقايق" */
     fun ago(ms: Long, now: Long): String {
         val min = ((now - ms) / 60_000L).coerceAtLeast(0)

@@ -311,7 +311,7 @@ private fun Header(s: Schedule?, loading: Boolean, now: Long, tv: Boolean, onRef
             Text(
                 when {
                     s == null -> "مباريات 30 يوم، تتحدث تلقائياً"
-                    else -> "محدّث ${Fmt.ago(s.updated, now)} · ${s.matches.size} مباراة في 30 يوم"
+                    else -> "محدّث ${Fmt.ago(s.updated, now)} · ${Fmt.matches(s.matches.size)} في 30 يوم"
                 },
                 style = t(if (tv) 15f else 13f, color = C.Text2),
                 maxLines = 1,
@@ -426,7 +426,7 @@ private fun DayStrip(
                 Text(Fmt.dayName(d, today), style = t(if (tv) 17f else 15f, true, fg), maxLines = 1)
                 Text(Fmt.date(d), style = t(if (tv) 13.5f else 12f, color = if (chosen) C.OnSaffron else C.Text2), maxLines = 1)
                 Text(
-                    if (count == 0) "ما في" else "$count مباراة",
+                    Fmt.matches(count),
                     style = t(if (tv) 12f else 11f, color = if (chosen) C.OnSaffron else C.Text3),
                     maxLines = 1
                 )
@@ -536,8 +536,10 @@ private fun MatchList(
 @Composable
 private fun LeagueTitle(league: League, count: Int, tv: Boolean) {
     Row(Modifier.padding(top = 8.dp, bottom = 2.dp), verticalAlignment = Alignment.CenterVertically) {
-        Logo(league.logo, league.short, if (tv) 24.dp else 20.dp)
-        Spacer(Modifier.width(8.dp))
+        if (league.logo.isNotBlank()) {
+            Logo(league.logo, league.short, if (tv) 24.dp else 20.dp)
+            Spacer(Modifier.width(8.dp))
+        }
         Text(league.ar, style = t(if (tv) 17f else 15f, true, C.Saffron))
         Spacer(Modifier.width(8.dp))
         Text("$count", style = t(if (tv) 14f else 12.5f, color = C.Text3))
@@ -631,7 +633,7 @@ private fun StatusLine(st: StatusView, tv: Boolean, big: Boolean = false) {
             )
             Spacer(Modifier.width(5.dp))
         }
-        Text(st.text, style = t(if (big) (if (tv) 16f else 14f) else (if (tv) 13.5f else 12f), true, color), maxLines = 1)
+        Text(Fmt.ltr(st.text), style = t(if (big) (if (tv) 16f else 14f) else (if (tv) 13.5f else 12f), true, color), maxLines = 1)
     }
 }
 
@@ -647,7 +649,7 @@ private fun Logo(url: String, name: String, size: Dp) {
                     .background(C.Surface3),
                 contentAlignment = Alignment.Center
             ) {
-                Text(name.trim().take(1), style = t(size.value * 0.42f, true, C.Text2))
+                Text(initial(name), style = t(size.value * 0.42f, true, C.Text2))
             }
         } else {
             AsyncImage(
@@ -658,6 +660,13 @@ private fun Logo(url: String, name: String, size: Dp) {
             )
         }
     }
+}
+
+/** The letter shown when a team has no logo: "الأهلي" → "أ", not the "ا" of "ال". */
+private fun initial(name: String): String {
+    val n = name.trim()
+    val core = if (n.startsWith("ال") && n.length > 3) n.substring(2) else n
+    return core.take(1)
 }
 
 // ------------------------------------------------------------------ dialogs
@@ -684,8 +693,10 @@ private fun MatchDialog(m: Match, s: Schedule, now: Long, tv: Boolean, onWatch: 
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Logo(league.logo, league.short, 26.dp)
-                    Spacer(Modifier.width(8.dp))
+                    if (league.logo.isNotBlank()) {
+                        Logo(league.logo, league.short, 26.dp)
+                        Spacer(Modifier.width(8.dp))
+                    }
                     Text(league.ar, style = t(16f, true, C.Saffron))
                     m.note?.let { Text("  ·  $it", style = t(14f, color = C.Text2), maxLines = 1, overflow = TextOverflow.Ellipsis) }
                 }
