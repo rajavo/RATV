@@ -912,7 +912,7 @@ def s_match_link():
     root = dump()
     texts = all_texts(root)
     log("match link: " + texts[:500])
-    for need in ("ريال مدريد × برشلونة", "Sky Sports Main", "Sport 1 HD", "بتعرض المباراة"):
+    for need in ("ريال مدريد × برشلونة", "Sky Sports Main", "Sport 1 HD", "اختر وحدة"):
         if need not in texts:
             raise RuntimeError("the channels screen is missing " + need)
     if "News" in texts or "Kids Fun" in texts:
@@ -944,7 +944,8 @@ def s_match_link_missing():
 
 def s_kora_button():
     """«جدول 30 يوم» on the matches screen: the schedule app is not installed, so RATV offers it."""
-    tap_where(text="الرئيسية", bottom=True)
+    # The trophy button on the live channels opens the matches screen (as in s_matches).
+    tap_where(text="مباشر", bottom=True)
     time.sleep(2)
     tap_where(text="جدول المباريات")
     time.sleep(2)
