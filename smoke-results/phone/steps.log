@@ -674,3 +674,167 @@ Complete
 11:35:22 == users
 11:35:29 screenshot 76-users.png 1080x2400
 11:35:51 screenshot 77-user1-favorites.png 1080x2400
+12:38:59 == launch
+12:39:49 debug.ratv.subs=http://10.0.2.2:8000
+12:39:51 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 1821
+WaitTime: 1823
+Complete
+12:39:53 screenshot 01-splash.png 1080x2400
+12:39:53 == login-screen
+12:39:58 screenshot 02-login.png 1080x2400
+12:39:58 == wrong-password
+12:40:18 screenshot 03-login-error.png 1080x2400
+12:40:18 == xtream-login
+12:40:23 screenshot 04-login-filled.png 1080x2400
+12:40:39 screenshot 05-home.png 1080x2400
+12:40:39 == live
+12:40:46 screenshot 06-live.png 1080x2400
+12:40:46 == live-category
+12:40:53 screenshot 07-live-sport.png 1080x2400
+12:40:55 == favorite
+12:41:04 screenshot 08-live-favorites.png 1080x2400
+12:41:07 == play-live
+12:41:23 screenshot 09-player-live.png 2400x1080
+12:41:29 screenshot 10-player-live-controls.png 2400x1080
+12:41:48 screenshot 11-stats.png 2400x1080
+12:41:48 stats:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | معلومات البث | الصيغة | TS | الصورة | 1280×720 · 25 إطار/ث | الشاشة | 60 هرتز | الترميز | AVC · صوت MP4A-LATM | فك الترميز | c2.goldfish.h264.decoder | سرعة الاتصال | — | الاحتياطي | 35 ث | التوقفات | 0 | إعادة الاتصال | 0 | إطارات ساقطة | 0 | البث 25 إطار والشاشة 60 هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات.
+12:41:52 screenshot 12-after-live-player.png 1080x2400
+12:41:52 == offline
+12:42:25 screenshot 13-offline.png 2400x1080
+12:42:25 offline:  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+12:42:36 screenshot 14-back-online.png 2400x1080
+12:42:40 == unstable
+12:43:47 screenshot 15-unstable-playing.png 2400x1080
+12:44:04 screenshot 16-unstable-stats.png 2400x1080
+12:44:04 unstable:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | معلومات البث | الصيغة | TS | الصورة | 1280×720 · 25 إطار/ث | الشاشة | 60 هرتز | الترميز | AVC · صوت MP4A-LATM | فك الترميز | c2.goldfish.h264.decoder | سرعة الاتصال | 1.5 ميجابت | الاحتياطي | 4 ث | التوقفات | 0 | إعادة الاتصال | 7 | إطارات ساقطة | 0 | البث 25 إطار والشاشة 60 هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات.
+12:44:08 == frozen
+12:45:24 screenshot 17-frozen-playing.png 2400x1080
+12:45:42 screenshot 18-frozen-stats.png 2400x1080
+12:45:42 frozen:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | معلومات البث | الصيغة | TS | الصورة | 1280×720 · 23.98 إطار/ث | الشاشة | 60 هرتز | الترميز | AVC · صوت MP4A-LATM | فك الترميز | c2.goldfish.h264.decoder | سرعة الاتصال | 1.4 ميجابت | الاحتياطي | 4 ث | التوقفات | 0 | إعادة الاتصال | 4 | إطارات ساقطة | 0 | البث 23.98 إطار والشاشة 60 هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات.
+12:45:46 frozen: stalls 0, connections 6
+12:45:46 == chunky
+12:47:01 screenshot 19-chunky-playing.png 2400x1080
+12:47:19 screenshot 20-chunky-stats.png 2400x1080
+12:47:19 chunky:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | معلومات البث | الصيغة | TS | الصورة | 1280×720 · 25 إطار/ث | الشاشة | 60 هرتز | الترميز | AVC · صوت MP4A-LATM | فك الترميز | c2.goldfish.h264.decoder | سرعة الاتصال | — | الاحتياطي | 6 ث | التوقفات | 0 | إعادة الاتصال | 0 | إطارات ساقطة | 0 | البث 25 إطار والشاشة 60 هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات.
+12:47:23 chunky: stalls 0, connections 2
+12:47:23 == overlap
+12:48:39 screenshot 21-overlap-playing.png 2400x1080
+12:48:56 screenshot 22-overlap-stats.png 2400x1080
+12:48:56 overlap:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | معلومات البث | الصيغة | TS | الصورة | 1280×720 · 25 إطار/ث | الشاشة | 60 هرتز | الترميز | AVC · صوت MP4A-LATM | فك الترميز | c2.goldfish.h264.decoder | سرعة الاتصال | 2.3 ميجابت | الاحتياطي | 4 ث | التوقفات | 0 | إعادة الاتصال | 7 | إطارات ساقطة | 0 | البث 25 إطار والشاشة 60 هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات.
+12:49:00 overlap: stalls 0, log {'joined the new connection': 8, 'position went back': 0, 'could not join': 0}
+12:49:00 == weak
+12:51:05 screenshot 23-weak-playing.png 2400x1080
+12:51:22 screenshot 24-weak-stats.png 2400x1080
+12:51:22 weak:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | معلومات البث | الصيغة | TS | الصورة | 1280×720 · 25 إطار/ث | الشاشة | 60 هرتز | الترميز | AVC · صوت MP4A-LATM | فك الترميز | c2.goldfish.h264.decoder | سرعة الاتصال | 1.1 ميجابت | الاحتياطي | 17 ث (يجمع 10 ث زيادة) | التوقفات | 2 | إعادة الاتصال | 4 | إطارات ساقطة | 10 | توقف البث 2 مرة: الاتصال أو السيرفر لم يرسل البث بسرعة كافية. التطبيق يجمع احتياطياً أكبر تلقائياً.
+12:51:26 weak: stalls 2, levels 2, connections 5
+12:51:26 == busy
+12:52:27 screenshot 25-busy-playing.png 2400x1080
+12:52:44 screenshot 26-busy-stats.png 2400x1080
+12:52:44 busy:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | معلومات البث | الصيغة | TS | الصورة | 1280×720 · 25 إطار/ث | الشاشة | 60 هرتز | الترميز | AVC · صوت MP4A-LATM | فك الترميز | c2.goldfish.h264.decoder | سرعة الاتصال | — | الاحتياطي | 10 ث (يجمع 10 ث زيادة) | التوقفات | 0 | إعادة الاتصال | 0 | إطارات ساقطة | 0 | البث 25 إطار والشاشة 60 هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات.
+12:52:48 busy: stalls 0, refused 3 times
+12:52:48 == shaky
+12:54:43 screenshot 27-shaky-playing.png 2400x1080
+12:55:01 screenshot 28-shaky-stats.png 2400x1080
+12:55:01 shaky:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | معلومات البث | الصيغة | HLS | الصورة | 1280×720 · 25 إطار/ث | الشاشة | 60 هرتز | الترميز | AVC · صوت MP4A-LATM | فك الترميز | c2.goldfish.h264.decoder | سرعة الاتصال | 17.4 ميجابت | الاحتياطي | 15 ث (يجمع 10 ث زيادة) | التوقفات | 0 | إعادة الاتصال | 0 | إطارات ساقطة | 0 | البث 25 إطار والشاشة 60 هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات.
+12:55:05 shaky: stalls after the switch 0, playlist requests 13, TS connections 2
+12:55:05 == matches
+12:55:12 screenshot 29-matches.png 1080x2400
+12:55:14 matches:  |  |  |  |  |  |  |  |  |  | جدول المباريات | من دليل البرامج في اشتراكك، مع كل القنوات الناقلة لكل مباراة |  | جدول 30 يوم |  | الآن | اليوم | غداً | 12:00 – 14:00 | مباشر الآن | 4 قناة ناقلة | الدوري الإسباني: ريال مدريد × برشلونة | 📺 قنوات أخرى |  | Sport 1 4K |  |  | Sport 1 HD |  |  | Sport 1 EN |  |  | Sky Sports Main |  |  | الرئيسية |  |  | مباشر |  |  | أفلام |  |  | مسلسلات |  |  | حساب
+12:55:26 screenshot 30-matches-play.png 2400x1080
+12:55:34 == match-link
+12:55:34 Starting: Intent { act=android.intent.action.VIEW dat=ratv://match/... pkg=com.ratv.app }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+Status: ok
+LaunchState: UNKNOWN (0)
+Activity: com.ratv.app/.MainActivity
+TotalTime: 0
+WaitTime: 5
+Complete
+12:55:39 screenshot 31-match-link.png 1080x2400
+12:55:45 match link:  |  |  |  |  |  |  |  |  |  | وين تنعرض المباراة؟ | ريال مدريد × برشلونة | الدوري الإسباني  ·  الخميس 22 أكتوبر 12:40 | المباراة شغّالة الحين على 4 قناة، اختر وحدة: | 📺 قنوات أخرى |  | Sport 1 4K | الحين: الدوري الإسباني: ريال مدريد × برشلونة |  |  | Sport 1 HD | الحين: الدوري الإسباني: ريال مدريد × برشلونة |  |  | Sport 1 EN | الحين: الدوري الإسباني: ريال مدريد × برشلونة |  |  | Sky Sports Main | الحين: LaLiga: Real Madrid v Barcelona | 
+12:55:45 !! RuntimeError('the channels screen is missing بتعرض المباراة')
+12:55:45 screenshot 32-fail-match-link.png 1080x2400
+12:55:45 == match-link-missing
+12:55:45 Starting: Intent { act=android.intent.action.VIEW dat=ratv://match/... pkg=com.ratv.app }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+Status: ok
+LaunchState: UNKNOWN (0)
+Activity: com.ratv.app/.MainActivity
+TotalTime: 0
+WaitTime: 4
+Complete
+12:55:49 screenshot 33-match-link-missing.png 1080x2400
+12:55:55 == kora-button
+12:56:21 !! RuntimeError("not found: {'text': 'جدول المباريات'}")
+12:56:21 screenshot 34-fail-kora-button.png 1080x2400
+12:56:21 == commentator
+12:56:42 !! RuntimeError("not found: {'text': 'رياضة'}")
+12:56:43 screenshot 35-fail-commentator.png 1080x2400
+12:56:43 == commentary-mix
+12:57:04 !! RuntimeError("not found: {'text': 'رياضة'}")
+12:57:04 screenshot 36-fail-commentary-mix.png 1080x2400
+12:57:04 == guide
+12:57:25 !! RuntimeError("not found: {'text': 'دليل البرامج'}")
+12:57:25 screenshot 37-fail-guide.png 1080x2400
+12:57:25 == movies
+12:57:33 screenshot 38-movies.png 1080x2400
+12:57:40 screenshot 39-movie-detail.png 1080x2400
+12:57:42 4K copy offered: True
+12:58:08 screenshot 40-player-movie.png 2400x1080
+12:58:11 screenshot 41-player-movie-controls.png 2400x1080
+12:58:17 screenshot 42-movie-detail-resume.png 1080x2400
+12:58:19 == subtitles
+12:58:45 screenshot 43-subs-player.png 2400x1080
+12:58:59 screenshot 44-subs-panel.png 2400x1080
+12:58:59 subtitles panel:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | الاحتياطي ضد انقطاع النت: 60 من 60 ث | الترجمة | ترجمة الفيلم أو الحلقة بأي لغة، وتُترجم آلياً إذا لم تتوفر بلغتك |  |  |  |  | لغة الترجمة |  | العربية | اضغط لتغيير اللغة |  | ترجمات متاحة |  | Silent.Sea.2019.AR | العربية · 10 تنزيل |  |  | Silent.Sea.2019.1080p.WEB | الإنجليزية · تُترجم آلياً إلى العربية · 100 تنزيل |  | حجم الخط |  | صغير |  |  | متوسط |  |  | كبير |  |  | كبير جداً |  | التوقيت |  |  |  |  |  | 
+12:59:04 screenshot 45-subs-chosen.png 2400x1080
+12:59:13 screenshot 46-subs-on-screen.png 2400x1080
+12:59:13 subtitle on screen: 'The water is calm tonight'
+12:59:13 == subtitles-translated
+12:59:24 screenshot 47-subs-translated.png 2400x1080
+12:59:24 translated line: 'الماء هادئ الليلة'
+12:59:31 == series
+12:59:38 screenshot 48-series.png 1080x2400
+12:59:45 screenshot 49-series-detail.png 1080x2400
+12:59:49 screenshot 50-series-season2.png 1080x2400
+13:00:09 screenshot 51-player-episode.png 2400x1080
+13:00:15 screenshot 52-series-detail-after.png 1080x2400
+13:00:17 == home-after
+13:00:24 screenshot 53-home-after.png 1080x2400
+13:00:24 == search
+13:00:34 screenshot 54-search.png 1080x2400
+13:00:36 == settings
+13:00:43 screenshot 55-settings.png 1080x2400
+13:00:43 == parental
+13:01:09 screenshot 56-pin-dialog.png 1080x2400
+13:01:13 screenshot 57-settings-parental-on.png 1080x2400
+13:01:13 == adult-hidden
+13:01:27 screenshot 58-search-adult.png 1080x2400
+13:01:29 == speed-test
+13:01:54 screenshot 59-speed-test.png 1080x2400
+13:01:54 speed:  |  |  |  |  |  |  |  | قياس سرعة النت | 47.9 | ميجابت في الثانية | ممتاز: يكفي لبث 4K | زمن الاستجابة | 2 ملي ثانية | استجابة سيرفر الاشتراك | 4 ملي ثانية |  | إغلاق |  |  | إعادة القياس | 
+13:01:57 == clear-history
+13:02:23 screenshot 60-clear-history-dialog.png 1080x2400
+13:02:35 screenshot 61-home-history-cleared.png 1080x2400
+13:02:35 == update
+13:02:49 screenshot 62-update-dialog.png 1080x2400
+13:03:02 screenshot 63-update-installer.png 1080x2400
+13:03:02 after update: mCurrentFocus=Window{45ba201 u0 com.android.settings/com.android.settings.spa.SpaActivity}
+13:03:09 == relaunch
+13:03:17 screenshot 64-relaunch.png 1080x2400
+13:03:17 == switch-to-m3u
+13:03:42 screenshot 65-login-m3u-bad.png 1080x2400
+13:03:48 screenshot 66-login-m3u.png 1080x2400
+13:04:02 screenshot 67-home-m3u.png 1080x2400
+13:04:02 == m3u-content
+13:04:09 screenshot 68-live-m3u.png 1080x2400
+13:04:22 screenshot 69-player-m3u.png 2400x1080
+13:04:31 screenshot 70-series-m3u.png 1080x2400
+13:04:37 screenshot 71-series-detail-m3u.png 1080x2400
+13:04:39 == users
+13:04:46 screenshot 72-users.png 1080x2400
+13:05:08 screenshot 73-user1-favorites.png 1080x2400
