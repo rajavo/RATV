@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.tr
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -102,11 +103,11 @@ fun FindMatchScreen(nav: Navigator) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (!tv) {
-                    CircleIconButton(RIcons.Back, "رجوع", { nav.back() })
+                    CircleIconButton(RIcons.Back, tr("رجوع"), { nav.back() })
                     Spacer(Modifier.width(12.dp))
                 }
                 Column(Modifier.weight(1f)) {
-                    Text("وين تنعرض المباراة؟", style = T.display(24.sp))
+                    Text(tr("وين تنعرض المباراة؟"), style = T.display(24.sp))
                     Text(r.title, style = T.body(20.sp, FontWeight.Bold, RColors.Saffron))
                     Text(
                         listOf(r.league, kickOff(r.start)).filter { it.isNotBlank() }.joinToString("  ·  "),
@@ -117,13 +118,13 @@ fun FindMatchScreen(nav: Navigator) {
         }
         when {
             search == null -> item {
-                Text("جارٍ البحث في دليل البرامج…", style = T.body(16.sp, FontWeight.Bold, RColors.Text2))
+                Text(tr("جارٍ البحث في دليل البرامج…"), style = T.body(16.sp, FontWeight.Bold, RColors.Text2))
             }
             event != null -> {
                 item {
                     Text(
-                        if (event.isLive(now)) "المباراة شغّالة الحين على ${event.channels.size} قناة، اختر وحدة:"
-                        else "${event.channels.size} قناة بتعرض المباراة، اختر وحدة:",
+                        if (event.isLive(now)) tr("المباراة شغّالة الحين على {0} قناة، اختر وحدة:", event.channels.size)
+                        else tr("{0} قناة بتعرض المباراة، اختر وحدة:", event.channels.size),
                         style = T.body(16.sp, FontWeight.Bold)
                     )
                 }
@@ -142,7 +143,7 @@ fun FindMatchScreen(nav: Navigator) {
                 item { NotFound(r, epgLoading, now, notFoundFocus) { nav.matches() } }
                 if (sports.isNotEmpty()) {
                     item(key = "sports") {
-                        Text("قنوات الرياضة في اشتراكك", style = T.body(15.sp, FontWeight.Bold), modifier = Modifier.padding(top = 6.dp))
+                        Text(tr("قنوات الرياضة في اشتراكك"), style = T.body(15.sp, FontWeight.Bold), modifier = Modifier.padding(top = 6.dp))
                     }
                     items(sports, key = { it.id }) { ch ->
                         ChannelLine(ch, epg.forChannel(ch).current(now)?.title, Modifier) { nav.playLive(ch.id) }
@@ -164,17 +165,17 @@ private fun NotFound(r: MatchRequest, epgLoading: Boolean, now: Long, focus: Foc
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text("ما لقينا المباراة في دليل البرامج", style = T.body(17.sp, FontWeight.Bold))
+        Text(tr("ما لقينا المباراة في دليل البرامج"), style = T.body(17.sp, FontWeight.Bold))
         Text(
             when {
-                epgLoading -> "دليل البرامج لسّه يتحمّل، وبندوّر مرة ثانية أول ما يخلص."
-                daysAway >= 2 -> "المباراة بعد $daysAway أيام، ودليل البرامج عادةً يغطي يوم أو يومين قدّام. ارجع لها يوم المباراة."
-                daysAway == 1 -> "المباراة بكرة، ودليل البرامج ممكن ما يكون نزل لها للحين. ارجع لها قبل المباراة بشوي."
-                else -> "المزوّد ما كتب المباراة في دليل البرامج. جرّب قنوات الرياضة تحت."
+                epgLoading -> tr("دليل البرامج لسّه يتحمّل، وبندوّر مرة ثانية أول ما يخلص.")
+                daysAway >= 2 -> tr("المباراة بعد {0} أيام، ودليل البرامج عادةً يغطي يوم أو يومين قدّام. ارجع لها يوم المباراة.", daysAway)
+                daysAway == 1 -> tr("المباراة بكرة، ودليل البرامج ممكن ما يكون نزل لها للحين. ارجع لها قبل المباراة بشوي.")
+                else -> tr("المزوّد ما كتب المباراة في دليل البرامج. جرّب قنوات الرياضة تحت.")
             },
             style = T.body(14.sp, color = RColors.Text2)
         )
-        PrimaryButton("جدول المباريات", onSchedule, modifier = Modifier.focusRequester(focus), height = 46.dp)
+        PrimaryButton(tr("جدول المباريات"), onSchedule, modifier = Modifier.focusRequester(focus), height = 46.dp)
     }
 }
 
@@ -186,7 +187,7 @@ private fun ChannelLine(ch: Channel, nowOn: String?, modifier: Modifier, onClick
             .fillMaxWidth()
             .clip(shape)
             .background(RColors.Surface)
-            .tvClickable(shape, onClickLabel = "مشاهدة ${ch.name}", onClick = onClick)
+            .tvClickable(shape, onClickLabel = tr("مشاهدة {0}", ch.name), onClick = onClick)
             .padding(horizontal = 14.dp, vertical = 11.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -195,15 +196,15 @@ private fun ChannelLine(ch: Channel, nowOn: String?, modifier: Modifier, onClick
         Column(Modifier.weight(1f)) {
             Text(ch.name, style = T.body(16.sp, FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
             if (!nowOn.isNullOrBlank()) {
-                Text("الحين: $nowOn", style = T.body(13.sp, color = RColors.Text2), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(tr("الحين: {0}", nowOn), style = T.body(13.sp, color = RColors.Text2), maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
     }
 }
 
-private val WEEKDAYS = arrayOf("الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت")
-private val MONTHS = arrayOf(
-    "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
+private val WEEKDAYS get() = arrayOf(tr("الأحد"), tr("الاثنين"), tr("الثلاثاء"), tr("الأربعاء"), tr("الخميس"), tr("الجمعة"), tr("السبت"))
+private val MONTHS get() = arrayOf(
+    tr("يناير"), tr("فبراير"), tr("مارس"), tr("أبريل"), tr("مايو"), tr("يونيو"), tr("يوليو"), tr("أغسطس"), tr("سبتمبر"), tr("أكتوبر"), tr("نوفمبر"), tr("ديسمبر")
 )
 
 /** "الخميس 23 أكتوبر 21:00" */

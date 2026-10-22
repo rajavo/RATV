@@ -227,6 +227,11 @@ class Prefs(context: Context) {
         set(value) = sp.edit().putString("palette", value).apply()
 
     /** A live channel that keeps stalling moves by itself to another version of it (lighter or a backup). */
+    /** Interface language: "ar", "en" or "es". */
+    var uiLanguage: String
+        get() = sp.getString("uiLanguage", "ar") ?: "ar"
+        set(value) = sp.edit().putString("uiLanguage", value).apply()
+
     var autoVersion: Boolean
         get() = sp.getBoolean("autoVersion", false)
         set(value) = sp.edit().putBoolean("autoVersion", value).apply()

@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.tr
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -62,22 +63,22 @@ fun UpdateDialog(info: Updater.Info, onDismiss: () -> Unit) {
                             throw e
                         } catch (e: Exception) {
                             progress = null
-                            error = "تعذّر تنزيل التحديث. تحقّق من الاتصال وحاول مرة أخرى."
+                            error = tr("تعذّر تنزيل التحديث. تحقّق من الاتصال وحاول مرة أخرى.")
                         }
                     }
                 }
             ) {
-                Text(if (file != null) "تثبيت" else "تحديث الآن", color = if (progress == null) RColors.Saffron else RColors.Text3)
+                Text(if (file != null) tr("تثبيت") else tr("تحديث الآن"), color = if (progress == null) RColors.Saffron else RColors.Text3)
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss, enabled = progress == null) { Text("لاحقاً", color = RColors.Text2) }
+            TextButton(onClick = onDismiss, enabled = progress == null) { Text(tr("لاحقاً"), color = RColors.Text2) }
         },
-        title = { Text("تحديث جديد متاح", style = T.h2) },
+        title = { Text(tr("تحديث جديد متاح"), style = T.h2) },
         text = {
             Column(Modifier.fillMaxWidth()) {
                 Text(
-                    "الإصدار ${info.versionName} جاهز (عندك ${BuildConfig.VERSION_NAME}). يُنزَّل من صفحة RATV على GitHub، وتبقى اشتراكاتك وإعداداتك كما هي.",
+                    tr("الإصدار {0} جاهز (عندك {1}). يُنزَّل من صفحة RATV على GitHub، وتبقى اشتراكاتك وإعداداتك كما هي.", info.versionName, BuildConfig.VERSION_NAME),
                     style = T.body(14.sp, color = RColors.Text2)
                 )
                 progress?.let { p ->
@@ -89,11 +90,11 @@ fun UpdateDialog(info: Updater.Info, onDismiss: () -> Unit) {
                         color = RColors.Saffron,
                         trackColor = RColors.Surface3
                     )
-                    Text("جارٍ التنزيل… ${(p * 100).toInt()}%", style = T.caption, modifier = Modifier.padding(top = 8.dp))
+                    Text(tr("جارٍ التنزيل… {0}%", (p * 100).toInt()), style = T.caption, modifier = Modifier.padding(top = 8.dp))
                 }
                 if (needsPermission) {
                     Text(
-                        "اسمح لتطبيق RATV بتثبيت التطبيقات في الصفحة التي فُتحت، ثم ارجع واضغط «تثبيت».",
+                        tr("اسمح لتطبيق RATV بتثبيت التطبيقات في الصفحة التي فُتحت، ثم ارجع واضغط «تثبيت»."),
                         style = T.body(14.sp, color = RColors.Saffron),
                         modifier = Modifier.padding(top = 12.dp)
                     )

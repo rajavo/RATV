@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.tr
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -74,7 +75,7 @@ fun SeriesDetailScreen(seriesId: String, nav: Navigator) {
     val show = remember(seriesId, seriesList) { repo.seriesItem(seriesId) }
 
     if (show == null) {
-        MissingItem("المسلسل غير متاح", nav)
+        MissingItem(tr("المسلسل غير متاح"), nav)
         return
     }
 
@@ -141,10 +142,10 @@ fun SeriesDetailScreen(seriesId: String, nav: Navigator) {
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    CircleIconButton(RIcons.Back, "رجوع", { nav.back() }, background = Color(0x8C0B0C10))
+                    CircleIconButton(RIcons.Back, tr("رجوع"), { nav.back() }, background = Color(0x8C0B0C10))
                     CircleIconButton(
                         if (isFavorite) RIcons.HeartFilled else RIcons.Heart,
-                        if (isFavorite) "إزالة من المفضلة" else "إضافة إلى المفضلة",
+                        if (isFavorite) tr("إزالة من المفضلة") else tr("إضافة إلى المفضلة"),
                         { repo.toggleFavorite(favKey) },
                         background = Color(0x8C0B0C10),
                         tint = if (isFavorite) RColors.Saffron else RColors.Text
@@ -167,7 +168,7 @@ fun SeriesDetailScreen(seriesId: String, nav: Navigator) {
                         val meta = listOfNotNull(
                             info?.year ?: show.year,
                             info?.genre,
-                            if (seasons.isNotEmpty()) "${seasons.size} ${if (seasons.size == 1) "موسم" else "مواسم"}" else null
+                            if (seasons.isNotEmpty()) "${seasons.size} ${if (seasons.size == 1) tr("موسم") else tr("مواسم")}" else null
                         ).joinToString(" · ")
                         if (meta.isNotBlank()) Text(meta, style = T.body(13.sp, color = RColors.Text2), maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
@@ -184,7 +185,7 @@ fun SeriesDetailScreen(seriesId: String, nav: Navigator) {
                 if (ep != null) {
                     val resuming = lastEntry != null && lastEntry.itemId == ep.id
                     PrimaryButton(
-                        text = if (resuming) "متابعة · الموسم ${ep.season}، الحلقة ${ep.num}" else "تشغيل الحلقة ${ep.num}",
+                        text = if (resuming) tr("متابعة · الموسم {0}، الحلقة {1}", ep.season, ep.num) else tr("تشغيل الحلقة {0}", ep.num),
                         onClick = { nav.playEpisode(show.id, ep.id) },
                         icon = RIcons.Play,
                         modifier = Modifier
@@ -197,7 +198,7 @@ fun SeriesDetailScreen(seriesId: String, nav: Navigator) {
                     UpgradeButton(onClick = { nav.show(better.id) })
                 }
                 if (versions.isNotEmpty()) {
-                    Text("نسخ أخرى من المسلسل في اشتراكك", style = T.h2)
+                    Text(tr("نسخ أخرى من المسلسل في اشتراكك"), style = T.h2)
                     versions.take(6).forEach { v ->
                         VersionRow(
                             quality = repo.seriesQuality(v),
@@ -237,7 +238,7 @@ fun SeriesDetailScreen(seriesId: String, nav: Navigator) {
                         CircularProgressIndicator(color = RColors.Saffron, strokeWidth = 2.5.dp, modifier = Modifier.size(32.dp))
                     }
                 } else {
-                    EmptyState(RIcons.Layers, "تعذّر تحميل الحلقات", "تحقّق من الاتصال ثم حاول مرة أخرى.")
+                    EmptyState(RIcons.Layers, tr("تعذّر تحميل الحلقات"), tr("تحقّق من الاتصال ثم حاول مرة أخرى."))
                 }
             }
         } else {
@@ -249,7 +250,7 @@ fun SeriesDetailScreen(seriesId: String, nav: Navigator) {
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(seasons) { s ->
-                            Chip("الموسم $s", s == activeSeason, { season = s })
+                            Chip(tr("الموسم {0}", s), s == activeSeason, { season = s })
                         }
                     }
                 }
@@ -264,7 +265,7 @@ fun SeriesDetailScreen(seriesId: String, nav: Navigator) {
                 )
             }
             if (episodes.isEmpty()) {
-                item { EmptyState(RIcons.Layers, "لا توجد حلقات", "لم يرسل المزوّد حلقات لهذا الموسم.") }
+                item { EmptyState(RIcons.Layers, tr("لا توجد حلقات"), tr("لم يرسل المزوّد حلقات لهذا الموسم.")) }
             }
         }
     }
@@ -283,9 +284,9 @@ private fun EpisodeRow(episode: Episode, entry: WatchEntry?, watched: Boolean, o
         else -> 0f
     }
     val overline = when {
-        entry != null -> "الحلقة ${episode.num} · متبقي ${((entry.duration - entry.position) / 60_000L).coerceAtLeast(0)} د"
-        watched -> "الحلقة ${episode.num} · شوهدت"
-        else -> "الحلقة ${episode.num}"
+        entry != null -> tr("الحلقة {0} · متبقي {1} د", episode.num, ((entry.duration - entry.position) / 60_000L).coerceAtLeast(0))
+        watched -> tr("الحلقة {0} · شوهدت", episode.num)
+        else -> tr("الحلقة {0}", episode.num)
     }
     Row(
         Modifier
@@ -306,7 +307,7 @@ private fun EpisodeRow(episode: Episode, entry: WatchEntry?, watched: Boolean, o
             PosterImage(episode.title, episode.image, Modifier.fillMaxSize(), showTitle = false)
             if (episode.durationSecs > 0) {
                 Text(
-                    "${episode.durationSecs / 60} د",
+                    tr("{0} د", episode.durationSecs / 60),
                     style = T.body(10.5.sp, FontWeight.Bold).copy(lineHeight = 14.sp),
                     modifier = Modifier
                         .align(Alignment.BottomEnd)

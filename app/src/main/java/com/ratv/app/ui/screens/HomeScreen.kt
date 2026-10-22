@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.tr
 import com.ratv.app.data.MatchEvent
 import com.ratv.app.data.Updater
 import androidx.compose.runtime.LaunchedEffect
@@ -139,7 +140,7 @@ fun HomeScreen(nav: Navigator) {
                 ) {
                     Icon(RIcons.Refresh, contentDescription = null, tint = RColors.OnSaffron, modifier = Modifier.size(20.dp))
                     Text(
-                        "تحديث جديد متاح (${info.versionName}) — اضغط للتحديث",
+                        tr("تحديث جديد متاح ({0}) — اضغط للتحديث", info.versionName),
                         style = T.body(14.sp, FontWeight.Bold, RColors.OnSaffron),
                         modifier = Modifier.weight(1f)
                     )
@@ -158,9 +159,9 @@ fun HomeScreen(nav: Navigator) {
             ) {
                 RatvLogo(24.sp)
                 Spacer(Modifier.weight(1f))
-                CircleIconButton(RIcons.Search, "بحث", { nav.search() })
+                CircleIconButton(RIcons.Search, tr("بحث"), { nav.search() })
                 Spacer(Modifier.width(8.dp))
-                CircleIconButton(RIcons.User, "حسابي", { nav.tab("settings") })
+                CircleIconButton(RIcons.User, tr("حسابي"), { nav.tab("settings") })
             }
         }
 
@@ -171,8 +172,8 @@ fun HomeScreen(nav: Navigator) {
                 HeroCard(
                     channel = featured,
                     title = programme?.title ?: featured.name,
-                    meta = if (programme != null) "بدأ ${hm(programme.start)} · ${minutesLeft(programme.end, now)}"
-                    else (repo.liveCategoryName(featured.categoryId) ?: "بث مباشر"),
+                    meta = if (programme != null) tr("بدأ {0} · {1}", hm(programme.start), minutesLeft(programme.end, now))
+                    else (repo.liveCategoryName(featured.categoryId) ?: tr("بث مباشر")),
                     progress = programme?.progress(now),
                     onWatch = { nav.playLive(featured.id) },
                     modifier = Modifier
@@ -189,15 +190,15 @@ fun HomeScreen(nav: Navigator) {
                     .padding(start = 20.dp, end = 20.dp, top = 18.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                CategoryTile(RIcons.Broadcast, "مباشر", "${formatCount(channels.size)} قناة", Modifier.weight(1f)) { nav.tab("live") }
+                CategoryTile(RIcons.Broadcast, tr("مباشر"), tr("{0} قناة", formatCount(channels.size)), Modifier.weight(1f)) { nav.tab("live") }
                 CategoryTile(
-                    RIcons.Film, "أفلام",
-                    if (libraryLoading && movies.isEmpty()) "جارٍ التحميل…" else "${formatCount(movies.size)} فيلم",
+                    RIcons.Film, tr("أفلام"),
+                    if (libraryLoading && movies.isEmpty()) tr("جارٍ التحميل…") else tr("{0} فيلم", formatCount(movies.size)),
                     Modifier.weight(1f)
                 ) { nav.tab("movies") }
                 CategoryTile(
-                    RIcons.Layers, "مسلسلات",
-                    if (libraryLoading && series.isEmpty()) "جارٍ التحميل…" else "${formatCount(series.size)} مسلسل",
+                    RIcons.Layers, tr("مسلسلات"),
+                    if (libraryLoading && series.isEmpty()) tr("جارٍ التحميل…") else tr("{0} مسلسل", formatCount(series.size)),
                     Modifier.weight(1f)
                 ) { nav.tab("series") }
             }
@@ -207,7 +208,7 @@ fun HomeScreen(nav: Navigator) {
             item {
                 Column {
                     Spacer(Modifier.height(20.dp))
-                    SectionHeader("تابع المشاهدة")
+                    SectionHeader(tr("تابع المشاهدة"))
                 }
             }
             item {
@@ -252,7 +253,7 @@ fun HomeScreen(nav: Navigator) {
                             Text(entry.title, style = T.title.copy(fontSize = 14.sp), maxLines = 1, overflow = TextOverflow.Ellipsis)
                             val left = ((entry.duration - entry.position) / 60_000L).coerceAtLeast(0)
                             Text(
-                                listOfNotNull(entry.subtitle, "متبقي $left د").joinToString(" · "),
+                                listOfNotNull(entry.subtitle, tr("متبقي {0} د", left)).joinToString(" · "),
                                 style = T.caption,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
@@ -267,7 +268,7 @@ fun HomeScreen(nav: Navigator) {
             item {
                 Column {
                     Spacer(Modifier.height(20.dp))
-                    SectionHeader("مباريات اليوم", action = "الجدول", onAction = { if (wide) nav.tab("matches") else nav.matches() })
+                    SectionHeader(tr("مباريات اليوم"), action = tr("الجدول"), onAction = { if (wide) nav.tab("matches") else nav.matches() })
                     Column(Modifier.padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         todayMatches.take(3).forEach { m ->
                             MatchCard(m, now, { repo.liveCategoryName(it) }, compact = true) { ch -> nav.playLive(ch.id) }
@@ -281,7 +282,7 @@ fun HomeScreen(nav: Navigator) {
             item {
                 Column {
                     Spacer(Modifier.height(20.dp))
-                    SectionHeader("قنواتك المفضلة", action = "الكل", onAction = { nav.tab("live") })
+                    SectionHeader(tr("قنواتك المفضلة"), action = tr("الكل"), onAction = { nav.tab("live") })
                 }
             }
             item {
@@ -310,7 +311,7 @@ fun HomeScreen(nav: Navigator) {
             item {
                 Column {
                     Spacer(Modifier.height(20.dp))
-                    SectionHeader("أُضيف حديثاً", action = "عرض الكل", onAction = { nav.tab("movies") })
+                    SectionHeader(tr("أُضيف حديثاً"), action = tr("عرض الكل"), onAction = { nav.tab("movies") })
                 }
             }
             item {
@@ -322,7 +323,7 @@ fun HomeScreen(nav: Navigator) {
             item {
                 Column {
                     Spacer(Modifier.height(20.dp))
-                    SectionHeader("مسلسلات جديدة", action = "عرض الكل", onAction = { nav.tab("series") })
+                    SectionHeader(tr("مسلسلات جديدة"), action = tr("عرض الكل"), onAction = { nav.tab("series") })
                 }
             }
             item {
@@ -334,8 +335,8 @@ fun HomeScreen(nav: Navigator) {
             item {
                 com.ratv.app.ui.components.EmptyState(
                     RIcons.Tv,
-                    "لا يوجد محتوى بعد",
-                    "تحقّق من اشتراكك أو حدّث المحتوى من صفحة حسابي."
+                    tr("لا يوجد محتوى بعد"),
+                    tr("تحقّق من اشتراكك أو حدّث المحتوى من صفحة حسابي.")
                 )
             }
         }
@@ -449,7 +450,7 @@ private fun HeroCard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Icon(RIcons.Play, contentDescription = null, tint = RColors.OnSaffron, modifier = Modifier.size(16.dp))
-                Text("شاهد الآن", style = T.body(14.sp, FontWeight.Bold, RColors.OnSaffron))
+                Text(tr("شاهد الآن"), style = T.body(14.sp, FontWeight.Bold, RColors.OnSaffron))
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.ratv.app.player
 
+import com.ratv.app.i18n.tr
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 import android.view.Display
@@ -246,7 +247,7 @@ fun episodePlayable(ep: Episode, seriesId: String, seriesName: String?, cover: S
     id = ep.id,
     url = ep.url,
     title = seriesName ?: ep.title,
-    subtitle = "الموسم ${ep.season} · الحلقة ${ep.num}",
+    subtitle = tr("الموسم {0} · الحلقة {1}", ep.season, ep.num),
     image = ep.image ?: cover,
     seriesId = seriesId,
     startPosition = start
@@ -363,24 +364,24 @@ fun resolutionLabel(height: Int): String? = when {
 
 fun describeError(e: PlaybackException): String = when (e.errorCode) {
     PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS ->
-        "رفض الخادم تشغيل البث. قد يكون الاشتراك منتهياً أو مستخدماً على جهاز آخر."
+        tr("رفض الخادم تشغيل البث. قد يكون الاشتراك منتهياً أو مستخدماً على جهاز آخر.")
     PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
     PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT ->
-        "تعذّر الاتصال بالبث. تحقّق من الإنترنت."
+        tr("تعذّر الاتصال بالبث. تحقّق من الإنترنت.")
     PlaybackException.ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED,
     PlaybackException.ERROR_CODE_PARSING_CONTAINER_MALFORMED,
     PlaybackException.ERROR_CODE_DECODING_FORMAT_UNSUPPORTED ->
-        "صيغة هذا البث غير مدعومة على جهازك."
+        tr("صيغة هذا البث غير مدعومة على جهازك.")
     PlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND ->
-        "البث غير متاح حالياً."
-    else -> "تعذّر تشغيل البث (${e.errorCodeName})."
+        tr("البث غير متاح حالياً.")
+    else -> tr("تعذّر تشغيل البث ({0}).", e.errorCodeName)
 }
 
 class TrackOption(val label: String, val group: Tracks.Group?, val index: Int, val selected: Boolean)
 
 fun trackOptions(player: Player, type: Int): List<TrackOption> {
     val out = ArrayList<TrackOption>()
-    val arabic = Locale("ar")
+    val arabic = com.ratv.app.i18n.I18n.locale
     var n = 1
     player.currentTracks.groups.forEach { g ->
         if (g.type != type) return@forEach
@@ -394,7 +395,7 @@ fun trackOptions(player: Player, type: Int): List<TrackOption> {
             }
             val parts = listOfNotNull(f.label?.takeIf { it.isNotBlank() }, language).distinct()
             val label = if (parts.isEmpty()) {
-                (if (type == C.TRACK_TYPE_AUDIO) "مسار صوتي " else "ترجمة ") + n
+                (if (type == C.TRACK_TYPE_AUDIO) tr("مسار صوتي ") else tr("ترجمة ")) + n
             } else {
                 parts.joinToString(" · ")
             }

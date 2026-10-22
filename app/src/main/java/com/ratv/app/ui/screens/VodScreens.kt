@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.tr
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -88,7 +89,7 @@ fun MoviesScreen(nav: Navigator) {
     if (rememberIsWide()) {
         var sort by remember { mutableStateOf(repo.prefs.movieSort) }
         CatalogWide(
-            title = "الأفلام",
+            title = tr("الأفلام"),
             entries = entries,
             categories = categories,
             loading = loading,
@@ -98,18 +99,18 @@ fun MoviesScreen(nav: Navigator) {
                 sort = it
                 repo.prefs.movieSort = it
             },
-            emptyTitle = "لا توجد أفلام",
+            emptyTitle = tr("لا توجد أفلام"),
             badgeOf = { item -> repo.movie(item.id)?.let { repo.movieQuality(it) } },
             onOpen = { nav.movie(it) }
         )
     } else {
         CatalogScreen(
-            title = "الأفلام",
+            title = tr("الأفلام"),
             entries = entries,
             categories = categories,
             loading = loading,
             continueIds = continueIds,
-            emptyTitle = "لا توجد أفلام",
+            emptyTitle = tr("لا توجد أفلام"),
             onSearch = { nav.search() },
             onOpen = { nav.movie(it) }
         )
@@ -130,7 +131,7 @@ fun SeriesScreen(nav: Navigator) {
     if (rememberIsWide()) {
         var sort by remember { mutableStateOf(repo.prefs.seriesSort) }
         CatalogWide(
-            title = "المسلسلات",
+            title = tr("المسلسلات"),
             entries = entries,
             categories = categories,
             loading = loading,
@@ -140,18 +141,18 @@ fun SeriesScreen(nav: Navigator) {
                 sort = it
                 repo.prefs.seriesSort = it
             },
-            emptyTitle = "لا توجد مسلسلات",
+            emptyTitle = tr("لا توجد مسلسلات"),
             badgeOf = { item -> repo.seriesItem(item.id)?.let { repo.seriesQuality(it) } },
             onOpen = { nav.show(it) }
         )
     } else {
         CatalogScreen(
-            title = "المسلسلات",
+            title = tr("المسلسلات"),
             entries = entries,
             categories = categories,
             loading = loading,
             continueIds = continueIds,
-            emptyTitle = "لا توجد مسلسلات",
+            emptyTitle = tr("لا توجد مسلسلات"),
             onSearch = { nav.search() },
             onOpen = { nav.show(it) }
         )
@@ -201,17 +202,17 @@ private fun CatalogScreen(
     ) {
         item(span = { GridItemSpan(maxLineSpan) }) {
             ScreenHeader(title, Modifier.statusBarsPadding(), horizontalPadding = 0.dp) {
-                CircleIconButton(RIcons.Search, "بحث", onSearch)
+                CircleIconButton(RIcons.Search, tr("بحث"), onSearch)
             }
         }
         item(span = { GridItemSpan(maxLineSpan) }) {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                item { Chip("الكل", selected == ALL, { selected = ALL }) }
-                if (continueIds.isNotEmpty()) item { Chip("متابعة المشاهدة", selected == CONTINUE, { selected = CONTINUE }) }
-                item { Chip("أُضيف حديثاً", selected == NEW, { selected = NEW }) }
-                item { Chip("المفضلة", selected == FAV, { selected = FAV }) }
+                item { Chip(tr("الكل"), selected == ALL, { selected = ALL }) }
+                if (continueIds.isNotEmpty()) item { Chip(tr("متابعة المشاهدة"), selected == CONTINUE, { selected = CONTINUE }) }
+                item { Chip(tr("أُضيف حديثاً"), selected == NEW, { selected = NEW }) }
+                item { Chip(tr("المفضلة"), selected == FAV, { selected = FAV }) }
                 items(categories, key = { it.id }) { cat ->
                     Chip(cat.name, selected == cat.id, { selected = cat.id })
                 }
@@ -229,12 +230,12 @@ private fun CatalogScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         CircularProgressIndicator(color = RColors.Saffron, strokeWidth = 2.5.dp, modifier = Modifier.size(32.dp))
-                        Text("جارٍ تحميل المكتبة…", style = T.body(14.sp, color = RColors.Text2))
+                        Text(tr("جارٍ تحميل المكتبة…"), style = T.body(14.sp, color = RColors.Text2))
                     }
                 } else if (selected == FAV) {
-                    EmptyState(RIcons.Heart, "لا توجد عناصر مفضلة", "اضغط على القلب في صفحة أي عنصر لإضافته هنا.")
+                    EmptyState(RIcons.Heart, tr("لا توجد عناصر مفضلة"), tr("اضغط على القلب في صفحة أي عنصر لإضافته هنا."))
                 } else {
-                    EmptyState(RIcons.Film, emptyTitle, "لا يحتوي اشتراكك على عناصر في هذا القسم.")
+                    EmptyState(RIcons.Film, emptyTitle, tr("لا يحتوي اشتراكك على عناصر في هذا القسم."))
                 }
             }
         }

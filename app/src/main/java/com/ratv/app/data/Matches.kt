@@ -1,5 +1,7 @@
 package com.ratv.app.data
 
+import com.ratv.app.i18n.tr
+
 import kotlin.math.abs
 
 /** One game in the schedule, with every channel of the subscription that shows it. */
@@ -89,11 +91,11 @@ private val REGIONS = mapOf(
 fun regionOf(channelName: String, categoryName: String?): String {
     for (text in listOfNotNull(channelName, categoryName)) {
         val code = REGION_PREFIX.find(text)?.groupValues?.get(1)?.lowercase() ?: continue
-        REGIONS[code]?.let { return it }
+        REGIONS[code]?.let { return tr(it) }
     }
     val all = foldText(channelName + " " + categoryName.orEmpty())
     return when {
-        all.contains("عربي") || channelName.any { it in '\u0600'..'\u06FF' } -> "🌍 القنوات العربية"
-        else -> "📺 قنوات أخرى"
+        all.contains("عربي") || channelName.any { it in '\u0600'..'\u06FF' } -> tr("🌍 القنوات العربية")
+        else -> tr("📺 قنوات أخرى")
     }
 }

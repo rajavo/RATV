@@ -1,5 +1,7 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.I18n
+import com.ratv.app.i18n.tr
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
 import com.ratv.app.data.Updater
@@ -84,25 +86,25 @@ import com.ratv.app.ui.theme.Palette
 import com.ratv.app.ui.theme.AppTheme
 import com.ratv.app.ui.theme.T
 
-private val subtitleSizeLabels = listOf("صغير", "متوسط", "كبير", "كبير جداً")
+private val subtitleSizeLabels get() = listOf(tr("صغير"), tr("متوسط"), tr("كبير"), tr("كبير جداً"))
 
-private val bufferLabels = linkedMapOf(
-    "30" to "يكمل 30 ثانية بدون إنترنت",
-    "60" to "يكمل دقيقة بدون إنترنت (موصى به)",
-    "120" to "يكمل دقيقتين بدون إنترنت",
-    "180" to "يكمل 3 دقائق بدون إنترنت"
+private val bufferLabels get() = linkedMapOf(
+    "30" to tr("يكمل 30 ثانية بدون إنترنت"),
+    "60" to tr("يكمل دقيقة بدون إنترنت (موصى به)"),
+    "120" to tr("يكمل دقيقتين بدون إنترنت"),
+    "180" to tr("يكمل 3 دقائق بدون إنترنت")
 )
 
-private val steadyLabels = linkedMapOf(
-    "auto" to "تلقائي (موصى به)",
-    "fast" to "سريع: القنوات تفتح أسرع",
-    "max" to "أقصى ثبات: للنت أو السيرفر الضعيف"
+private val steadyLabels get() = linkedMapOf(
+    "auto" to tr("تلقائي (موصى به)"),
+    "fast" to tr("سريع: القنوات تفتح أسرع"),
+    "max" to tr("أقصى ثبات: للنت أو السيرفر الضعيف")
 )
 
-private val liveFormatLabels = linkedMapOf(
-    "ts" to "TS (موصى به)",
+private val liveFormatLabels get() = linkedMapOf(
+    "ts" to tr("TS (موصى به)"),
     "hls" to "HLS",
-    "auto" to "تلقائي (HLS إذا يدعمه السيرفر)"
+    "auto" to tr("تلقائي (HLS إذا يدعمه السيرفر)")
 )
 
 @Composable
@@ -133,6 +135,8 @@ fun SettingsScreen(nav: Navigator) {
     var liveFormat by remember { mutableStateOf(repo.prefs.liveFormat) }
     var showSteady by remember { mutableStateOf(false) }
     var showPalette by remember { mutableStateOf(false) }
+    var showLanguage by remember { mutableStateOf(false) }
+    val hostContext = androidx.compose.ui.platform.LocalContext.current
     var liveSteady by remember { mutableStateOf(repo.prefs.liveSteady) }
     var matchFrameRate by remember { mutableStateOf(repo.prefs.matchFrameRate) }
     var autoVersion by remember { mutableStateOf(repo.prefs.autoVersion) }
@@ -155,7 +159,7 @@ fun SettingsScreen(nav: Navigator) {
             .screenBackground()
             .verticalScroll(rememberScrollState())
     ) {
-        ScreenHeader("حسابي", Modifier.statusBarsPadding())
+        ScreenHeader(tr("حسابي"), Modifier.statusBarsPadding())
 
         val p = playlist
         Column(
@@ -180,7 +184,7 @@ fun SettingsScreen(nav: Navigator) {
                 }
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text(p?.name ?: "بلا اشتراك", style = T.body(16.sp, FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(p?.name ?: tr("بلا اشتراك"), style = T.body(16.sp, FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
                         if (p != null) {
                             Text(
                                 if (p.type == PlaylistType.XTREAM) "Xtream" else "M3U",
@@ -194,7 +198,7 @@ fun SettingsScreen(nav: Navigator) {
                     val source = when {
                         p == null -> ""
                         p.type == PlaylistType.XTREAM -> Uri.parse(p.server).let { u -> (u.host ?: p.server) + if (u.port > 0) ":" + u.port else "" }
-                        p.m3uUrl.startsWith("content://") -> "ملف من الجهاز"
+                        p.m3uUrl.startsWith("content://") -> tr("ملف من الجهاز")
                         else -> Uri.parse(p.m3uUrl).host ?: p.m3uUrl
                     }
                     if (source.isNotBlank()) Text(source, style = T.body(13.sp, color = RColors.Text3), maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -205,17 +209,17 @@ fun SettingsScreen(nav: Navigator) {
             Row(Modifier.fillMaxWidth()) {
                 val acc = account
                 if (p?.type == PlaylistType.XTREAM && acc != null) {
-                    Stat("ينتهي في", acc.expDate?.let { arabicDate(it) } ?: "غير محدود", Modifier.weight(1f))
-                    Stat("الاتصالات", "${acc.activeCons ?: 0} من ${acc.maxCons ?: 1}", Modifier.weight(1f))
+                    Stat(tr("ينتهي في"), acc.expDate?.let { arabicDate(it) } ?: tr("غير محدود"), Modifier.weight(1f))
+                    Stat(tr("الاتصالات"), tr("{0} من {1}", acc.activeCons ?: 0, acc.maxCons ?: 1), Modifier.weight(1f))
                 } else {
-                    Stat("القنوات", formatCount(channels.size), Modifier.weight(1f))
-                    Stat("الأفلام والمسلسلات", formatCount(movies.size + series.size), Modifier.weight(1f))
+                    Stat(tr("القنوات"), formatCount(channels.size), Modifier.weight(1f))
+                    Stat(tr("الأفلام والمسلسلات"), formatCount(movies.size + series.size), Modifier.weight(1f))
                 }
-                Stat("آخر تحديث", relativeTime(lastUpdated), Modifier.weight(1f))
+                Stat(tr("آخر تحديث"), relativeTime(lastUpdated), Modifier.weight(1f))
             }
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 OutlineButton(
-                    "إضافة مستخدم",
+                    tr("إضافة مستخدم"),
                     onClick = { nav.addUser() },
                     icon = RIcons.Plus,
                     modifier = Modifier
@@ -224,10 +228,10 @@ fun SettingsScreen(nav: Navigator) {
                     height = 44.dp
                 )
                 OutlineButton(
-                    "تحديث المحتوى",
+                    tr("تحديث المحتوى"),
                     onClick = {
                         repo.refresh()
-                        Toast.makeText(context, "جارٍ تحديث المحتوى…", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, tr("جارٍ تحديث المحتوى…"), Toast.LENGTH_SHORT).show()
                     },
                     icon = RIcons.Refresh,
                     modifier = Modifier.weight(1f),
@@ -237,7 +241,7 @@ fun SettingsScreen(nav: Navigator) {
         }
 
         if (users.isNotEmpty()) {
-            GroupTitle("المستخدمون")
+            GroupTitle(tr("المستخدمون"))
             Group {
                 users.forEachIndexed { i, u ->
                     if (i > 0) Divider()
@@ -254,23 +258,23 @@ fun SettingsScreen(nav: Navigator) {
                     )
                 }
                 Divider()
-                ValueRow("إضافة مستخدم", "يبقى المستخدمون الآخرون كما هم") { nav.addUser() }
+                ValueRow(tr("إضافة مستخدم"), tr("يبقى المستخدمون الآخرون كما هم")) { nav.addUser() }
             }
         }
 
-        GroupTitle("المشغّل")
+        GroupTitle(tr("المشغّل"))
         Group {
-            ValueRow("قياس سرعة النت", "") { showSpeed = true }
+            ValueRow(tr("قياس سرعة النت"), "") { showSpeed = true }
             Divider()
-            ValueRow("الاحتياطي ضد انقطاع النت", bufferLabels[bufferMode] ?: "يكمل دقيقة بدون إنترنت") { showBuffer = true }
+            ValueRow(tr("الاحتياطي ضد انقطاع النت"), bufferLabels[bufferMode] ?: tr("يكمل دقيقة بدون إنترنت")) { showBuffer = true }
             Divider()
-            ValueRow("صيغة البث المباشر", liveFormatLabels[liveFormat] ?: "TS") { showFormat = true }
+            ValueRow(tr("صيغة البث المباشر"), liveFormatLabels[liveFormat] ?: "TS") { showFormat = true }
             Divider()
-            ValueRow("ثبات البث المباشر", steadyLabels[liveSteady] ?: "تلقائي") { showSteady = true }
+            ValueRow(tr("ثبات البث المباشر"), steadyLabels[liveSteady] ?: tr("تلقائي")) { showSteady = true }
             Divider()
             ToggleRow(
-                "نسخة بديلة للقناة لما تقطّع",
-                "لو القناة قطّعت كثير، ينتقل لنسخة ثانية منها في اشتراكك (جودة أخف أو رابط احتياطي)",
+                tr("نسخة بديلة للقناة لما تقطّع"),
+                tr("لو القناة قطّعت كثير، ينتقل لنسخة ثانية منها في اشتراكك (جودة أخف أو رابط احتياطي)"),
                 autoVersion
             ) {
                 autoVersion = it
@@ -279,8 +283,8 @@ fun SettingsScreen(nav: Navigator) {
             if (onTv) {
                 Divider()
                 ToggleRow(
-                    "مطابقة معدل الإطارات",
-                    "يضبط الشاشة على 50 أو 60 هرتز حسب القناة فتصير الحركة ناعمة بدون تقطيع، وقد تسودّ الشاشة لحظة عند تشغيل القناة",
+                    tr("مطابقة معدل الإطارات"),
+                    tr("يضبط الشاشة على 50 أو 60 هرتز حسب القناة فتصير الحركة ناعمة بدون تقطيع، وقد تسودّ الشاشة لحظة عند تشغيل القناة"),
                     matchFrameRate
                 ) {
                     matchFrameRate = it
@@ -288,73 +292,79 @@ fun SettingsScreen(nav: Navigator) {
                 }
             }
             Divider()
-            ToggleRow("أعلى جودة متاحة دائماً", "يختار أعلى جودة يرسلها المزوّد للبث", bestQuality) {
+            ToggleRow(tr("أعلى جودة متاحة دائماً"), tr("يختار أعلى جودة يرسلها المزوّد للبث"), bestQuality) {
                 bestQuality = it
                 repo.prefs.bestQuality = it
             }
             Divider()
-            ToggleRow("فتح آخر قناة عند التشغيل", null, autoplay) {
+            ToggleRow(tr("فتح آخر قناة عند التشغيل"), null, autoplay) {
                 autoplay = it
                 repo.prefs.autoplayLast = it
             }
             Divider()
-            ToggleRow("معاينة القناة في قائمة المباشر", "على التلفزيون تُعرض القناة المختارة في نافذة صغيرة", livePreview) {
+            ToggleRow(tr("معاينة القناة في قائمة المباشر"), tr("على التلفزيون تُعرض القناة المختارة في نافذة صغيرة"), livePreview) {
                 livePreview = it
                 repo.prefs.livePreview = it
             }
         }
 
-        GroupTitle("الترجمة")
+        GroupTitle(tr("الترجمة"))
         Group {
-            ValueRow("لغة الترجمة", languageName(subLang)) { showSubLang = true }
+            ValueRow(tr("لغة الترجمة"), languageName(subLang)) { showSubLang = true }
             Divider()
-            ValueRow("حجم خط الترجمة", subtitleSizeLabels[subSize]) {
+            ValueRow(tr("حجم خط الترجمة"), subtitleSizeLabels[subSize]) {
                 subSize = (subSize + 1) % subtitleSizeLabels.size
                 repo.prefs.subtitleSize = subSize
             }
             Divider()
-            ToggleRow("تشغيل الترجمة تلقائياً", "تبحث عن ترجمة بلغتك عند بدء أي فيلم أو حلقة، وتترجمها آلياً إن لم تتوفر", subAuto) {
+            ToggleRow(tr("تشغيل الترجمة تلقائياً"), tr("تبحث عن ترجمة بلغتك عند بدء أي فيلم أو حلقة، وتترجمها آلياً إن لم تتوفر"), subAuto) {
                 subAuto = it
                 repo.prefs.subtitleAuto = it
             }
         }
 
-        GroupTitle("دليل البرامج")
+        GroupTitle(tr("دليل البرامج"))
         Group {
-            ToggleRow("تحديث الدليل تلقائياً", "كل 12 ساعة", epgAuto) {
+            ToggleRow(tr("تحديث الدليل تلقائياً"), tr("كل 12 ساعة"), epgAuto) {
                 epgAuto = it
                 repo.prefs.epgAuto = it
             }
             Divider()
-            ValueRow("تحديث الدليل الآن", if (epgLoading) "جارٍ التحديث…" else "") {
+            ValueRow(tr("تحديث الدليل الآن"), if (epgLoading) tr("جارٍ التحديث…") else "") {
                 repo.refreshEpg()
-                Toast.makeText(context, "جارٍ تحديث دليل البرامج…", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, tr("جارٍ تحديث دليل البرامج…"), Toast.LENGTH_SHORT).show()
             }
         }
 
-        GroupTitle("الأمان")
+        GroupTitle(tr("الأمان"))
         Group {
             ToggleRow(
-                "حجب محتوى البالغين",
-                "يحجب أقسام وقنوات وأفلام ومسلسلات البالغين في كل المستخدمين، ويلزم رمز سري لإظهارها",
+                tr("حجب محتوى البالغين"),
+                tr("يحجب أقسام وقنوات وأفلام ومسلسلات البالغين في كل المستخدمين، ويلزم رمز سري لإظهارها"),
                 hideAdult
             ) { enable ->
                 pinMode = if (enable) "set" else "check"
             }
             Divider()
-            ValueRow("حذف سجل المشاهدة", "") { confirmClearHistory = true }
+            ValueRow(tr("حذف سجل المشاهدة"), "") { confirmClearHistory = true }
         }
 
-        GroupTitle("التطبيق")
+        GroupTitle(tr("التطبيق"))
         Group {
-            ValueRow("ألوان التطبيق", AppTheme.palette.label) { showPalette = true }
+            // "Language" stays in the title whatever the language, so it can always be found again.
+            ValueRow(
+                if (I18n.lang == "en") "Language" else tr("لغة التطبيق") + " · Language",
+                I18n.LANGUAGES.first { it.first == I18n.lang }.second
+            ) { showLanguage = true }
+            Divider()
+            ValueRow(tr("ألوان التطبيق"), tr(AppTheme.palette.label)) { showPalette = true }
             Divider()
             ValueRow(
-                "تحديث التطبيق",
+                tr("تحديث التطبيق"),
                 when {
-                    checkingUpdate -> "جارٍ البحث…"
-                    update != null -> "متاح ${update?.versionName}"
-                    else -> "الإصدار ${BuildConfig.VERSION_NAME}"
+                    checkingUpdate -> tr("جارٍ البحث…")
+                    update != null -> tr("متاح {0}", update?.versionName)
+                    else -> tr("الإصدار {0}", BuildConfig.VERSION_NAME)
                 }
             ) {
                 if (checkingUpdate) return@ValueRow
@@ -366,10 +376,10 @@ fun SettingsScreen(nav: Navigator) {
                         if (info != null) {
                             showUpdate = true
                         } else {
-                            Toast.makeText(context, "عندك آخر إصدار (${BuildConfig.VERSION_NAME})", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, tr("عندك آخر إصدار ({0})", BuildConfig.VERSION_NAME), Toast.LENGTH_SHORT).show()
                         }
                     }.onFailure {
-                        Toast.makeText(context, "تعذّر الوصول إلى GitHub. تحقّق من الاتصال.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, tr("تعذّر الوصول إلى GitHub. تحقّق من الاتصال."), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -388,9 +398,9 @@ fun SettingsScreen(nav: Navigator) {
         ) {
             AppIcon(52.dp)
             Column(Modifier.weight(1f)) {
-                Text("حول RA TV", style = T.body(15.sp, FontWeight.Bold))
+                Text(tr("حول RA TV"), style = T.body(15.sp, FontWeight.Bold))
                 SloganText(13.sp)
-                Text("الإصدار ${BuildConfig.VERSION_NAME} · مشغّل وسائط فقط", style = T.caption)
+                Text(tr("الإصدار {0} · مشغّل وسائط فقط", BuildConfig.VERSION_NAME), style = T.caption)
             }
             Icon(RIcons.ChevronLeft, contentDescription = null, tint = RColors.Text3, modifier = Modifier.size(18.dp))
         }
@@ -400,8 +410,8 @@ fun SettingsScreen(nav: Navigator) {
     if (showSubLang) {
         AlertDialog(
             onDismissRequest = { showSubLang = false },
-            confirmButton = { TextButton(onClick = { showSubLang = false }) { Text("تم", color = RColors.Saffron) } },
-            title = { Text("لغة الترجمة", style = T.h2) },
+            confirmButton = { TextButton(onClick = { showSubLang = false }) { Text(tr("تم"), color = RColors.Saffron) } },
+            title = { Text(tr("لغة الترجمة"), style = T.h2) },
             text = {
                 Column(
                     Modifier
@@ -435,11 +445,50 @@ fun SettingsScreen(nav: Navigator) {
         )
     }
 
+    if (showLanguage) {
+        AlertDialog(
+            onDismissRequest = { showLanguage = false },
+            confirmButton = { TextButton(onClick = { showLanguage = false }) { Text(tr("تم"), color = RColors.Saffron) } },
+            title = { Text(if (I18n.lang == "en") "Language" else tr("لغة التطبيق"), style = T.h2) },
+            text = {
+                Column {
+                    I18n.LANGUAGES.forEach { (code, name) ->
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 52.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .tvClickable(RoundedCornerShape(10.dp), role = Role.RadioButton) {
+                                    showLanguage = false
+                                    if (code != I18n.lang) {
+                                        repo.prefs.uiLanguage = code
+                                        I18n.set(code)
+                                        // Built again in the new language and direction.
+                                        hostActivityOf(hostContext)?.recreate()
+                                    }
+                                },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = I18n.lang == code,
+                                onClick = null,
+                                colors = RadioButtonDefaults.colors(selectedColor = RColors.Saffron)
+                            )
+                            Spacer(Modifier.size(12.dp))
+                            Text(name, style = T.body(15.sp))
+                        }
+                    }
+                }
+            },
+            containerColor = RColors.Surface
+        )
+    }
+
     if (showPalette) {
         AlertDialog(
             onDismissRequest = { showPalette = false },
-            confirmButton = { TextButton(onClick = { showPalette = false }) { Text("تم", color = RColors.Saffron) } },
-            title = { Text("ألوان التطبيق", style = T.h2) },
+            confirmButton = { TextButton(onClick = { showPalette = false }) { Text(tr("تم"), color = RColors.Saffron) } },
+            title = { Text(tr("ألوان التطبيق"), style = T.h2) },
             text = {
                 Column {
                     Palette.entries.forEach { option ->
@@ -467,7 +516,7 @@ fun SettingsScreen(nav: Navigator) {
                                     .background(Brush.linearGradient(listOf(option.light, option.accent, option.deep)))
                             )
                             Spacer(Modifier.size(12.dp))
-                            Text(option.label, style = T.body(15.sp))
+                            Text(tr(option.label), style = T.body(15.sp))
                         }
                     }
                 }
@@ -479,8 +528,8 @@ fun SettingsScreen(nav: Navigator) {
     if (showSteady) {
         AlertDialog(
             onDismissRequest = { showSteady = false },
-            confirmButton = { TextButton(onClick = { showSteady = false }) { Text("تم", color = RColors.Saffron) } },
-            title = { Text("ثبات البث المباشر", style = T.h2) },
+            confirmButton = { TextButton(onClick = { showSteady = false }) { Text(tr("تم"), color = RColors.Saffron) } },
+            title = { Text(tr("ثبات البث المباشر"), style = T.h2) },
             text = {
                 Column {
                     steadyLabels.forEach { (key, label) ->
@@ -506,7 +555,7 @@ fun SettingsScreen(nav: Navigator) {
                         }
                     }
                     Text(
-                        "مع «تلقائي»: إذا وقف البث، يجمع التطبيق احتياطياً أكبر قبل ما يكمل (5 ثوانٍ زيادة، لين 10)، فتقل التوقفات مع النت المتقطع أو السيرفر الضعيف، ويرجع لطبيعته بعد 10 دقائق بدون تقطيع. «أقصى ثبات» يجمع أكبر احتياطي دائماً، والقنوات تفتح أبطأ بثوانٍ.",
+                        tr("مع «تلقائي»: إذا وقف البث، يجمع التطبيق احتياطياً أكبر قبل ما يكمل (5 ثوانٍ زيادة، لين 10)، فتقل التوقفات مع النت المتقطع أو السيرفر الضعيف، ويرجع لطبيعته بعد 20 دقيقة بدون تقطيع. «أقصى ثبات» يجمع أكبر احتياطي دائماً، والقنوات تفتح أبطأ بثوانٍ."),
                         style = T.caption
                     )
                 }
@@ -518,8 +567,8 @@ fun SettingsScreen(nav: Navigator) {
     if (showFormat) {
         AlertDialog(
             onDismissRequest = { showFormat = false },
-            confirmButton = { TextButton(onClick = { showFormat = false }) { Text("تم", color = RColors.Saffron) } },
-            title = { Text("صيغة البث المباشر", style = T.h2) },
+            confirmButton = { TextButton(onClick = { showFormat = false }) { Text(tr("تم"), color = RColors.Saffron) } },
+            title = { Text(tr("صيغة البث المباشر"), style = T.h2) },
             text = {
                 Column {
                     liveFormatLabels.forEach { (key, label) ->
@@ -544,7 +593,7 @@ fun SettingsScreen(nav: Navigator) {
                         }
                     }
                     Text(
-                        "TS هو البث الأصلي من السيرفر وهو الأنسب لأغلب الاشتراكات. جرّب HLS إذا كان التقطيع مستمراً مع TS؛ وإذا لم تعمل قناة بصيغة HLS يرجع التطبيق إلى TS تلقائياً.",
+                        tr("TS هو البث الأصلي من السيرفر وهو الأنسب لأغلب الاشتراكات. جرّب HLS إذا كان التقطيع مستمراً مع TS؛ وإذا لم تعمل قناة بصيغة HLS يرجع التطبيق إلى TS تلقائياً."),
                         style = T.caption
                     )
                 }
@@ -556,8 +605,8 @@ fun SettingsScreen(nav: Navigator) {
     if (showBuffer) {
         AlertDialog(
             onDismissRequest = { showBuffer = false },
-            confirmButton = { TextButton(onClick = { showBuffer = false }) { Text("تم", color = RColors.Saffron) } },
-            title = { Text("الاحتياطي ضد انقطاع النت", style = T.h2) },
+            confirmButton = { TextButton(onClick = { showBuffer = false }) { Text(tr("تم"), color = RColors.Saffron) } },
+            title = { Text(tr("الاحتياطي ضد انقطاع النت"), style = T.h2) },
             text = {
                 Column {
                     bufferLabels.forEach { (key, label) ->
@@ -582,7 +631,7 @@ fun SettingsScreen(nav: Navigator) {
                         }
                     }
                     Text(
-                        "الأفلام والمسلسلات: يتجمّع الاحتياطي أثناء المشاهدة حتى المدة المختارة، فتكمل طوالها بدون إنترنت. القنوات المباشرة: البث يصل لحظة بلحظة فلا يمكن سبقه، فيخزّن التطبيق ثوانٍ احتياطية في بداية كل قناة ويعبّيها من جديد بعد أي توقف. إذا انقطع النت يكمل من الاحتياطي ويعيد الاتصال كل ثانيتين حتى يعود. الاحتياطي في ذاكرة الجهاز، فقد يكون أقصر مع 4K.",
+                        tr("الأفلام والمسلسلات: يتجمّع الاحتياطي أثناء المشاهدة حتى المدة المختارة، فتكمل طوالها بدون إنترنت. القنوات المباشرة: البث يصل لحظة بلحظة فلا يمكن سبقه، فيخزّن التطبيق ثوانٍ احتياطية في بداية كل قناة ويعبّيها من جديد بعد أي توقف. إذا انقطع النت يكمل من الاحتياطي ويعيد الاتصال كل ثانيتين حتى يعود. الاحتياطي في ذاكرة الجهاز، فقد يكون أقصر مع 4K."),
                         style = T.caption
                     )
                 }
@@ -603,13 +652,13 @@ fun SettingsScreen(nav: Navigator) {
                         next == null -> nav.login()
                         wasCurrent -> nav.reload()
                     }
-                }) { Text("حذف", color = RColors.Live) }
+                }) { Text(tr("حذف"), color = RColors.Live) }
             },
-            dismissButton = { TextButton(onClick = { confirmDelete = null }) { Text("إلغاء", color = RColors.Text2) } },
-            title = { Text("حذف المستخدم «${u.name}»؟", style = T.h2) },
+            dismissButton = { TextButton(onClick = { confirmDelete = null }) { Text(tr("إلغاء"), color = RColors.Text2) } },
+            title = { Text(tr("حذف المستخدم «{0}»؟", u.name), style = T.h2) },
             text = {
                 Text(
-                    "سيُحذف هذا المستخدم ومفضلته وسجل مشاهدته من هذا الجهاز. باقي المستخدمين يبقون كما هم.",
+                    tr("سيُحذف هذا المستخدم ومفضلته وسجل مشاهدته من هذا الجهاز. باقي المستخدمين يبقون كما هم."),
                     style = T.body(14.sp, color = RColors.Text2)
                 )
             },
@@ -624,14 +673,14 @@ fun SettingsScreen(nav: Navigator) {
                 TextButton(onClick = {
                     confirmClearHistory = false
                     repo.clearWatchHistory()
-                    Toast.makeText(context, "تم حذف سجل المشاهدة", Toast.LENGTH_SHORT).show()
-                }) { Text("حذف", color = RColors.Live) }
+                    Toast.makeText(context, tr("تم حذف سجل المشاهدة"), Toast.LENGTH_SHORT).show()
+                }) { Text(tr("حذف"), color = RColors.Live) }
             },
-            dismissButton = { TextButton(onClick = { confirmClearHistory = false }) { Text("إلغاء", color = RColors.Text2) } },
-            title = { Text("حذف سجل المشاهدة؟", style = T.h2) },
+            dismissButton = { TextButton(onClick = { confirmClearHistory = false }) { Text(tr("إلغاء"), color = RColors.Text2) } },
+            title = { Text(tr("حذف سجل المشاهدة؟"), style = T.h2) },
             text = {
                 Text(
-                    "يُحذف «تابع المشاهدة» والقنوات التي شوهدت مؤخراً وعلامات المشاهدة لهذا المستخدم. المفضلة تبقى.",
+                    tr("يُحذف «تابع المشاهدة» والقنوات التي شوهدت مؤخراً وعلامات المشاهدة لهذا المستخدم. المفضلة تبقى."),
                     style = T.body(14.sp, color = RColors.Text2)
                 )
             },
@@ -648,7 +697,7 @@ fun SettingsScreen(nav: Navigator) {
     val mode = pinMode
     if (mode != null) {
         PinDialog(
-            title = if (mode == "set") "اختر رمزاً سرياً من 4 أرقام" else "أدخل الرمز السري",
+            title = if (mode == "set") tr("اختر رمزاً سرياً من 4 أرقام") else tr("أدخل الرمز السري"),
             onDismiss = { pinMode = null },
             onSubmit = { pin ->
                 if (mode == "set") {
@@ -670,13 +719,13 @@ fun SettingsScreen(nav: Navigator) {
     if (showAbout) {
         AlertDialog(
             onDismissRequest = { showAbout = false },
-            confirmButton = { TextButton(onClick = { showAbout = false }) { Text("حسناً", color = RColors.Saffron) } },
+            confirmButton = { TextButton(onClick = { showAbout = false }) { Text(tr("حسناً"), color = RColors.Saffron) } },
             title = { Text("RATV ${BuildConfig.VERSION_NAME}", style = T.h2) },
             text = {
                 Text(
-                    "RATV مشغّل وسائط لقوائم IPTV الخاصة بك (Xtream Codes وM3U). " +
-                        "التطبيق لا يقدّم أي قنوات أو محتوى، والمستخدم مسؤول عن استخدام اشتراك مرخّص.\n\n" +
-                        "الخطوط: Alexandria وTajawal برخصة SIL Open Font License.",
+                    tr("RATV مشغّل وسائط لقوائم IPTV الخاصة بك (Xtream Codes وM3U). ") +
+                        tr("التطبيق لا يقدّم أي قنوات أو محتوى، والمستخدم مسؤول عن استخدام اشتراك مرخّص.\n\n") +
+                        tr("الخطوط: Alexandria وTajawal برخصة SIL Open Font License."),
                     style = T.body(14.sp, color = RColors.Text2)
                 )
             },
@@ -690,9 +739,9 @@ private fun StatusPill(status: String?) {
     if (status == null) return
     val active = status.equals("Active", ignoreCase = true)
     val (label, fg, bg) = when {
-        active -> Triple("نشط", RColors.Success, RColors.SuccessBg)
-        status.equals("Expired", ignoreCase = true) -> Triple("منتهي", RColors.Danger, RColors.DangerBg)
-        status.equals("Banned", ignoreCase = true) || status.equals("Disabled", ignoreCase = true) -> Triple("موقوف", RColors.Danger, RColors.DangerBg)
+        active -> Triple(tr("نشط"), RColors.Success, RColors.SuccessBg)
+        status.equals("Expired", ignoreCase = true) -> Triple(tr("منتهي"), RColors.Danger, RColors.DangerBg)
+        status.equals("Banned", ignoreCase = true) || status.equals("Disabled", ignoreCase = true) -> Triple(tr("موقوف"), RColors.Danger, RColors.DangerBg)
         else -> Triple(status, RColors.Text2, RColors.Surface2)
     }
     Row(
@@ -802,9 +851,9 @@ private fun PinDialog(title: String, onDismiss: () -> Unit, onSubmit: (String) -
             TextButton(
                 onClick = { if (pin.length == 4) wrong = !onSubmit(pin) },
                 enabled = pin.length == 4
-            ) { Text("تأكيد", color = if (pin.length == 4) RColors.Saffron else RColors.Text3) }
+            ) { Text(tr("تأكيد"), color = if (pin.length == 4) RColors.Saffron else RColors.Text3) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("إلغاء", color = RColors.Text2) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(tr("إلغاء"), color = RColors.Text2) } },
         title = { Text(title, style = T.h2) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -825,7 +874,7 @@ private fun PinDialog(title: String, onDismiss: () -> Unit, onSubmit: (String) -
                         cursorColor = RColors.Saffron
                     )
                 )
-                if (wrong) Text("الرمز غير صحيح.", style = T.body(13.sp, color = RColors.Danger))
+                if (wrong) Text(tr("الرمز غير صحيح."), style = T.body(13.sp, color = RColors.Danger))
             }
         },
         containerColor = RColors.Surface
@@ -836,7 +885,7 @@ private fun PinDialog(title: String, onDismiss: () -> Unit, onSubmit: (String) -
 private fun UserRow(user: Playlist, current: Boolean, onOpen: () -> Unit, onDelete: () -> Unit) {
     val source = when {
         user.type == PlaylistType.XTREAM -> Uri.parse(user.server).let { u -> (u.host ?: user.server) + if (u.port > 0) ":" + u.port else "" }
-        user.m3uUrl.startsWith("content://") -> "ملف من الجهاز"
+        user.m3uUrl.startsWith("content://") -> tr("ملف من الجهاز")
         else -> Uri.parse(user.m3uUrl).host ?: user.m3uUrl
     }
     val detail = (if (user.type == PlaylistType.XTREAM && user.username.isNotBlank()) user.username + " · " else "") + source
@@ -852,7 +901,7 @@ private fun UserRow(user: Playlist, current: Boolean, onOpen: () -> Unit, onDele
                 .weight(1f)
                 .heightIn(min = 60.dp)
                 .clip(RoundedCornerShape(14.dp))
-                .tvClickable(RoundedCornerShape(14.dp), onClickLabel = "فتح ${user.name}", onClick = onOpen)
+                .tvClickable(RoundedCornerShape(14.dp), onClickLabel = tr("فتح {0}", user.name), onClick = onOpen)
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -864,7 +913,7 @@ private fun UserRow(user: Playlist, current: Boolean, onOpen: () -> Unit, onDele
             }
             if (current) {
                 Text(
-                    "الحالي",
+                    tr("الحالي"),
                     style = T.body(11.sp, FontWeight.Bold, RColors.Saffron),
                     modifier = Modifier
                         .border(1.dp, RColors.Saffron, RoundedCornerShape(6.dp))
@@ -872,6 +921,15 @@ private fun UserRow(user: Playlist, current: Boolean, onOpen: () -> Unit, onDele
                 )
             }
         }
-        CircleIconButton(RIcons.Close, "حذف ${user.name}", onDelete)
+        CircleIconButton(RIcons.Close, tr("حذف {0}", user.name), onDelete)
     }
+}
+
+private fun hostActivityOf(context: android.content.Context): android.app.Activity? {
+    var c: android.content.Context? = context
+    while (c is android.content.ContextWrapper) {
+        if (c is android.app.Activity) return c
+        c = c.baseContext
+    }
+    return null
 }

@@ -1,5 +1,6 @@
 package com.ratv.app.player
 
+import com.ratv.app.i18n.tr
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -78,7 +79,7 @@ class MixController(
         }
 
         override fun onPlayerError(error: PlaybackException) {
-            message = "انقطع صوت القناة الأخرى، فرجع صوت القناة الحالية."
+            message = tr("انقطع صوت القناة الأخرى، فرجع صوت القناة الحالية.")
             stop()
         }
     }
@@ -93,7 +94,7 @@ class MixController(
 
     fun start(ch: Channel, maxConnections: Int?) {
         if (maxConnections != null && maxConnections < 2) {
-            message = "اشتراكك يسمح باتصال واحد فقط، وسماع معلق قناة أخرى يحتاج اتصالين في نفس الوقت."
+            message = tr("اشتراكك يسمح باتصال واحد فقط، وسماع معلق قناة أخرى يحتاج اتصالين في نفس الوقت.")
             return
         }
         stop()
@@ -163,9 +164,9 @@ class MixController(
 }
 
 fun mixOffsetLabel(offsetMs: Long): String = when {
-    offsetMs == 0L -> "بدون تقديم أو تأخير"
-    offsetMs > 0L -> "الصوت متأخر ${seconds(offsetMs)} ث"
-    else -> "الصوت مقدَّم ${seconds(offsetMs)} ث"
+    offsetMs == 0L -> tr("بدون تقديم أو تأخير")
+    offsetMs > 0L -> tr("الصوت متأخر {0} ث", seconds(offsetMs))
+    else -> tr("الصوت مقدَّم {0} ث", seconds(offsetMs))
 }
 
 /** Commentators of this stream, the same game on other channels, and other versions of this channel. */
@@ -208,8 +209,8 @@ internal fun SourcesPanel(
     fun focusIf(key: String): Modifier = if (key == focusKey) Modifier.focusRequester(firstFocus) else Modifier
 
     SidePanel(
-        title = "المعلق والجودة",
-        subtitle = "اختر المعلق، أو اسمع معلق قناة أخرى على هذه الصورة",
+        title = tr("المعلق والجودة"),
+        subtitle = tr("اختر المعلق، أو اسمع معلق قناة أخرى على هذه الصورة"),
         onClose = onClose,
         width = 430.dp
     ) {
@@ -221,7 +222,7 @@ internal fun SourcesPanel(
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                             Icon(RIcons.Mic, contentDescription = null, tint = RColors.Saffron, modifier = Modifier.size(20.dp))
                             Column(Modifier.weight(1f)) {
-                                Text("تسمع الآن معلق", style = T.caption)
+                                Text(tr("تسمع الآن معلق"), style = T.caption)
                                 Text(mixing.name, style = T.body(15.sp, FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
                             }
                             if (mix.buffering) {
@@ -236,10 +237,10 @@ internal fun SourcesPanel(
                             ActionChip("+5", { mix.shift(5_000L) })
                         }
                         Text(
-                            "إذا سبق الصوتُ الصورة اضغط +، وإذا تأخر اضغط −",
+                            tr("إذا سبق الصوتُ الصورة اضغط +، وإذا تأخر اضغط −"),
                             style = T.caption
                         )
-                        ActionChip("إيقاف وإرجاع صوت القناة", { mix.stop() }, icon = RIcons.Close)
+                        ActionChip(tr("إيقاف وإرجاع صوت القناة"), { mix.stop() }, icon = RIcons.Close)
                     }
                 }
             }
@@ -249,7 +250,7 @@ internal fun SourcesPanel(
             }
 
             if (audio.size > 1) {
-                item { PanelHeader("المعلق في هذا البث") }
+                item { PanelHeader(tr("المعلق في هذا البث")) }
                 itemsIndexed(audio) { index, option ->
                     SourceRow(
                         title = option.label,
@@ -263,7 +264,7 @@ internal fun SourcesPanel(
                 }
             }
 
-            item { PanelHeader("تنقل نفس المباراة الآن") }
+            item { PanelHeader(tr("تنقل نفس المباراة الآن")) }
             when {
                 sameEvent == null -> item {
                     Row(
@@ -272,11 +273,11 @@ internal fun SourcesPanel(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         CircularProgressIndicator(color = RColors.Saffron, strokeWidth = 2.dp, modifier = Modifier.size(16.dp))
-                        Text("جارٍ البحث في دليل البرامج…", style = T.caption)
+                        Text(tr("جارٍ البحث في دليل البرامج…"), style = T.caption)
                     }
                 }
                 event.isEmpty() -> item {
-                    PanelNote("لم نجد في دليل البرامج قناة أخرى تعرض نفس المباراة الآن. اختر من القنوات الرياضية بالأسفل.")
+                    PanelNote(tr("لم نجد في دليل البرامج قناة أخرى تعرض نفس المباراة الآن. اختر من القنوات الرياضية بالأسفل."))
                 }
                 else -> items(event, key = { "e" + it.id }) { ch ->
                     ChannelChoiceRow(ch, epgLookup(ch), mixing?.id == ch.id, focusIf("e" + ch.id), onMix, onSwitch)
@@ -284,14 +285,14 @@ internal fun SourcesPanel(
             }
 
             if (versions.isNotEmpty()) {
-                item { PanelHeader("نسخ أخرى من القناة") }
+                item { PanelHeader(tr("نسخ أخرى من القناة")) }
                 items(versions, key = { "v" + it.id }) { ch ->
                     ChannelChoiceRow(ch, epgLookup(ch), mixing?.id == ch.id, focusIf("v" + ch.id), onMix, onSwitch)
                 }
             }
 
             if (others.isNotEmpty()) {
-                item { PanelHeader("قنوات رياضية أخرى") }
+                item { PanelHeader(tr("قنوات رياضية أخرى")) }
                 items(others, key = { "s" + it.id }) { ch ->
                     ChannelChoiceRow(ch, epgLookup(ch), mixing?.id == ch.id, focusIf("s" + ch.id), onMix, onSwitch)
                 }
@@ -331,8 +332,8 @@ private fun ChannelChoiceRow(
             }
             if (programme != null) Text(programme, style = T.caption, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
-        ActionChip(if (mixing) "تسمعه الآن" else "سماع معلقها", { onMix(ch) }, modifier = actionModifier, selected = mixing, icon = RIcons.Mic)
-        ActionChip("انتقال", { onSwitch(ch) }, icon = RIcons.Tv)
+        ActionChip(if (mixing) tr("تسمعه الآن") else tr("سماع معلقها"), { onMix(ch) }, modifier = actionModifier, selected = mixing, icon = RIcons.Mic)
+        ActionChip(tr("انتقال"), { onSwitch(ch) }, icon = RIcons.Tv)
     }
     Spacer(Modifier.size(2.dp))
 }

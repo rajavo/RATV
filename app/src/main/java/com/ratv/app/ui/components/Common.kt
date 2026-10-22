@@ -1,5 +1,6 @@
 package com.ratv.app.ui.components
 
+import com.ratv.app.i18n.tr
 import android.app.UiModeManager
 import android.content.Context
 import android.content.pm.PackageManager
@@ -383,7 +384,7 @@ fun LiveBadge(modifier: Modifier = Modifier) {
                 .clip(CircleShape)
                 .background(Color.White)
         )
-        Text("مباشر", style = T.body(11.sp, FontWeight.Bold, Color.White).copy(lineHeight = 14.sp))
+        Text(tr("مباشر"), style = T.body(11.sp, FontWeight.Bold, Color.White).copy(lineHeight = 14.sp))
     }
 }
 
@@ -540,7 +541,7 @@ fun ScreenHeader(
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         if (onBack != null) {
-            CircleIconButton(RIcons.Back, "رجوع", onBack)
+            CircleIconButton(RIcons.Back, tr("رجوع"), onBack)
         }
         Text(title, style = if (onBack != null) T.display(22.sp) else T.h1, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { actions() }
@@ -578,16 +579,16 @@ fun EmptyState(icon: ImageVector, title: String, message: String, modifier: Modi
 
 data class NavItem(val route: String, val label: String, val icon: ImageVector)
 
-val navItems = listOf(
-    NavItem("home", "الرئيسية", RIcons.Home),
-    NavItem("live", "مباشر", RIcons.Tv),
-    NavItem("movies", "أفلام", RIcons.Film),
-    NavItem("series", "مسلسلات", RIcons.Layers),
-    NavItem("settings", "حسابي", RIcons.User)
+val navItems get() = listOf(
+    NavItem("home", tr("الرئيسية"), RIcons.Home),
+    NavItem("live", tr("مباشر"), RIcons.Tv),
+    NavItem("movies", tr("أفلام"), RIcons.Film),
+    NavItem("series", tr("مسلسلات"), RIcons.Layers),
+    NavItem("settings", tr("حسابي"), RIcons.User)
 )
 
 /** The TV top bar also has the match schedule. */
-val tvNavItems: List<NavItem> = navItems.toMutableList().apply { add(2, NavItem("matches", "المباريات", RIcons.Trophy)) }
+val tvNavItems: List<NavItem> get() = navItems.toMutableList().apply { add(2, NavItem("matches", tr("المباريات"), RIcons.Trophy)) }
 
 @Composable
 private fun NavEntry(item: NavItem, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
@@ -690,12 +691,12 @@ fun formatClock(ms: Long): String {
 
 fun minutesLeft(endMs: Long, now: Long): String {
     val m = ((endMs - now) / 60_000L).coerceAtLeast(0)
-    return if (m >= 60) "متبقي ${m / 60}س ${m % 60}د" else "متبقي ${m}د"
+    return if (m >= 60) tr("متبقي {0}س {1}د", m / 60, m % 60) else tr("متبقي {0}د", m)
 }
 
-private val arabicMonths = listOf(
-    "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
-    "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
+private val arabicMonths get() = listOf(
+    tr("يناير"), tr("فبراير"), tr("مارس"), tr("أبريل"), tr("مايو"), tr("يونيو"),
+    tr("يوليو"), tr("أغسطس"), tr("سبتمبر"), tr("أكتوبر"), tr("نوفمبر"), tr("ديسمبر")
 )
 
 fun arabicDate(ms: Long): String {
@@ -711,9 +712,9 @@ fun relativeTime(ms: Long, now: Long = System.currentTimeMillis()): String {
     if (ms <= 0) return "—"
     val minutes = ((now - ms) / 60_000L).coerceAtLeast(0)
     return when {
-        minutes < 1 -> "الآن"
-        minutes < 60 -> "قبل $minutes د"
-        minutes < 24 * 60 -> "قبل ${minutes / 60} س"
-        else -> "قبل ${minutes / (24 * 60)} يوم"
+        minutes < 1 -> tr("الآن")
+        minutes < 60 -> tr("قبل {0} د", minutes)
+        minutes < 24 * 60 -> tr("قبل {0} س", minutes / 60)
+        else -> tr("قبل {0} يوم", minutes / (24 * 60))
     }
 }

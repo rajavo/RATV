@@ -11,13 +11,14 @@ import androidx.compose.ui.unit.dp
 /** Line icons drawn from the same paths as the RATV design. */
 object RIcons {
 
-    private fun stroke(name: String, vararg paths: String): ImageVector {
+    private fun stroke(name: String, vararg paths: String, mirrored: Boolean = false): ImageVector {
         val builder = ImageVector.Builder(
             name = name,
             defaultWidth = 24.dp,
             defaultHeight = 24.dp,
             viewportWidth = 24f,
-            viewportHeight = 24f
+            viewportHeight = 24f,
+            autoMirror = mirrored
         )
         paths.forEach { d ->
             builder.addPath(
@@ -73,12 +74,13 @@ object RIcons {
         )
     }
     val Calendar: ImageVector by lazy { stroke("calendar", rrect(3.5f, 5f, 17f, 15.5f, 2.5f), "M8 3v4M16 3v4M3.5 10h17") }
-    val ChevronLeft: ImageVector by lazy { stroke("chevronLeft", "M15 18l-6-6 6-6") }
+    // Directional arrows are drawn for left-to-right and mirrored in Arabic (where "<" leads on).
+    val ChevronLeft: ImageVector by lazy { stroke("chevronLeft", "M9 18l6-6-6-6", mirrored = true) }
     val ChevronDown: ImageVector by lazy { stroke("chevronDown", "M6 9l6 6 6-6") }
     /** Points right: "back" in a right-to-left layout. */
-    val Back: ImageVector by lazy { stroke("back", "M5 12h14", "M13 5l7 7-7 7") }
+    val Back: ImageVector by lazy { stroke("back", "M19 12H5", "M11 5l-7 7 7 7", mirrored = true) }
     /** Points left: "forward" in a right-to-left layout. */
-    val Forward: ImageVector by lazy { stroke("forward", "M19 12H5", "M11 5l-7 7 7 7") }
+    val Forward: ImageVector by lazy { stroke("forward", "M5 12h14", "M13 5l7 7-7 7", mirrored = true) }
     val Play: ImageVector by lazy { fill("play", "M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z") }
     val Pause: ImageVector by lazy { fill("pause", rrect(6f, 4.5f, 4f, 15f, 1.2f), rrect(14f, 4.5f, 4f, 15f, 1.2f)) }
     val Star: ImageVector by lazy { stroke("star", STAR) }

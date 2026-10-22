@@ -1,6 +1,8 @@
 package com.ratv.app.ui.theme
 
 import androidx.compose.material3.MaterialTheme
+import com.ratv.app.i18n.I18n
+import com.ratv.app.i18n.tr
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
@@ -43,7 +45,7 @@ object AppTheme {
 }
 
 /** The slogan shown with the logo. */
-const val SLOGAN = "بيتك الأول للترفيه"
+val SLOGAN: String get() = tr("بيتك الأول للترفيه")
 
 object RColors {
     val Ink = Color(0xFF0B0C10)
@@ -146,7 +148,7 @@ fun RatvTheme(content: @Composable () -> Unit) {
     val palette = AppTheme.palette
     val scheme = remember(palette) { schemeFor(palette) }
     MaterialTheme(colorScheme = scheme, typography = typography) {
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+        CompositionLocalProvider(LocalLayoutDirection provides if (I18n.rtl) LayoutDirection.Rtl else LayoutDirection.Ltr) {
             content()
         }
     }

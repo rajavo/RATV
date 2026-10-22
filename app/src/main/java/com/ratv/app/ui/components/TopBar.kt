@@ -1,5 +1,6 @@
 package com.ratv.app.ui.components
 
+import com.ratv.app.i18n.tr
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -157,8 +158,8 @@ private fun SearchPill(onClick: () -> Unit, modifier: Modifier = Modifier) {
     BoxWithConstraints(modifier) {
         // The full hint when it fits, a short one when it doesn't, the icon alone when space is tight.
         val hint = when {
-            maxWidth >= 250.dp -> "ابحث عن قناة أو فيلم أو مسلسل"
-            maxWidth >= 96.dp -> "ابحث"
+            maxWidth >= 250.dp -> tr("ابحث عن قناة أو فيلم أو مسلسل")
+            maxWidth >= 96.dp -> tr("ابحث")
             else -> null
         }
         Row(
@@ -168,12 +169,12 @@ private fun SearchPill(onClick: () -> Unit, modifier: Modifier = Modifier) {
                 .clip(shape)
                 .background(RColors.Surface)
                 .border(1.dp, RColors.LineStrong, shape)
-                .tvClickable(shape, onClickLabel = "بحث", onClick = onClick)
+                .tvClickable(shape, onClickLabel = tr("بحث"), onClick = onClick)
                 .padding(horizontal = if (hint == null) 0.dp else 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = if (hint == null) Arrangement.Center else Arrangement.spacedBy(10.dp)
         ) {
-            Icon(RIcons.Search, contentDescription = if (hint == null) "ابحث" else null, tint = RColors.Text2, modifier = Modifier.size(20.dp))
+            Icon(RIcons.Search, contentDescription = if (hint == null) tr("ابحث") else null, tint = RColors.Text2, modifier = Modifier.size(20.dp))
             if (hint != null) {
                 Text(
                     hint,

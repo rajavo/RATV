@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.tr
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -106,19 +107,19 @@ fun MatchesScreen(nav: Navigator) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (!tv) {
-                    CircleIconButton(RIcons.Back, "رجوع", { nav.back() })
+                    CircleIconButton(RIcons.Back, tr("رجوع"), { nav.back() })
                     Spacer(Modifier.width(12.dp))
                 }
                 Column(Modifier.weight(1f)) {
                     // One line on a phone too: wrapped, the title ran into the line under it.
                     Text(
-                        "جدول المباريات",
+                        tr("جدول المباريات"),
                         style = T.display(if (tv) 26.sp else 21.sp),
                         maxLines = 1,
                         softWrap = false,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Text("من دليل البرامج في اشتراكك، مع كل القنوات الناقلة لكل مباراة", style = T.caption)
+                    Text(tr("من دليل البرامج في اشتراكك، مع كل القنوات الناقلة لكل مباراة"), style = T.caption)
                 }
                 Spacer(Modifier.width(12.dp))
                 KoraButton()
@@ -126,26 +127,26 @@ fun MatchesScreen(nav: Navigator) {
         }
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf("الآن", "اليوم", "غداً").forEachIndexed { i, label ->
+                listOf(tr("الآن"), tr("اليوم"), tr("غداً")).forEachIndexed { i, label ->
                     DayChip(label, i == day, if (i == 0) Modifier.focusRequester(firstFocus) else Modifier) { day = i }
                 }
             }
         }
         val list = matches
         when {
-            list == null -> item { Text("جارٍ تجهيز الجدول…", style = T.body(15.sp, color = RColors.Text2)) }
+            list == null -> item { Text(tr("جارٍ تجهيز الجدول…"), style = T.body(15.sp, color = RColors.Text2)) }
             list.isEmpty() -> item {
                 Column(Modifier.padding(top = 24.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
                         when {
-                            epgLoading -> "جارٍ تحميل دليل البرامج…"
-                            day == 0 -> "لا توجد مباريات تُعرض الآن في دليل البرامج."
-                            else -> "لا توجد مباريات في دليل البرامج لهذا اليوم."
+                            epgLoading -> tr("جارٍ تحميل دليل البرامج…")
+                            day == 0 -> tr("لا توجد مباريات تُعرض الآن في دليل البرامج.")
+                            else -> tr("لا توجد مباريات في دليل البرامج لهذا اليوم.")
                         },
                         style = T.body(16.sp, FontWeight.Bold)
                     )
                     Text(
-                        "الجدول يُبنى من دليل البرامج (EPG) الذي يرسله مزوّد الاشتراك لقنوات الرياضة.",
+                        tr("الجدول يُبنى من دليل البرامج (EPG) الذي يرسله مزوّد الاشتراك لقنوات الرياضة."),
                         style = T.caption
                     )
                 }
@@ -197,7 +198,7 @@ fun MatchCard(
             Text(matchTime(m.start, m.end), style = T.body(13.sp, FontWeight.Bold, RColors.Saffron))
             if (m.isLive(now)) {
                 Text(
-                    "مباشر الآن",
+                    tr("مباشر الآن"),
                     style = T.body(11.sp, FontWeight.Bold, Color.White),
                     modifier = Modifier
                         .clip(RoundedCornerShape(6.dp))
@@ -206,7 +207,7 @@ fun MatchCard(
                 )
             }
             Spacer(Modifier.weight(1f))
-            Text("${m.channels.size} قناة ناقلة", style = T.caption)
+            Text(tr("{0} قناة ناقلة", m.channels.size), style = T.caption)
         }
         Text(m.title, style = T.body(16.sp, FontWeight.Bold))
         regions.forEach { (region, list) ->
@@ -219,7 +220,7 @@ fun MatchCard(
             }
         }
         if (shown.size < m.channels.size) {
-            Text("و${m.channels.size - shown.size} قنوات أخرى في جدول المباريات", style = T.caption)
+            Text(tr("و{0} قنوات أخرى في جدول المباريات", m.channels.size - shown.size), style = T.caption)
         }
     }
 }
@@ -231,7 +232,7 @@ private fun ChannelChip(ch: Channel, onClick: () -> Unit) {
         Modifier
             .clip(shape)
             .background(RColors.Surface2)
-            .tvClickable(shape, onClickLabel = "مشاهدة ${ch.name}", onClick = onClick)
+            .tvClickable(shape, onClickLabel = tr("مشاهدة {0}", ch.name), onClick = onClick)
             .padding(horizontal = 10.dp, vertical = 7.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp)

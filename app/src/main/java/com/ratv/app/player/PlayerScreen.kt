@@ -1,5 +1,6 @@
 package com.ratv.app.player
 
+import com.ratv.app.i18n.tr
 import android.util.Log
 import com.ratv.app.data.Playback
 import android.os.SystemClock
@@ -154,10 +155,10 @@ private class ResizeMode(val label: String, val resize: Int, val ratio: Float?)
 
 /** Picture sizes: fit, stretch, zoom, or a fixed shape the picture is stretched to. */
 @androidx.annotation.OptIn(UnstableApi::class)
-private val resizeModes = listOf(
-    ResizeMode("ملاءمة", AspectRatioFrameLayout.RESIZE_MODE_FIT, null),
-    ResizeMode("ملء الشاشة", AspectRatioFrameLayout.RESIZE_MODE_FILL, null),
-    ResizeMode("تكبير", AspectRatioFrameLayout.RESIZE_MODE_ZOOM, null),
+private val resizeModes get() = listOf(
+    ResizeMode(tr("ملاءمة"), AspectRatioFrameLayout.RESIZE_MODE_FIT, null),
+    ResizeMode(tr("ملء الشاشة"), AspectRatioFrameLayout.RESIZE_MODE_FILL, null),
+    ResizeMode(tr("تكبير"), AspectRatioFrameLayout.RESIZE_MODE_ZOOM, null),
     ResizeMode("16:9", AspectRatioFrameLayout.RESIZE_MODE_FILL, 16f / 9f),
     ResizeMode("4:3", AspectRatioFrameLayout.RESIZE_MODE_FILL, 4f / 3f),
     ResizeMode("21:9", AspectRatioFrameLayout.RESIZE_MODE_FILL, 21f / 9f)
@@ -311,7 +312,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         versionsTried.add(ch.id)
         val next = nextVersion(ch, repo.siblings(ch), versionsTried) ?: return false
         Log.i("RATVPlayback", "$why: switching to another version, ${next.name}")
-        streamNotice = "البث كان يقطّع، فانتقلنا لـ «${next.name}». ترجع للأصلية من «المعلق والجودة»."
+        streamNotice = tr("البث كان يقطّع، فانتقلنا لـ «{0}». ترجع للأصلية من «المعلق والجودة».", next.name)
         play(liveToPlayable(next), showControls = false, auto = true)
         return true
     }
@@ -552,7 +553,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                         ) {
                             Log.i("RATVPlayback", "stalls keep coming as TS: trying HLS")
                             hlsPreferredFor = now.id
-                            streamNotice = "البث يتقطع: جرّبنا صيغة HLS لهذي القناة"
+                            streamNotice = tr("البث يتقطع: جرّبنا صيغة HLS لهذي القناة")
                         } else if (stallTimes.size >= versionAfterStalls) {
                             // Still stalling (in a few minutes): another version of the channel, if it has one.
                             switchVersion(now, "stalls keep coming")
@@ -1019,7 +1020,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 )
                 if (netTrouble) {
                     Text(
-                        "انقطع الإنترنت… يكمل التشغيل فور عودته",
+                        tr("انقطع الإنترنت… يكمل التشغيل فور عودته"),
                         style = T.body(14.sp, FontWeight.Bold),
                         modifier = Modifier
                             .padding(top = 14.dp)
@@ -1033,7 +1034,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
 
         if (showStats && current != null) {
             StatsPanel(
-                format = if (current?.isLive == true) (if (usingHls) "HLS" else "TS") else "ملف",
+                format = if (current?.isLive == true) (if (usingHls) "HLS" else "TS") else tr("ملف"),
                 width = videoWidth,
                 height = videoHeight,
                 fps = measuredFps,
@@ -1062,9 +1063,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             val secs = (if (liveNow) reserveMs else minOf(reserveMs, cushion)) / 1000L
             Text(
                 when {
-                    netTrouble -> "انقطع الإنترنت — يكمل من الاحتياطي، باقي $secs ث"
-                    liveNow -> "الاحتياطي ضد انقطاع النت: $secs ث"
-                    else -> "الاحتياطي ضد انقطاع النت: $secs من ${cushion / 1000L} ث"
+                    netTrouble -> tr("انقطع الإنترنت — يكمل من الاحتياطي، باقي {0} ث", secs)
+                    liveNow -> tr("الاحتياطي ضد انقطاع النت: {0} ث", secs)
+                    else -> tr("الاحتياطي ضد انقطاع النت: {0} من {1} ث", secs, cushion / 1000L)
                 },
                 style = T.body(13.sp, FontWeight.Bold, if (netTrouble) Color.White else RColors.Text),
                 modifier = Modifier
@@ -1089,8 +1090,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             ) {
                 Icon(RIcons.Refresh, contentDescription = null, tint = RColors.Saffron, modifier = Modifier.size(16.dp))
                 Text(
-                    if (current?.isLive == true) "انقطع البث، جارٍ إعادة الاتصال… ($reconnectAttempts)"
-                    else "انقطع البث، جارٍ إعادة الاتصال… ($reconnectAttempts/$MAX_RECONNECTS)",
+                    if (current?.isLive == true) tr("انقطع البث، جارٍ إعادة الاتصال… ({0})", reconnectAttempts)
+                    else tr("انقطع البث، جارٍ إعادة الاتصال… ({0}/{1})", reconnectAttempts, MAX_RECONNECTS),
                     style = T.body(13.sp, FontWeight.Medium)
                 )
             }
@@ -1113,13 +1114,13 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Icon(RIcons.Mic, contentDescription = null, tint = RColors.Saffron, modifier = Modifier.size(15.dp))
-                Text("معلق ${mixing.name}", style = T.body(12.sp, FontWeight.Medium), maxLines = 1)
+                Text(tr("معلق {0}", mixing.name), style = T.body(12.sp, FontWeight.Medium), maxLines = 1)
             }
         }
 
         val notice = resizeNotice
         if (notice != null && !inPip) {
-            TopNotice("حجم الصورة: $notice", RIcons.Aspect)
+            TopNotice(tr("حجم الصورة: {0}", notice), RIcons.Aspect)
         }
         val told = streamNotice
         if (told != null && notice == null && !inPip) {
@@ -1167,7 +1168,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Icon(RIcons.Unlock, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
-                        Text("فتح القفل", style = T.body(14.sp, FontWeight.Medium))
+                        Text(tr("فتح القفل"), style = T.body(14.sp, FontWeight.Medium))
                     }
                 }
             } else {
@@ -1189,7 +1190,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                             programmeStart = programme?.start,
                             programmeEnd = programme?.end,
                             programmeProgress = programme?.progress(now),
-                            nextLabel = nextProgramme?.let { "التالي ${hm(it.start)} · ${it.title}" },
+                            nextLabel = nextProgramme?.let { tr("التالي {0} · {1}", hm(it.start), it.title) },
                             hasTrackChoice = hasTrackChoice,
                             canPip = canPip,
                             resizeLabel = resizeModes[resizeIndex].label,
@@ -1345,7 +1346,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                     Text(error, style = T.body(15.sp), textAlign = TextAlign.Center)
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         PrimaryButton(
-                            "إعادة المحاولة",
+                            tr("إعادة المحاولة"),
                             onClick = {
                                 playerError = null
                                 player.prepare()
@@ -1356,7 +1357,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                             modifier = Modifier.focusRequester(retryFocus)
                         )
                         if (item?.isLive == true && zapList.size > 1) {
-                            OutlineButton("القناة التالية", onClick = { zap(1) }, height = 46.dp)
+                            OutlineButton(tr("القناة التالية"), onClick = { zap(1) }, height = 46.dp)
                         }
                     }
                 }
@@ -1370,8 +1371,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    Text("تعذّر العثور على هذا المحتوى.", style = T.body(16.sp, FontWeight.Bold))
-                    OutlineButton("رجوع", onClick = { navigator.back() }, icon = RIcons.Back)
+                    Text(tr("تعذّر العثور على هذا المحتوى."), style = T.body(16.sp, FontWeight.Bold))
+                    OutlineButton(tr("رجوع"), onClick = { navigator.back() }, icon = RIcons.Back)
                 }
             }
         }
@@ -1443,7 +1444,7 @@ private fun Controls(
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CircleIconButton(RIcons.Back, "رجوع", onBack, background = Glass)
+            CircleIconButton(RIcons.Back, tr("رجوع"), onBack, background = Glass)
             Spacer(Modifier.width(12.dp))
             val channel = item.channel
             if (channel != null) {
@@ -1476,18 +1477,18 @@ private fun Controls(
                         .height(40.dp)
                         .clip(RoundedCornerShape(20.dp))
                         .background(RColors.AccentBrush)
-                        .tvClickable(RoundedCornerShape(20.dp), onClickLabel = "شاهد $fourKName", ringColor = Color.White, onClick = onFourK)
+                        .tvClickable(RoundedCornerShape(20.dp), onClickLabel = tr("شاهد {0}", fourKName), ringColor = Color.White, onClick = onFourK)
                         .padding(horizontal = 14.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("4K متاح", style = T.body(13.sp, FontWeight.Bold, RColors.OnSaffron))
+                    Text(tr("4K متاح"), style = T.body(13.sp, FontWeight.Bold, RColors.OnSaffron))
                 }
                 Spacer(Modifier.width(8.dp))
             }
-            if (hasTrackChoice) GlassIcon(RIcons.Captions, "الصوت والترجمة", onTracks)
-            if (canPip) GlassIcon(RIcons.Pip, "صورة داخل صورة", onPip)
-            GlassIcon(RIcons.Aspect, "حجم الصورة: $resizeLabel", onResize)
-            GlassIcon(RIcons.Info, "معلومات البث", onStats)
+            if (hasTrackChoice) GlassIcon(RIcons.Captions, tr("الصوت والترجمة"), onTracks)
+            if (canPip) GlassIcon(RIcons.Pip, tr("صورة داخل صورة"), onPip)
+            GlassIcon(RIcons.Aspect, tr("حجم الصورة: {0}", resizeLabel), onResize)
+            GlassIcon(RIcons.Info, tr("معلومات البث"), onStats)
         }
 
         // Center transport (media controls stay left-to-right)
@@ -1497,7 +1498,7 @@ private fun Controls(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(40.dp)
             ) {
-                SeekButton(RIcons.Rewind, "رجوع 10 ثوانٍ", seekable) { onSeekBy(-10_000L) }
+                SeekButton(RIcons.Rewind, tr("رجوع 10 ثوانٍ"), seekable) { onSeekBy(-10_000L) }
                 Box(
                     Modifier
                         .size(76.dp)
@@ -1509,12 +1510,12 @@ private fun Controls(
                 ) {
                     Icon(
                         if (isPlaying) RIcons.Pause else RIcons.Play,
-                        contentDescription = if (isPlaying) "إيقاف مؤقت" else if (ended) "إعادة التشغيل" else "تشغيل",
+                        contentDescription = if (isPlaying) tr("إيقاف مؤقت") else if (ended) tr("إعادة التشغيل") else tr("تشغيل"),
                         tint = Color.White,
                         modifier = Modifier.size(30.dp)
                     )
                 }
-                SeekButton(RIcons.FastForward, "تقديم 10 ثوانٍ", seekable) { onSeekBy(10_000L) }
+                SeekButton(RIcons.FastForward, tr("تقديم 10 ثوانٍ"), seekable) { onSeekBy(10_000L) }
             }
         }
 
@@ -1569,9 +1570,9 @@ private fun Controls(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 if (item.isLive) {
-                    PillButton(RIcons.ListIcon, "القنوات", onChannels)
-                    PillButton(RIcons.Calendar, "الدليل", onGuide)
-                    if (showSources) PillButton(RIcons.Mic, "المعلق والجودة", onSources)
+                    PillButton(RIcons.ListIcon, tr("القنوات"), onChannels)
+                    PillButton(RIcons.Calendar, tr("الدليل"), onGuide)
+                    if (showSources) PillButton(RIcons.Mic, tr("المعلق والجودة"), onSources)
                     if (nextLabel != null) {
                         Text(
                             nextLabel,
@@ -1586,11 +1587,11 @@ private fun Controls(
                         Spacer(Modifier.weight(1f))
                     }
                 } else {
-                    PillButton(RIcons.Captions, if (subtitlesOn) "الترجمة: مفعّلة" else "الترجمة", onSubtitles)
-                    if (hasNextEpisode) PillButton(RIcons.SkipNext, "الحلقة التالية", onNextEpisode)
+                    PillButton(RIcons.Captions, if (subtitlesOn) tr("الترجمة: مفعّلة") else tr("الترجمة"), onSubtitles)
+                    if (hasNextEpisode) PillButton(RIcons.SkipNext, tr("الحلقة التالية"), onNextEpisode)
                     Spacer(Modifier.weight(1f))
                 }
-                GlassIcon(RIcons.Lock, "قفل الشاشة", onLock)
+                GlassIcon(RIcons.Lock, tr("قفل الشاشة"), onLock)
             }
         }
     }
@@ -1675,14 +1676,14 @@ private fun ChannelPanel(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(Modifier.weight(1f)) {
-                    Text("القنوات", style = T.display(17.sp))
+                    Text(tr("القنوات"), style = T.display(17.sp))
                     Text(
-                        listOfNotNull(categoryName, "${channels.size} قناة").joinToString(" · "),
+                        listOfNotNull(categoryName, tr("{0} قناة", channels.size)).joinToString(" · "),
                         style = T.caption,
                         maxLines = 1
                     )
                 }
-                CircleIconButton(RIcons.Close, "إغلاق قائمة القنوات", onClose, background = RColors.Surface2, size = 40.dp, iconSize = 20.dp)
+                CircleIconButton(RIcons.Close, tr("إغلاق قائمة القنوات"), onClose, background = RColors.Surface2, size = 40.dp, iconSize = 20.dp)
             }
             Spacer(Modifier.height(8.dp))
             LazyColumn(state = listState, contentPadding = PaddingValues(bottom = 16.dp)) {
@@ -1734,8 +1735,8 @@ private fun TracksDialog(player: Player, onDismiss: () -> Unit) {
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        confirmButton = { TextButton(onClick = onDismiss) { Text("تم", color = RColors.Saffron) } },
-        title = { Text("الصوت والترجمة", style = T.h2) },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(tr("تم"), color = RColors.Saffron) } },
+        title = { Text(tr("الصوت والترجمة"), style = T.h2) },
         text = {
             Column(
                 Modifier
@@ -1743,7 +1744,7 @@ private fun TracksDialog(player: Player, onDismiss: () -> Unit) {
                     .verticalScroll(rememberScrollState())
             ) {
                 if (audio.isNotEmpty()) {
-                    Text("الصوت", style = T.label, modifier = Modifier.padding(vertical = 6.dp))
+                    Text(tr("الصوت"), style = T.label, modifier = Modifier.padding(vertical = 6.dp))
                     audio.forEach { option ->
                         TrackRow(option.label, option.selected) {
                             selectTrack(player, C.TRACK_TYPE_AUDIO, option)
@@ -1751,8 +1752,8 @@ private fun TracksDialog(player: Player, onDismiss: () -> Unit) {
                         }
                     }
                 }
-                Text("الترجمة", style = T.label, modifier = Modifier.padding(top = 12.dp, bottom = 6.dp))
-                TrackRow("إيقاف", textOff) {
+                Text(tr("الترجمة"), style = T.label, modifier = Modifier.padding(top = 12.dp, bottom = 6.dp))
+                TrackRow(tr("إيقاف"), textOff) {
                     selectTrack(player, C.TRACK_TYPE_TEXT, null)
                     version++
                 }
@@ -1808,13 +1809,13 @@ private fun StatsPanel(
     val fpsText = if (fps > 0f) String.format(java.util.Locale.US, if (fps % 1f == 0f) "%.0f" else "%.2f", fps) else "—"
     val uneven = fps > 0f && refresh > 0f && !refreshFits(refresh, fps)
     val verdict = when {
-        dropped > 50 -> "الجهاز لا يلحق على فك هذا البث ($dropped إطار سقط): جرّب نسخة HD من القناة."
-        stalls > 0 && offline -> "التوقفات من انقطاع الاتصال بالإنترنت."
-        stalls > 0 && reconnects > 5 -> "توقف البث $stalls مرة والاتصال بالسيرفر انقطع $reconnects مرة: غالباً من الواي فاي أو من السيرفر. التطبيق يجمع احتياطياً أكبر تلقائياً، وجرّب «أقصى ثبات» أو صيغة HLS من الإعدادات."
-        stalls > 0 -> "توقف البث $stalls مرة: الاتصال أو السيرفر لم يرسل البث بسرعة كافية. التطبيق يجمع احتياطياً أكبر تلقائياً."
-        uneven -> "البث $fpsText إطار والشاشة ${refresh.toInt()} هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات."
-        reconnects > 0 -> "البث سليم: انقطع الاتصال $reconnects مرة ورجع على طول بدون توقف."
-        else -> "البث سليم: لا توقفات ولا إطارات ساقطة."
+        dropped > 50 -> tr("الجهاز لا يلحق على فك هذا البث ({0} إطار سقط): جرّب نسخة HD من القناة.", dropped)
+        stalls > 0 && offline -> tr("التوقفات من انقطاع الاتصال بالإنترنت.")
+        stalls > 0 && reconnects > 5 -> tr("توقف البث {0} مرة والاتصال بالسيرفر انقطع {1} مرة: غالباً من الواي فاي أو من السيرفر. التطبيق يجمع احتياطياً أكبر تلقائياً، وجرّب «أقصى ثبات» أو صيغة HLS من الإعدادات.", stalls, reconnects)
+        stalls > 0 -> tr("توقف البث {0} مرة: الاتصال أو السيرفر لم يرسل البث بسرعة كافية. التطبيق يجمع احتياطياً أكبر تلقائياً.", stalls)
+        uneven -> tr("البث {0} إطار والشاشة {1} هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات.", fpsText, refresh.toInt())
+        reconnects > 0 -> tr("البث سليم: انقطع الاتصال {0} مرة ورجع على طول بدون توقف.", reconnects)
+        else -> tr("البث سليم: لا توقفات ولا إطارات ساقطة.")
     }
     Column(
         modifier
@@ -1823,18 +1824,18 @@ private fun StatsPanel(
             .padding(horizontal = 14.dp, vertical = 10.dp),
         verticalArrangement = Arrangement.spacedBy(3.dp)
     ) {
-        Text("معلومات البث", style = T.body(14.sp, FontWeight.Bold, RColors.Saffron))
+        Text(tr("معلومات البث"), style = T.body(14.sp, FontWeight.Bold, RColors.Saffron))
         val lines = listOf(
-            "الصيغة" to format,
-            "الصورة" to (if (height > 0) "${if (width > 0) "$width×" else ""}$height · $fpsText إطار/ث" else "—"),
-            "الشاشة" to (if (refresh > 0f) "${refresh.toInt()} هرتز" else "—"),
-            "الترميز" to "${codec(video)} · صوت ${codec(audio)}",
-            "فك الترميز" to (decoder ?: "—"),
-            "سرعة الاتصال" to (if (bandwidthBps > 0 && bandwidthBps != 12_000_000L) String.format(java.util.Locale.US, "%.1f ميجابت", bandwidthBps / 1_000_000.0) else "—"),
-            "الاحتياطي" to "${reserveMs / 1000L} ث" + (if (steadyExtraMs > 0) " (يجمع ${steadyExtraMs / 1000L} ث زيادة)" else ""),
-            "التوقفات" to "$stalls",
-            "إعادة الاتصال" to "$reconnects",
-            "إطارات ساقطة" to "$dropped"
+            tr("الصيغة") to format,
+            tr("الصورة") to (if (height > 0) tr("{0}{1} · {2} إطار/ث", if (width > 0) "$width×" else "", height, fpsText) else "—"),
+            tr("الشاشة") to (if (refresh > 0f) tr("{0} هرتز", refresh.toInt()) else "—"),
+            tr("الترميز") to tr("{0} · صوت {1}", codec(video), codec(audio)),
+            tr("فك الترميز") to (decoder ?: "—"),
+            tr("سرعة الاتصال") to (if (bandwidthBps > 0 && bandwidthBps != 12_000_000L) String.format(java.util.Locale.US, tr("%.1f ميجابت"), bandwidthBps / 1_000_000.0) else "—"),
+            tr("الاحتياطي") to tr("{0} ث", reserveMs / 1000L) + (if (steadyExtraMs > 0) tr(" (يجمع {0} ث زيادة)", steadyExtraMs / 1000L) else ""),
+            tr("التوقفات") to "$stalls",
+            tr("إعادة الاتصال") to "$reconnects",
+            tr("إطارات ساقطة") to "$dropped"
         )
         lines.forEach { (k, v) ->
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -1844,7 +1845,7 @@ private fun StatsPanel(
         }
         Text(
             verdict,
-            style = T.body(12.5.sp, FontWeight.Bold, if (verdict.startsWith("البث سليم")) RColors.Text else RColors.Saffron),
+            style = T.body(12.5.sp, FontWeight.Bold, if (verdict.startsWith(tr("البث سليم"))) RColors.Text else RColors.Saffron),
             modifier = Modifier.width(300.dp)
         )
     }
