@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.tr
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -59,18 +60,18 @@ fun SpeedTestDialog(playlist: Playlist?, onDismiss: () -> Unit) {
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = { round++ }, enabled = !running) {
-                Text("إعادة القياس", color = if (running) RColors.Text3 else RColors.Saffron)
+                Text(tr("إعادة القياس"), color = if (running) RColors.Text3 else RColors.Saffron)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("إغلاق", color = RColors.Text2) } },
-        title = { Text("قياس سرعة النت", style = T.h2) },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(tr("إغلاق"), color = RColors.Text2) } },
+        title = { Text(tr("قياس سرعة النت"), style = T.h2) },
         text = {
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     String.format(Locale.US, if (mbps >= 100) "%.0f" else "%.1f", mbps),
                     style = T.body(46.sp, FontWeight.Bold, RColors.Saffron)
                 )
-                Text("ميجابت في الثانية", style = T.body(13.sp, color = RColors.Text2))
+                Text(tr("ميجابت في الثانية"), style = T.body(13.sp, color = RColors.Text2))
                 if (running) {
                     LinearProgressIndicator(
                         modifier = Modifier
@@ -79,10 +80,10 @@ fun SpeedTestDialog(playlist: Playlist?, onDismiss: () -> Unit) {
                         color = RColors.Saffron,
                         trackColor = RColors.Surface3
                     )
-                    Text("جارٍ القياس…", style = T.caption, modifier = Modifier.padding(top = 8.dp))
+                    Text(tr("جارٍ القياس…"), style = T.caption, modifier = Modifier.padding(top = 8.dp))
                 } else if (failed) {
                     Text(
-                        "تعذّر القياس. تأكّد من اتصال الجهاز بالإنترنت ثم أعد المحاولة.",
+                        tr("تعذّر القياس. تأكّد من اتصال الجهاز بالإنترنت ثم أعد المحاولة."),
                         style = T.body(14.sp, color = RColors.Text2),
                         modifier = Modifier.padding(top = 14.dp)
                     )
@@ -94,9 +95,9 @@ fun SpeedTestDialog(playlist: Playlist?, onDismiss: () -> Unit) {
                     )
                 }
                 Column(Modifier.padding(top = 16.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    SpeedLine("زمن الاستجابة", ping?.let { "$it ملي ثانية" } ?: "—")
+                    SpeedLine(tr("زمن الاستجابة"), ping?.let { tr("{0} ملي ثانية", it) } ?: "—")
                     if (playlist != null) {
-                        SpeedLine("استجابة سيرفر الاشتراك", serverPing?.let { "$it ملي ثانية" } ?: if (running) "—" else "لا يستجيب")
+                        SpeedLine(tr("استجابة سيرفر الاشتراك"), serverPing?.let { tr("{0} ملي ثانية", it) } ?: if (running) "—" else tr("لا يستجيب"))
                     }
                 }
             }

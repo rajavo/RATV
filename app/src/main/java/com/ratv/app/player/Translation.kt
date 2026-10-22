@@ -1,5 +1,6 @@
 package com.ratv.app.player
 
+import com.ratv.app.i18n.tr
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.TranslateLanguage
@@ -14,47 +15,47 @@ import kotlin.coroutines.resumeWithException
 data class SubLanguage(val code: String, val name: String)
 
 /** Languages offered for subtitles; all of them can also be produced by on-device translation. */
-val subtitleLanguages = listOf(
-    SubLanguage("ar", "العربية"),
-    SubLanguage("en", "الإنجليزية"),
-    SubLanguage("fr", "الفرنسية"),
-    SubLanguage("tr", "التركية"),
-    SubLanguage("es", "الإسبانية"),
-    SubLanguage("de", "الألمانية"),
-    SubLanguage("it", "الإيطالية"),
-    SubLanguage("pt", "البرتغالية"),
-    SubLanguage("ru", "الروسية"),
-    SubLanguage("hi", "الهندية"),
-    SubLanguage("ur", "الأردية"),
-    SubLanguage("fa", "الفارسية"),
-    SubLanguage("id", "الإندونيسية"),
-    SubLanguage("ms", "الملايوية"),
-    SubLanguage("bn", "البنغالية"),
-    SubLanguage("tl", "الفلبينية"),
-    SubLanguage("zh", "الصينية"),
-    SubLanguage("ja", "اليابانية"),
-    SubLanguage("ko", "الكورية"),
-    SubLanguage("nl", "الهولندية"),
-    SubLanguage("sv", "السويدية"),
-    SubLanguage("pl", "البولندية"),
-    SubLanguage("uk", "الأوكرانية"),
-    SubLanguage("el", "اليونانية"),
-    SubLanguage("ro", "الرومانية"),
-    SubLanguage("hu", "المجرية"),
-    SubLanguage("cs", "التشيكية"),
-    SubLanguage("da", "الدنماركية"),
-    SubLanguage("fi", "الفنلندية"),
-    SubLanguage("no", "النرويجية"),
-    SubLanguage("he", "العبرية"),
-    SubLanguage("th", "التايلاندية"),
-    SubLanguage("vi", "الفيتنامية"),
-    SubLanguage("sw", "السواحيلية")
+val subtitleLanguages get() = listOf(
+    SubLanguage("ar", tr("العربية")),
+    SubLanguage("en", tr("الإنجليزية")),
+    SubLanguage("fr", tr("الفرنسية")),
+    SubLanguage("tr", tr("التركية")),
+    SubLanguage("es", tr("الإسبانية")),
+    SubLanguage("de", tr("الألمانية")),
+    SubLanguage("it", tr("الإيطالية")),
+    SubLanguage("pt", tr("البرتغالية")),
+    SubLanguage("ru", tr("الروسية")),
+    SubLanguage("hi", tr("الهندية")),
+    SubLanguage("ur", tr("الأردية")),
+    SubLanguage("fa", tr("الفارسية")),
+    SubLanguage("id", tr("الإندونيسية")),
+    SubLanguage("ms", tr("الملايوية")),
+    SubLanguage("bn", tr("البنغالية")),
+    SubLanguage("tl", tr("الفلبينية")),
+    SubLanguage("zh", tr("الصينية")),
+    SubLanguage("ja", tr("اليابانية")),
+    SubLanguage("ko", tr("الكورية")),
+    SubLanguage("nl", tr("الهولندية")),
+    SubLanguage("sv", tr("السويدية")),
+    SubLanguage("pl", tr("البولندية")),
+    SubLanguage("uk", tr("الأوكرانية")),
+    SubLanguage("el", tr("اليونانية")),
+    SubLanguage("ro", tr("الرومانية")),
+    SubLanguage("hu", tr("المجرية")),
+    SubLanguage("cs", tr("التشيكية")),
+    SubLanguage("da", tr("الدنماركية")),
+    SubLanguage("fi", tr("الفنلندية")),
+    SubLanguage("no", tr("النرويجية")),
+    SubLanguage("he", tr("العبرية")),
+    SubLanguage("th", tr("التايلاندية")),
+    SubLanguage("vi", tr("الفيتنامية")),
+    SubLanguage("sw", tr("السواحيلية"))
 )
 
 fun languageName(code: String): String {
     val c = code.lowercase().take(2)
     subtitleLanguages.firstOrNull { it.code == c }?.let { return it.name }
-    val name = Locale(c).getDisplayLanguage(Locale("ar"))
+    val name = Locale(c).getDisplayLanguage(com.ratv.app.i18n.I18n.locale)
     return if (name.isNullOrBlank() || name == c) code else name
 }
 

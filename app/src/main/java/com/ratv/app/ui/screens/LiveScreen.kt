@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.tr
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -119,11 +120,11 @@ private fun LivePhoneScreen(nav: Navigator) {
         contentPadding = PaddingValues(bottom = 16.dp)
     ) {
         item {
-            ScreenHeader("البث المباشر", Modifier.statusBarsPadding()) {
-                CircleIconButton(RIcons.Search, "بحث في القنوات", { nav.search() })
-                CircleIconButton(RIcons.Trophy, "جدول المباريات", { nav.matches() })
+            ScreenHeader(tr("البث المباشر"), Modifier.statusBarsPadding()) {
+                CircleIconButton(RIcons.Search, tr("بحث في القنوات"), { nav.search() })
+                CircleIconButton(RIcons.Trophy, tr("جدول المباريات"), { nav.matches() })
                 Spacer(Modifier.width(8.dp))
-                CircleIconButton(RIcons.Calendar, "دليل البرامج", { nav.guide() })
+                CircleIconButton(RIcons.Calendar, tr("دليل البرامج"), { nav.guide() })
             }
         }
 
@@ -146,9 +147,9 @@ private fun LivePhoneScreen(nav: Navigator) {
                 contentPadding = PaddingValues(horizontal = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                item { Chip("الكل", selected == ALL, { selected = ALL }) }
-                if (recentIds.isNotEmpty()) item { Chip("شوهدت مؤخراً", selected == RECENT, { selected = RECENT }) }
-                item { Chip("المفضلة", selected == FAV, { selected = FAV }) }
+                item { Chip(tr("الكل"), selected == ALL, { selected = ALL }) }
+                if (recentIds.isNotEmpty()) item { Chip(tr("شوهدت مؤخراً"), selected == RECENT, { selected = RECENT }) }
+                item { Chip(tr("المفضلة"), selected == FAV, { selected = FAV }) }
                 items(categories, key = { it.id }) { cat ->
                     Chip(cat.name, selected == cat.id, { selected = cat.id })
                 }
@@ -158,9 +159,9 @@ private fun LivePhoneScreen(nav: Navigator) {
         if (visible.isEmpty()) {
             item {
                 if (selected == FAV) {
-                    EmptyState(RIcons.Star, "لا توجد قنوات مفضلة", "اضغط على النجمة بجانب أي قناة لإضافتها هنا.")
+                    EmptyState(RIcons.Star, tr("لا توجد قنوات مفضلة"), tr("اضغط على النجمة بجانب أي قناة لإضافتها هنا."))
                 } else {
-                    EmptyState(RIcons.Tv, "لا توجد قنوات", "لم نجد قنوات في هذه الفئة.")
+                    EmptyState(RIcons.Tv, tr("لا توجد قنوات"), tr("لم نجد قنوات في هذه الفئة."))
                 }
             }
         }
@@ -232,7 +233,7 @@ fun ChannelRow(
                     channel.quality?.let { QualityBadge(it) }
                 }
                 Text(
-                    programme?.title ?: categoryName ?: "بث مباشر",
+                    programme?.title ?: categoryName ?: tr("بث مباشر"),
                     style = T.body(13.sp, color = RColors.Text2),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -254,7 +255,7 @@ fun ChannelRow(
         ) {
             Icon(
                 if (favorite) RIcons.StarFilled else RIcons.Star,
-                contentDescription = if (favorite) "إزالة من المفضلة" else "إضافة إلى المفضلة",
+                contentDescription = if (favorite) tr("إزالة من المفضلة") else tr("إضافة إلى المفضلة"),
                 tint = if (favorite) RColors.Saffron else RColors.Text3,
                 modifier = Modifier.size(20.dp)
             )
@@ -276,7 +277,7 @@ private fun PreviewCard(
             .height(180.dp)
             .clip(RoundedCornerShape(18.dp))
             .background(Brush.verticalGradient(listOf(Color(0xFF172028), RColors.Surface)))
-            .tvClickable(RoundedCornerShape(18.dp), onClickLabel = "تشغيل ${channel.name}", onClick = onClick)
+            .tvClickable(RoundedCornerShape(18.dp), onClickLabel = tr("تشغيل {0}", channel.name), onClick = onClick)
     ) {
         RingsArt(Modifier.fillMaxSize())
         ChannelLogo(

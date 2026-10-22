@@ -1,5 +1,7 @@
 package com.ratv.app
 
+import com.ratv.app.i18n.I18n
+
 import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
@@ -15,7 +17,9 @@ class RatvApp : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        repository = Repository(this, Prefs(this))
+        val prefs = Prefs(this)
+        I18n.init(this, com.ratv.app.data.debugProperty("debug.ratv.lang") ?: prefs.uiLanguage)
+        repository = Repository(this, prefs)
     }
 
     override fun newImageLoader(): ImageLoader =

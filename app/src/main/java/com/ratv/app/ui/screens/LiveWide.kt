@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.tr
 import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -105,9 +106,9 @@ fun LiveWideScreen(nav: Navigator) {
     val favoriteCount = remember(channels, favorites) { channels.count { Keys.live(it.id) in favorites } }
     val entries = remember(categories, counts, favoriteCount, recent, channels) {
         listOf(
-            SideEntry(RECENT, "شوهدت مؤخراً", recent.size, RIcons.Clock),
-            SideEntry(ALL, "الكل", channels.size, RIcons.Tv),
-            SideEntry(FAV, "المفضلة", favoriteCount, RIcons.Star)
+            SideEntry(RECENT, tr("شوهدت مؤخراً"), recent.size, RIcons.Clock),
+            SideEntry(ALL, tr("الكل"), channels.size, RIcons.Tv),
+            SideEntry(FAV, tr("المفضلة"), favoriteCount, RIcons.Star)
         ) + categories.map { SideEntry(it.id, it.name, counts[it.id] ?: 0) }
     }
     val visible = remember(channels, favorites, selected, recent) {
@@ -118,7 +119,7 @@ fun LiveWideScreen(nav: Navigator) {
             else -> channels.filter { it.categoryId == selected }
         }
     }
-    val sectionName = entries.firstOrNull { it.key == selected }?.name ?: "القنوات"
+    val sectionName = entries.firstOrNull { it.key == selected }?.name ?: tr("القنوات")
 
     // ---------------------------------------------------------- focus
     val listState = rememberLazyListState()
@@ -195,7 +196,7 @@ fun LiveWideScreen(nav: Navigator) {
         val key = Keys.live(ch.id)
         val adding = key !in favorites
         repo.toggleFavorite(key)
-        toast = if (adding) "أُضيفت ${ch.name} إلى المفضلة" else "أُزيلت ${ch.name} من المفضلة"
+        toast = if (adding) tr("أُضيفت {0} إلى المفضلة", ch.name) else tr("أُزيلت {0} من المفضلة", ch.name)
     }
 
     Box(
@@ -236,13 +237,13 @@ fun LiveWideScreen(nav: Navigator) {
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(sectionName, style = T.h2, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
-                    Text(formatCount(visible.size) + " قناة", style = T.caption)
+                    Text(formatCount(visible.size) + tr(" قناة"), style = T.caption)
                 }
                 if (visible.isEmpty()) {
                     EmptyState(
                         if (selected == FAV) RIcons.Star else RIcons.Tv,
-                        if (selected == FAV) "لا توجد قنوات مفضلة" else "لا توجد قنوات هنا",
-                        if (selected == FAV) "اضغط مطولاً على OK فوق أي قناة لإضافتها إلى المفضلة." else "اختر قسماً آخر من القائمة."
+                        if (selected == FAV) tr("لا توجد قنوات مفضلة") else tr("لا توجد قنوات هنا"),
+                        if (selected == FAV) tr("اضغط مطولاً على OK فوق أي قناة لإضافتها إلى المفضلة.") else tr("اختر قسماً آخر من القائمة.")
                     )
                 } else {
                     LazyColumn(
@@ -320,7 +321,7 @@ private fun WideChannelRow(
             .tvLongPress(onToggleFavorite)
             .clip(shape)
             .background(if (active) RColors.Surface3 else Color.Transparent)
-            .tvClickable(shape, onClickLabel = "مشاهدة ${channel.name}", onClick = onOpen)
+            .tvClickable(shape, onClickLabel = tr("مشاهدة {0}", channel.name), onClick = onOpen)
             .padding(horizontal = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -344,7 +345,7 @@ private fun WideChannelRow(
             }
         }
         channel.quality?.let { QualityBadge(it, color = if (it == "4K") RColors.SaffronLight else RColors.Text2) }
-        if (favorite) Icon(RIcons.StarFilled, contentDescription = "مفضلة", tint = RColors.Saffron, modifier = Modifier.size(16.dp))
+        if (favorite) Icon(RIcons.StarFilled, contentDescription = tr("مفضلة"), tint = RColors.Saffron, modifier = Modifier.size(16.dp))
     }
 }
 
@@ -426,11 +427,11 @@ private fun PreviewPane(
             }
         } else {
             Spacer(Modifier.height(8.dp))
-            Text("لا يوجد دليل برامج لهذه القناة", style = T.caption)
+            Text(tr("لا يوجد دليل برامج لهذه القناة"), style = T.caption)
         }
         if (next != null) {
             Spacer(Modifier.height(8.dp))
-            Text("التالي ${hm(next.start)} · ${next.title}", style = T.body(13.sp, color = RColors.Text3), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(tr("التالي {0} · {1}", hm(next.start), next.title), style = T.body(13.sp, color = RColors.Text3), maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         Spacer(Modifier.weight(1f))
         Row(
@@ -443,9 +444,9 @@ private fun PreviewPane(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Icon(RIcons.Play, contentDescription = null, tint = RColors.OnSaffron, modifier = Modifier.size(16.dp))
-            Text("مشاهدة بملء الشاشة", style = T.body(14.sp, FontWeight.Bold, RColors.OnSaffron))
+            Text(tr("مشاهدة بملء الشاشة"), style = T.body(14.sp, FontWeight.Bold, RColors.OnSaffron))
         }
         Spacer(Modifier.height(8.dp))
-        Text("اضغط مطولاً على OK فوق قناة لإضافتها إلى المفضلة", style = T.small)
+        Text(tr("اضغط مطولاً على OK فوق قناة لإضافتها إلى المفضلة"), style = T.small)
     }
 }

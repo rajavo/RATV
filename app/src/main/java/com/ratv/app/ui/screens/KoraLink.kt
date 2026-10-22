@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.tr
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.layout.Column
@@ -46,7 +47,7 @@ object KoraApp {
 fun KoraButton(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     var ask by remember { mutableStateOf(false) }
-    OutlineButton("جدول 30 يوم", { if (!KoraApp.open(context)) ask = true }, modifier, icon = RIcons.Calendar, height = 44.dp)
+    OutlineButton(tr("جدول 30 يوم"), { if (!KoraApp.open(context)) ask = true }, modifier, icon = RIcons.Calendar, height = 44.dp)
     if (ask) KoraInstallDialog { ask = false }
 }
 
@@ -87,22 +88,22 @@ private fun KoraInstallDialog(onDismiss: () -> Unit) {
                             throw e
                         } catch (e: Exception) {
                             progress = null
-                            error = "تعذّر تنزيل التطبيق. تحقّق من الاتصال وحاول مرة أخرى."
+                            error = tr("تعذّر تنزيل التطبيق. تحقّق من الاتصال وحاول مرة أخرى.")
                         }
                     }
                 }
             ) {
-                Text(if (file != null) "تثبيت" else "ثبّت التطبيق", color = if (progress == null) RColors.Saffron else RColors.Text3)
+                Text(if (file != null) tr("تثبيت") else tr("ثبّت التطبيق"), color = if (progress == null) RColors.Saffron else RColors.Text3)
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss, enabled = progress == null) { Text("لاحقاً", color = RColors.Text2) }
+            TextButton(onClick = onDismiss, enabled = progress == null) { Text(tr("لاحقاً"), color = RColors.Text2) }
         },
-        title = { Text("جدول RA كورة", style = T.h2) },
+        title = { Text(tr("جدول RA كورة"), style = T.h2) },
         text = {
             Column(Modifier.fillMaxWidth()) {
                 Text(
-                    "جدول مباريات 30 يوم من الدوريات العربية والأوروبية، يتحدث تلقائياً، ومن أي مباراة تضغط «شاهد على RA TV» ويفتح لك القنوات اللي تعرضها.",
+                    tr("جدول مباريات 30 يوم من الدوريات العربية والأوروبية، يتحدث تلقائياً، ومن أي مباراة تضغط «شاهد على RA TV» ويفتح لك القنوات اللي تعرضها."),
                     style = T.body(14.sp, color = RColors.Text2)
                 )
                 progress?.let { p ->
@@ -114,11 +115,11 @@ private fun KoraInstallDialog(onDismiss: () -> Unit) {
                         color = RColors.Saffron,
                         trackColor = RColors.Surface3
                     )
-                    Text("جارٍ التنزيل… ${(p * 100).toInt()}%", style = T.caption, modifier = Modifier.padding(top = 8.dp))
+                    Text(tr("جارٍ التنزيل… {0}%", (p * 100).toInt()), style = T.caption, modifier = Modifier.padding(top = 8.dp))
                 }
                 if (needsPermission) {
                     Text(
-                        "اسمح لتطبيق RATV بتثبيت التطبيقات في الصفحة التي فُتحت، ثم ارجع واضغط «تثبيت».",
+                        tr("اسمح لتطبيق RATV بتثبيت التطبيقات في الصفحة التي فُتحت، ثم ارجع واضغط «تثبيت»."),
                         style = T.body(14.sp, color = RColors.Saffron),
                         modifier = Modifier.padding(top = 12.dp)
                     )

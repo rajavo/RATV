@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.tr
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -125,13 +126,13 @@ fun SplashScreen(onNeedLogin: () -> Unit, onReady: () -> Unit, onAutoPlay: (Stri
                 TvInitialFocus(retryFocus, key = current.message)
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     PrimaryButton(
-                        "إعادة المحاولة",
+                        tr("إعادة المحاولة"),
                         onClick = { repo.refresh() },
                         icon = RIcons.Refresh,
                         height = 48.dp,
                         modifier = Modifier.focusRequester(retryFocus)
                     )
-                    OutlineButton("تغيير الاشتراك", onClick = onNeedLogin, icon = RIcons.Swap)
+                    OutlineButton(tr("تغيير الاشتراك"), onClick = onNeedLogin, icon = RIcons.Swap)
                 }
             } else {
                 LinearProgressIndicator(

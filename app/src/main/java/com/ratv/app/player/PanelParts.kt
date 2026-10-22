@@ -1,5 +1,6 @@
 package com.ratv.app.player
 
+import com.ratv.app.i18n.tr
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -77,7 +78,7 @@ internal fun SidePanel(
                     Text(title, style = T.display(17.sp))
                     if (subtitle != null) Text(subtitle, style = T.caption, maxLines = 2)
                 }
-                CircleIconButton(RIcons.Close, "إغلاق", onClose, background = RColors.Surface2, size = 40.dp, iconSize = 20.dp)
+                CircleIconButton(RIcons.Close, tr("إغلاق"), onClose, background = RColors.Surface2, size = 40.dp, iconSize = 20.dp)
             }
             Spacer(Modifier.height(8.dp))
             content()
@@ -127,7 +128,7 @@ internal fun SourceRow(
             if (subtitle != null) Text(subtitle, style = T.caption, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         if (badge != null) QualityBadge(badge, color = if (badge == "4K") RColors.SaffronLight else RColors.Text2)
-        if (selected) Icon(RIcons.Check, contentDescription = "المختار", tint = RColors.Saffron, modifier = Modifier.size(18.dp))
+        if (selected) Icon(RIcons.Check, contentDescription = tr("المختار"), tint = RColors.Saffron, modifier = Modifier.size(18.dp))
     }
 }
 

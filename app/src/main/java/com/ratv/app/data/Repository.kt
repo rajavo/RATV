@@ -1,5 +1,6 @@
 package com.ratv.app.data
 
+import com.ratv.app.i18n.tr
 import android.content.Context
 import android.net.Uri
 import kotlinx.coroutines.CancellationException
@@ -148,7 +149,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
         val s = _state.value
         if (s is LoadState.Ready || s is LoadState.Loading) return
         loadJob?.cancel()
-        _state.value = LoadState.Loading("جارٍ تحميل القنوات…")
+        _state.value = LoadState.Loading(tr("جارٍ تحميل القنوات…"))
         loadJob = scope.launch { runLoad(p, force = false) }
     }
 
@@ -156,7 +157,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
     fun refresh() {
         val p = _playlist.value ?: return
         loadJob?.cancel()
-        _state.value = LoadState.Loading("جارٍ تحديث المحتوى…")
+        _state.value = LoadState.Loading(tr("جارٍ تحديث المحتوى…"))
         loadJob = scope.launch { runLoad(p, force = true) }
     }
 
@@ -181,7 +182,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
         prefs.savePlaylist(p)
         reloadUserData()
         _playlist.value = p
-        _state.value = LoadState.Loading("جارٍ تحميل القنوات…")
+        _state.value = LoadState.Loading(tr("جارٍ تحميل القنوات…"))
         loadJob = scope.launch { runLoad(p, force = false) }
         val result = state.first { it is LoadState.Ready || it is LoadState.Error }
         if (result is LoadState.Error) result.message else null
@@ -205,7 +206,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
         prefs.savePlaylist(p)
         reloadUserData()
         _playlist.value = p
-        _state.value = LoadState.Loading("جارٍ تحميل القنوات…")
+        _state.value = LoadState.Loading(tr("جارٍ تحميل القنوات…"))
         loadJob = scope.launch { runLoad(p, force = false) }
     }
 
@@ -241,12 +242,12 @@ class Repository(private val context: Context, val prefs: Prefs) {
         when (p.type) {
             PlaylistType.XTREAM -> {
                 if (p.server.isBlank() || p.username.isBlank() || p.password.isBlank()) {
-                    throw IOException("أكمل رابط الخادم واسم المستخدم وكلمة المرور.")
+                    throw IOException(tr("أكمل رابط الخادم واسم المستخدم وكلمة المرور."))
                 }
                 _account.value = XtreamClient(p).authenticate()
             }
             PlaylistType.M3U -> {
-                if (p.m3uUrl.isBlank()) throw IOException("أدخل رابط قائمة M3U أو اختر ملفاً.")
+                if (p.m3uUrl.isBlank()) throw IOException(tr("أدخل رابط قائمة M3U أو اختر ملفاً."))
                 val file = if (p.m3uUrl.startsWith("content://")) copyContent(p, force = true)
                 else fetch(p, "playlist.m3u", p.m3uUrl, force = true)
                 val head = Http.openMaybeGzip(file).bufferedReader(Charsets.UTF_8).use { r ->
@@ -256,7 +257,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
                 }
                 if (!head.contains("#EXTINF") && !head.contains("#EXTM3U")) {
                     throw IOException(
-                        "هذا الرابط لا يحتوي على قائمة قنوات M3U. إذا كان عندك اسم مستخدم وكلمة مرور فادخل من تبويب Xtream Codes."
+                        tr("هذا الرابط لا يحتوي على قائمة قنوات M3U. إذا كان عندك اسم مستخدم وكلمة مرور فادخل من تبويب Xtream Codes.")
                     )
                 }
             }
@@ -347,7 +348,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
         else fetch(p, "playlist.m3u", p.m3uUrl, force)
         val result = Http.openMaybeGzip(file).bufferedReader(Charsets.UTF_8).use { M3uParser.parse(it) }
         if (result.channels.isEmpty() && result.movies.isEmpty() && result.series.isEmpty()) {
-            throw IOException("القائمة فارغة أو بصيغة غير مدعومة.")
+            throw IOException(tr("القائمة فارغة أو بصيغة غير مدعومة."))
         }
         m3uEpgUrl = result.epgUrl
         m3uEpisodes = result.episodes
@@ -403,7 +404,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
         val file = cacheFile(p, "playlist.m3u")
         if (!force && file.exists() && file.length() > 0) return file
         val input = context.contentResolver.openInputStream(Uri.parse(p.m3uUrl))
-            ?: throw IOException("تعذّر فتح الملف المختار.")
+            ?: throw IOException(tr("تعذّر فتح الملف المختار."))
         input.use { inp -> file.outputStream().use { out -> inp.copyTo(out) } }
         return file
     }
@@ -611,20 +612,20 @@ class Repository(private val context: Context, val prefs: Prefs) {
     }
 
     fun friendlyError(e: Throwable): String = when (e) {
-        is AuthException -> e.message ?: "بيانات الدخول غير صحيحة."
+        is AuthException -> e.message ?: tr("بيانات الدخول غير صحيحة.")
         is HttpException -> when (e.code) {
-            401, 403 -> "رفض الخادم الدخول. تحقّق من البيانات أو من صلاحية الاشتراك."
-            404 -> "الرابط غير موجود. تأكّد من رابط الخادم."
-            in 500..599 -> "الخادم لا يستجيب حالياً. حاول لاحقاً."
-            else -> "خطأ من الخادم (${e.code})."
+            401, 403 -> tr("رفض الخادم الدخول. تحقّق من البيانات أو من صلاحية الاشتراك.")
+            404 -> tr("الرابط غير موجود. تأكّد من رابط الخادم.")
+            in 500..599 -> tr("الخادم لا يستجيب حالياً. حاول لاحقاً.")
+            else -> tr("خطأ من الخادم ({0}).", e.code)
         }
-        is java.net.UnknownHostException -> "تعذّر الوصول إلى الخادم. تحقّق من الرابط والاتصال بالإنترنت."
-        is java.net.SocketTimeoutException -> "انتهت مهلة الاتصال بالخادم."
-        is java.net.ConnectException -> "تعذّر الاتصال بالخادم."
-        is IllegalArgumentException -> "الرابط غير صحيح. اكتبه كاملاً بالإنجليزية ويبدأ بـ http://\u200E"
+        is java.net.UnknownHostException -> tr("تعذّر الوصول إلى الخادم. تحقّق من الرابط والاتصال بالإنترنت.")
+        is java.net.SocketTimeoutException -> tr("انتهت مهلة الاتصال بالخادم.")
+        is java.net.ConnectException -> tr("تعذّر الاتصال بالخادم.")
+        is IllegalArgumentException -> tr("الرابط غير صحيح. اكتبه كاملاً بالإنجليزية ويبدأ بـ http://\u200E")
         is IOException -> e.message?.takeIf { msg -> msg.any { it in '؀'..'ۿ' } }
-            ?: "تعذّر تحميل البيانات. تحقّق من الاتصال."
-        else -> "حدث خطأ غير متوقع."
+            ?: tr("تعذّر تحميل البيانات. تحقّق من الاتصال.")
+        else -> tr("حدث خطأ غير متوقع.")
     }
 
     companion object {

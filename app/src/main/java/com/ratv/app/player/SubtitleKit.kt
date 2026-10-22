@@ -1,5 +1,6 @@
 package com.ratv.app.player
 
+import com.ratv.app.i18n.tr
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -176,7 +177,7 @@ class SubtitleController(private val scope: CoroutineScope, private val prefs: P
                 throw e
             } catch (e: Exception) {
                 hits = emptyList()
-                searchError = "تعذّر الوصول إلى مكتبة الترجمات. تحقّق من الإنترنت ثم أعد المحاولة."
+                searchError = tr("تعذّر الوصول إلى مكتبة الترجمات. تحقّق من الإنترنت ثم أعد المحاولة.")
             } finally {
                 searching = false
             }
@@ -201,7 +202,7 @@ class SubtitleController(private val scope: CoroutineScope, private val prefs: P
                     SubtitleParser.parse(SubtitleParser.decode(bytes, hit.language))
                 }
                 if (list.isEmpty()) {
-                    status = "ملف الترجمة فارغ أو بصيغة غير مدعومة."
+                    status = tr("ملف الترجمة فارغ أو بصيغة غير مدعومة.")
                     active = null
                     return@launch
                 }
@@ -211,7 +212,7 @@ class SubtitleController(private val scope: CoroutineScope, private val prefs: P
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                status = "تعذّر تنزيل الترجمة. جرّب ترجمة أخرى."
+                status = tr("تعذّر تنزيل الترجمة. جرّب ترجمة أخرى.")
                 active = null
             } finally {
                 loading = false
@@ -221,14 +222,14 @@ class SubtitleController(private val scope: CoroutineScope, private val prefs: P
 
     private suspend fun translateAll(list: List<Cue>, from: String, to: String) {
         if (!MachineTranslator.supports(from) || !MachineTranslator.supports(to)) {
-            status = "الترجمة الآلية لا تدعم هذه اللغة، فتظهر الترجمة الأصلية."
+            status = tr("الترجمة الآلية لا تدعم هذه اللغة، فتظهر الترجمة الأصلية.")
             return
         }
         val t = MachineTranslator(from, to)
         translator = t
         translating = true
         try {
-            status = "جارٍ تجهيز الترجمة الآلية إلى ${languageName(to)}… (يُنزَّل مرة واحدة فقط)"
+            status = tr("جارٍ تجهيز الترجمة الآلية إلى {0}… (يُنزَّل مرة واحدة فقط)", languageName(to))
             t.prepare()
             status = null
             while (translations.size < list.size) {
@@ -245,7 +246,7 @@ class SubtitleController(private val scope: CoroutineScope, private val prefs: P
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            status = "الترجمة الآلية غير متاحة على هذا الجهاز الآن، فتظهر الترجمة الأصلية."
+            status = tr("الترجمة الآلية غير متاحة على هذا الجهاز الآن، فتظهر الترجمة الأصلية.")
         } finally {
             translating = false
         }
@@ -285,7 +286,7 @@ class SubtitleController(private val scope: CoroutineScope, private val prefs: P
 }
 
 private val subtitleSizes = listOf(18, 23, 29, 36)
-private val subtitleSizeNames = listOf("صغير", "متوسط", "كبير", "كبير جداً")
+private val subtitleSizeNames get() = listOf(tr("صغير"), tr("متوسط"), tr("كبير"), tr("كبير جداً"))
 
 /** The subtitle line over the picture, lifted above the controls while they show. */
 @Composable
@@ -335,8 +336,8 @@ internal fun SubtitlesPanel(
         }
     }
     SidePanel(
-        title = "الترجمة",
-        subtitle = "ترجمة الفيلم أو الحلقة بأي لغة، وتُترجم آلياً إذا لم تتوفر بلغتك",
+        title = tr("الترجمة"),
+        subtitle = tr("ترجمة الفيلم أو الحلقة بأي لغة، وتُترجم آلياً إذا لم تتوفر بلغتك"),
         onClose = onClose,
         width = 430.dp
     ) {
@@ -346,13 +347,13 @@ internal fun SubtitlesPanel(
                 item {
                     PanelCard {
                         if (current != null) {
-                            Text("الترجمة مفعّلة", style = T.caption)
+                            Text(tr("الترجمة مفعّلة"), style = T.caption)
                             Text(current.release, style = T.body(14.sp, FontWeight.Bold), maxLines = 2)
                             val line = if (sub.needsTranslation) {
                                 val total = sub.cues.size
                                 val done = sub.translations.size
                                 val pct = if (total > 0) done * 100 / total else 0
-                                "${languageName(current.language)} ← ترجمة آلية إلى ${languageName(sub.language)}" +
+                                tr("{0} ← ترجمة آلية إلى {1}", languageName(current.language), languageName(sub.language)) +
                                     if (total > 0) " · $pct%" else ""
                             } else {
                                 languageName(current.language)
@@ -361,22 +362,22 @@ internal fun SubtitlesPanel(
                             if (sub.loading) {
                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                     CircularProgressIndicator(color = RColors.Saffron, strokeWidth = 2.dp, modifier = Modifier.size(16.dp))
-                                    Text("جارٍ تنزيل الترجمة…", style = T.caption)
+                                    Text(tr("جارٍ تنزيل الترجمة…"), style = T.caption)
                                 }
                             }
                         }
                         val status = sub.status
                         if (status != null) Text(status, style = T.body(12.5.sp, color = RColors.Text2))
-                        if (current != null) ActionChip("إيقاف الترجمة", { sub.stop() }, icon = RIcons.Close)
+                        if (current != null) ActionChip(tr("إيقاف الترجمة"), { sub.stop() }, icon = RIcons.Close)
                     }
                 }
             }
 
-            item { PanelHeader("لغة الترجمة") }
+            item { PanelHeader(tr("لغة الترجمة")) }
             item {
                 SourceRow(
                     title = languageName(sub.language),
-                    subtitle = if (showLanguages) "اختر اللغة" else "اضغط لتغيير اللغة",
+                    subtitle = if (showLanguages) tr("اختر اللغة") else tr("اضغط لتغيير اللغة"),
                     badge = null,
                     selected = false,
                     icon = RIcons.Captions,
@@ -401,7 +402,7 @@ internal fun SubtitlesPanel(
                 }
             }
 
-            item { PanelHeader("ترجمات متاحة") }
+            item { PanelHeader(tr("ترجمات متاحة")) }
             val hits = sub.hits
             when {
                 sub.searching -> item {
@@ -411,23 +412,23 @@ internal fun SubtitlesPanel(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         CircularProgressIndicator(color = RColors.Saffron, strokeWidth = 2.dp, modifier = Modifier.size(16.dp))
-                        Text("جارٍ البحث عن ترجمة…", style = T.caption)
+                        Text(tr("جارٍ البحث عن ترجمة…"), style = T.caption)
                     }
                 }
                 sub.searchError != null -> item {
                     PanelNote(sub.searchError.orEmpty(), RColors.Danger)
-                    ActionChip("إعادة البحث", { sub.search() }, modifier = Modifier.padding(horizontal = 8.dp), icon = RIcons.Refresh)
+                    ActionChip(tr("إعادة البحث"), { sub.search() }, modifier = Modifier.padding(horizontal = 8.dp), icon = RIcons.Refresh)
                 }
                 hits.isNullOrEmpty() -> item {
-                    PanelNote("لم نجد ترجمة لهذا العنوان في مكتبة الترجمات.")
+                    PanelNote(tr("لم نجد ترجمة لهذا العنوان في مكتبة الترجمات."))
                 }
                 else -> items(hits.orEmpty().take(40), key = { "h" + it.id }) { hit ->
                     val translated = !hit.language.lowercase().startsWith(sub.language)
                     SourceRow(
                         title = hit.release,
                         subtitle = languageName(hit.language) +
-                            (if (translated) " · تُترجم آلياً إلى ${languageName(sub.language)}" else "") +
-                            (if (hit.downloads > 0) " · ${hit.downloads} تنزيل" else ""),
+                            (if (translated) tr(" · تُترجم آلياً إلى {0}", languageName(sub.language)) else "") +
+                            (if (hit.downloads > 0) tr(" · {0} تنزيل", hit.downloads) else ""),
                         badge = null,
                         selected = sub.active?.id == hit.id,
                         icon = RIcons.FileIcon,
@@ -438,11 +439,11 @@ internal fun SubtitlesPanel(
             }
 
             if (hasEmbedded) {
-                item { PanelHeader("ترجمات داخل الملف") }
+                item { PanelHeader(tr("ترجمات داخل الملف")) }
                 item {
                     SourceRow(
-                        title = "الصوت والترجمة المضمّنة",
-                        subtitle = "ترجمات يوفرها مزودك داخل الفيلم",
+                        title = tr("الصوت والترجمة المضمّنة"),
+                        subtitle = tr("ترجمات يوفرها مزودك داخل الفيلم"),
                         badge = null,
                         selected = false,
                         icon = RIcons.Captions,
@@ -452,7 +453,7 @@ internal fun SubtitlesPanel(
                 }
             }
 
-            item { PanelHeader("حجم الخط") }
+            item { PanelHeader(tr("حجم الخط")) }
             item {
                 Row(Modifier.padding(horizontal = 6.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     subtitleSizeNames.forEachIndexed { index, name ->
@@ -461,25 +462,25 @@ internal fun SubtitlesPanel(
                 }
             }
 
-            item { PanelHeader("التوقيت") }
+            item { PanelHeader(tr("التوقيت")) }
             item {
                 Row(
                     Modifier.padding(horizontal = 6.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    ActionChip("−½ ث", { sub.shift(-500L) })
-                    ActionChip("+½ ث", { sub.shift(500L) })
-                    ActionChip("ضبط", { sub.resetOffset() })
+                    ActionChip(tr("−½ ث"), { sub.shift(-500L) })
+                    ActionChip(tr("+½ ث"), { sub.shift(500L) })
+                    ActionChip(tr("ضبط"), { sub.resetOffset() })
                 }
             }
             item {
                 val o = sub.offsetMs
                 PanelNote(
                     when {
-                        o == 0L -> "الترجمة في وقتها الأصلي"
-                        o > 0L -> "الترجمة متأخرة ${seconds(o)} ث"
-                        else -> "الترجمة مقدَّمة ${seconds(o)} ث"
+                        o == 0L -> tr("الترجمة في وقتها الأصلي")
+                        o > 0L -> tr("الترجمة متأخرة {0} ث", seconds(o))
+                        else -> tr("الترجمة مقدَّمة {0} ث", seconds(o))
                     }
                 )
             }

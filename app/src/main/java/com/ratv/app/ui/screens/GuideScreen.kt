@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.tr
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -147,8 +148,8 @@ fun GuideScreen(nav: Navigator) {
             .fillMaxSize()
             .screenBackground()
     ) {
-        ScreenHeader("دليل البرامج", Modifier.statusBarsPadding(), onBack = { nav.back() }) {
-            CircleIconButton(RIcons.Search, "بحث", { nav.search() })
+        ScreenHeader(tr("دليل البرامج"), Modifier.statusBarsPadding(), onBack = { nav.back() }) {
+            CircleIconButton(RIcons.Search, tr("بحث"), { nav.search() })
         }
 
         LazyRow(
@@ -156,11 +157,11 @@ fun GuideScreen(nav: Navigator) {
             contentPadding = PaddingValues(horizontal = 20.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            item { Chip("اليوم", day == 0, { day = 0 }) }
-            item { Chip("غداً", day == 1, { day = 1 }) }
+            item { Chip(tr("اليوم"), day == 0, { day = 0 }) }
+            item { Chip(tr("غداً"), day == 1, { day = 1 }) }
             item { Spacer(Modifier.width(8.dp)) }
-            item { Chip("الكل", category == ALL, { category = ALL }) }
-            item { Chip("المفضلة", category == FAV, { category = FAV }) }
+            item { Chip(tr("الكل"), category == ALL, { category = ALL }) }
+            item { Chip(tr("المفضلة"), category == FAV, { category = FAV }) }
             items(categories, key = { it.id }) { cat ->
                 Chip(cat.name, category == cat.id, { category = cat.id })
             }
@@ -176,13 +177,13 @@ fun GuideScreen(nav: Navigator) {
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
                     CircularProgressIndicator(color = RColors.Saffron, strokeWidth = 2.5.dp, modifier = Modifier.size(32.dp))
-                    Text("جارٍ تحميل دليل البرامج…", style = T.body(14.sp, color = RColors.Text2))
+                    Text(tr("جارٍ تحميل دليل البرامج…"), style = T.body(14.sp, color = RColors.Text2))
                 }
             } else {
                 EmptyState(
                     RIcons.Calendar,
-                    "لا يتوفر دليل برامج",
-                    "لم يرسل مزوّد الخدمة دليل برامج لهذه القنوات. يمكنك إضافة رابط EPG عند إضافة قائمة M3U."
+                    tr("لا يتوفر دليل برامج"),
+                    tr("لم يرسل مزوّد الخدمة دليل برامج لهذه القنوات. يمكنك إضافة رابط EPG عند إضافة قائمة M3U.")
                 )
             }
         } else {
@@ -332,7 +333,7 @@ private fun GuideRow(
                 .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier)
                 .padding(3.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .tvClickable(RoundedCornerShape(10.dp), onClickLabel = "تشغيل ${channel.name}", onClick = onOpenChannel),
+                .tvClickable(RoundedCornerShape(10.dp), onClickLabel = tr("تشغيل {0}", channel.name), onClick = onOpenChannel),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -365,7 +366,7 @@ private fun GuideRow(
                             .padding(horizontal = 10.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        Text(channel.name + " · لا تتوفر معلومات", style = T.body(12.sp, color = RColors.Text3), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(channel.name + tr(" · لا تتوفر معلومات"), style = T.body(12.sp, color = RColors.Text3), maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 }
                 inWindow.forEach { p ->
@@ -450,7 +451,7 @@ private fun ProgrammeDetail(
     ) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
-                if (live) "الآن على ${channel.name}" else channel.name,
+                if (live) tr("الآن على {0}", channel.name) else channel.name,
                 style = T.body(12.sp, FontWeight.Bold, RColors.Saffron),
                 maxLines = 1
             )
@@ -458,8 +459,8 @@ private fun ProgrammeDetail(
             val timing = "${hm(programme.start)} – ${hm(programme.end)}" +
                 when {
                     live -> " · " + minutesLeft(programme.end, now)
-                    programme.start > now -> " · يبدأ بعد ${(programme.start - now) / MINUTE} د"
-                    else -> " · انتهى"
+                    programme.start > now -> tr(" · يبدأ بعد {0} د", (programme.start - now) / MINUTE)
+                    else -> tr(" · انتهى")
                 }
             Text(timing, style = T.caption, maxLines = 1)
             programme.desc?.let { Text(it, style = T.body(12.sp, color = RColors.Text2), maxLines = 2, overflow = TextOverflow.Ellipsis) }
@@ -470,10 +471,10 @@ private fun ProgrammeDetail(
                     .size(52.dp)
                     .clip(CircleShape)
                     .background(RColors.AccentBrush)
-                    .tvClickable(CircleShape, onClickLabel = "شاهد ${channel.name}", ringColor = androidx.compose.ui.graphics.Color.White, onClick = onPlay),
+                    .tvClickable(CircleShape, onClickLabel = tr("شاهد {0}", channel.name), ringColor = androidx.compose.ui.graphics.Color.White, onClick = onPlay),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(RIcons.Play, contentDescription = "شاهد القناة", tint = RColors.OnSaffron, modifier = Modifier.size(22.dp))
+                Icon(RIcons.Play, contentDescription = tr("شاهد القناة"), tint = RColors.OnSaffron, modifier = Modifier.size(22.dp))
             }
             Box(
                 Modifier
@@ -482,7 +483,7 @@ private fun ProgrammeDetail(
                     .tvClickable(CircleShape, onClick = onClose),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(RIcons.Close, contentDescription = "إغلاق", tint = RColors.Text3, modifier = Modifier.size(18.dp))
+                Icon(RIcons.Close, contentDescription = tr("إغلاق"), tint = RColors.Text3, modifier = Modifier.size(18.dp))
             }
         }
     }

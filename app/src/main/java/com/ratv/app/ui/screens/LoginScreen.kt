@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.tr
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -128,7 +129,7 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
                 // Some providers do not offer persistable permissions; we copy the file on first load anyway.
             }
             m3uUrl = uri.toString()
-            if (name.isBlank()) name = "قائمة من الجهاز"
+            if (name.isBlank()) name = tr("قائمة من الجهاز")
         }
     }
 
@@ -136,17 +137,17 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
         if (loading) return
         error = null
         val playlist = if (xtream) {
-            val p = XtreamClient.fromUserInput(name.trim().ifBlank { "اشتراكي" }, server, username, password)
+            val p = XtreamClient.fromUserInput(name.trim().ifBlank { tr("اشتراكي") }, server, username, password)
             // Show what will be used: typing slips fixed, a pasted get.php link split into its parts.
             if (p.server.isNotEmpty()) server = p.server
             username = p.username
             password = p.password
             if (p.server.isEmpty() || p.username.isEmpty() || p.password.isEmpty()) {
-                error = "أكمل رابط الخادم واسم المستخدم وكلمة المرور."
+                error = tr("أكمل رابط الخادم واسم المستخدم وكلمة المرور.")
                 return
             }
             if (!Links.isWebLink(p.server)) {
-                error = "رابط الخادم غير صحيح. اكتبه بالإنجليزية مثل: http://server.com:8080\u200E"
+                error = tr("رابط الخادم غير صحيح. اكتبه بالإنجليزية مثل: http://server.com:8080\u200E")
                 return
             }
             p
@@ -156,20 +157,20 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
             m3uUrl = link
             epgUrl = guide
             if (link.isEmpty()) {
-                error = if (tv) "أدخل رابط قائمة M3U." else "أدخل رابط قائمة M3U أو اختر ملفاً."
+                error = if (tv) tr("أدخل رابط قائمة M3U.") else tr("أدخل رابط قائمة M3U أو اختر ملفاً.")
                 return
             }
             if (!link.startsWith("content://") && !Links.isWebLink(link)) {
-                error = "رابط القائمة غير صحيح. اكتبه كاملاً بالإنجليزية ويبدأ بـ http://\u200E"
+                error = tr("رابط القائمة غير صحيح. اكتبه كاملاً بالإنجليزية ويبدأ بـ http://\u200E")
                 return
             }
             if (guide.isNotEmpty() && !Links.isWebLink(guide)) {
-                error = "رابط دليل البرامج غير صحيح. صحّحه أو اترك خانته فارغة."
+                error = tr("رابط دليل البرامج غير صحيح. صحّحه أو اترك خانته فارغة.")
                 return
             }
             Playlist(
                 type = PlaylistType.M3U,
-                name = name.trim().ifBlank { "قائمتي" },
+                name = name.trim().ifBlank { tr("قائمتي") },
                 m3uUrl = link,
                 epgUrl = guide
             )
@@ -190,7 +191,7 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
         try {
             picker.launch(arrayOf("*/*"))
         } catch (e: ActivityNotFoundException) {
-            error = "لا يوجد على هذا الجهاز تطبيق لاختيار الملفات. استخدم رابط القائمة بدلاً من ذلك."
+            error = tr("لا يوجد على هذا الجهاز تطبيق لاختيار الملفات. استخدم رابط القائمة بدلاً من ذلك.")
         }
     }
 
@@ -199,17 +200,17 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
     val intro: @Composable () -> Unit = {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             if (onBack != null) {
-                CircleIconButton(RIcons.Back, "رجوع", onBack, tint = RColors.Text2)
+                CircleIconButton(RIcons.Back, tr("رجوع"), onBack, tint = RColors.Text2)
                 Spacer(Modifier.width(10.dp))
             }
             RatvLogo(22.sp)
             Spacer(Modifier.weight(1f))
-            CircleIconButton(RIcons.Help, "مساعدة", { showHelp = true }, tint = RColors.Text2)
+            CircleIconButton(RIcons.Help, tr("مساعدة"), { showHelp = true }, tint = RColors.Text2)
         }
         Spacer(Modifier.height(if (wide) 24.dp else 32.dp))
-        Text("أضف اشتراكك", style = T.display(28.sp))
+        Text(tr("أضف اشتراكك"), style = T.display(28.sp))
         Spacer(Modifier.height(8.dp))
-        Text("أدخل البيانات كما وصلتك من مزوّد الخدمة.", style = T.body(15.sp, color = RColors.Text2))
+        Text(tr("أدخل البيانات كما وصلتك من مزوّد الخدمة."), style = T.body(15.sp, color = RColors.Text2))
     }
 
     val modeSwitch: @Composable () -> Unit = {
@@ -223,26 +224,26 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Segment("Xtream Codes", xtream, Modifier.weight(1f)) { xtream = true; error = null }
-            Segment("رابط M3U", !xtream, Modifier.weight(1f)) { xtream = false; error = null }
+            Segment(tr("رابط M3U"), !xtream, Modifier.weight(1f)) { xtream = false; error = null }
         }
     }
 
     val fields: @Composable () -> Unit = {
         if (xtream) {
             Field(
-                "رابط الخادم", server, { server = it }, "http://server.example:8080",
+                tr("رابط الخادم"), server, { server = it }, "http://server.example:8080",
                 ltr = true, keyboard = KeyboardType.Uri, tv = tv, focusRequester = firstField
             )
             Spacer(Modifier.height(14.dp))
             val userField: @Composable (Modifier) -> Unit = { m ->
                 Field(
-                    "اسم المستخدم", username, { username = it }, "username",
+                    tr("اسم المستخدم"), username, { username = it }, "username",
                     ltr = true, keyboard = KeyboardType.Ascii, tv = tv, modifier = m
                 )
             }
             val passwordField: @Composable (Modifier) -> Unit = { m ->
                 Field(
-                    label = "كلمة المرور",
+                    label = tr("كلمة المرور"),
                     value = password,
                     onChange = { password = it },
                     placeholder = "••••••••",
@@ -263,7 +264,7 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
                             ) {
                                 Icon(
                                     if (showPassword) RIcons.EyeOff else RIcons.Eye,
-                                    contentDescription = if (showPassword) "إخفاء كلمة المرور" else "إظهار كلمة المرور",
+                                    contentDescription = if (showPassword) tr("إخفاء كلمة المرور") else tr("إظهار كلمة المرور"),
                                     tint = RColors.Text3,
                                     modifier = Modifier.size(20.dp)
                                 )
@@ -285,25 +286,25 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
             }
             Spacer(Modifier.height(14.dp))
             Field(
-                "اسم القائمة (اختياري)", name, { name = it }, "مثال: اشتراك المنزل",
+                tr("اسم القائمة (اختياري)"), name, { name = it }, tr("مثال: اشتراك المنزل"),
                 tv = tv, last = true, onDone = { submit() }
             )
         } else {
             Field(
-                "رابط قائمة M3U", m3uUrl, { m3uUrl = it }, "http://server.example/playlist.m3u",
+                tr("رابط قائمة M3U"), m3uUrl, { m3uUrl = it }, "http://server.example/playlist.m3u",
                 ltr = true, keyboard = KeyboardType.Uri, tv = tv, focusRequester = firstField
             )
             Spacer(Modifier.height(14.dp))
             Field(
-                "رابط دليل البرامج EPG (اختياري)", epgUrl, { epgUrl = it }, "http://server.example/epg.xml",
+                tr("رابط دليل البرامج EPG (اختياري)"), epgUrl, { epgUrl = it }, "http://server.example/epg.xml",
                 ltr = true, keyboard = KeyboardType.Uri, tv = tv
             )
             Spacer(Modifier.height(14.dp))
-            Field("اسم القائمة (اختياري)", name, { name = it }, "مثال: قائمة السفر", tv = tv, last = true, onDone = { submit() })
+            Field(tr("اسم القائمة (اختياري)"), name, { name = it }, tr("مثال: قائمة السفر"), tv = tv, last = true, onDone = { submit() })
             if (!tv) {
                 Spacer(Modifier.height(10.dp))
                 OutlineButton(
-                    "اختيار ملف M3U من الجهاز",
+                    tr("اختيار ملف M3U من الجهاز"),
                     onClick = { pickFile() },
                     icon = RIcons.FileIcon,
                     modifier = Modifier.fillMaxWidth()
@@ -344,9 +345,9 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
             if (loading) {
                 CircularProgressIndicator(color = RColors.OnSaffron, strokeWidth = 2.5.dp, modifier = Modifier.size(22.dp))
                 Spacer(Modifier.size(10.dp))
-                Text("جارٍ التحقق والتحميل…", style = T.body(16.sp, FontWeight.Bold, RColors.OnSaffron))
+                Text(tr("جارٍ التحقق والتحميل…"), style = T.body(16.sp, FontWeight.Bold, RColors.OnSaffron))
             } else {
-                Text(if (xtream) "دخول" else "إضافة القائمة", style = T.body(16.sp, FontWeight.Bold, RColors.OnSaffron))
+                Text(if (xtream) tr("دخول") else tr("إضافة القائمة"), style = T.body(16.sp, FontWeight.Bold, RColors.OnSaffron))
                 Spacer(Modifier.size(10.dp))
                 Icon(RIcons.Forward, contentDescription = null, tint = RColors.OnSaffron, modifier = Modifier.size(20.dp))
             }
@@ -357,7 +358,7 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Icon(RIcons.Info, contentDescription = null, tint = RColors.Text3, modifier = Modifier.size(18.dp))
             Text(
-                "RATV مشغّل وسائط فقط ولا يوفّر أي قنوات أو محتوى. استخدم اشتراكاً من مزوّد مرخّص.",
+                tr("RATV مشغّل وسائط فقط ولا يوفّر أي قنوات أو محتوى. استخدم اشتراكاً من مزوّد مرخّص."),
                 style = T.body(12.sp, color = RColors.Text3).copy(lineHeight = 20.sp)
             )
         }
@@ -399,7 +400,7 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
                     if (tv) {
                         Spacer(Modifier.height(12.dp))
                         Text(
-                            "استخدم الأسهم للتنقل بين الخانات، واضغط OK لفتح لوحة المفاتيح.",
+                            tr("استخدم الأسهم للتنقل بين الخانات، واضغط OK لفتح لوحة المفاتيح."),
                             style = T.caption,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
@@ -437,15 +438,15 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
     if (showHelp) {
         AlertDialog(
             onDismissRequest = { showHelp = false },
-            confirmButton = { TextButton(onClick = { showHelp = false }) { Text("حسناً", color = RColors.Saffron) } },
-            title = { Text("كيف أضيف اشتراكي؟", style = T.h2) },
+            confirmButton = { TextButton(onClick = { showHelp = false }) { Text(tr("حسناً"), color = RColors.Saffron) } },
+            title = { Text(tr("كيف أضيف اشتراكي؟"), style = T.h2) },
             text = {
                 Text(
-                    "• Xtream Codes: أدخل رابط الخادم مع المنفذ، واسم المستخدم وكلمة المرور كما أرسلها المزوّد. " +
-                        "يمكنك أيضاً لصق رابط get.php كاملاً في خانة الخادم.\n\n" +
-                        "• M3U: الصق رابط القائمة" + (if (tv) "" else " أو اختر ملف ‎.m3u من جهازك") +
-                        ". رابط دليل البرامج اختياري." +
-                        (if (tv) "\n\n• بالريموت: الأسهم للتنقل، وOK لفتح لوحة المفاتيح، وزر «التالي» في لوحة المفاتيح للانتقال إلى الخانة التالية." else ""),
+                    tr("• Xtream Codes: أدخل رابط الخادم مع المنفذ، واسم المستخدم وكلمة المرور كما أرسلها المزوّد. ") +
+                        tr("يمكنك أيضاً لصق رابط get.php كاملاً في خانة الخادم.\n\n") +
+                        tr("• M3U: الصق رابط القائمة") + (if (tv) "" else tr(" أو اختر ملف ‎.m3u من جهازك")) +
+                        tr(". رابط دليل البرامج اختياري.") +
+                        (if (tv) tr("\n\n• بالريموت: الأسهم للتنقل، وOK لفتح لوحة المفاتيح، وزر «التالي» في لوحة المفاتيح للانتقال إلى الخانة التالية.") else ""),
                     style = T.body(14.sp, color = RColors.Text2)
                 )
             },
@@ -523,7 +524,7 @@ private fun Field(
     Column(modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Text(label, style = if (boxFocused || editing) T.label.copy(color = RColors.Saffron) else T.label)
         val textStyle = if (ltr) {
-            T.body(15.sp).merge(TextStyle(textDirection = TextDirection.Ltr, textAlign = TextAlign.Right))
+            T.body(15.sp).merge(TextStyle(textDirection = TextDirection.Ltr, textAlign = if (com.ratv.app.i18n.I18n.rtl) TextAlign.Right else TextAlign.Left))
         } else {
             T.body(15.sp)
         }

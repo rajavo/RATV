@@ -1,5 +1,6 @@
 package com.ratv.app.data
 
+import com.ratv.app.i18n.tr
 import android.os.SystemClock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -107,11 +108,11 @@ object SpeedTest {
 
     /** What the speed is enough for. */
     fun verdict(mbps: Double): String = when {
-        mbps >= 25 -> "ممتاز: يكفي لبث 4K"
-        mbps >= 12 -> "جيد جداً: يكفي لبث FHD"
-        mbps >= 6 -> "جيد: يكفي لبث HD"
-        mbps >= 3 -> "مقبول: يكفي لبث SD، وقد يتقطع HD"
-        else -> "ضعيف: قد يتقطع البث"
+        mbps >= 25 -> tr("ممتاز: يكفي لبث 4K")
+        mbps >= 12 -> tr("جيد جداً: يكفي لبث FHD")
+        mbps >= 6 -> tr("جيد: يكفي لبث HD")
+        mbps >= 3 -> tr("مقبول: يكفي لبث SD، وقد يتقطع HD")
+        else -> tr("ضعيف: قد يتقطع البث")
     }
 }
 

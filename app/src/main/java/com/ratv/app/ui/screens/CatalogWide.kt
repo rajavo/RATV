@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.tr
 import android.os.SystemClock
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -82,12 +83,12 @@ private const val C_ALL = "__all__"
 private const val C_FAV = "__fav__"
 private const val C_NEW = "__new__"
 
-private val sortOptions = listOf(
-    "added" to "الأحدث إضافة",
-    "name" to "الاسم (أ - ي)",
-    "name_desc" to "الاسم (ي - أ)",
-    "rating" to "الأعلى تقييماً",
-    "year" to "الأحدث إصداراً"
+private val sortOptions get() = listOf(
+    "added" to tr("الأحدث إضافة"),
+    "name" to tr("الاسم (أ - ي)"),
+    "name_desc" to tr("الاسم (ي - أ)"),
+    "rating" to tr("الأعلى تقييماً"),
+    "year" to tr("الأحدث إصداراً")
 )
 
 private fun sortItems(list: List<CatalogItem>, key: String): List<CatalogItem> = when (key) {
@@ -128,10 +129,10 @@ fun CatalogWide(
     val continueItems = remember(continueIds, byId) { continueIds.mapNotNull { byId[it] } }
     val sideEntries = remember(categories, counts, favoriteCount, continueItems, entries) {
         buildList {
-            if (continueItems.isNotEmpty()) add(SideEntry(C_CONTINUE, "متابعة المشاهدة", continueItems.size, RIcons.Clock))
-            add(SideEntry(C_ALL, "الكل", entries.size, RIcons.Film))
-            add(SideEntry(C_FAV, "المفضلة", favoriteCount, RIcons.Heart))
-            add(SideEntry(C_NEW, "أُضيف حديثاً", minOf(60, entries.size), RIcons.Star))
+            if (continueItems.isNotEmpty()) add(SideEntry(C_CONTINUE, tr("متابعة المشاهدة"), continueItems.size, RIcons.Clock))
+            add(SideEntry(C_ALL, tr("الكل"), entries.size, RIcons.Film))
+            add(SideEntry(C_FAV, tr("المفضلة"), favoriteCount, RIcons.Heart))
+            add(SideEntry(C_NEW, tr("أُضيف حديثاً"), minOf(60, entries.size), RIcons.Star))
             categories.forEach { add(SideEntry(it.id, it.name, counts[it.id] ?: 0)) }
         }
     }
@@ -216,7 +217,7 @@ fun CatalogWide(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(sectionName, style = T.h2, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
-                Text(formatCount(visible.size) + " عنوان", style = T.caption)
+                Text(formatCount(visible.size) + tr(" عنوان"), style = T.caption)
                 if (sorting) CircularProgressIndicator(color = RColors.Saffron, strokeWidth = 2.dp, modifier = Modifier.size(16.dp))
                 Spacer(Modifier.weight(1f))
                 if (selected != C_CONTINUE && selected != C_NEW) SortMenu(sortKey, onSort)
@@ -232,10 +233,10 @@ fun CatalogWide(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         CircularProgressIndicator(color = RColors.Saffron, strokeWidth = 2.5.dp, modifier = Modifier.size(32.dp))
-                        Text("جارٍ تحميل المكتبة…", style = T.body(14.sp, color = RColors.Text2))
+                        Text(tr("جارٍ تحميل المكتبة…"), style = T.body(14.sp, color = RColors.Text2))
                     }
-                    selected == C_FAV -> EmptyState(RIcons.Heart, "لا توجد عناصر مفضلة", "اضغط على القلب في صفحة أي عنوان لإضافته هنا.")
-                    else -> EmptyState(RIcons.Film, emptyTitle, "لا يحتوي هذا القسم على عناوين.")
+                    selected == C_FAV -> EmptyState(RIcons.Heart, tr("لا توجد عناصر مفضلة"), tr("اضغط على القلب في صفحة أي عنوان لإضافته هنا."))
+                    else -> EmptyState(RIcons.Film, emptyTitle, tr("لا يحتوي هذا القسم على عناوين."))
                 }
             } else {
                 val firstId = visible.first().id
@@ -274,13 +275,13 @@ private fun SortMenu(sortKey: String, onSort: (String) -> Unit) {
                 .clip(shape)
                 .background(RColors.Surface)
                 .border(1.dp, RColors.LineStrong, shape)
-                .tvClickable(shape, onClickLabel = "تغيير الترتيب") { open = true }
+                .tvClickable(shape, onClickLabel = tr("تغيير الترتيب")) { open = true }
                 .padding(horizontal = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Icon(RIcons.Sliders, contentDescription = null, tint = RColors.Text2, modifier = Modifier.size(16.dp))
-            Text("الترتيب: $label", style = T.body(13.sp, FontWeight.Medium), maxLines = 1)
+            Text(tr("الترتيب: {0}", label), style = T.body(13.sp, FontWeight.Medium), maxLines = 1)
             Icon(RIcons.ChevronDown, contentDescription = null, tint = RColors.Text2, modifier = Modifier.size(16.dp))
         }
         DropdownMenu(

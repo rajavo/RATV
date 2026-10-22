@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.tr
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
@@ -84,7 +85,7 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
     val movie = remember(movieId, movies) { repo.movie(movieId) }
 
     if (movie == null) {
-        MissingItem("الفيلم غير متاح", nav)
+        MissingItem(tr("الفيلم غير متاح"), nav)
         return
     }
 
@@ -130,10 +131,10 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                CircleIconButton(RIcons.Back, "رجوع", { nav.back() }, background = Color(0x8C0B0C10))
+                CircleIconButton(RIcons.Back, tr("رجوع"), { nav.back() }, background = Color(0x8C0B0C10))
                 CircleIconButton(
                     if (isFavorite) RIcons.HeartFilled else RIcons.Heart,
-                    if (isFavorite) "إزالة من المفضلة" else "إضافة إلى المفضلة",
+                    if (isFavorite) tr("إزالة من المفضلة") else tr("إضافة إلى المفضلة"),
                     { repo.toggleFavorite(favKey) },
                     background = Color(0x8C0B0C10),
                     tint = if (isFavorite) RColors.Saffron else RColors.Text
@@ -167,7 +168,7 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
             Spacer(Modifier.height(10.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 PrimaryButton(
-                    text = if (resume != null) "متابعة من ${formatClock(resume.position)}" else "تشغيل",
+                    text = if (resume != null) tr("متابعة من {0}", formatClock(resume.position)) else tr("تشغيل"),
                     onClick = { nav.playMovie(movie.id) },
                     icon = RIcons.Play,
                     modifier = Modifier
@@ -185,7 +186,7 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
                             .clip(RoundedCornerShape(16.dp))
                             .background(RColors.Surface)
                             .border(1.dp, RColors.Surface3, RoundedCornerShape(16.dp))
-                            .tvClickable(RoundedCornerShape(16.dp), onClickLabel = "المقطع الدعائي") {
+                            .tvClickable(RoundedCornerShape(16.dp), onClickLabel = tr("المقطع الدعائي")) {
                                 val url = if (trailer.startsWith("http")) trailer else "https://www.youtube.com/watch?v=$trailer"
                                 try {
                                     context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
@@ -195,7 +196,7 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
                             },
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(RIcons.PlayCircle, contentDescription = "المقطع الدعائي", tint = RColors.Text, modifier = Modifier.size(22.dp))
+                        Icon(RIcons.PlayCircle, contentDescription = tr("المقطع الدعائي"), tint = RColors.Text, modifier = Modifier.size(22.dp))
                     }
                 }
             }
@@ -206,7 +207,7 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
             }
 
             if (versions.isNotEmpty()) {
-                Text("نسخ أخرى من الفيلم في اشتراكك", style = T.h2)
+                Text(tr("نسخ أخرى من الفيلم في اشتراكك"), style = T.h2)
                 versions.take(6).forEach { v ->
                     VersionRow(
                         quality = repo.movieQuality(v),
@@ -218,13 +219,13 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
             }
 
             val director = info?.director
-            if (!director.isNullOrBlank()) InfoLine("إخراج", director)
-            repo.vodCategoryName(movie.categoryId)?.let { InfoLine("القسم", it) }
+            if (!director.isNullOrBlank()) InfoLine(tr("إخراج"), director)
+            repo.vodCategoryName(movie.categoryId)?.let { InfoLine(tr("القسم"), it) }
 
             val cast = info?.cast.orEmpty()
             if (cast.isNotEmpty()) {
                 Spacer(Modifier.height(6.dp))
-                Text("طاقم التمثيل", style = T.h2)
+                Text(tr("طاقم التمثيل"), style = T.h2)
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -237,7 +238,7 @@ fun MovieDetailScreen(movieId: String, nav: Navigator) {
 
             if (similar.isNotEmpty()) {
                 Spacer(Modifier.height(6.dp))
-                Text("أفلام مشابهة", style = T.h2)
+                Text(tr("أفلام مشابهة"), style = T.h2)
             }
         }
 
@@ -258,13 +259,13 @@ fun UpgradeButton(onClick: () -> Unit) {
             .clip(RoundedCornerShape(16.dp))
             .background(RColors.SaffronSoft)
             .border(1.5.dp, RColors.Saffron, RoundedCornerShape(16.dp))
-            .tvClickable(RoundedCornerShape(16.dp), onClickLabel = "شاهد نسخة 4K", ringColor = Color.White, onClick = onClick)
+            .tvClickable(RoundedCornerShape(16.dp), onClickLabel = tr("شاهد نسخة 4K"), ringColor = Color.White, onClick = onClick)
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Icon(RIcons.Play, contentDescription = null, tint = RColors.Saffron, modifier = Modifier.size(16.dp))
-        Text("4K متاح", style = T.body(15.sp, FontWeight.Bold, RColors.Saffron))
+        Text(tr("4K متاح"), style = T.body(15.sp, FontWeight.Bold, RColors.Saffron))
     }
 }
 
@@ -330,7 +331,7 @@ fun MissingItem(title: String, nav: Navigator) {
             .screenBackground()
             .statusBarsPadding()
     ) {
-        Row(Modifier.padding(16.dp)) { CircleIconButton(RIcons.Back, "رجوع", { nav.back() }) }
-        EmptyState(RIcons.Film, title, "ربما حُذف من اشتراكك أو لم يكتمل تحميل المكتبة بعد.")
+        Row(Modifier.padding(16.dp)) { CircleIconButton(RIcons.Back, tr("رجوع"), { nav.back() }) }
+        EmptyState(RIcons.Film, title, tr("ربما حُذف من اشتراكك أو لم يكتمل تحميل المكتبة بعد."))
     }
 }

@@ -1,5 +1,6 @@
 package com.ratv.app.data
 
+import com.ratv.app.i18n.tr
 import android.net.Uri
 import android.util.JsonReader
 import android.util.JsonToken
@@ -35,12 +36,12 @@ class XtreamClient(private val p: Playlist) {
         val root = try {
             JSONObject(text)
         } catch (e: Exception) {
-            throw IOException("استجابة غير متوقعة من الخادم. تأكد من رابط الخادم.")
+            throw IOException(tr("استجابة غير متوقعة من الخادم. تأكد من رابط الخادم."))
         }
         val ui = root.optJSONObject("user_info")
-            ?: throw IOException("استجابة غير متوقعة من الخادم. تأكد من رابط الخادم.")
+            ?: throw IOException(tr("استجابة غير متوقعة من الخادم. تأكد من رابط الخادم."))
         if (ui.optInt("auth", 1) == 0) {
-            throw AuthException("اسم المستخدم أو كلمة المرور غير صحيحة.")
+            throw AuthException(tr("اسم المستخدم أو كلمة المرور غير صحيحة."))
         }
         return AccountInfo(
             status = ui.str("status"),
@@ -60,7 +61,7 @@ class XtreamClient(private val p: Playlist) {
         readObjectArray(file) { r ->
             val f = readFields(r, CATEGORY_FIELDS)
             val id = f["category_id"] ?: return@readObjectArray
-            out.add(Category(id, f["category_name"]?.trim().orEmpty().ifBlank { "بدون اسم" }))
+            out.add(Category(id, f["category_name"]?.trim().orEmpty().ifBlank { tr("بدون اسم") }))
         }
         return out
     }
@@ -163,7 +164,7 @@ class XtreamClient(private val p: Playlist) {
                     id = epId,
                     season = season,
                     num = o.str("episode_num")?.toIntOrNull() ?: (bySeason[season]?.size ?: 0) + 1,
-                    title = o.str("title") ?: "الحلقة",
+                    title = o.str("title") ?: tr("الحلقة"),
                     url = episodeUrl(epId, o.str("container_extension") ?: "mp4"),
                     durationSecs = epInfo?.str("duration_secs")?.toIntOrNull() ?: 0,
                     plot = epInfo?.str("plot"),
@@ -271,7 +272,7 @@ private fun formatDuration(secs: Int?, text: String?): String? {
     if (secs != null && secs > 0) {
         val h = secs / 3600
         val m = (secs % 3600) / 60
-        return if (h > 0) "${h}س ${m}د" else "${m}د"
+        return if (h > 0) tr("{0}س {1}د", h, m) else tr("{0}د", m)
     }
     return text?.takeIf { it.isNotBlank() }
 }

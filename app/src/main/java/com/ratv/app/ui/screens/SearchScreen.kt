@@ -1,5 +1,6 @@
 package com.ratv.app.ui.screens
 
+import com.ratv.app.i18n.tr
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -119,18 +120,18 @@ fun SearchScreen(nav: Navigator) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            CircleIconButton(RIcons.Back, "رجوع", { nav.back() })
+            CircleIconButton(RIcons.Back, tr("رجوع"), { nav.back() })
             OutlinedTextField(
                 value = query,
                 onValueChange = { query = it },
                 modifier = Modifier
                     .weight(1f)
                     .focusRequester(focus),
-                placeholder = { Text("ابحث عن قناة أو فيلم أو مسلسل", style = T.body(14.sp, color = RColors.Text3)) },
+                placeholder = { Text(tr("ابحث عن قناة أو فيلم أو مسلسل"), style = T.body(14.sp, color = RColors.Text3)) },
                 leadingIcon = { Icon(RIcons.Search, contentDescription = null, tint = RColors.Text3, modifier = Modifier.size(20.dp)) },
                 trailingIcon = if (query.isNotEmpty()) {
                     {
-                        CircleIconButton(RIcons.Close, "مسح", { query = "" }, background = RColors.Surface2, size = 32.dp, iconSize = 16.dp)
+                        CircleIconButton(RIcons.Close, tr("مسح"), { query = "" }, background = RColors.Surface2, size = 32.dp, iconSize = 16.dp)
                     }
                 } else {
                     null
@@ -154,35 +155,35 @@ fun SearchScreen(nav: Navigator) {
 
         val r = results
         when {
-            query.trim().length < 2 -> EmptyState(RIcons.Search, "ابحث في كل اشتراكك", "اكتب حرفين على الأقل للبحث في القنوات والأفلام والمسلسلات.")
-            r.isEmpty -> EmptyState(RIcons.Search, "لا توجد نتائج", "جرّب كلمة أخرى أو اسماً أقصر.")
+            query.trim().length < 2 -> EmptyState(RIcons.Search, tr("ابحث في كل اشتراكك"), tr("اكتب حرفين على الأقل للبحث في القنوات والأفلام والمسلسلات."))
+            r.isEmpty -> EmptyState(RIcons.Search, tr("لا توجد نتائج"), tr("جرّب كلمة أخرى أو اسماً أقصر."))
             else -> LazyColumn(contentPadding = PaddingValues(vertical = 12.dp)) {
                 if (r.channels.isNotEmpty()) {
-                    item { ResultHeader("القنوات", r.channels.size) }
+                    item { ResultHeader(tr("القنوات"), r.channels.size) }
                     items(r.channels, key = { "c" + it.id }) { ch ->
                         ResultRow(
                             title = ch.name,
-                            subtitle = repo.liveCategoryName(ch.categoryId) ?: "قناة مباشرة",
+                            subtitle = repo.liveCategoryName(ch.categoryId) ?: tr("قناة مباشرة"),
                             onClick = { nav.playLive(ch.id) }
                         ) { ChannelLogo(ch.name, ch.logo, 48.dp) }
                     }
                 }
                 if (r.movies.isNotEmpty()) {
-                    item { ResultHeader("الأفلام", r.movies.size) }
+                    item { ResultHeader(tr("الأفلام"), r.movies.size) }
                     items(r.movies, key = { "m" + it.id }) { m ->
                         ResultRow(
                             title = m.name,
-                            subtitle = listOfNotNull("فيلم", m.year, m.rating?.let { "★ $it" }).joinToString(" · "),
+                            subtitle = listOfNotNull(tr("فيلم"), m.year, m.rating?.let { "★ $it" }).joinToString(" · "),
                             onClick = { nav.movie(m.id) }
                         ) { PosterImage(m.name, m.poster, Modifier.width(48.dp).height(68.dp).clip(RoundedCornerShape(8.dp)), showTitle = false) }
                     }
                 }
                 if (r.series.isNotEmpty()) {
-                    item { ResultHeader("المسلسلات", r.series.size) }
+                    item { ResultHeader(tr("المسلسلات"), r.series.size) }
                     items(r.series, key = { "s" + it.id }) { s ->
                         ResultRow(
                             title = s.name,
-                            subtitle = listOfNotNull("مسلسل", s.year).joinToString(" · "),
+                            subtitle = listOfNotNull(tr("مسلسل"), s.year).joinToString(" · "),
                             onClick = { nav.show(s.id) }
                         ) { PosterImage(s.name, s.cover, Modifier.width(48.dp).height(68.dp).clip(RoundedCornerShape(8.dp)), showTitle = false) }
                     }
