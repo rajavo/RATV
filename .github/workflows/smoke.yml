@@ -49,13 +49,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - device: phone
-            api: 34
-            target: google_apis
-            arch: x86_64
-            profile: pixel_6
-            script: ci/smoke.py
-            hwkeyboard: true
+          # Phones are on hold until the owner says so: only the TV is tested for now.
+          # (The phone entry was: device phone, api 34, google_apis, x86_64, pixel_6, ci/smoke.py, hwkeyboard true.)
           - device: tv
             api: 30
             target: android-tv
@@ -109,10 +104,6 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         env:
           SMOKE_OUT: smoke-results/${{ matrix.device }}
-          # Live-stability steps already passed on this build (run 39812008514).
-          SMOKE_SKIP: ${{ matrix.device == 'phone' && 'unstable,frozen,chunky,overlap,weak,busy,shaky,version-switch,commentator,commentary-mix,subtitles,subtitles-translated' || '' }}
-          # The series screens stopped the phone emulator three times: checked last, after everything else.
-          SMOKE_LAST: ${{ matrix.device == 'phone' && 'series' || '' }}
         with:
           api-level: ${{ matrix.api }}
           target: ${{ matrix.target }}
