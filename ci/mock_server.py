@@ -52,6 +52,8 @@ CHANNELS = [
     (112, 19, "Weak Server", "1", "", None),
     # A busy server: refuses the first two connections (403), then sends normally.
     (113, 20, "Busy Server", "1", "", None),
+    # Too slow as TS (half speed), fine as HLS: RATV must switch to HLS.
+    (114, 21, "Shaky TS", "1", "", None),
 ]
 # The same game, named in Arabic on one channel and in English on another.
 MATCH = {
@@ -227,6 +229,7 @@ def fmt(ts):
 LIVE_T0 = [None]  # when the unstable channel was first opened
 CHANNEL_T0 = {}  # first opening of the frozen and chunky channels
 CONNECTIONS = {}  # connections per test channel
+HLS_REQUESTS = {}  # playlist requests per HLS test channel
 
 
 def note(event, **kw):
@@ -432,6 +435,48 @@ class Handler(BaseHTTPRequestHandler):
             note("client-left", channel=sid)
         self.close_connection = True
 
+    def send_live_slow(self, path, sid=114):
+        """Half the stream's speed, no burst: the store runs out again and again."""
+        size = os.path.getsize(path)
+        rate = size / 240.0
+        CONNECTIONS[sid] = CONNECTIONS.get(sid, 0) + 1
+        note("connect", channel=sid, n=CONNECTIONS[sid])
+        self.send_response(200)
+        self.send_header("Content-Type", "video/mp2t")
+        self.end_headers()
+        started = time.time()
+        sent = 0
+        try:
+            with open(path, "rb") as f:
+                while True:
+                    data = f.read(int(0.05 * rate) // 188 * 188)
+                    if not data:
+                        f.seek(0)
+                        continue
+                    self.wfile.write(data)
+                    self.wfile.flush()
+                    sent += len(data)
+                    ahead = sent / (rate * 0.5) - (time.time() - started)
+                    if ahead > 0:
+                        time.sleep(ahead)
+        except (BrokenPipeError, ConnectionResetError, OSError):
+            note("client-left", channel=sid)
+        self.close_connection = True
+
+    def send_hls_live(self, sid=114):
+        """A live HLS playlist sliding over the test segments (4 s each), 6 segments long."""
+        lines = open(os.path.join(MEDIA, "hls", "full.m3u8"), encoding="utf-8").read().splitlines()
+        durations = [float(l.split(":")[1].rstrip(",")) for l in lines if l.startswith("#EXTINF:")]
+        t0 = CHANNEL_T0.setdefault("hls%d" % sid, time.time())
+        HLS_REQUESTS[sid] = HLS_REQUESTS.get(sid, 0) + 1
+        last = int((time.time() - t0) / 4.0) + 5
+        first = max(0, last - 5)
+        out = ["#EXTM3U", "#EXT-X-VERSION:3", "#EXT-X-TARGETDURATION:5", "#EXT-X-MEDIA-SEQUENCE:%d" % first]
+        for k in range(first, last + 1):
+            out.append("#EXTINF:%.3f," % durations[k % len(durations)])
+            out.append("%s/hls/seg%03d.ts" % (BASE, k % len(durations)))
+        return self._send(("\n".join(out) + "\n").encode("utf-8"), "application/vnd.apple.mpegurl")
+
     def send_file(self, path, ctype):
         if not os.path.exists(path):
             self.send_error(404)
@@ -489,7 +534,15 @@ class Handler(BaseHTTPRequestHandler):
         if p == "/update/RATV.apk":
             return self.send_file(os.path.join(MEDIA, "RATV.apk"), "application/vnd.android.package-archive")
         if p == "/__stats":  # connections per test channel
-            return self.send_json({str(k): v for k, v in CONNECTIONS.items()})
+            stats = {str(k): v for k, v in CONNECTIONS.items()}
+            stats.update({"hls%d" % k: v for k, v in HLS_REQUESTS.items()})
+            return self.send_json(stats)
+        if p.startswith("/hls/"):
+            return self.send_file(os.path.join(MEDIA, "hls", os.path.basename(p)), "video/mp2t")
+        if p.startswith("/live/") and os.path.basename(p) == "114.m3u8":
+            return self.send_hls_live()
+        if p.startswith("/live/") and os.path.basename(p).startswith("114."):
+            return self.send_live_slow(os.path.join(MEDIA, "live.ts"))
         if p == "/__down":  # speed test download
             n = int(q.get("bytes", "0") or 0)
             self.send_response(200)

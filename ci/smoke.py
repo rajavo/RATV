@@ -842,6 +842,30 @@ def s_busy():
         raise RuntimeError("the busy server's channel did not play")
 
 
+def s_shaky():
+    """Too slow as TS: after it stalls, RATV switches the channel to HLS and plays on."""
+    shell("setprop debug.ratv.hlsafter 1")
+    try:
+        stalls = play_test_channel("Shaky TS", 70, "shaky")
+    finally:
+        shell("setprop debug.ratv.hlsafter ''")
+    with open(os.path.join(OUT, "shaky-stats.xml"), encoding="utf-8") as f:
+        texts = f.read()
+    try:
+        import urllib.request
+        stats = json.loads(urllib.request.urlopen("http://127.0.0.1:8000/__stats", timeout=5).read())
+    except Exception:
+        stats = {}
+    log("shaky: stalls after the switch %d, playlist requests %s, TS connections %s" % (
+        stalls, stats.get("hls114"), stats.get("114")))
+    if not stats.get("hls114"):
+        raise RuntimeError("the channel was not tried as HLS")
+    if 'text="HLS"' not in texts:
+        raise RuntimeError("the channel is not playing as HLS at the end")
+    if stalls > 1:
+        raise RuntimeError("the channel stalled %d times after switching to HLS" % stalls)
+
+
 def s_matches():
     """The schedule lists the test game once, with every channel showing it; a channel plays."""
     tap_where(text="جدول المباريات")
@@ -1073,6 +1097,7 @@ if __name__ == "__main__":
         ("overlap", s_overlap),
         ("weak", s_weak),
         ("busy", s_busy),
+        ("shaky", s_shaky),
         ("matches", s_matches),
         ("commentator", s_commentator),
         ("commentary-mix", s_commentary_mix),
