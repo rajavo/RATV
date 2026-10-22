@@ -609,9 +609,29 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         var lastPosAt = 0L
         val reconnectBase = LiveReconnectingDataSource.reconnects.get()
         liveReconnects = 0
+        var bufferingSince = 0L
         while (true) {
             liveReconnects = LiveReconnectingDataSource.reconnects.get() - reconnectBase
             if (player.isPlaying || player.playbackState == Player.STATE_BUFFERING) Playback.markActive()
+            // A live load ended to start the channel again (its clock jumped, or the line was lost)
+            // only starts again once the store runs out. Stalled, the store never runs out and the
+            // picture would stay frozen for good: start the channel again here.
+            val tick = SystemClock.elapsedRealtime()
+            if (player.playbackState == Player.STATE_BUFFERING && player.playWhenReady) {
+                if (bufferingSince == 0L) bufferingSince = tick
+            } else {
+                bufferingSince = 0L
+            }
+            val playingUri = player.currentMediaItem?.localConfiguration?.uri?.toString()
+            if (current?.isLive == true && playingUri != null && bufferingSince > 0L && tick - bufferingSince >= 1_500L) {
+                val ended = LiveReconnectingDataSource.loadEndedAt(playingUri)
+                if (ended > 0L && tick - ended >= 1_500L) {
+                    Log.i("RATVPlayback", "stalled after the load ended: starting the channel again")
+                    LiveReconnectingDataSource.clearEnded(playingUri)
+                    player.seekToDefaultPosition()
+                    player.prepare()
+                }
+            }
             // Jumps of the picture's clock (for the emulator checks): a joined reconnect shows none.
             val pos = player.currentPosition
             val posAt = SystemClock.elapsedRealtime()
