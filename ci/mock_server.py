@@ -54,6 +54,10 @@ CHANNELS = [
     (113, 20, "Busy Server", "1", "", None),
     # Too slow as TS (half speed), fine as HLS: RATV must switch to HLS.
     (114, 21, "Shaky TS", "1", "", None),
+    # Stalls again and again (6 s of picture, then 10 s of nothing, on every connection); its
+    # lighter version below is fine: RATV must move to it by itself.
+    (115, 22, "Stutter TV HD", "1", "", None),
+    (116, 23, "Stutter TV SD", "1", "", None),
 ]
 # The same game, named in Arabic on one channel and in English on another.
 MATCH = {
@@ -435,6 +439,35 @@ class Handler(BaseHTTPRequestHandler):
             note("client-left", channel=sid)
         self.close_connection = True
 
+    def send_live_stutter(self, path, sid=115):
+        """Real time for 6 s, then silent for 10 s, on a clock shared by every connection."""
+        size = os.path.getsize(path)
+        rate = size / 240.0
+        now = time.time()
+        t0 = CHANNEL_T0.setdefault(sid, now)
+        CONNECTIONS[sid] = CONNECTIONS.get(sid, 0) + 1
+        note("connect", channel=sid, n=CONNECTIONS[sid])
+        self.send_response(200)
+        self.send_header("Content-Type", "video/mp2t")
+        self.end_headers()
+        try:
+            with open(path, "rb") as f:
+                f.seek((int((now - t0) * rate) % size) // 188 * 188)
+                while True:
+                    if (time.time() - t0) % 16.0 >= 6.0:
+                        time.sleep(0.2)  # the silent part of the cycle
+                        continue
+                    data = f.read(int(0.1 * rate) // 188 * 188)
+                    if not data:
+                        f.seek(0)
+                        continue
+                    self.wfile.write(data)
+                    self.wfile.flush()
+                    time.sleep(0.1)
+        except (BrokenPipeError, ConnectionResetError, OSError):
+            note("client-left", channel=sid)
+        self.close_connection = True
+
     def send_live_slow(self, path, sid=114):
         """Half the stream's speed, no burst: the store runs out again and again."""
         size = os.path.getsize(path)
@@ -599,6 +632,8 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_live_paced(os.path.join(MEDIA, "live.ts"), 108, stop_after=12.0)
         if p.startswith("/live/") and os.path.basename(p).startswith("109."):
             return self.send_live_paced(os.path.join(MEDIA, "live.ts"), 109, chunk_seconds=2.0)
+        if p.startswith("/live/") and os.path.basename(p).startswith("115."):
+            return self.send_live_stutter(os.path.join(MEDIA, "live.ts"))
         if p.startswith("/live/") and os.path.basename(p).startswith("112."):
             return self.send_live_weak(os.path.join(MEDIA, "live.ts"))
         if p.startswith("/live/") and os.path.basename(p).startswith("113."):

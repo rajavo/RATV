@@ -866,6 +866,87 @@ def s_shaky():
         raise RuntimeError("the channel stalled %d times after switching to HLS" % stalls)
 
 
+def s_version_switch():
+    """A channel that keeps stalling moves by itself to its lighter version (Stutter TV HD to SD)."""
+    shell("setprop debug.ratv.hlsafter 99")  # straight to the other version, not HLS first
+    before = live_log("switching to another version")["switching to another version"]
+    tap_where(text="الكل")
+    time.sleep(1)
+    n = None
+    for _ in range(6):
+        _, n = wait_for(timeout=4, contains="Stutter TV HD")
+        if n is not None:
+            break
+        shell("input swipe 540 1700 540 900 600")
+        time.sleep(1.5)
+    if n is None:
+        raise RuntimeError("channel missing: Stutter TV HD")
+    tap_node(n)
+    try:
+        switched = False
+        notice = False
+        for _ in range(48):  # up to about 2 minutes
+            time.sleep(2.5)
+            if not notice:
+                root = dump()
+                if "انتقلنا لـ" in all_texts(root):
+                    notice = True
+                    shot("version-notice")
+                    dump("version-notice")
+            if live_log("switching to another version")["switching to another version"] > before:
+                switched = True
+                if notice:
+                    break
+        lines = [l for l in adb("logcat", "-d", "-s", "RATVPlayback:I", timeout=30).splitlines() if "another version" in l]
+        log("version switch: %s" % (lines[-1] if lines else "(none)"))
+        if not switched:
+            raise RuntimeError("the stalling channel did not move to its other version")
+        if not lines or "Stutter TV SD" not in lines[-1]:
+            raise RuntimeError("it moved to the wrong version: %s" % (lines[-1] if lines else ""))
+        if not notice:
+            raise RuntimeError("no notice told the viewer about the switch")
+        time.sleep(8)
+        shot("version-after")
+    finally:
+        shell("setprop debug.ratv.hlsafter ''")
+        back()
+        time.sleep(2)
+
+
+def s_palette():
+    """«ألوان التطبيق»: another colour repaints the app at once, and orange comes back."""
+    if scroll_to("ألوان التطبيق") is None:
+        raise RuntimeError("the colours row is missing from the settings")
+    tap_where(contains="ألوان التطبيق")
+    _, n = wait_for(timeout=10, text="أزرق ليلي", save="palette-dialog")
+    shot("palette-dialog")
+    if n is None:
+        raise RuntimeError("the colour choices did not open")
+    tap_node(n)
+    time.sleep(1)
+    tap_where(text="تم")
+    time.sleep(1.5)
+    shot("palette-blue-settings")
+    tap_where(text="الرئيسية", bottom=True)
+    time.sleep(2.5)
+    root = dump("palette-blue-home")
+    shot("palette-blue-home")
+    tap_where(text="حسابي", bottom=True)
+    time.sleep(2)
+    scroll_to("ألوان التطبيق")
+    tap_where(contains="ألوان التطبيق")
+    tap_where(timeout=10, text="برتقالي RA")
+    time.sleep(1)
+    tap_where(text="تم")
+    time.sleep(1)
+    shown = find(dump(), contains="برتقالي RA") is not None
+    for _ in range(6):  # back to the top of the settings, where the next steps start
+        shell("input swipe 540 900 540 1700 300")
+        time.sleep(0.8)
+    if not shown:
+        raise RuntimeError("the colours row does not show the chosen colour")
+
+
 def s_matches():
     """The schedule lists the test game once, with every channel showing it; a channel plays."""
     tap_where(text="جدول المباريات")
@@ -1170,6 +1251,7 @@ if __name__ == "__main__":
         ("weak", s_weak),
         ("busy", s_busy),
         ("shaky", s_shaky),
+        ("version-switch", s_version_switch),
         ("matches", s_matches),
         ("commentator", s_commentator),
         ("commentary-mix", s_commentary_mix),
@@ -1181,6 +1263,7 @@ if __name__ == "__main__":
         ("home-after", s_home_after),
         ("search", s_search),
         ("settings", s_settings),
+        ("palette", s_palette),
         ("parental", s_parental),
         ("adult-hidden", s_adult_hidden),
         ("speed-test", s_speed_test),
