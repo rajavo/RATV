@@ -92,8 +92,14 @@ if command -v ufw >/dev/null 2>&1 && ufw status 2>/dev/null | grep -q "Status: a
   ufw allow "${PORT}/tcp" >/dev/null || true
 fi
 
-IP="$(curl -fsS --max-time 6 https://api.ipify.org 2>/dev/null || true)"
-[ -n "$IP" ] || IP="$(hostname -I 2>/dev/null | awk '{print $1}')"
+# A computer at home sits behind the router (192.168.x.x): the TVs at home use that address.
+# A cloud server is reached on its public address.
+PUBLIC_IP="$(curl -fsS --max-time 6 https://api.ipify.org 2>/dev/null || true)"
+LOCAL_IP="$(ip route get 1.1.1.1 2>/dev/null | awk '{for (i = 1; i <= NF; i++) if ($i == "src") { print $(i + 1); exit }}')"
+[ -n "$LOCAL_IP" ] || LOCAL_IP="$(hostname -I 2>/dev/null | awk '{print $1}')"
+AT_HOME=0
+case "$LOCAL_IP" in 192.168.*) AT_HOME=1 ;; esac
+if [ "$AT_HOME" = "1" ] || [ -z "$PUBLIC_IP" ]; then IP="$LOCAL_IP"; else IP="$PUBLIC_IP"; fi
 URL="http://${IP}"
 [ "$PORT" = "80" ] || URL="${URL}:${PORT}"
 
@@ -125,5 +131,11 @@ else
   echo " Control panel: ${URL}/admin"
 fi
 printf '\033[1;32m==============================================\033[0m\n'
-echo " If the panel does not open, allow TCP port ${PORT} in your"
-echo " server provider's firewall (security group / security list)."
+if [ "$AT_HOME" = "1" ]; then
+  echo " This computer is at home: the address works on your home"
+  echo " Wi-Fi/network. Give it a fixed address in the router settings"
+  echo " (DHCP reservation) so the TVs always find it, and keep it on."
+else
+  echo " If the panel does not open, allow TCP port ${PORT} in your"
+  echo " server provider's firewall (security group / security list)."
+fi
