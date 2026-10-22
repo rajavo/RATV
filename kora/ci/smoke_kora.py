@@ -329,7 +329,7 @@ def finish():
     with gzip.open(os.path.join(OUT, "logcat.txt.gz"), "wt", encoding="utf-8") as f:
         f.write(full)
     with open(os.path.join(OUT, "kora-log.txt"), "w", encoding="utf-8") as f:
-        f.write("\n".join(l for l in full.splitlines() if "RAKora" in l or "AndroidRuntime" in l))
+        f.write("\n".join(l for l in full.splitlines() if "RAKora" in l or "FATAL" in l or ("AndroidRuntime" in l and PKG in l)))
     crash = adb("logcat", "-d", "-b", "crash", timeout=30)
     with open(os.path.join(OUT, "crash.txt"), "w", encoding="utf-8") as f:
         f.write(crash)
