@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0C10">
+<title>لوحة سيرفر RATV</title>
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B0C10; --s1:#14161C; --s2:#1C1F27; --s3:#262A34; --line:#1F222A; --line2:#3A3F4B;
+  --tx:#F4F2EE; --tx2:#B4B0A8; --tx3:#8C8880;
+  --sf:#FF8A1F; --sf2:#FFB347; --sfd:#FF5A14; --onsf:#1A0E04; --sfsoft:rgba(255,138,31,.14);
+  --ok:#2EDB7F; --warn:#FFB81F; --dead:#F0504A;
+  --head:'Alexandria','Tajawal',system-ui,sans-serif;
+  --body:'Tajawal',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--ink);color:var(--tx);font-family:var(--body);font-size:16px;line-height:1.6;min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--sf2)}
+:focus-visible{outline:2px solid var(--sf);outline-offset:2px;border-radius:8px}
+.ltr{direction:ltr;unicode-bidi:isolate}
+.wrap{max-width:680px;margin:0 auto;padding:0 16px calc(96px + var(--safe-b))}
+.muted{color:var(--tx2)} .dim{color:var(--tx3)} .small{font-size:14px}
+h1,h2,h3{font-family:var(--head);font-weight:600;margin:0;line-height:1.35}
+h2{font-size:18px;margin:30px 0 10px}
+h3{font-size:16px}
+
+/* header */
+.top{position:sticky;top:0;z-index:5;background:rgba(11,12,16,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:12px;padding-top:12px;padding-bottom:12px}
+.mark{font-family:var(--head);font-weight:800;font-size:21px;letter-spacing:.5px;direction:ltr}
+.mark small{display:block;font-family:var(--body);font-weight:500;font-size:12px;color:var(--tx3);letter-spacing:0;direction:rtl;margin-top:-3px}
+.air{margin-inline-start:auto;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--tx2)}
+.air i{width:9px;height:9px;border-radius:50%;background:var(--ok);display:block}
+.air.on i{background:var(--sf);box-shadow:0 0 0 0 rgba(255,138,31,.6);animation:pulse 2s infinite}
+.air.on{color:var(--sf2)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,138,31,.55)}70%{box-shadow:0 0 0 9px rgba(255,138,31,0)}100%{box-shadow:0 0 0 0 rgba(255,138,31,0)}}
+
+/* bottom tabs */
+.tabs{position:fixed;bottom:0;inset-inline:0;z-index:6;background:rgba(14,15,20,.97);border-top:1px solid var(--line);padding-bottom:var(--safe-b)}
+.tabs .in{max-width:680px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.tabs button{background:none;border:0;padding:9px 4px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:13px;color:var(--tx3);cursor:pointer;min-height:58px}
+.tabs button svg{width:23px;height:23px}
+.tabs button[aria-current="page"]{color:var(--sf)}
+
+/* buttons & fields */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;border:1px solid var(--line2);background:var(--s2);padding:10px 16px;min-height:44px;cursor:pointer;font-weight:500;white-space:nowrap}
+.btn:hover{background:var(--s3)}
+.btn.primary{background:var(--sf);border-color:var(--sf);color:var(--onsf);font-weight:700}
+.btn.primary:hover{background:var(--sf2)}
+.btn.ghost{background:none;border-color:transparent;color:var(--tx2)}
+.btn.danger{background:none;border-color:transparent;color:var(--dead)}
+.btn.sm{min-height:36px;padding:6px 12px;font-size:14px;border-radius:10px}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.btn svg{width:18px;height:18px;flex:none}
+.icon-btn[disabled]{opacity:.28;pointer-events:none}
+.icon-btn{width:40px;height:40px;display:inline-grid;place-items:center;border-radius:10px;border:0;background:none;color:var(--tx2);cursor:pointer;flex:none}
+.icon-btn:hover{background:var(--s2);color:var(--tx)}
+.icon-btn svg{width:20px;height:20px}
+label.f{display:block;margin:14px 0 6px;font-size:14px;color:var(--tx2)}
+.in-text,select.in-text,textarea.in-text{width:100%;background:var(--s1);border:1px solid var(--line2);border-radius:12px;padding:11px 13px;min-height:46px;outline:none}
+.in-text:focus{border-color:var(--sf)}
+textarea.in-text{min-height:84px;resize:vertical;line-height:1.5}
+.row{display:flex;align-items:center;gap:10px}
+.row.wrap-ok{flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+.hint{font-size:13px;color:var(--tx3);margin-top:6px}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0;cursor:pointer}
+.switch input{appearance:none;-webkit-appearance:none;width:48px;height:28px;border-radius:20px;background:var(--s3);position:relative;flex:none;cursor:pointer;transition:background .15s}
+.switch input::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:22px;height:22px;border-radius:50%;background:var(--tx2);transition:inset-inline-start .15s,background .15s}
+.switch input:checked{background:var(--sf)}
+.switch input:checked::after{inset-inline-start:23px;background:var(--onsf)}
+
+/* the TV: what to type in RATV */
+.tvwrap{margin-top:22px}
+.acc-pick{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;scrollbar-width:none}
+.acc-pick::-webkit-scrollbar{display:none}
+.chip{border:1px solid var(--line2);background:none;border-radius:20px;padding:6px 14px;font-size:14px;color:var(--tx2);cursor:pointer;white-space:nowrap;min-height:36px}
+.chip[aria-pressed="true"]{background:var(--sfsoft);border-color:var(--sf);color:var(--sf2)}
+.chip b{font-family:var(--head);font-weight:600;font-size:12px;color:var(--tx3);margin-inline-start:6px}
+.tv{position:relative;overflow:hidden;border:1.5px solid var(--line2);border-radius:22px;background:var(--s1);padding:20px 18px 18px}
+.tv .rings{position:absolute;left:-96px;bottom:-110px;width:240px;height:240px;pointer-events:none;opacity:.7}
+.tv > *{position:relative}
+.tv > .rings{position:absolute}
+.tv-cap{font-size:14px;color:var(--tx2)}
+.tv-val{display:flex;align-items:center;gap:4px;justify-content:flex-start}
+.tv-val span{font-family:var(--head);font-weight:700;font-size:22px;direction:ltr;unicode-bidi:isolate;overflow-wrap:anywhere;line-height:1.3}
+.tv-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;position:relative}
+.tv-grid .tv-val span{font-size:27px;letter-spacing:.5px}
+.tv-stand{width:96px;height:7px;border-radius:0 0 8px 8px;background:var(--s3);margin:0 auto}
+.tv-note{font-size:14px;color:var(--tx3);margin:12px 2px 0}
+
+/* signal strip */
+.strip{display:flex;align-items:center;gap:14px;margin-top:24px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);cursor:pointer;background:none;width:100%;text-align:inherit;border-inline:0}
+.strip .sig{width:34px;height:30px}
+.strip .big{font-family:var(--head);font-weight:700;font-size:26px}
+.strip .sub{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:var(--tx2)}
+.sub .dead{color:var(--dead)} .sub .warn{color:var(--warn)}
+
+/* list rows */
+.list{border-top:1px solid var(--line)}
+.item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.item.tap{cursor:pointer}
+.item.tap:hover{background:linear-gradient(to left,transparent,var(--s1),transparent)}
+.item .t{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .m{font-size:13px;color:var(--tx3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.num{font-family:var(--head);font-weight:600;font-size:13px;color:var(--tx3);width:30px;text-align:center;flex:none}
+.logo{position:relative;width:42px;height:42px;border-radius:10px;background:var(--s2);flex:none;display:grid;place-items:center;overflow:hidden;font-family:var(--head);font-weight:700;color:var(--tx3);font-size:14px}
+.logo img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:4px;background:var(--s2)}
+.off{opacity:.45}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;background:var(--s2);color:var(--tx2);margin-inline-end:4px}
+.tag.sf{background:var(--sfsoft);color:var(--sf2)}
+
+/* services */
+.svc .grow .m{white-space:normal}
+.bar{height:4px;background:var(--s2);border-radius:4px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--sf);border-radius:4px;transition:width .4s}
+
+/* channels screen */
+.search{position:relative;margin-top:18px}
+.search svg{position:absolute;inset-inline-start:13px;top:13px;width:20px;height:20px;color:var(--tx3)}
+.search input{padding-inline-start:42px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.tools{display:flex;gap:8px;margin:10px 0 6px;flex-wrap:wrap}
+.empty{padding:40px 10px;text-align:center;color:var(--tx3)}
+
+/* accounts */
+.acct{padding:16px 0;border-bottom:1px solid var(--line)}
+.acct .creds{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.cred{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:8px 10px 8px 6px;display:flex;align-items:center;justify-content:space-between;gap:4px}
+.cred small{display:block;font-size:12px;color:var(--tx3)}
+.cred span{font-family:var(--head);font-weight:700;font-size:19px;direction:ltr;unicode-bidi:isolate;overflow-wrap:anywhere}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line2);border-radius:12px;overflow:hidden}
+.stepper button{width:44px;height:44px;border:0;background:var(--s2);font-size:22px;cursor:pointer}
+.stepper output{min-width:46px;text-align:center;font-family:var(--head);font-weight:700;font-size:18px}
+
+/* settings */
+.sect{padding:6px 0 18px;border-bottom:1px solid var(--line)}
+.sect h2{margin-top:22px}
+pre.log{direction:ltr;text-align:left;background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:12px;line-height:1.5;max-height:360px;overflow:auto;white-space:pre-wrap;word-break:break-word}
+details summary{cursor:pointer;color:var(--tx2);padding:8px 0;font-size:14px}
+
+/* sheet */
+.sheet{position:fixed;inset:0;z-index:20;display:none}
+.sheet.open{display:block}
+.sheet .bg{position:absolute;inset:0;background:rgba(0,0,0,.6);opacity:0;transition:opacity .2s}
+.sheet.open .bg{opacity:1}
+.sheet .panel{position:absolute;inset-inline:0;bottom:0;max-height:94vh;background:var(--s1);border-radius:22px 22px 0 0;border-top:1px solid var(--line2);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .25s ease}
+.sheet.open .panel{transform:none}
+.sheet .head{display:flex;align-items:center;gap:8px;padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+.sheet .head h3{font-size:18px;flex:1}
+.sheet .body{overflow-y:auto;padding:4px 16px 18px;-webkit-overflow-scrolling:touch}
+.sheet .foot{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px calc(12px + var(--safe-b));border-top:1px solid var(--line)}
+@media (min-width:720px){
+  .sheet .panel{inset:auto;left:50%;top:50%;bottom:auto;width:620px;max-height:88vh;border-radius:22px;border:1px solid var(--line2);transform:translate(-50%,-46%);opacity:0;transition:opacity .2s,transform .2s}
+  .sheet.open .panel{transform:translate(-50%,-50%);opacity:1}
+}
+.src{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:10px;background:var(--ink)}
+.src .st{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx2);margin-bottom:6px}
+.src textarea{min-height:64px;font-size:14px;direction:ltr;text-align:left}
+.src .acts{display:flex;align-items:center;gap:2px;margin-top:4px}
+.pkg-url{direction:ltr;text-align:left;font-size:13px;color:var(--tx2);overflow-wrap:anywhere;background:var(--s1);border-radius:10px;padding:8px 10px}
+
+/* login */
+.login{min-height:100vh;display:grid;place-items:center;padding:24px;position:relative;overflow:hidden}
+.login .rings{position:absolute;width:520px;height:520px;right:-170px;top:-150px;pointer-events:none}
+.login form{width:100%;max-width:360px;position:relative}
+.login .mark{font-size:44px}
+.login p{color:var(--tx2);margin:6px 0 26px}
+.err{color:var(--dead);font-size:14px;min-height:22px;margin-top:8px}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:calc(84px + var(--safe-b));transform:translate(-50%,20px);background:var(--tx);color:var(--ink);padding:10px 18px;border-radius:12px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:30;max-width:calc(100vw - 32px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.bad{background:var(--dead);color:#fff}
+.banner{margin-top:16px;border:1px solid rgba(240,80,74,.4);background:rgba(240,80,74,.1);color:#ffb3af;border-radius:12px;padding:10px 12px;font-size:14px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="sheet" id="sheet" aria-hidden="true">
+  <div class="bg" data-act="close"></div>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="head"><h3 id="sheet-title"></h3><button class="icon-btn" data-act="close" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="body" id="sheet-body"></div>
+    <div class="foot" id="sheet-foot"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+'use strict';
+// ------------------------------------------------------------------ helpers
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const ICON = {
+  home: '<path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  tv: '<rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',
+  users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.6c2.6.2 4.3 1.9 5 4.9"/>',
+  gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+  copy: '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+  up: '<path d="M6 15l6-6 6 6"/>',
+  down: '<path d="M6 9l6 6 6-6"/>',
+  trash: '<path d="M4 7h16M10 11v6M14 11v6M5 7l1 13a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1l1-13M9 7V4h6v3"/>',
+  edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/>',
+};
+const icon = (n, cls = '') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[n]}</svg>`;
+// The concentric rings of the RATV brand (with its saffron dot on the sign-in screen).
+const rings = (dot) =>
+  '<svg class="rings" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="40" fill="none" stroke="#3A3F4B" stroke-opacity=".55" stroke-width="1.5"/><circle cx="100" cy="100" r="66" fill="none" stroke="#3A3F4B" stroke-opacity=".35" stroke-width="1.5"/><circle cx="100" cy="100" r="94" fill="none" stroke="#3A3F4B" stroke-opacity=".2" stroke-width="1.5"/>' +
+  (dot ? '<circle cx="128" cy="72" r="3.5" fill="#FF8A1F"/>' : '') +
+  '</svg>';
+
+const CH_STATE = { ok: 'شغّالة', warn: 'تعثّرت', dead: 'معطلة', unknown: 'ما انفحصت' };
+const SRC_STATE = { ok: 'شغّال', warn: 'تعثّر مرة', dead: 'معطل', unknown: 'ما انفحص' };
+function signal(state, label) {
+  const color = { ok: 'var(--ok)', warn: 'var(--warn)', dead: 'var(--dead)' }[state] || 'var(--tx3)';
+  const lit = { ok: 3, warn: 1 }[state] || 0;
+  let bars = '';
+  for (let i = 0; i < 3; i++) {
+    const h = 5 + i * 4.5;
+    const on = i < lit;
+    bars += `<rect x="${2 + i * 6}" y="${16.5 - h}" width="4" height="${h}" rx="1.3" fill="${on ? color : 'none'}" stroke="${on ? color : state === 'unknown' ? 'var(--tx3)' : 'var(--line2)'}" stroke-width="1.3"/>`;
+  }
+  const slash = state === 'dead' ? '<path d="M2.5 2.5l15 14" stroke="var(--dead)" stroke-width="1.8" stroke-linecap="round"/>' : '';
+  return `<svg class="sig" width="22" height="20" viewBox="0 0 20 18" role="img" aria-label="${esc(label || CH_STATE[state] || '')}">${bars}${slash}</svg>`;
+}
+function plural(n, one, two, few) {
+  if (n === 1) return one;
+  if (n === 2) return two;
+  if (n >= 3 && n <= 10) return n + ' ' + few;
+  return n + ' ' + one;
+}
+function span(ms) {
+  const s = Math.max(0, ms / 1000);
+  if (s < 60) return 'لحظات';
+  const m = Math.round(s / 60);
+  if (m < 60) return plural(m, 'دقيقة', 'دقيقتين', 'دقائق');
+  const h = Math.round(m / 60);
+  if (h < 24) return plural(h, 'ساعة', 'ساعتين', 'ساعات');
+  return plural(Math.round(h / 24), 'يوم', 'يومين', 'أيام');
+}
+const ago = (t) => (t ? 'قبل ' + span(Date.now() - t) : 'ما صار للحين');
+let toastTimer;
+function toast(msg, bad) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (bad ? ' bad' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => (t.className = 'toast'), 2600);
+}
+function copy(text) {
+  const done = () => toast('تم النسخ');
+  if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text).then(done, () => toast('ما قدرت أنسخ', true));
+  // The panel usually runs on plain http (an IP address), where only the old way works.
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:fixed;top:0;opacity:0';
+  document.body.appendChild(ta);
+  ta.select();
+  ta.setSelectionRange(0, text.length);
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+  ta.remove();
+  ok ? done() : toast('ما قدرت أنسخ، انسخه يدوياً', true);
+}
+async function api(method, path, body) {
+  const res = await fetch(path, {
+    method,
+    credentials: 'same-origin',
+    headers: Object.assign({ 'X-Ratv': '1' }, body ? { 'Content-Type': 'application/json' } : {}),
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  let data = {};
+  try { data = await res.json(); } catch (e) { /* empty */ }
+  if (res.status === 401 && path !== '/api/login') {
+    S.state = null;
+    showLogin();
+    throw new Error(data.error || 'سجّل دخولك');
+  }
+  if (!res.ok) throw new Error(data.error || 'صار خطأ (' + res.status + ')');
+  return data;
+}
+async function act(fn, okMsg) {
+  try {
+    const r = await fn();
+    if (okMsg) toast(okMsg);
+    return r;
+  } catch (e) {
+    toast(e.message, true);
+    return null;
+  }
+}
+
+// ------------------------------------------------------------------ state
+const S = { state: null, channels: null, cats: [], tab: 'home', q: '', cat: 'all', account: 0, draft: null, logs: '' };
+const TABS = [
+  ['home', 'الرئيسية', 'home'],
+  ['channels', 'القنوات', 'tv'],
+  ['family', 'العائلة', 'users'],
+  ['settings', 'الإعدادات', 'gear'],
+];
+
+async function load(withChannels) {
+  const st = await api('GET', '/api/state');
+  S.state = st;
+  S.cats = st.categories;
+  if (withChannels || (S.tab === 'channels' && !S.channels)) await loadChannels();
+  render();
+}
+async function loadChannels() {
+  const r = await api('GET', '/api/channels');
+  S.channels = r.channels;
+  S.cats = r.categories;
+}
+
+function go(tab) {
+  if (location.hash !== '#' + tab) location.hash = tab;
+  else route();
+}
+function route() {
+  const t = (location.hash || '#home').slice(1);
+  S.tab = TABS.some((x) => x[0] === t) ? t : 'home';
+  if (!S.state) return;
+  if (S.tab === 'channels' && !S.channels) loadChannels().then(render).catch((e) => toast(e.message, true));
+  render();
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', route);
+
+// ------------------------------------------------------------------ login
+function showLogin(msg) {
+  closeSheet();
+  $('#app').innerHTML = `
+  <main class="login">${rings(true)}
+    <form id="login-form" autocomplete="on">
+      <div class="mark">RA TV</div>
+      <p>لوحة تحكم السيرفر</p>
+      <label class="f" for="pw">كلمة مرور اللوحة</label>
+      <input class="in-text ltr" id="pw" type="password" autocomplete="current-password" required>
+      <div class="err" id="login-err">${esc(msg || '')}</div>
+      <button class="btn primary" style="width:100%;margin-top:8px" type="submit">دخول</button>
+    </form>
+  </main>`;
+  $('#login-form').onsubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await api('POST', '/api/login', { password: $('#pw').value });
+      route();
+      await load(true);
+    } catch (err) {
+      $('#login-err').textContent = err.message;
+    }
+  };
+  setTimeout(() => $('#pw') && $('#pw').focus(), 50);
+}
+
+// ------------------------------------------------------------------ layout
+function render() {
+  if (!S.state) return;
+  const st = S.state;
+  const watching = st.viewers.length;
+  const body = { home: viewHome, channels: viewChannels, family: viewFamily, settings: viewSettings }[S.tab]();
+  const keepSearchFocus = document.activeElement && document.activeElement.id === 'q';
+  const caret = keepSearchFocus ? document.activeElement.selectionStart : 0;
+  // Sections the person opened stay open when the screen refreshes.
+  const openDetails = [...document.querySelectorAll('#app details[open]')].map((x) => x.id).filter(Boolean);
+  $('#app').innerHTML = `
+  <header class="top"><div class="wrap">
+    <div class="mark">RA TV<small>${esc(st.server.name)}</small></div>
+    <div class="air ${watching ? 'on' : ''}"><i></i>${watching ? 'يشاهدون الحين: ' + watching : 'السيرفر شغّال'}</div>
+  </div></header>
+  <main class="wrap">${body}</main>
+  <nav class="tabs" aria-label="الأقسام"><div class="in">
+    ${TABS.map(([k, label, ic]) => `<button data-go="${k}" ${S.tab === k ? 'aria-current="page"' : ''}>${icon(ic)}${label}</button>`).join('')}
+  </div></nav>`;
+  for (const id of openDetails) {
+    const el = document.getElementById(id);
+    if (el) el.open = true;
+  }
+  if (keepSearchFocus && $('#q')) {
+    $('#q').focus();
+    $('#q').setSelectionRange(caret, caret);
+  }
+}
+
+// ------------------------------------------------------------------ home
+function viewHome() {
+  const st = S.state;
+  const users = st.users.filter((u) => u.enabled);
+  if (S.account >= users.length) S.account = 0;
+  const u = users[S.account];
+  const c = st.counts;
+  const warn = [];
+  if (!st.server.ffmpeg) warn.push('برنامج ffmpeg غير موجود، فالبث يشتغل بطريقة محدودة. ثبّت السيرفر بطريقة Docker.');
+  const pkg = st.package;
+  const hp = st.health.progress;
+  const healthText = st.health.running && hp
+    ? `يفحص الحين ${hp.done} من ${hp.total}`
+    : st.health.lastRun ? `آخر فحص ${ago(st.health.lastRun)}` : 'أول فحص يبدأ بعد تشغيل السيرفر بشوي';
+  const res = pkg.lastResult;
+  const pkgText = !pkg.enabled ? 'مقفلة، قنواتها مخفية عن التطبيقات'
+    : pkg.running ? 'تتحدث الحين…'
+    : res && res.ok ? `${res.total} قناة مجانية، تحدثت ${ago(pkg.lastRefresh)}${res.excluded && res.excluded.paid ? `. استبعدت ${res.excluded.paid} قناة مدفوعة` : ''}`
+    : res && !res.ok ? 'ما قدرت أحدثها: ' + (res.errors && res.errors[0] ? res.errors[0] : '')
+    : 'تتجهز أول مرة…';
+  const e = st.epg;
+  const epgText = !e.enabled ? 'مقفل'
+    : e.status.withGuide ? `${e.status.withGuide} قناة فيها جدول برامج`
+    : e.status.mapped ? `يتجهز جدول ${e.status.mapped} قناة، أول مرة ياخذ وقت`
+    : 'يتجهز…';
+  return `
+  ${warn.map((w) => `<div class="banner">${esc(w)}</div>`).join('')}
+  <section class="tvwrap" aria-labelledby="tv-h">
+    <h2 id="tv-h" style="margin-top:4px">اكتبها في شاشة الدخول في RATV</h2>
+    ${users.length > 1 ? `<div class="acc-pick">${users.map((x, i) => `<button class="chip" data-acc="${i}" aria-pressed="${i === S.account}">${esc(x.name)}</button>`).join('')}</div>` : ''}
+    ${u ? `
+    <div class="tv">${rings(false)}
+      <div class="tv-cap">رابط السيرفر</div>
+      <div class="tv-val"><span>${esc(st.server.url)}</span><button class="icon-btn" data-copy="${esc(st.server.url)}" aria-label="نسخ الرابط">${icon('copy')}</button></div>
+      <div class="tv-grid">
+        <div><div class="tv-cap">اسم المستخدم</div><div class="tv-val"><span>${esc(u.username)}</span><button class="icon-btn" data-copy="${esc(u.username)}" aria-label="نسخ اسم المستخدم">${icon('copy')}</button></div></div>
+        <div><div class="tv-cap">كلمة المرور</div><div class="tv-val"><span>${esc(u.password)}</span><button class="icon-btn" data-copy="${esc(u.password)}" aria-label="نسخ كلمة المرور">${icon('copy')}</button></div></div>
+      </div>
+    </div>
+    <div class="tv-stand"></div>
+    <details class="tv-note" id="d-m3u"><summary>تطبيق ثاني يطلب رابط M3U؟</summary>
+      <div class="row" style="margin-top:6px"><div class="pkg-url grow">${esc(m3uLink(u))}</div><button class="icon-btn" data-copy="${esc(m3uLink(u))}" aria-label="نسخ رابط M3U">${icon('copy')}</button></div>
+    </details>` : `<div class="empty">ما فيه حساب مفعّل. <button class="btn sm" data-go="family">أضف حساب</button></div>`}
+  </section>
+
+  <button class="strip" data-go="channels">
+    ${signal(c.ok ? 'ok' : c.unknown ? 'unknown' : 'dead')}
+    <span class="grow" style="display:block">
+      <span style="display:block"><span class="big">${c.visible}</span> قناة ظاهرة في التطبيق</span>
+      <span class="sub">
+        <span>${c.ok} شغّالة</span>
+        ${c.dead ? `<span class="dead">${c.dead} معطلة</span>` : ''}
+        ${c.warn ? `<span class="warn">${c.warn} تعثّرت</span>` : ''}
+        ${c.unknown ? `<span>${c.unknown} ما انفحصت</span>` : ''}
+      </span>
+    </span>
+  </button>
+
+  <h2>يشاهدون الحين</h2>
+  <div class="list">${st.viewers.length ? st.viewers.map((v) => `
+    <div class="item"><div class="grow"><div class="t">${esc(v.channel)}</div><div class="m">${esc(v.user)}، من ${span(Date.now() - v.since)}</div></div></div>`).join('') : '<div class="item"><div class="m">ما أحد يشاهد الحين.</div></div>'}
+  </div>
+
+  <h2>خدمات السيرفر</h2>
+  <div class="list svc">
+    <div class="item"><div class="grow"><div class="t">الباقة المجانية</div><div class="m">${esc(pkgText)}</div></div>
+      <button class="btn sm" data-act="pkg-refresh" ${pkg.running || !pkg.enabled ? 'disabled' : ''}>حدّث</button></div>
+    <div class="item"><div class="grow"><div class="t">فحص القنوات</div><div class="m">${esc(healthText)}</div>
+      ${st.health.running && hp ? `<div class="bar"><i style="width:${Math.round((hp.done / Math.max(1, hp.total)) * 100)}%"></i></div>` : ''}</div>
+      <button class="btn sm" data-act="health-run" ${st.health.running ? 'disabled' : ''}>افحص</button></div>
+    <div class="item"><div class="grow"><div class="t">دليل البرامج</div><div class="m">${esc(epgText)}</div></div></div>
+  </div>
+  <p class="hint" style="margin-top:22px">الإصدار ${esc(st.server.version)}، شغّال ${ago(st.server.startedAt).replace('قبل', 'من')}</p>`;
+}
+function m3uLink(u) {
+  return `${S.state.server.url}/get.php?username=${encodeURIComponent(u.username)}&password=${encodeURIComponent(u.password)}&type=m3u_plus&output=ts`;
+}
+
+// ------------------------------------------------------------------ channels
+function viewChannels() {
+  if (!S.channels) return '<div class="empty">يحمّل القنوات…</div>';
+  const q = S.q.trim().toLowerCase();
+  const catName = new Map(S.cats.map((c) => [c.id, c.name]));
+  const all = S.channels;
+  const dead = all.filter((c) => c.enabled && c.state === 'dead').length;
+  const hidden = all.filter((c) => !c.enabled).length;
+  let list = all;
+  if (S.cat === 'dead') list = list.filter((c) => c.enabled && c.state === 'dead');
+  else if (S.cat === 'off') list = list.filter((c) => !c.enabled);
+  else if (S.cat !== 'all') list = list.filter((c) => c.categoryId === S.cat);
+  if (q) list = list.filter((c) => c.name.toLowerCase().includes(q) || String(c.num) === q || (c.epgId || '').toLowerCase().includes(q));
+  const chip = (key, label, n) => `<button class="chip" data-cat="${key}" aria-pressed="${S.cat === key}">${esc(label)}<b>${n}</b></button>`;
+  return `
+  <div class="search">${icon('search')}<input class="in-text" id="q" type="search" placeholder="ابحث باسم القناة أو رقمها" value="${esc(S.q)}" autocomplete="off"></div>
+  <div class="chips">
+    ${chip('all', 'الكل', all.length)}
+    ${S.cats.filter((c) => c.count).map((c) => chip(c.id, c.name + (c.hidden ? ' (مخفي)' : ''), c.count)).join('')}
+    ${dead ? chip('dead', 'المعطلة', dead) : ''}
+    ${hidden ? chip('off', 'الموقوفة', hidden) : ''}
+  </div>
+  <div class="tools">
+    <button class="btn sm primary" data-act="ch-new">${icon('plus')}قناة جديدة</button>
+    <button class="btn sm" data-act="cats">التصنيفات</button>
+    ${S.cat === 'dead' && list.length ? `<button class="btn sm" data-act="bulk-off">أوقف المعطلة</button>` : ''}
+  </div>
+  <div class="list">${list.length ? list.slice(0, 600).map((c) => `
+    <div class="item tap ${c.enabled ? '' : 'off'}" data-ch="${c.id}" role="button" tabindex="0">
+      <div class="num">${c.num}</div>
+      <div class="logo">${c.logo ? `<img src="${esc(c.logo)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}${esc(initials(c.name))}</div>
+      <div class="grow">
+        <div class="t">${esc(c.name)}</div>
+        <div class="m">${esc(catName.get(c.categoryId) || 'بدون تصنيف')}${c.sources.length > 1 ? `، ${c.sources.length} روابط` : ''}${!c.enabled ? '، موقوفة' : c.visible ? '' : '، مخفية'}${c.flags.part ? '، مو 24 ساعة' : ''}</div>
+      </div>
+      ${signal(c.state)}
+    </div>`).join('') : `<div class="empty">${q ? 'ما لقيت قناة بهذا الاسم.' : 'ما فيه قنوات هنا.'}</div>`}
+  </div>`;
+}
+function initials(name) {
+  const w = String(name).replace(/\b(FHD|HD|SD|4K)\b/g, '').trim().split(/\s+/);
+  let first = w[0] || '';
+  if (/^ال/.test(first) && first.length > 3) first = first.slice(2); // "السعودية" → "سع"
+  return first.slice(0, 2);
+}
+
+function openChannel(id) {
+  const ch = id ? S.channels.find((c) => c.id === id) : null;
+  S.draft = ch
+    ? JSON.parse(JSON.stringify(ch))
+    : { id: null, name: '', categoryId: (S.cats.find((c) => !c.pkg) || S.cats[0] || {}).id, logo: '', epgId: '', enabled: true, pinned: false, origin: 'manual', sources: [{ url: '', ua: '', referer: '', status: 'unknown' }] };
+  renderChannelSheet();
+}
+function renderChannelSheet() {
+  const d = S.draft;
+  const srcs = d.sources.map((s, i) => `
+    <div class="src">
+      <div class="st">${s.url ? signal(s.status || 'unknown', SRC_STATE[s.status || 'unknown']) : ''}
+        <span>${i === 0 ? 'الرابط الأساسي' : 'رابط احتياطي ' + i}</span>
+        ${s.url && s.status ? `<span class="dim">${esc(SRC_STATE[s.status] || '')}${s.ms && s.status === 'ok' ? '، ' + s.ms + ' ملي ثانية' : ''}${s.error ? '، ' + esc(s.error) : ''}</span>` : ''}
+      </div>
+      ${s.pkg ? `<div class="pkg-url">${esc(s.url)}</div><div class="hint">من الباقة المجانية، يتحدث تلقائياً.</div>`
+        : `<textarea class="in-text" data-src="${i}" data-k="url" placeholder="http://… أو https://…m3u8" aria-label="رابط البث">${esc(s.url)}</textarea>
+           <details><summary>إعدادات متقدمة للرابط</summary>
+             <label class="f">User-Agent (اختياري)</label><input class="in-text ltr" data-src="${i}" data-k="ua" value="${esc(s.ua || '')}">
+             <label class="f">Referer (اختياري)</label><input class="in-text ltr" data-src="${i}" data-k="referer" value="${esc(s.referer || '')}">
+           </details>`}
+      <div class="acts">
+        <button class="icon-btn" data-act="src-up" data-i="${i}" aria-label="قدّم الرابط" ${i === 0 ? 'disabled' : ''}>${icon('up')}</button>
+        <button class="icon-btn" data-act="src-down" data-i="${i}" aria-label="أخّر الرابط" ${i === d.sources.length - 1 ? 'disabled' : ''}>${icon('down')}</button>
+        <span class="grow"></span>
+        ${s.pkg ? '' : `<button class="icon-btn" data-act="src-del" data-i="${i}" aria-label="احذف الرابط">${icon('trash')}</button>`}
+      </div>
+    </div>`).join('');
+  openSheet(d.id ? 'تعديل القناة' : 'قناة جديدة', `
+    <label class="f" for="d-name">اسم القناة</label>
+    <input class="in-text" id="d-name" data-k="name" value="${esc(d.name)}" maxlength="80">
+    <label class="f" for="d-cat">التصنيف</label>
+    <select class="in-text" id="d-cat" data-k="categoryId">${S.cats.map((c) => `<option value="${c.id}" ${c.id === d.categoryId ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}</select>
+    <label class="switch"><span>ظاهرة في التطبيق</span><input type="checkbox" data-k="enabled" ${d.enabled ? 'checked' : ''}></label>
+    <label class="switch" style="padding-top:0"><span>أول تصنيفها</span><input type="checkbox" data-k="pinned" ${d.pinned ? 'checked' : ''}></label>
+    <h3 style="margin-top:14px">روابط البث</h3>
+    <div class="hint">إذا تعطل رابط، ينتقل السيرفر للي بعده بدون ما يوقف البث.</div>
+    ${srcs}
+    <button class="btn sm" style="margin-top:10px" data-act="src-add">${icon('plus')}رابط احتياطي</button>
+    <details style="margin-top:16px"><summary>الشعار ودليل البرامج</summary>
+      <label class="f" for="d-logo">رابط الشعار</label><input class="in-text ltr" id="d-logo" data-k="logo" value="${esc(d.logo || '')}">
+      <label class="f" for="d-epg">معرّف القناة في دليل البرامج</label><input class="in-text ltr" id="d-epg" data-k="epgId" value="${esc(d.epgId || '')}">
+      <div class="hint">مثل AlSaudiya.sa@SD. القنوات من الباقة يجيها تلقائياً.</div>
+    </details>`,
+    `<button class="btn primary" data-act="ch-save">احفظ</button>
+     ${d.id ? `<button class="btn" data-act="ch-check">افحص الروابط</button><span class="grow"></span><button class="btn danger" data-act="ch-del">احذف القناة</button>` : ''}`);
+}
+
+function openCats() {
+  const rows = S.cats.map((c, i) => `
+    <div class="item">
+      <div class="grow"><input class="in-text" data-cat-name="${c.id}" value="${esc(c.name)}" maxlength="40" aria-label="اسم التصنيف"><div class="hint">${c.count} قناة</div></div>
+      <label class="switch" title="ظاهر" style="padding:0"><input type="checkbox" data-cat-show="${c.id}" ${c.hidden ? '' : 'checked'} aria-label="ظاهر في التطبيق"></label>
+      <div style="display:flex;flex-direction:column">
+        <button class="icon-btn" data-act="cat-up" data-i="${i}" aria-label="لفوق" ${i === 0 ? 'disabled' : ''}>${icon('up')}</button>
+        <button class="icon-btn" data-act="cat-down" data-i="${i}" aria-label="لتحت" ${i === S.cats.length - 1 ? 'disabled' : ''}>${icon('down')}</button>
+      </div>
+      <button class="icon-btn" data-act="cat-del" data-id="${c.id}" aria-label="احذف التصنيف">${icon('trash')}</button>
+    </div>`).join('');
+  openSheet('التصنيفات', `
+    <p class="hint">الترتيب هنا هو ترتيبها في RATV. التصنيف المخفي ما يطلع في التطبيق.</p>
+    <div class="list">${rows}</div>
+    <div class="row" style="margin-top:14px"><input class="in-text grow" id="new-cat" placeholder="اسم تصنيف جديد" maxlength="40"><button class="btn" data-act="cat-add">أضف</button></div>`, '');
+}
+
+// ------------------------------------------------------------------ family
+function viewFamily() {
+  const st = S.state;
+  return `
+  <h2 style="margin-top:22px">حسابات العائلة</h2>
+  <p class="muted small" style="margin:0">كل حساب يدخل من أكثر من شاشة حسب العدد اللي تحدده له.</p>
+  <div style="margin-top:8px">${st.users.map((u) => `
+    <div class="acct ${u.enabled ? '' : 'off'}">
+      <div class="row">
+        <div class="grow"><h3>${esc(u.name)}</h3>
+          <div class="m small muted">${!u.enabled ? 'موقوف' : u.active ? `يشاهد الحين على ${plural(u.active, 'شاشة', 'شاشتين', 'شاشات')}` : u.lastSeen ? 'آخر استخدام ' + ago(u.lastSeen) : 'ما استخدم للحين'}، حدّه ${plural(u.maxConnections, 'شاشة', 'شاشتين', 'شاشات')}</div></div>
+        <button class="btn sm" data-act="user-edit" data-id="${u.id}">${icon('edit')}تعديل</button>
+      </div>
+      <div class="creds">
+        <div class="cred"><div><small>اسم المستخدم</small><span>${esc(u.username)}</span></div><button class="icon-btn" data-copy="${esc(u.username)}" aria-label="نسخ">${icon('copy')}</button></div>
+        <div class="cred"><div><small>كلمة المرور</small><span>${esc(u.password)}</span></div><button class="icon-btn" data-copy="${esc(u.password)}" aria-label="نسخ">${icon('copy')}</button></div>
+      </div>
+    </div>`).join('')}
+  </div>
+  <button class="btn primary" style="margin-top:18px" data-act="user-new">${icon('plus')}حساب جديد</button>`;
+}
+function pin() {
+  const a = new Uint32Array(1);
+  crypto.getRandomValues(a);
+  return String(100000 + (a[0] % 900000));
+}
+function openUser(id) {
+  const u = id ? S.state.users.find((x) => x.id === id) : null;
+  S.draft = u ? { ...u } : { id: null, name: '', username: '', password: pin(), maxConnections: 2, enabled: true };
+  const d = S.draft;
+  openSheet(u ? 'تعديل الحساب' : 'حساب جديد', `
+    <label class="f" for="u-name">الاسم (لك أنت)</label><input class="in-text" id="u-name" data-k="name" value="${esc(d.name)}" placeholder="مثل: غرفة الأولاد" maxlength="40">
+    <label class="f" for="u-user">اسم المستخدم</label><input class="in-text ltr" id="u-user" data-k="username" value="${esc(d.username)}" autocapitalize="none" spellcheck="false" maxlength="32">
+    <div class="hint">حروف إنجليزية وأرقام، يكتبه بالريموت.</div>
+    <label class="f" for="u-pass">كلمة المرور</label>
+    <div class="row"><input class="in-text ltr grow" id="u-pass" data-k="password" value="${esc(d.password)}" spellcheck="false" maxlength="32"><button class="btn" data-act="user-pin">رقم جديد</button></div>
+    <label class="f">كم شاشة تشغّل في نفس الوقت</label>
+    <div class="stepper"><button data-act="max-minus" aria-label="أقل">−</button><output id="u-max">${d.maxConnections}</output><button data-act="max-plus" aria-label="أكثر">+</button></div>
+    <label class="switch" style="margin-top:10px"><span>الحساب مفعّل</span><input type="checkbox" data-k="enabled" ${d.enabled ? 'checked' : ''}></label>`,
+    `<button class="btn primary" data-act="user-save">احفظ</button>${u ? `<span class="grow"></span><button class="btn danger" data-act="user-del">احذف الحساب</button>` : ''}`);
+}
+
+// ------------------------------------------------------------------ settings
+function viewSettings() {
+  const st = S.state;
+  const s = st.settings;
+  const pkg = st.package;
+  const cats = S.cats;
+  const every = [60, 120, 180, 360, 720, 1440];
+  return `
+  <section class="sect">
+    <h2>الباقة المجانية</h2>
+    <p class="muted small" style="margin:0">قنوات مجانية تنشرها القنوات نفسها، تتحدث كل يوم. القنوات المدفوعة مثل beIN ما تدخل فيها.</p>
+    <label class="switch"><span>الباقة مفعّلة</span><input type="checkbox" data-set="pkg-enabled" ${pkg.enabled ? 'checked' : ''}></label>
+    <div class="row wrap-ok">
+      <button class="btn sm" data-act="pkg-refresh" ${pkg.running || !pkg.enabled ? 'disabled' : ''}>حدّث الحين</button>
+      ${pkg.removed ? `<button class="btn sm" data-act="pkg-restore">رجّع القنوات اللي حذفتها (${pkg.removed})</button>` : ''}
+    </div>
+    <details style="margin-top:8px"><summary>مصادر الباقة</summary>
+      <textarea class="in-text ltr" id="pkg-sources" style="text-align:left">${esc(pkg.sources.join('\n'))}</textarea>
+      <button class="btn sm" style="margin-top:8px" data-act="pkg-save">احفظ المصادر</button>
+    </details>
+  </section>
+
+  <section class="sect">
+    <h2>إضافة قنوات من رابط</h2>
+    <p class="muted small" style="margin:0">رابط قائمة M3U عندك (مثل رسيفرك أو اشتراك نظامي يعطيك روابط). القنوات المتشابهة تنضاف لها كروابط احتياطية.</p>
+    <label class="f" for="imp-url">رابط القائمة</label>
+    <input class="in-text ltr" id="imp-url" placeholder="http://…/playlist.m3u">
+    <details><summary>أو الصق محتوى القائمة</summary><textarea class="in-text ltr" id="imp-text" style="text-align:left" placeholder="#EXTM3U"></textarea></details>
+    <label class="f" for="imp-mode">وين تنحط القنوات</label>
+    <select class="in-text" id="imp-mode"><option value="groups">حسب تصنيفات القائمة</option>${cats.map((c) => `<option value="${c.id}">كلها في: ${esc(c.name)}</option>`).join('')}</select>
+    <label class="switch"><span>دمج القنوات المتشابهة كروابط احتياطية</span><input type="checkbox" id="imp-merge" checked></label>
+    <button class="btn primary" data-act="import">أضف القنوات</button>
+  </section>
+
+  <section class="sect">
+    <h2>العرض والفحص</h2>
+    <label class="switch"><span>إخفاء القنوات المعطلة عن التطبيقات</span><input type="checkbox" data-set="hideDead" ${s.hideDead ? 'checked' : ''}></label>
+    <label class="switch"><span>أسماء قنوات الباقة بالعربي</span><input type="checkbox" data-set="arabicNames" ${s.arabicNames ? 'checked' : ''}></label>
+    <label class="f" for="every">افحص القنوات كل</label>
+    <select class="in-text" id="every" data-set="healthEveryMin">${every.map((m) => `<option value="${m}" ${Number(s.healthEveryMin) === m ? 'selected' : ''}>${plural(m / 60, 'ساعة', 'ساعتين', 'ساعات')}</option>`).join('')}</select>
+  </section>
+
+  <section class="sect">
+    <h2>دليل البرامج</h2>
+    <label class="switch"><span>دليل البرامج مفعّل</span><input type="checkbox" data-set="epgEnabled" ${st.epg.enabled ? 'checked' : ''}></label>
+    <details><summary>روابط XMLTV إضافية</summary>
+      <textarea class="in-text ltr" id="epg-urls" style="text-align:left" placeholder="https://…/guide.xml">${esc((st.epg.extraUrls || []).join('\n'))}</textarea>
+      <button class="btn sm" style="margin-top:8px" data-act="epg-save">احفظ الروابط</button>
+    </details>
+    <button class="btn sm" style="margin-top:8px" data-act="epg-refresh">حدّث الدليل</button>
+  </section>
+
+  <section class="sect">
+    <h2>السيرفر</h2>
+    <label class="f" for="srv-name">اسم السيرفر</label><input class="in-text" id="srv-name" value="${esc(s.serverName)}" maxlength="40">
+    <label class="f" for="srv-url">الرابط اللي تكتبه في RATV (اختياري)</label><input class="in-text ltr" id="srv-url" value="${esc(s.publicUrl || '')}" placeholder="${esc(st.server.url)}">
+    <div class="hint">اتركه فاضي ويطلع تلقائياً من الرابط اللي فتحت فيه اللوحة.</div>
+    <button class="btn sm" style="margin-top:10px" data-act="srv-save">احفظ</button>
+  </section>
+
+  <section class="sect">
+    <h2>كلمة مرور اللوحة</h2>
+    <label class="f" for="pw-cur">الحالية</label><input class="in-text ltr" id="pw-cur" type="password" autocomplete="current-password">
+    <label class="f" for="pw-new">الجديدة (6 خانات أو أكثر)</label><input class="in-text ltr" id="pw-new" type="password" autocomplete="new-password">
+    <button class="btn sm" style="margin-top:10px" data-act="pw-save">غيّر كلمة المرور</button>
+  </section>
+
+  <section class="sect" style="border-bottom:0">
+    <h2>سجل السيرفر</h2>
+    <button class="btn sm" data-act="logs">اعرض آخر الأحداث</button>
+    ${S.logs ? `<pre class="log">${esc(S.logs)}</pre>` : ''}
+    <div style="margin-top:22px"><button class="btn ghost" data-act="logout">تسجيل خروج</button></div>
+  </section>`;
+}
+
+// ------------------------------------------------------------------ sheet
+function openSheet(title, body, foot) {
+  $('#sheet-title').textContent = title;
+  $('#sheet-body').innerHTML = body;
+  $('#sheet-foot').innerHTML = foot;
+  $('#sheet-foot').style.display = foot ? '' : 'none';
+  const sh = $('#sheet');
+  sh.setAttribute('aria-hidden', 'false');
+  sh.style.display = 'block';
+  requestAnimationFrame(() => sh.classList.add('open'));
+}
+function closeSheet() {
+  const sh = $('#sheet');
+  if (!sh.classList.contains('open')) return;
+  sh.classList.remove('open');
+  sh.setAttribute('aria-hidden', 'true');
+  setTimeout(() => {
+    if (!sh.classList.contains('open')) sh.style.display = '';
+  }, 260);
+  S.draft = null;
+}
+
+// ------------------------------------------------------------------ events
+document.addEventListener('click', async (e) => {
+  const el = e.target.closest('[data-go],[data-copy],[data-acc],[data-cat],[data-ch],[data-act]');
+  if (!el) return;
+  if (el.dataset.go) return go(el.dataset.go);
+  if (el.dataset.copy !== undefined) return copy(el.dataset.copy);
+  if (el.dataset.acc) {
+    S.account = Number(el.dataset.acc);
+    return render();
+  }
+  if (el.dataset.cat && !el.dataset.act) {
+    const v = el.dataset.cat;
+    S.cat = v === 'all' || v === 'dead' || v === 'off' ? v : Number(v);
+    return render();
+  }
+  if (el.dataset.ch) return openChannel(Number(el.dataset.ch));
+  const a = el.dataset.act;
+  const i = Number(el.dataset.i);
+  const d = S.draft;
+  switch (a) {
+    case 'close': return closeSheet();
+    case 'pkg-refresh':
+      await act(() => api('POST', '/api/package/refresh'), 'بدأ تحديث الباقة');
+      return later(load);
+    case 'pkg-restore':
+      await act(() => api('POST', '/api/package/restore'), 'ترجع القنوات مع التحديث');
+      return later(load);
+    case 'pkg-save': {
+      const sources = $('#pkg-sources').value.split('\n').map((x) => x.trim()).filter(Boolean);
+      if (await act(() => api('PUT', '/api/package', { sources }), 'انحفظت المصادر')) later(load);
+      return;
+    }
+    case 'health-run':
+      await act(() => api('POST', '/api/health/run', { force: true }), 'بدأ الفحص');
+      return later(load, 800);
+    case 'ch-new': return openChannel(null);
+    case 'cats': return openCats();
+    case 'bulk-off': {
+      const ids = S.channels.filter((c) => c.enabled && c.state === 'dead').map((c) => c.id);
+      if (!confirm(`توقف ${ids.length} قناة معطلة؟ تقدر ترجعها من «الموقوفة».`)) return;
+      if (await act(() => api('POST', '/api/channels/bulk', { ids, action: 'disable' }), 'انوقفت')) await refreshAll();
+      return;
+    }
+    case 'src-add': d.sources.push({ url: '', ua: '', referer: '', status: 'unknown' }); return renderChannelSheet();
+    case 'src-del': d.sources.splice(i, 1); if (!d.sources.length) d.sources.push({ url: '', ua: '', referer: '' }); return renderChannelSheet();
+    case 'src-up': if (i > 0) [d.sources[i - 1], d.sources[i]] = [d.sources[i], d.sources[i - 1]]; return renderChannelSheet();
+    case 'src-down': if (i < d.sources.length - 1) [d.sources[i + 1], d.sources[i]] = [d.sources[i], d.sources[i + 1]]; return renderChannelSheet();
+    case 'ch-save': {
+      const body = { name: d.name, categoryId: Number(d.categoryId), logo: d.logo, epgId: d.epgId, enabled: d.enabled, pinned: d.pinned, sources: d.sources.filter((s) => s.url.trim()).map((s) => ({ url: s.url.trim(), ua: s.ua, referer: s.referer })) };
+      const r = await act(() => (d.id ? api('PUT', '/api/channels/' + d.id, body) : api('POST', '/api/channels', body)), 'انحفظت القناة');
+      if (r) { closeSheet(); await refreshAll(); }
+      return;
+    }
+    case 'ch-check': {
+      el.disabled = true;
+      el.textContent = 'يفحص…';
+      const r = await act(() => api('POST', '/api/channels/' + d.id + '/check'));
+      if (r) {
+        r.sources.forEach((x) => { const s = d.sources.find((y) => y.url === x.url); if (s) Object.assign(s, x); });
+        toast(r.state === 'ok' ? 'القناة شغّالة' : 'القناة فيها مشكلة', r.state !== 'ok');
+        renderChannelSheet();
+        refreshAll();
+      } else { el.disabled = false; el.textContent = 'افحص الروابط'; }
+      return;
+    }
+    case 'ch-del':
+      if (!confirm('تحذف «' + d.name + '»؟')) return;
+      if (await act(() => api('DELETE', '/api/channels/' + d.id), 'انحذفت القناة')) { closeSheet(); await refreshAll(); }
+      return;
+    case 'cat-add': {
+      const name = $('#new-cat').value.trim();
+      if (!name) return;
+      if (await act(() => api('POST', '/api/categories', { name }), 'انضاف التصنيف')) { await refreshAll(); openCats(); }
+      return;
+    }
+    case 'cat-up': case 'cat-down': {
+      const ids = S.cats.map((c) => c.id);
+      const j = a === 'cat-up' ? i - 1 : i + 1;
+      [ids[i], ids[j]] = [ids[j], ids[i]];
+      if (await act(() => api('POST', '/api/categories/order', { ids }))) { await refreshAll(); openCats(); }
+      return;
+    }
+    case 'cat-del': {
+      const c = S.cats.find((x) => x.id === Number(el.dataset.id));
+      if (!confirm(`تحذف تصنيف «${c.name}»؟ قنواته تنتقل لـ «أخرى».`)) return;
+      if (await act(() => api('DELETE', '/api/categories/' + c.id), 'انحذف التصنيف')) { await refreshAll(); openCats(); }
+      return;
+    }
+    case 'user-new': return openUser(null);
+    case 'user-edit': return openUser(Number(el.dataset.id));
+    case 'user-pin': d.password = pin(); $('#u-pass').value = d.password; return;
+    case 'max-minus': d.maxConnections = Math.max(1, d.maxConnections - 1); $('#u-max').textContent = d.maxConnections; return;
+    case 'max-plus': d.maxConnections = Math.min(20, d.maxConnections + 1); $('#u-max').textContent = d.maxConnections; return;
+    case 'user-save': {
+      const r = await act(() => (d.id ? api('PUT', '/api/users/' + d.id, d) : api('POST', '/api/users', d)), 'انحفظ الحساب');
+      if (r) { closeSheet(); await load(); }
+      return;
+    }
+    case 'user-del':
+      if (!confirm('تحذف حساب «' + d.name + '»؟ الشاشات اللي داخلة فيه بتطلع.')) return;
+      if (await act(() => api('DELETE', '/api/users/' + d.id), 'انحذف الحساب')) { closeSheet(); await load(); }
+      return;
+    case 'import': {
+      const url = $('#imp-url').value.trim();
+      const text = $('#imp-text').value;
+      if (!url && !text.trim()) return toast('اكتب رابط القائمة أو الصقها', true);
+      const mode = $('#imp-mode').value;
+      el.disabled = true;
+      el.textContent = 'يضيف…';
+      const r = await act(() => api('POST', '/api/import', { url, text, mode: mode === 'groups' ? 'groups' : 'one', categoryId: mode === 'groups' ? null : Number(mode), merge: $('#imp-merge').checked }));
+      el.disabled = false;
+      el.textContent = 'أضف القنوات';
+      if (r) {
+        toast(`انضافت ${r.added} قناة${r.merged ? ' و' + r.merged + ' رابط احتياطي' : ''}`);
+        $('#imp-url').value = '';
+        $('#imp-text').value = '';
+        await refreshAll();
+      }
+      return;
+    }
+    case 'epg-save': {
+      const epgExtraUrls = $('#epg-urls').value.split('\n').map((x) => x.trim()).filter(Boolean);
+      if (await act(() => api('PUT', '/api/settings', { epgExtraUrls }), 'انحفظت الروابط')) later(load, 1500);
+      return;
+    }
+    case 'epg-refresh':
+      await act(() => api('POST', '/api/epg/refresh'), 'يتحدث الدليل');
+      return later(load, 2500);
+    case 'srv-save':
+      if (await act(() => api('PUT', '/api/settings', { serverName: $('#srv-name').value, publicUrl: $('#srv-url').value }), 'انحفظ')) await load();
+      return;
+    case 'pw-save':
+      if (await act(() => api('POST', '/api/password', { current: $('#pw-cur').value, next: $('#pw-new').value }), 'تغيّرت كلمة المرور')) {
+        $('#pw-cur').value = '';
+        $('#pw-new').value = '';
+      }
+      return;
+    case 'logs': {
+      const r = await act(() => api('GET', '/api/logs'));
+      if (r) { S.logs = r.lines.slice().reverse().join('\n'); render(); }
+      return;
+    }
+    case 'logout':
+      await act(() => api('POST', '/api/logout'));
+      S.state = null;
+      return showLogin();
+  }
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeSheet();
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.dataset && e.target.dataset.ch) {
+    e.preventDefault();
+    openChannel(Number(e.target.dataset.ch));
+  }
+});
+// Typing in the channel or account sheet updates the draft.
+document.addEventListener('input', (e) => {
+  const t = e.target;
+  if (t.id === 'q') {
+    S.q = t.value;
+    clearTimeout(S.qTimer);
+    S.qTimer = setTimeout(render, 120);
+    return;
+  }
+  const d = S.draft;
+  if (!d) return;
+  if (t.dataset.src !== undefined) d.sources[Number(t.dataset.src)][t.dataset.k] = t.value;
+  else if (t.dataset.k && t.type !== 'checkbox') d[t.dataset.k] = t.dataset.k === 'categoryId' ? Number(t.value) : t.value;
+});
+document.addEventListener('change', async (e) => {
+  const t = e.target;
+  if (S.draft && t.dataset.k && t.type === 'checkbox') {
+    S.draft[t.dataset.k] = t.checked;
+    return;
+  }
+  if (t.dataset.catName) {
+    if (await act(() => api('PUT', '/api/categories/' + t.dataset.catName, { name: t.value }), 'انحفظ الاسم')) refreshAll();
+    return;
+  }
+  if (t.dataset.catShow) {
+    if (await act(() => api('PUT', '/api/categories/' + t.dataset.catShow, { hidden: !t.checked }), t.checked ? 'التصنيف ظاهر' : 'التصنيف مخفي')) refreshAll();
+    return;
+  }
+  const k = t.dataset.set;
+  if (!k) return;
+  if (k === 'pkg-enabled') {
+    if (await act(() => api('PUT', '/api/package', { enabled: t.checked }), t.checked ? 'الباقة مفعّلة' : 'الباقة مقفلة')) refreshAll();
+    return;
+  }
+  const v = t.type === 'checkbox' ? t.checked : t.value;
+  if (await act(() => api('PUT', '/api/settings', { [k]: v }), 'انحفظ')) refreshAll();
+});
+
+function later(fn, ms) {
+  setTimeout(() => fn().catch(() => {}), ms || 1200);
+}
+async function refreshAll() {
+  try {
+    await loadChannels();
+    await load();
+  } catch (e) {
+    /* shown by api() */
+  }
+}
+
+// Live numbers on the home screen (other screens are left alone so nothing typed is lost).
+setInterval(() => {
+  if (!S.state || document.hidden || S.tab !== 'home' || $('#sheet').classList.contains('open')) return;
+  load().catch(() => {});
+}, 5000);
+
+route();
+load(S.tab === 'channels').catch(() => {});
+</script>
+</body>
+</html>

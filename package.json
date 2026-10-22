@@ -1,0 +1,15 @@
+{
+  "name": "ratv-server",
+  "version": "1.0.0",
+  "description": "Personal IPTV server (Xtream Codes compatible) for RATV, with an Arabic control panel",
+  "main": "server.js",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/run.js"
+  }
+}

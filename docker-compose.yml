@@ -1,0 +1,41 @@
+# RATV Server: the IPTV server, plus the programme guide collector.
+# Settings come from the .env file next to this one (PORT, TZ, ADMIN_PASSWORD).
+
+services:
+  ratv:
+    build: .
+    image: ratv-server:local
+    container_name: ratv-server
+    restart: unless-stopped
+    init: true
+    ports:
+      - "${PORT:-80}:8080"
+    environment:
+      - TZ=${TZ:-Asia/Riyadh}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
+    volumes:
+      - ./data:/app/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
+
+  # Collects the programme guide (iptv-org/epg) for the channels listed in data/epg/channels.xml,
+  # which the server writes, and leaves it in data/epg/guide.xml for the server to read.
+  epg:
+    image: ghcr.io/iptv-org/epg:master
+    container_name: ratv-epg
+    restart: unless-stopped
+    environment:
+      - CRON_SCHEDULE=0 1 * * *
+      - RUN_AT_STARTUP=true
+      - MAX_CONNECTIONS=5
+      - DAYS=3
+    volumes:
+      - ./data/epg:/epg/public
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
