@@ -331,7 +331,7 @@ def s_real_data():
     sh("pm clear %s" % PKG)
     time.sleep(1)
     sh("am start -W -n %s/.MainActivity" % PKG)
-    root = wait_text("مباري", timeout=60)
+    root = wait_text("مباراة", timeout=60)
     expect(root is not None, "the real schedule did not load")
     time.sleep(8)  # logos
     root = dump("real-today")
