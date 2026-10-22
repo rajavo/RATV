@@ -33,6 +33,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -109,7 +110,14 @@ fun MatchesScreen(nav: Navigator) {
                     Spacer(Modifier.width(12.dp))
                 }
                 Column(Modifier.weight(1f)) {
-                    Text("جدول المباريات", style = T.display(26.sp))
+                    // One line on a phone too: wrapped, the title ran into the line under it.
+                    Text(
+                        "جدول المباريات",
+                        style = T.display(if (tv) 26.sp else 21.sp),
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis
+                    )
                     Text("من دليل البرامج في اشتراكك، مع كل القنوات الناقلة لكل مباراة", style = T.caption)
                 }
                 Spacer(Modifier.width(12.dp))
