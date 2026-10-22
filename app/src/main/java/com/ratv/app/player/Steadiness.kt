@@ -15,7 +15,7 @@ import androidx.media3.exoplayer.upstream.DefaultAllocator
  * A live channel comes in as fast as it is shown, so the only way to a bigger store is to wait for
  * it before playing. Waiting costs time when a channel opens, so it is done only where it pays:
  * after a channel stalled (a shaky line at home, or a server that sends unevenly), the next start
- * and the next recovery wait 5 s longer, up to 10 s more; after 10 minutes without a stall it steps
+ * and the next recovery wait 5 s longer, up to 10 s more; after 20 minutes without a stall it steps
  * back down. "fast" never waits longer, "max" always does.
  */
 object Steadiness {
@@ -35,7 +35,7 @@ object Steadiness {
 
     private const val STEP_MS = 5_000L
     private const val MAX_LEVEL = 2
-    private const val CALM_MS = 10L * 60L * 1000L
+    private const val CALM_MS = 20L * 60L * 1000L
 
     /** How much longer than usual a live channel waits before it plays now (ms). */
     val extraMs: Long
