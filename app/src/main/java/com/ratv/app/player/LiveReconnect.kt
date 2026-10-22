@@ -16,6 +16,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
 import java.io.InterruptedIOException
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArraySet
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -117,6 +118,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
     override fun open(dataSpec: DataSpec): Long {
         closed = false
         spec = dataSpec
+        ENDED.remove(dataSpec.uri.toString())
         pending = null
         splicing = false
         deliveredFill = 0
@@ -145,7 +147,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
 
     override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
         if (length == 0) return 0
-        if (timelineJumped) throw IOException(CLOCK_JUMPED)
+        if (timelineJumped) endLoad(CLOCK_JUMPED)
         pending?.let { p ->
             val n = minOf(length, p.size - pendingOffset)
             System.arraycopy(p, pendingOffset, buffer, offset, n)
@@ -174,7 +176,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
                     if (!joining) return deliver(buffer, offset, n)
                     val out = join(n) ?: continue // still in what the player already has
                     splicing = false
-                    if (timelineJumped) throw IOException(CLOCK_JUMPED)
+                    if (timelineJumped) endLoad(CLOCK_JUMPED)
                     if (out.isEmpty()) continue
                     val k = minOf(length, out.size)
                     System.arraycopy(out, 0, buffer, offset, k)
@@ -192,7 +194,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
             }
             if (closed) throw InterruptedIOException("Closed")
             failures++
-            if (failures > MAX_RECONNECTS) throw IOException("Live stream lost after $MAX_RECONNECTS reconnects")
+            if (failures > MAX_RECONNECTS) endLoad("Live stream lost after $MAX_RECONNECTS reconnects")
             try {
                 Thread.sleep(RETRY_DELAYS_MS[minOf(failures - 1, RETRY_DELAYS_MS.size - 1)])
             } catch (e: InterruptedException) {
@@ -219,7 +221,17 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         val ok = track(buffer, offset, n)
         if (ok < n) pending = null
         if (ok > 0) return ok
-        throw IOException(CLOCK_JUMPED)
+        endLoad(CLOCK_JUMPED)
+    }
+
+    /**
+     * Ends this load on purpose, so the player starts the channel again. The player only does
+     * that once its store runs out, which never happens while it is stalled; the mark lets it
+     * notice (see [loadEndedAt]).
+     */
+    private fun endLoad(message: String): Nothing {
+        spec?.let { ENDED[it.uri.toString()] = SystemClock.elapsedRealtime() }
+        throw IOException(message)
     }
 
     /**
@@ -420,6 +432,16 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
 
         /** Reconnections of live channels since the app started (shown in the stream information). */
         val reconnects = AtomicInteger()
+
+        // Live loads ended to start the channel again, by address, and when (cleared by the next load).
+        private val ENDED = ConcurrentHashMap<String, Long>()
+
+        /** When the load of [uri] was ended to start the channel again and no new load has begun (0: none). */
+        fun loadEndedAt(uri: String): Long = ENDED[uri] ?: 0L
+
+        fun clearEnded(uri: String) {
+            ENDED.remove(uri)
+        }
 
         /** Distance between two 33-bit time stamps, whichever comes first. */
         fun distance(a: Long, b: Long): Long {
