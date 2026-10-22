@@ -47,20 +47,29 @@ jobs:
           path: epg
 
       # The list is published even when the guide cannot be collected (the last guide then stays).
+      # The end of the collector's output goes into the release as guide-log.txt.
       - name: Collect the programme guide
         continue-on-error: true
         timeout-minutes: 60
         working-directory: epg
         run: |
-          npm ci --no-audit --no-fund
-          npm run grab -- --channels=../out/channels.xml --output=../out/guide.xml --days=3 --maxConnections=10 --timeout=15000 || echo "The guide collector finished with errors"
+          set +e
+          {
+            npm ci --no-audit --no-fund &&
+            npm run grab -- --channels=../out/channels.xml --output=../out/guide.xml --days=3 --maxConnections=10 --timeout=15000
+          } > ../out/guide-full.log 2>&1
+          echo "collector exit code: $?" >> ../out/guide-full.log
+          tail -n 80 ../out/guide-full.log > ../out/guide-log.txt
+          cat ../out/guide-log.txt
           if [ -s ../out/guide.xml ]; then gzip -9 -f ../out/guide.xml; fi
+          exit 0
 
       - name: Publish to the free release
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
-          files="out/tv.m3u out/status.json"
+          files="out/tv.m3u out/status.json out/guide-log.txt"
           if [ -s out/guide.xml.gz ]; then files="$files out/guide.xml.gz"; else echo "No new guide this time; the last one stays."; fi
           if gh release view free >/dev/null 2>&1; then
             gh release upload free $files --clobber
