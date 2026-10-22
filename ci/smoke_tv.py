@@ -52,20 +52,31 @@ def expect(cond, message):
         raise RuntimeError(message)
 
 
-def go_tab(label):
+# The top bar in the other interface languages (left to right).
+NAV_LANG = {
+    "en": ["Home", "Live", "Matches", "Movies", "Series", "My account"],
+    "es": ["Inicio", "En vivo", "Partidos", "Películas", "Series", "Mi cuenta"],
+}
+
+
+def go_tab(label, nav=NAV):
     """Moves up to the top bar with the remote and opens a section."""
+    rtl = nav is NAV
     f = None
     for _ in range(15):
         _, f = log_focus("nav-search")
-        if f in NAV:
+        if f in nav:
             break
-        # Up reaches the bar; from the search box, right goes back to the sections.
-        key("DPAD_RIGHT" if f and "ابحث" in f else "DPAD_UP")
+        # Up reaches the bar; from the search box, back towards the sections.
+        searching = f and ("ابحث" in f or "Search" in f or "Busca" in f)
+        key(("DPAD_RIGHT" if rtl else "DPAD_LEFT") if searching else "DPAD_UP")
     _, f = log_focus("nav-start")
-    expect(f in NAV, "top bar not reached (focus: %s)" % f)
-    step = NAV.index(label) - NAV.index(f)
+    expect(f in nav, "top bar not reached (focus: %s)" % f)
+    step = nav.index(label) - nav.index(f)
     if step:
-        key("DPAD_LEFT" if step > 0 else "DPAD_RIGHT", abs(step))
+        forward = "DPAD_LEFT" if rtl else "DPAD_RIGHT"
+        backward = "DPAD_RIGHT" if rtl else "DPAD_LEFT"
+        key(forward if step > 0 else backward, abs(step))
     _, f = log_focus("nav-target")
     expect(f == label, "top bar item %s not focused (focus: %s)" % (label, f))
     key("DPAD_CENTER", pause=2.0)
@@ -231,6 +242,36 @@ def t_settings():
     expect(f is not None and "إضافة مستخدم" in f, "settings not focused (focus: %s)" % f)
 
 
+def restart_app():
+    S.shell("am force-stop %s" % S.PKG)
+    S.shell("am start -W -n %s/.MainActivity" % S.PKG)
+
+
+def t_languages():
+    """The interface in English and in Spanish (chosen for the test with debug.ratv.lang), then Arabic again."""
+    try:
+        for lang in ("en", "es"):
+            nav = NAV_LANG[lang]
+            S.shell("setprop debug.ratv.lang " + lang)
+            restart_app()
+            _, n = S.wait_for(timeout=45, text=nav[0], save="home-" + lang)
+            time.sleep(2)
+            S.shot("home-" + lang)
+            expect(n is not None, "%s: the top bar shows no %s" % (lang, nav[0]))
+            go_tab(nav[-1], nav)
+            time.sleep(2)
+            root = S.dump("settings-" + lang)
+            S.shot("settings-" + lang)
+            expect("Language" in S.all_texts(root), "%s: no language row in the settings" % lang)
+            go_tab(nav[1], nav)
+            time.sleep(3)
+            S.shot("live-" + lang)
+    finally:
+        S.shell("setprop debug.ratv.lang ''")
+        restart_app()
+        S.wait_for(timeout=45, text="الرئيسية")
+
+
 if __name__ == "__main__":
     for name, fn in [
         ("launch", S.s_launch),
@@ -245,6 +286,7 @@ if __name__ == "__main__":
         ("matches", t_matches),
         ("match-link", t_match_link),
         ("settings", t_settings),
+        ("languages", t_languages),
     ]:
         S.step(name, fn)
     S.finish()
