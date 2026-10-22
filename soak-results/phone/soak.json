@@ -1,10 +1,10 @@
 {
- "reconnects": 22,
- "joined": 21,
- "not_joined": 1,
- "cut_stuck": 2,
- "stalls": 2,
- "went_back": 0,
+ "reconnects": 10,
+ "joined": 10,
+ "not_joined": 0,
+ "cut_stuck": 1,
+ "stalls": 1895,
+ "went_back": 1,
  "jumped_ahead": 1,
- "memory_end": "TOTAL PSS: 122110 TOTAL RSS: 235800 TOTAL SWAP PSS: 265"
+ "memory_end": "{\"java\": 14, \"native\": 34, \"graphics\": 0, \"total\": 73}"
 }

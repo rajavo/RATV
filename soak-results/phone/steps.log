@@ -31,3 +31,40 @@ Complete
 00:25:17 screenshot 08-soak-stats.png 2400x1080
 00:25:17 stats:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | C | Chaos Live | 720p | مباشر |  |  |  |  |  |  |  |  |  |  |  | 10 |  |  |  |  |  |  | 10 |  |  | القنوات |  |  | الدليل |  |  |  | 
 00:25:18 memory at end: TOTAL PSS: 122110 TOTAL RSS: 235800 TOTAL SWAP PSS: 265
+00:33:48 == launch
+00:34:41 debug.ratv.subs=http://10.0.2.2:8000
+00:34:44 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 2565
+WaitTime: 2575
+Complete
+00:34:47 screenshot 01-splash.png 1080x2400
+00:34:47 == login-screen
+00:34:52 screenshot 02-login.png 1080x2400
+00:34:52 == wrong-password
+00:35:16 screenshot 03-login-error.png 1080x2400
+00:35:16 == xtream-login
+00:35:21 screenshot 04-login-filled.png 1080x2400
+00:35:41 screenshot 05-home.png 1080x2400
+00:35:41 == live
+00:35:49 screenshot 06-live.png 1080x2400
+00:35:49 == soak
+00:36:25 memory at start: {"java": 10, "native": 33, "graphics": 0, "total": 60}
+00:37:26 minute 1: {"reconnects": 2, "joined": 2, "not_joined": 0, "cut_stuck": 0, "stalls": 0, "went_back": 0, "jumped_ahead": 0} memory {"java": 11, "native": 33, "graphics": 0, "total": 65}
+00:38:26 minute 2: {"reconnects": 4, "joined": 4, "not_joined": 0, "cut_stuck": 0, "stalls": 0, "went_back": 0, "jumped_ahead": 0} memory {"java": 10, "native": 32, "graphics": 0, "total": 63}
+00:39:26 minute 3: {"reconnects": 7, "joined": 7, "not_joined": 0, "cut_stuck": 1, "stalls": 1, "went_back": 0, "jumped_ahead": 1} memory {"java": 10, "native": 32, "graphics": 0, "total": 63}
+00:40:26 minute 4: {"reconnects": 9, "joined": 9, "not_joined": 0, "cut_stuck": 1, "stalls": 1, "went_back": 0, "jumped_ahead": 1} memory {"java": 10, "native": 32, "graphics": 0, "total": 64}
+00:41:27 minute 5: {"reconnects": 10, "joined": 10, "not_joined": 0, "cut_stuck": 1, "stalls": 261, "went_back": 1, "jumped_ahead": 1} memory {"java": 11, "native": 32, "graphics": 0, "total": 66}
+00:42:27 minute 6: {"reconnects": 10, "joined": 10, "not_joined": 0, "cut_stuck": 1, "stalls": 569, "went_back": 1, "jumped_ahead": 1} memory {"java": 13, "native": 32, "graphics": 0, "total": 67}
+00:43:27 minute 7: {"reconnects": 10, "joined": 10, "not_joined": 0, "cut_stuck": 1, "stalls": 878, "went_back": 1, "jumped_ahead": 1} memory {"java": 13, "native": 32, "graphics": 0, "total": 68}
+00:44:27 minute 8: {"reconnects": 10, "joined": 10, "not_joined": 0, "cut_stuck": 1, "stalls": 1188, "went_back": 1, "jumped_ahead": 1} memory {"java": 13, "native": 32, "graphics": 0, "total": 70}
+00:45:27 minute 9: {"reconnects": 10, "joined": 10, "not_joined": 0, "cut_stuck": 1, "stalls": 1497, "went_back": 1, "jumped_ahead": 1} memory {"java": 12, "native": 32, "graphics": 0, "total": 69}
+00:46:28 minute 10: {"reconnects": 10, "joined": 10, "not_joined": 0, "cut_stuck": 1, "stalls": 1805, "went_back": 1, "jumped_ahead": 1} memory {"java": 13, "native": 32, "graphics": 0, "total": 70}
+00:46:28 screenshot 07-soak-end.png 2400x1080
+00:46:45 screenshot 08-soak-stats.png 2400x1080
+00:46:45 stats:  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | الاحتياطي ضد انقطاع النت: 230 ث |  |  |  | C | Chaos Live | 720p | مباشر |  |  |  |  |  |  |  |  |  |  |  | 10 |  |  |  |  |  |  | 10 |  |  | القنوات |  |  | الدليل |  |  |  | 
+00:46:45 memory at end: {"java": 14, "native": 34, "graphics": 0, "total": 73}
+00:46:45 !! RuntimeError('the picture jumped back 1 times')
+00:46:46 screenshot 09-fail-soak.png 2400x1080

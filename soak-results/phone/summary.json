@@ -27,26 +27,26 @@
   },
   {
    "step": "soak",
-   "ok": true,
-   "error": ""
+   "ok": false,
+   "error": "RuntimeError('the picture jumped back 1 times')"
   }
  ],
  "system_dialogs": [],
  "anr": [],
  "pids": [
-  "5562"
+  "5269"
  ],
  "crash_buffer_lines": 0,
  "fatal": [
-  "10-22 00:24:58.557  7104  7104 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<",
-  "10-22 00:24:58.568  7104  7104 I AndroidRuntime: Using default boot image",
-  "10-22 00:24:58.568  7104  7104 I AndroidRuntime: Leaving lock profiling enabled",
-  "10-22 00:24:58.771  7104  7104 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher",
-  "10-22 00:25:01.252  7104  7104 D AndroidRuntime: Shutting down VM",
-  "10-22 00:25:12.775  7152  7152 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<",
-  "10-22 00:25:12.791  7152  7152 I AndroidRuntime: Using default boot image",
-  "10-22 00:25:12.797  7152  7152 I AndroidRuntime: Leaving lock profiling enabled",
-  "10-22 00:25:12.988  7152  7152 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher",
-  "10-22 00:25:15.779  7152  7152 D AndroidRuntime: Shutting down VM"
+  "10-22 00:46:29.700  7777  7777 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<",
+  "10-22 00:46:29.705  7777  7777 I AndroidRuntime: Using default boot image",
+  "10-22 00:46:29.705  7777  7777 I AndroidRuntime: Leaving lock profiling enabled",
+  "10-22 00:46:29.948  7777  7777 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher",
+  "10-22 00:46:31.063  7777  7777 D AndroidRuntime: Shutting down VM",
+  "10-22 00:46:42.524  7875  7875 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<",
+  "10-22 00:46:42.537  7875  7875 I AndroidRuntime: Using default boot image",
+  "10-22 00:46:42.537  7875  7875 I AndroidRuntime: Leaving lock profiling enabled",
+  "10-22 00:46:42.872  7875  7875 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher",
+  "10-22 00:46:44.047  7875  7875 D AndroidRuntime: Shutting down VM"
  ]
 }
