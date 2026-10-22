@@ -1,294 +1,282 @@
 mock IPTV server on port 8000
-15:19:37 GET /player_api.php?username=test&password=test
-15:22:36 GET /player_api.php?username=test&password=wrong
-15:22:49 GET /player_api.php?username=test&password=test
-15:22:49 GET /player_api.php?username=test&password=test
-15:22:49 GET /player_api.php?username=test&password=test&action=get_live_categories
-15:22:49 GET /player_api.php?username=test&password=test&action=get_live_streams
-15:22:49 GET /player_api.php?username=test&password=test&action=get_vod_categories
-15:22:49 GET /player_api.php?username=test&password=test&action=get_vod_streams
-15:22:49 GET /player_api.php?username=test&password=test&action=get_series_categories
-15:22:49 GET /player_api.php?username=test&password=test&action=get_series
-15:22:49 GET /xmltv.php?username=test&password=test
-15:22:50 GET /update/version.json
-15:22:50 GET /logo/l1.png
-15:23:05 GET /logo/l2.png
-15:23:05 GET /logo/l3.png
-15:23:05 GET /logo/missing.png
-15:23:05 GET /logo/missing.png
-15:23:05 GET /logo/l4.png
-15:23:31 GET /logo/missing.png
-15:23:31 GET /logo/missing.png
-15:23:35 GET /live/test/test/102.ts
-15:23:35 GET /live/test/test/102.ts
-15:23:35 GET /live/test/test/102.ts
-15:23:35 GET /live/test/test/102.ts
-15:24:14 GET /logo/missing.png
-15:24:14 GET /logo/missing.png
-15:24:14 GET /live/test/test/102.ts
-15:24:14 GET /logo/missing.png
-15:24:14 GET /logo/missing.png
-15:24:19 GET /live/test/test/102.ts
-15:24:19 GET /live/test/test/102.ts
-15:24:19 GET /live/test/test/102.ts
-15:24:19 GET /logo/missing.png
-15:24:19 GET /logo/missing.png
-15:24:19 GET /live/test/test/102.ts
-15:24:59 GET /live/test/test/102.ts
-15:25:02 GET /logo/missing.png
-15:25:02 GET /logo/missing.png
-15:25:03 GET /logo/missing.png
-15:25:03 GET /logo/missing.png
-15:25:16 GET /logo/l5.png
-15:25:30 GET /live/test/test/107.ts
-15:25:31 GET /logo/missing.png
-15:25:31 GET /logo/missing.png
-15:25:31 GET /live/test/test/107.ts
-15:25:38 GET /live/test/test/107.ts
-15:25:45 GET /live/test/test/107.ts
-15:25:52 GET /live/test/test/107.ts
-15:25:59 GET /live/test/test/107.ts
-15:26:06 GET /live/test/test/107.ts
-15:26:13 GET /live/test/test/107.ts
-15:26:20 GET /live/test/test/107.ts
-15:26:27 GET /live/test/test/107.ts
-15:26:31 GET /live/test/test/107.ts
-15:26:31 GET /logo/missing.png
-15:26:31 GET /logo/missing.png
-15:27:07 EVENT connect {"channel": 108, "n": 1}
-15:27:07 GET /live/test/test/108.ts
-15:27:08 EVENT client-left {"channel": 108}
-15:27:08 EVENT connect {"channel": 108, "n": 2}
-15:27:08 GET /live/test/test/108.ts
-15:27:08 GET /logo/missing.png
-15:27:08 GET /logo/missing.png
-15:27:20 EVENT frozen {"channel": 108}
-15:27:23 EVENT connect {"channel": 108, "n": 3}
-15:27:23 GET /live/test/test/108.ts
-15:27:35 EVENT frozen {"channel": 108}
-15:27:38 EVENT connect {"channel": 108, "n": 4}
-15:27:38 GET /live/test/test/108.ts
-15:27:50 EVENT frozen {"channel": 108}
-15:27:53 EVENT connect {"channel": 108, "n": 5}
-15:27:53 GET /live/test/test/108.ts
-15:28:05 EVENT frozen {"channel": 108}
-15:28:08 EVENT connect {"channel": 108, "n": 6}
-15:28:08 GET /live/test/test/108.ts
-15:28:18 EVENT client-left {"channel": 108}
-15:28:18 EVENT connect {"channel": 108, "n": 7}
-15:28:18 GET /live/test/test/108.ts
-15:28:18 GET /logo/missing.png
-15:28:18 GET /logo/missing.png
-15:28:18 EVENT client-left {"channel": 108}
-15:28:20 GET /__stats
-15:28:54 EVENT connect {"channel": 109, "n": 1}
-15:28:54 GET /live/test/test/109.ts
-15:28:54 EVENT connect {"channel": 109, "n": 2}
-15:28:54 GET /live/test/test/109.ts
-15:28:55 GET /logo/missing.png
-15:28:55 GET /logo/missing.png
-15:28:56 EVENT client-left {"channel": 109}
-15:29:55 EVENT connect {"channel": 109, "n": 3}
-15:29:55 GET /live/test/test/109.ts
-15:29:55 GET /logo/missing.png
-15:29:55 GET /logo/missing.png
-15:29:57 EVENT client-left {"channel": 109}
-15:29:57 GET /__stats
-15:29:58 EVENT client-left {"channel": 109}
-15:30:32 EVENT connect {"channel": 110, "n": 1}
-15:30:32 GET /live/test/test/110.ts
-15:30:32 EVENT connect {"channel": 110, "n": 2}
-15:30:32 GET /live/test/test/110.ts
-15:30:32 EVENT client-left {"channel": 110}
-15:30:32 GET /logo/missing.png
-15:30:32 GET /logo/missing.png
-15:30:39 EVENT cut {"channel": 110}
-15:30:39 EVENT connect {"channel": 110, "n": 3}
-15:30:39 GET /live/test/test/110.ts
-15:30:46 EVENT cut {"channel": 110}
-15:30:46 EVENT connect {"channel": 110, "n": 4}
-15:30:46 GET /live/test/test/110.ts
-15:30:54 EVENT cut {"channel": 110}
-15:30:54 EVENT connect {"channel": 110, "n": 5}
-15:30:54 GET /live/test/test/110.ts
-15:31:01 EVENT cut {"channel": 110}
-15:31:01 EVENT connect {"channel": 110, "n": 6}
-15:31:01 GET /live/test/test/110.ts
-15:31:08 EVENT cut {"channel": 110}
-15:31:08 EVENT connect {"channel": 110, "n": 7}
-15:31:08 GET /live/test/test/110.ts
-15:31:15 EVENT cut {"channel": 110}
-15:31:15 EVENT connect {"channel": 110, "n": 8}
-15:31:15 GET /live/test/test/110.ts
-15:31:22 EVENT cut {"channel": 110}
-15:31:22 EVENT connect {"channel": 110, "n": 9}
-15:31:22 GET /live/test/test/110.ts
-15:31:29 EVENT cut {"channel": 110}
-15:31:29 EVENT connect {"channel": 110, "n": 10}
-15:31:29 GET /live/test/test/110.ts
-15:31:33 EVENT connect {"channel": 110, "n": 11}
-15:31:33 GET /live/test/test/110.ts
-15:31:33 EVENT client-left {"channel": 110}
-15:31:33 GET /logo/missing.png
-15:31:33 GET /logo/missing.png
-15:31:33 EVENT client-left {"channel": 110}
-15:32:10 EVENT connect {"channel": 112, "n": 1}
-15:32:10 GET /live/test/test/112.ts
-15:32:10 EVENT connect {"channel": 112, "n": 2}
-15:32:10 GET /live/test/test/112.ts
-15:32:10 GET /logo/missing.png
-15:32:10 GET /logo/missing.png
-15:32:10 EVENT client-left {"channel": 112}
-15:32:22 EVENT pause {"channel": 112}
-15:32:25 EVENT connect {"channel": 112, "n": 3}
-15:32:25 GET /live/test/test/112.ts
-15:32:29 EVENT client-left {"channel": 112}
-15:32:37 EVENT pause {"channel": 112}
-15:32:40 EVENT connect {"channel": 112, "n": 4}
-15:32:40 GET /live/test/test/112.ts
-15:32:44 EVENT client-left {"channel": 112}
-15:32:52 EVENT pause {"channel": 112}
-15:32:56 EVENT connect {"channel": 112, "n": 5}
-15:32:56 GET /live/test/test/112.ts
-15:32:59 EVENT client-left {"channel": 112}
-15:33:08 EVENT pause {"channel": 112}
-15:33:11 EVENT connect {"channel": 112, "n": 6}
-15:33:11 GET /live/test/test/112.ts
-15:33:15 EVENT client-left {"channel": 112}
-15:33:23 EVENT pause {"channel": 112}
-15:33:26 EVENT connect {"channel": 112, "n": 7}
-15:33:26 GET /live/test/test/112.ts
-15:33:30 EVENT client-left {"channel": 112}
-15:33:38 EVENT pause {"channel": 112}
-15:33:57 EVENT pause {"channel": 112}
-15:34:02 GET /logo/missing.png
-15:34:02 GET /logo/missing.png
-15:34:04 EVENT client-left {"channel": 112}
-15:34:04 GET /__stats
-15:34:39 EVENT refused {"channel": 113, "n": 1}
-15:34:39 GET /live/test/test/113.ts
-15:34:39 GET /live/test/test/113.ts
-15:34:39 EVENT refused {"channel": 113, "n": 2}
-15:34:39 GET /live/test/test/113.ts
-15:34:39 GET /live/test/test/113.ts
-15:34:39 GET /logo/missing.png
-15:34:39 GET /logo/missing.png
-15:34:41 EVENT connect {"channel": 1113, "n": 1}
-15:34:41 GET /live/test/test/113.ts
-15:35:24 EVENT client-left {"channel": 1113}
-15:35:24 GET /logo/missing.png
-15:35:24 GET /logo/missing.png
-15:35:26 GET /__stats
-15:36:10 EVENT connect {"channel": 114, "n": 1}
-15:36:10 GET /live/test/test/114.ts
-15:36:10 EVENT connect {"channel": 114, "n": 2}
-15:36:10 GET /live/test/test/114.ts
-15:36:10 GET /logo/missing.png
-15:36:10 GET /logo/missing.png
-15:36:10 EVENT client-left {"channel": 114}
-15:36:50 GET /live/test/test/114.m3u8
-15:36:50 GET /hls/seg002.ts
-15:36:50 GET /live/test/test/114.m3u8
-15:36:50 EVENT client-left {"channel": 114}
-15:36:50 GET /hls/seg003.ts
-15:36:50 GET /hls/seg004.ts
-15:36:51 GET /hls/seg005.ts
-15:36:52 GET /live/test/test/114.m3u8
-15:36:55 GET /live/test/test/114.m3u8
-15:36:55 GET /hls/seg006.ts
-15:37:00 GET /live/test/test/114.m3u8
-15:37:00 GET /hls/seg007.ts
-15:37:05 GET /live/test/test/114.m3u8
-15:37:05 GET /hls/seg008.ts
-15:37:10 GET /live/test/test/114.m3u8
-15:37:10 GET /hls/seg009.ts
-15:37:10 GET /hls/seg010.ts
-15:37:15 GET /live/test/test/114.m3u8
-15:37:15 GET /hls/seg011.ts
-15:37:20 GET /live/test/test/114.m3u8
-15:37:20 GET /hls/seg012.ts
-15:37:25 GET /live/test/test/114.m3u8
-15:37:25 GET /hls/seg013.ts
-15:37:30 GET /live/test/test/114.m3u8
-15:37:30 GET /hls/seg014.ts
-15:37:30 GET /hls/seg015.ts
-15:37:35 GET /live/test/test/114.m3u8
-15:37:35 GET /hls/seg016.ts
-15:37:40 GET /live/test/test/114.m3u8
-15:37:40 GET /hls/seg017.ts
-15:37:40 EVENT connect {"channel": 114, "n": 3}
-15:37:40 GET /live/test/test/114.ts
-15:37:41 GET /logo/missing.png
-15:37:41 GET /logo/missing.png
-15:37:41 EVENT client-left {"channel": 114}
-15:37:43 GET /__stats
-15:38:27 EVENT connect {"channel": 115, "n": 1}
-15:38:27 GET /live/test/test/115.ts
-15:38:27 EVENT connect {"channel": 115, "n": 2}
-15:38:27 GET /live/test/test/115.ts
-15:38:27 EVENT client-left {"channel": 115}
-15:38:27 GET /logo/missing.png
-15:38:27 GET /logo/missing.png
-15:38:39 EVENT connect {"channel": 115, "n": 3}
-15:38:39 GET /live/test/test/115.ts
-15:38:43 EVENT client-left {"channel": 115}
-15:38:52 EVENT connect {"channel": 115, "n": 4}
-15:38:52 GET /live/test/test/115.ts
-15:38:59 EVENT connect {"channel": 115, "n": 5}
-15:38:59 GET /live/test/test/115.ts
-15:38:59 EVENT client-left {"channel": 115}
-15:38:59 EVENT client-left {"channel": 115}
-15:39:11 EVENT connect {"channel": 115, "n": 6}
-15:39:11 GET /live/test/test/115.ts
-15:39:15 EVENT client-left {"channel": 115}
-15:39:29 EVENT connect {"channel": 115, "n": 7}
-15:39:29 GET /live/test/test/115.ts
-15:39:31 EVENT client-left {"channel": 115}
-15:39:31 EVENT client-left {"channel": 115}
-15:43:03 GET /logo/missing.png
-15:43:03 GET /logo/missing.png
-15:43:17 GET /live/test/test/206.ts
-15:43:17 GET /live/test/test/206.ts
-15:43:18 GET /live/test/test/206.ts
-15:43:18 GET /live/test/test/206.ts
-15:43:30 GET /logo/missing.png
-15:43:30 GET /logo/missing.png
-15:43:41 GET /live/test/test/201.ts
-15:43:41 GET /live/test/test/201.ts
-15:43:41 GET /logo/missing.png
-15:43:41 GET /logo/missing.png
-15:43:41 GET /live/test/test/201.ts
-15:43:42 GET /live/test/test/201.ts
-15:44:17 GET /live/test/test/204.ts
-15:44:18 GET /live/test/test/204.ts
-15:44:18 GET /live/test/test/204.ts
-15:44:30 GET /logo/missing.png
-15:44:30 GET /logo/missing.png
-15:44:43 GET /live/test/test/201.ts
-15:44:43 GET /live/test/test/201.ts
-15:44:43 GET /live/test/test/201.ts
-15:44:43 GET /logo/missing.png
-15:44:43 GET /logo/missing.png
-15:44:43 GET /live/test/test/201.ts
-15:45:11 GET /live/test/test/206.ts
-15:45:12 GET /live/test/test/206.ts
-15:45:12 GET /live/test/test/206.ts
-15:45:45 GET /logo/missing.png
-15:45:45 GET /logo/missing.png
-15:45:45 GET /live/test/test/201.ts
-15:45:45 GET /logo/missing.png
-15:45:45 GET /logo/missing.png
-15:45:53 GET /logo/missing.png
-15:45:53 GET /logo/missing.png
-15:46:00 GET /logo/missing.png
-15:46:00 GET /logo/missing.png
-15:46:09 GET /player_api.php?username=test&password=test&action=get_vod_info&vod_id=5001
-15:46:19 GET /movie/test/test/5001.mp4
-15:46:19 GET /movie/test/test/5001.mp4
-15:47:03 GET /player_api.php?username=test&password=test&action=get_vod_info&vod_id=5005
-15:47:07 GET /movie/test/test/5005.mp4
-15:47:07 GET /movie/test/test/5005.mp4
-15:47:32 GET /subtitles/search/advanced?keywords=Silent+Sea&language=en&movie_type=movie&year=2019
-15:47:32 GET /subtitles/search/advanced?keywords=Silent+Sea&language=ar&movie_type=movie&year=2019
-15:47:37 GET /subtitles/sub-en-1/download?container=zip
-15:48:16 GET /player_api.php?username=test&password=test&action=get_series_info&series_id=7001
+16:18:02 GET /player_api.php?username=test&password=test
+16:23:02 GET /player_api.php?username=test&password=wrong
+16:23:14 GET /player_api.php?username=test&password=test
+16:23:14 GET /player_api.php?username=test&password=test
+16:23:14 GET /player_api.php?username=test&password=test&action=get_live_categories
+16:23:15 GET /player_api.php?username=test&password=test&action=get_live_streams
+16:23:15 GET /player_api.php?username=test&password=test&action=get_vod_categories
+16:23:15 GET /player_api.php?username=test&password=test&action=get_vod_streams
+16:23:15 GET /player_api.php?username=test&password=test&action=get_series_categories
+16:23:15 GET /player_api.php?username=test&password=test&action=get_series
+16:23:15 GET /logo/l1.png
+16:23:15 GET /update/version.json
+16:23:15 GET /xmltv.php?username=test&password=test
+16:23:30 GET /logo/l2.png
+16:23:30 GET /logo/l3.png
+16:23:30 GET /logo/l4.png
+16:23:30 GET /logo/missing.png
+16:23:30 GET /logo/missing.png
+16:23:55 GET /logo/missing.png
+16:23:55 GET /logo/missing.png
+16:23:59 GET /live/test/test/102.ts
+16:23:59 GET /live/test/test/102.ts
+16:23:59 GET /live/test/test/102.ts
+16:24:00 GET /live/test/test/102.ts
+16:24:34 GET /logo/missing.png
+16:24:34 GET /logo/missing.png
+16:24:34 GET /logo/missing.png
+16:24:34 GET /logo/missing.png
+16:24:39 GET /live/test/test/102.ts
+16:24:40 GET /live/test/test/102.ts
+16:24:40 GET /live/test/test/102.ts
+16:24:40 GET /logo/missing.png
+16:24:40 GET /logo/missing.png
+16:24:40 GET /live/test/test/102.ts
+16:25:19 GET /live/test/test/102.ts
+16:25:20 GET /logo/missing.png
+16:25:20 GET /logo/missing.png
+16:25:20 GET /logo/missing.png
+16:25:20 GET /logo/missing.png
+16:25:34 GET /logo/l5.png
+16:25:48 GET /live/test/test/107.ts
+16:25:48 GET /live/test/test/107.ts
+16:25:48 GET /logo/missing.png
+16:25:48 GET /logo/missing.png
+16:25:55 GET /live/test/test/107.ts
+16:26:02 GET /live/test/test/107.ts
+16:26:09 GET /live/test/test/107.ts
+16:26:16 GET /live/test/test/107.ts
+16:26:23 GET /live/test/test/107.ts
+16:26:30 GET /live/test/test/107.ts
+16:26:37 GET /live/test/test/107.ts
+16:26:44 GET /live/test/test/107.ts
+16:26:46 GET /logo/missing.png
+16:26:46 GET /logo/missing.png
+16:27:13 EVENT connect {"channel": 108, "n": 1}
+16:27:13 GET /live/test/test/108.ts
+16:27:13 EVENT connect {"channel": 108, "n": 2}
+16:27:13 GET /live/test/test/108.ts
+16:27:13 EVENT client-left {"channel": 108}
+16:27:13 GET /logo/missing.png
+16:27:13 GET /logo/missing.png
+16:27:25 EVENT frozen {"channel": 108}
+16:27:28 EVENT connect {"channel": 108, "n": 3}
+16:27:28 GET /live/test/test/108.ts
+16:27:40 EVENT frozen {"channel": 108}
+16:27:43 EVENT connect {"channel": 108, "n": 4}
+16:27:43 GET /live/test/test/108.ts
+16:27:55 EVENT frozen {"channel": 108}
+16:27:58 EVENT connect {"channel": 108, "n": 5}
+16:27:58 GET /live/test/test/108.ts
+16:28:10 EVENT frozen {"channel": 108}
+16:28:13 EVENT connect {"channel": 108, "n": 6}
+16:28:13 GET /live/test/test/108.ts
+16:28:21 EVENT client-left {"channel": 108}
+16:28:22 GET /logo/missing.png
+16:28:22 GET /logo/missing.png
+16:28:24 GET /__stats
+16:28:58 EVENT connect {"channel": 109, "n": 1}
+16:28:58 GET /live/test/test/109.ts
+16:28:58 EVENT connect {"channel": 109, "n": 2}
+16:28:58 GET /live/test/test/109.ts
+16:28:58 GET /logo/missing.png
+16:28:58 GET /logo/missing.png
+16:29:00 EVENT client-left {"channel": 109}
+16:29:56 GET /logo/missing.png
+16:29:56 GET /logo/missing.png
+16:29:58 EVENT client-left {"channel": 109}
+16:29:59 GET /__stats
+16:30:32 EVENT connect {"channel": 110, "n": 1}
+16:30:32 GET /live/test/test/110.ts
+16:30:32 GET /logo/missing.png
+16:30:32 GET /logo/missing.png
+16:30:39 EVENT cut {"channel": 110}
+16:30:39 EVENT connect {"channel": 110, "n": 2}
+16:30:39 GET /live/test/test/110.ts
+16:30:46 EVENT cut {"channel": 110}
+16:30:46 EVENT connect {"channel": 110, "n": 3}
+16:30:46 GET /live/test/test/110.ts
+16:30:53 EVENT cut {"channel": 110}
+16:30:53 EVENT connect {"channel": 110, "n": 4}
+16:30:53 GET /live/test/test/110.ts
+16:31:01 EVENT cut {"channel": 110}
+16:31:01 EVENT connect {"channel": 110, "n": 5}
+16:31:01 GET /live/test/test/110.ts
+16:31:08 EVENT cut {"channel": 110}
+16:31:08 EVENT connect {"channel": 110, "n": 6}
+16:31:08 GET /live/test/test/110.ts
+16:31:15 EVENT cut {"channel": 110}
+16:31:15 EVENT connect {"channel": 110, "n": 7}
+16:31:15 GET /live/test/test/110.ts
+16:31:22 EVENT cut {"channel": 110}
+16:31:22 EVENT connect {"channel": 110, "n": 8}
+16:31:22 GET /live/test/test/110.ts
+16:31:29 EVENT cut {"channel": 110}
+16:31:29 EVENT connect {"channel": 110, "n": 9}
+16:31:29 GET /live/test/test/110.ts
+16:31:30 EVENT client-left {"channel": 110}
+16:31:30 GET /logo/missing.png
+16:31:30 GET /logo/missing.png
+16:32:06 EVENT connect {"channel": 112, "n": 1}
+16:32:06 GET /live/test/test/112.ts
+16:32:06 EVENT connect {"channel": 112, "n": 2}
+16:32:06 GET /live/test/test/112.ts
+16:32:06 EVENT client-left {"channel": 112}
+16:32:06 GET /logo/missing.png
+16:32:06 GET /logo/missing.png
+16:32:18 EVENT pause {"channel": 112}
+16:32:21 EVENT connect {"channel": 112, "n": 3}
+16:32:21 GET /live/test/test/112.ts
+16:32:25 EVENT client-left {"channel": 112}
+16:32:33 EVENT pause {"channel": 112}
+16:32:36 EVENT connect {"channel": 112, "n": 4}
+16:32:36 GET /live/test/test/112.ts
+16:32:40 EVENT client-left {"channel": 112}
+16:32:48 EVENT pause {"channel": 112}
+16:32:52 EVENT connect {"channel": 112, "n": 5}
+16:32:52 GET /live/test/test/112.ts
+16:32:55 EVENT client-left {"channel": 112}
+16:33:04 EVENT pause {"channel": 112}
+16:33:07 EVENT connect {"channel": 112, "n": 6}
+16:33:07 GET /live/test/test/112.ts
+16:33:11 EVENT client-left {"channel": 112}
+16:33:19 EVENT pause {"channel": 112}
+16:33:22 EVENT connect {"channel": 112, "n": 7}
+16:33:22 GET /live/test/test/112.ts
+16:33:26 EVENT client-left {"channel": 112}
+16:33:34 EVENT pause {"channel": 112}
+16:33:53 EVENT pause {"channel": 112}
+16:33:56 GET /logo/missing.png
+16:33:56 GET /logo/missing.png
+16:33:59 GET /__stats
+16:34:00 EVENT client-left {"channel": 112}
+16:34:32 EVENT refused {"channel": 113, "n": 1}
+16:34:32 GET /live/test/test/113.ts
+16:34:32 GET /live/test/test/113.ts
+16:34:33 EVENT refused {"channel": 113, "n": 2}
+16:34:33 GET /live/test/test/113.ts
+16:34:33 GET /live/test/test/113.ts
+16:34:33 GET /logo/missing.png
+16:34:33 GET /logo/missing.png
+16:34:35 EVENT connect {"channel": 1113, "n": 1}
+16:34:35 GET /live/test/test/113.ts
+16:35:16 EVENT client-left {"channel": 1113}
+16:35:16 GET /logo/missing.png
+16:35:16 GET /logo/missing.png
+16:35:18 GET /__stats
+16:36:01 EVENT connect {"channel": 114, "n": 1}
+16:36:01 GET /live/test/test/114.ts
+16:36:01 GET /logo/missing.png
+16:36:01 GET /logo/missing.png
+16:36:01 EVENT connect {"channel": 114, "n": 2}
+16:36:01 GET /live/test/test/114.ts
+16:36:01 EVENT client-left {"channel": 114}
+16:36:41 GET /live/test/test/114.m3u8
+16:36:41 GET /hls/seg002.ts
+16:36:41 GET /live/test/test/114.m3u8
+16:36:42 EVENT client-left {"channel": 114}
+16:36:42 GET /hls/seg003.ts
+16:36:42 GET /hls/seg004.ts
+16:36:42 GET /hls/seg005.ts
+16:36:44 GET /live/test/test/114.m3u8
+16:36:46 GET /live/test/test/114.m3u8
+16:36:46 GET /hls/seg006.ts
+16:36:51 GET /live/test/test/114.m3u8
+16:36:52 GET /hls/seg007.ts
+16:36:56 GET /live/test/test/114.m3u8
+16:36:56 GET /hls/seg008.ts
+16:37:01 GET /live/test/test/114.m3u8
+16:37:02 GET /hls/seg009.ts
+16:37:02 GET /hls/seg010.ts
+16:37:06 GET /live/test/test/114.m3u8
+16:37:07 GET /hls/seg011.ts
+16:37:11 GET /live/test/test/114.m3u8
+16:37:12 GET /hls/seg012.ts
+16:37:16 GET /live/test/test/114.m3u8
+16:37:17 GET /hls/seg013.ts
+16:37:21 GET /live/test/test/114.m3u8
+16:37:22 GET /hls/seg014.ts
+16:37:22 GET /hls/seg015.ts
+16:37:27 GET /live/test/test/114.m3u8
+16:37:27 GET /hls/seg016.ts
+16:37:29 GET /logo/missing.png
+16:37:29 GET /logo/missing.png
+16:37:32 GET /__stats
+16:38:14 EVENT connect {"channel": 115, "n": 1}
+16:38:14 GET /live/test/test/115.ts
+16:38:14 EVENT connect {"channel": 115, "n": 2}
+16:38:14 GET /live/test/test/115.ts
+16:38:15 EVENT client-left {"channel": 115}
+16:38:15 GET /logo/missing.png
+16:38:15 GET /logo/missing.png
+16:38:27 EVENT connect {"channel": 115, "n": 3}
+16:38:27 GET /live/test/test/115.ts
+16:38:31 EVENT client-left {"channel": 115}
+16:38:39 EVENT connect {"channel": 115, "n": 4}
+16:38:39 GET /live/test/test/115.ts
+16:38:46 EVENT connect {"channel": 115, "n": 5}
+16:38:46 GET /live/test/test/115.ts
+16:38:47 EVENT client-left {"channel": 115}
+16:38:47 EVENT client-left {"channel": 115}
+16:38:59 EVENT connect {"channel": 115, "n": 6}
+16:38:59 GET /live/test/test/115.ts
+16:39:03 EVENT client-left {"channel": 115}
+16:39:16 EVENT connect {"channel": 115, "n": 7}
+16:39:16 GET /live/test/test/115.ts
+16:39:18 EVENT client-left {"channel": 115}
+16:39:19 EVENT client-left {"channel": 115}
+16:39:20 EVENT connect {"channel": 115, "n": 8}
+16:39:20 GET /live/test/test/115.ts
+16:39:25 GET /live/test/test/116.ts
+16:39:26 GET /live/test/test/116.ts
+16:39:26 GET /live/test/test/116.ts
+16:39:35 EVENT client-left {"channel": 115}
+16:39:41 GET /logo/missing.png
+16:39:41 GET /logo/missing.png
+16:39:55 GET /live/test/test/206.ts
+16:39:55 GET /live/test/test/206.ts
+16:39:55 GET /live/test/test/206.ts
+16:39:56 GET /live/test/test/206.ts
+16:40:07 GET /logo/missing.png
+16:40:07 GET /logo/missing.png
+16:40:18 GET /live/test/test/201.ts
+16:40:18 GET /live/test/test/201.ts
+16:40:18 GET /logo/missing.png
+16:40:18 GET /logo/missing.png
+16:40:18 GET /live/test/test/201.ts
+16:40:19 GET /live/test/test/201.ts
+16:40:50 GET /live/test/test/204.ts
+16:40:50 GET /live/test/test/204.ts
+16:40:51 GET /live/test/test/204.ts
+16:41:02 GET /logo/missing.png
+16:41:02 GET /logo/missing.png
+16:41:15 GET /live/test/test/201.ts
+16:41:15 GET /live/test/test/201.ts
+16:41:15 GET /logo/missing.png
+16:41:15 GET /logo/missing.png
+16:41:15 GET /live/test/test/201.ts
+16:41:16 GET /live/test/test/201.ts
+16:41:41 GET /live/test/test/206.ts
+16:41:42 GET /live/test/test/206.ts
+16:41:42 GET /live/test/test/206.ts
+16:42:10 GET /logo/missing.png
+16:42:10 GET /logo/missing.png
+16:42:10 GET /logo/missing.png
+16:42:10 GET /logo/missing.png
+16:42:18 GET /logo/missing.png
+16:42:18 GET /logo/missing.png
+16:42:25 GET /logo/missing.png
+16:42:25 GET /logo/missing.png
+16:42:34 GET /player_api.php?username=test&password=test&action=get_vod_info&vod_id=5001
+16:42:43 GET /movie/test/test/5001.mp4
+16:42:43 GET /movie/test/test/5001.mp4
+16:43:26 GET /player_api.php?username=test&password=test&action=get_vod_info&vod_id=5005
+16:43:29 GET /movie/test/test/5005.mp4
+16:43:29 GET /movie/test/test/5005.mp4
+16:43:54 GET /subtitles/search/advanced?keywords=Silent+Sea&language=ar&movie_type=movie&year=2019
+16:43:54 GET /subtitles/search/advanced?keywords=Silent+Sea&language=en&movie_type=movie&year=2019
+16:43:59 GET /subtitles/sub-en-1/download?container=zip
+16:44:32 GET /player_api.php?username=test&password=test&action=get_series_info&series_id=7001
+16:44:48 GET /series/test/test/7001102.mp4
+16:44:49 GET /player_api.php?username=test&password=test&action=get_series_info&series_id=7004
