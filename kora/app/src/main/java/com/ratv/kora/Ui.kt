@@ -553,22 +553,36 @@ private fun MatchRow(m: Match, s: Schedule, now: Long, tv: Boolean, modifier: Mo
     val st = statusOf(m, now)
     val shape = RoundedCornerShape(16.dp)
     val logo = if (tv) 40.dp else 30.dp
-    Row(
+    val channels = remember(m.tv) { Channels.arab(m.tv) }
+    Column(
         modifier
             .fillMaxWidth()
             .tvClick(shape, onClick = onClick)
             .background(if (st.phase == Phase.LIVE) C.LiveRow else C.Surface)
-            .padding(horizontal = if (tv) 18.dp else 10.dp, vertical = if (tv) 10.dp else 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = if (tv) 18.dp else 10.dp, vertical = if (tv) 10.dp else 8.dp)
     ) {
-        // Right to left: home team, the score or the time, away team.
-        TeamName(home.name, TextAlign.End, tv, Modifier.weight(1f))
-        Spacer(Modifier.width(if (tv) 12.dp else 8.dp))
-        Logo(home.logo, home.name, logo)
-        Middle(m, st, tv, Modifier.width(if (tv) 132.dp else 92.dp))
-        Logo(away.logo, away.name, logo)
-        Spacer(Modifier.width(if (tv) 12.dp else 8.dp))
-        TeamName(away.name, TextAlign.Start, tv, Modifier.weight(1f))
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            // Right to left: home team, the score or the time, away team.
+            TeamName(home.name, TextAlign.End, tv, Modifier.weight(1f))
+            Spacer(Modifier.width(if (tv) 12.dp else 8.dp))
+            Logo(home.logo, home.name, logo)
+            Middle(m, st, tv, Modifier.width(if (tv) 132.dp else 92.dp))
+            Logo(away.logo, away.name, logo)
+            Spacer(Modifier.width(if (tv) 12.dp else 8.dp))
+            TeamName(away.name, TextAlign.Start, tv, Modifier.weight(1f))
+        }
+        // The channels that show it, under the match.
+        if (channels.isNotEmpty()) {
+            Text(
+                "📺  " + channels.take(3).joinToString("  ·  "),
+                style = t(if (tv) 14f else 12.5f, color = C.Text2, align = TextAlign.Center).copy(lineHeight = if (tv) 17.sp else 15.sp),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 3.dp)
+            )
+        }
     }
 }
 
@@ -729,6 +743,9 @@ private fun MatchDialog(m: Match, s: Schedule, now: Long, tv: Boolean, onWatch: 
                 listOfNotNull(m.venue, m.city).distinct().joinToString("، ").takeIf { it.isNotBlank() }?.let {
                     Text(it, style = t(14f, color = C.Text3, align = TextAlign.Center))
                 }
+                Channels.arab(m.tv).takeIf { it.isNotEmpty() }?.let {
+                    Text("📺  القنوات: " + it.joinToString("، "), style = t(16f, true, C.Text, TextAlign.Center))
+                }
                 Spacer(Modifier.height(2.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
                     if (canWatch) {
@@ -739,7 +756,7 @@ private fun MatchDialog(m: Match, s: Schedule, now: Long, tv: Boolean, onWatch: 
                     }
                 }
                 Text(
-                    if (canWatch) "يفتح RA TV ويدوّر على القنوات اللي تعرض المباراة في دليل البرامج."
+                    if (canWatch) "يفتح RA TV على القنوات اللي تعرض المباراة في اشتراكك."
                     else "المباراة خلصت.",
                     style = t(13f, color = C.Text3, align = TextAlign.Center)
                 )

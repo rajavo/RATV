@@ -75,6 +75,7 @@ import com.ratv.app.data.ScoreMatch
 import com.ratv.app.data.ScoreSchedule
 import com.ratv.app.data.ScoreTeam
 import com.ratv.app.data.Scores
+import com.ratv.app.data.SportsGuide
 import com.ratv.app.data.isCalledOff
 import com.ratv.app.i18n.I18n
 import com.ratv.app.i18n.tr
@@ -246,6 +247,13 @@ class ScoreBoardState {
     var hidden by mutableStateOf(false)
         internal set
 
+    /** The channel [match] was found for. */
+    internal var channelId: String? = null
+
+    /** With no match found: the matches this channel's brand shows now, when the sources do not say which channel. */
+    var ask by mutableStateOf<List<ScoreMatch>>(emptyList())
+        internal set
+
     internal var timeline = MatchTimeline()
 
     /** The matches a viewer may be watching now, for picking one by hand. */
@@ -284,6 +292,7 @@ fun rememberScoreBoard(enabled: Boolean, channel: Channel?, programme: Programme
             if (!wanted || s == null || ch == null) {
                 state.match = null
                 state.hidden = false
+                state.ask = emptyList()
                 return@LaunchedEffect
             }
             val now = System.currentTimeMillis()
@@ -297,12 +306,23 @@ fun rememberScoreBoard(enabled: Boolean, channel: Channel?, programme: Programme
                 else -> linked?.let { Scores.matchFor(s, it.second) }?.takeIf { showing(it) }?.let { it to "link" }
                     ?: p?.let { guideMatch(s, it) }?.takeIf { showing(it) }?.let { it to "guide" }
             }
-            if (found?.first?.id != state.match?.id) {
-                Log.i(TAG, "board on ${ch.name}: ${found?.first?.id ?: "none"} (${found?.second ?: "-"})")
+            // The match on the board stays to its final whistle on this channel, however long it runs past
+            // the programme that named it, and while it is still being played another one does not take its place.
+            val current = state.match
+            val stays = picked == null && current != null && state.channelId == ch.id && now <= current.time + 180 * MIN &&
+                current.id != found?.first?.id && state.timeline.latest.let { live ->
+                    if (found == null) live?.isOver != true || SystemClock.elapsedRealtime() - state.timeline.overAt < 12 * MIN
+                    else live?.state == "in"
+                }
+            val chosen = if (stays) current!! to state.source else found
+            if (chosen?.first?.id != state.match?.id) {
+                Log.i(TAG, "board on ${ch.name}: ${chosen?.first?.id ?: "none"} (${chosen?.second ?: "-"})")
                 state.timeline = MatchTimeline()
             }
-            state.match = found?.first
-            state.source = found?.second.orEmpty()
+            state.match = chosen?.first
+            state.source = chosen?.second.orEmpty()
+            state.channelId = ch.id
+            state.ask = if (chosen == null && picked == null) SportsGuide.brandMatches(s, ch, now) else emptyList()
             delay(30_000L)
         }
     }
