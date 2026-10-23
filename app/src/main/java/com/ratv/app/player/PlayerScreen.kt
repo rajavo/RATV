@@ -115,6 +115,8 @@ import androidx.media3.exoplayer.source.MediaLoadData
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.ratv.app.data.Channel
+import com.ratv.app.data.ChannelKey
+import com.ratv.app.data.ChannelKeys
 import com.ratv.app.data.Episode
 import com.ratv.app.data.Keys
 import com.ratv.app.data.WatchEntry
@@ -206,8 +208,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     var typedNumber by remember { mutableStateOf("") }
     var previousChannel by remember { mutableStateOf<Channel?>(null) }
     var sourcesOpen by remember { mutableStateOf(false) }
-    // The scoreboard's match picker (ScoreBoard.kt).
+    // The scoreboard's match picker (ScoreBoard.kt), and until when OK opens it straight away.
     var scorePickOpen by remember { mutableStateOf(false) }
+    var askMatchUntil by remember { mutableLongStateOf(0L) }
     var audioVersion by remember { mutableIntStateOf(0) }
     var audioTracks by remember { mutableIntStateOf(0) }
     var videoHeight by remember { mutableIntStateOf(0) }
@@ -1079,6 +1082,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val audioOptions = remember(player, audioVersion, sourcesOpen) { trackOptions(player, C.TRACK_TYPE_AUDIO) }
     val liveChannel = item?.channel
     val isSports = remember(liveChannel?.id) { liveChannel?.let { repo.isSportsChannel(it) } == true }
+    // A sports channel by its brand too ("ثمانية 2" says nothing of sport in its name or section).
+    val sportsBrand = remember(liveChannel?.name) {
+        liveChannel?.let { ch -> ChannelKeys.of(ch.name)?.let { it.brand != ChannelKey.GENERIC } } == true
+    }
     // The scoreboard of the match this channel shows, all the way through it (ScoreBoard.kt).
     val scoreBoardOn = remember { repo.prefs.scoreBoard }
     val scoreDelay = remember { repo.prefs.scoreDelay }
@@ -1086,9 +1093,18 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         enabled = scoreBoardOn && item?.isLive == true,
         channel = liveChannel,
         programme = programme,
-        isSports = isSports
+        isSports = isSports || sportsBrand
     )
     val scoreCandidates = remember(scoreBoard.schedule, now / 60_000L) { scoreBoard.candidates(System.currentTimeMillis()) }
+    // Two matches on this channel's brand at once (Thmanyah names no channel): ask once which one this channel shows.
+    val askKey = if (scoreBoard.ask.size >= 2 && scoreBoard.match == null) liveChannel?.id + ":" + scoreBoard.ask.joinToString { it.id } else ""
+    val askedFor = remember { HashSet<String>() }
+    LaunchedEffect(askKey) {
+        if (askKey.isEmpty() || !askedFor.add(askKey)) return@LaunchedEffect
+        delay(2_500L)  // after the channel's own notices
+        streamNotice = tr("أكثر من مباراة الحين على هذي القنوات: اضغط OK واختر مباراة قناتك عشان تطلع النتيجة")
+        askMatchUntil = android.os.SystemClock.elapsedRealtime() + 12_000L
+    }
     // How late the board tells the game: as far as the picture runs behind the server, and a little more
     // for the way to the server, so a goal is never on the board before it is on the screen.
     val scoreDelayHold = remember { longArrayOf(-1L) }
@@ -1275,7 +1291,15 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         }
         return when (event.key) {
             Key.DirectionCenter, Key.Enter, Key.NumPadEnter -> {
-                showControls()
+                if (live && android.os.SystemClock.elapsedRealtime() < askMatchUntil) {
+                    // Asked which match this channel shows: OK goes straight to the matches.
+                    askMatchUntil = 0L
+                    streamNotice = null
+                    touch()
+                    scorePickOpen = true
+                } else {
+                    showControls()
+                }
                 true
             }
             Key.DirectionUp -> {
@@ -1640,7 +1664,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                             },
                             onEnhance = { toggleEnhance() },
                             scoreLabel = if (item.isLive && scoreBoardOn &&
-                                (scoreBoard.match != null || scoreBoard.hidden || (isSports && scoreCandidates.isNotEmpty()))
+                                (scoreBoard.match != null || scoreBoard.hidden || ((isSports || sportsBrand) && scoreCandidates.isNotEmpty()))
                             ) {
                                 tr("لوحة النتيجة")
                             } else {

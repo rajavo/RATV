@@ -14,9 +14,26 @@ import kotlin.math.abs
  * the provider's programmes of that channel ([forChannel] reads them first).
  */
 object SportsGuide {
+    /**
+     * The matches being played on [ch]'s brand when the sources name only the brand ("Thmanyah"):
+     * more than one means nobody can tell which of them this channel shows.
+     */
+    fun brandMatches(s: ScoreSchedule, ch: Channel, now: Long): List<ScoreMatch> {
+        val k = ChannelKeys.of(ch.name) ?: return emptyList()
+        if (k.brand == ChannelKey.GENERIC) return emptyList()
+        return s.matches.filter { m ->
+            now >= m.time - 10 * MIN && now <= m.time + APART_MS && !m.status.isCalledOff() && m.state != "post" &&
+                m.tv.any { n -> ChannelKeys.of(n)?.let { it.number == null && it.family == k.family } == true }
+        }
+    }
+
     const val KEY = "ratv.guide."
     private const val MIN = 60_000L
-    private const val MATCH_MS = 115 * MIN
+    /** How long a match stays in the guide: kick-off often comes late, and half time and added time run long. */
+    private const val MATCH_MS = 140 * MIN
+
+    /** Two matches of one brand this far apart do not overlap on its channels (a match lasts under two hours). */
+    private const val APART_MS = 120 * MIN
 
     /** A match the guide knows, with the channels the schedule says show it. */
     private class Entry(val id: String?, val time: Long, val title: String, val desc: String, val tv: List<String>)
@@ -71,11 +88,10 @@ object SportsGuide {
                 if (ch.id in sports) generic.forEach { (src, e) -> if (k.shows(src)) found.add(e) }
             } else {
                 numbered[k]?.let { found.addAll(it) }
-                // A source that names only the brand ("Thmanyah"): its first channel, while that match is its only one.
-                if (k.number == null || k.number == 1) {
-                    brandOnly[k.family]?.let { list ->
-                        list.filterTo(found) { e -> list.none { o -> o !== e && abs(o.time - e.time) < MATCH_MS } }
-                    }
+                // A source that names only the brand ("Thmanyah", not which of its channels): while that match is
+                // the brand's only one, it is on the brand's channels (the viewer's "ثمانية 3" showed it).
+                brandOnly[k.family]?.let { list ->
+                    list.filterTo(found) { e -> list.none { o -> o !== e && abs(o.time - e.time) < APART_MS } }
                 }
             }
             if (found.isEmpty()) continue
