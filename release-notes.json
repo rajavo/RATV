@@ -1,20 +1,17 @@
 {
   "ar": [
-    "جديد: لوحة نتيجة فوق القنوات الرياضية طول المباراة، فيها شعار الفريقين والنتيجة الحية ووقت المباراة.",
-    "النتيجة تتأخر على قد تأخر البث عندك، فما ينحرق عليك هدف قبل ما تشوفه، ولما ينزل هدف تنوّر اللوحة.",
-    "التطبيق يعرف المباراة من دليل البرامج، وتقدر تختارها بنفسك أو تخفي اللوحة من زر «لوحة النتيجة» في المشغّل.",
-    "تقدر تطفي اللوحة أو تغيّر تأخير النتيجة من الإعدادات، في قسم «المباريات»."
+    "جديد: دليل مباريات خاص بـ RA TV يعرف أي مباراة على أي قناة رياضية (beIN والكأس وأبوظبي الرياضية وثمانية وغيرها)، حتى لو مزوّدك ما عنده دليل برامج.",
+    "لوحة النتيجة صارت تطلع على قنوات أكثر، لأنها تعرف المباراة من دليلنا.",
+    "اسم المباراة يظهر مع القناة في المشغّل وقائمة القنوات ودليل البرامج وقائمة المباريات."
   ],
   "en": [
-    "New: a scoreboard over sports channels for the whole match, with both teams' crests, the live score and the match clock.",
-    "The score waits as long as your stream runs behind, so no goal is spoiled before you see it, and the board lights up for a goal.",
-    "The app finds the match from the programme guide, and you can pick it yourself or hide the board with the “Scoreboard” button in the player.",
-    "You can turn the board off or change the score delay in the settings, under “Matches”."
+    "New: RA TV's own match guide knows which match is on which sports channel (beIN, Alkass, AD Sports, Thmanyah and more), even when your provider has no programme guide.",
+    "The scoreboard now shows on more channels, as it knows the match from our guide.",
+    "The match's name shows with the channel in the player, the channel list, the programme guide and the matches list."
   ],
   "es": [
-    "Nuevo: un marcador sobre los canales deportivos durante todo el partido, con los escudos de los dos equipos, el resultado en vivo y el tiempo de juego.",
-    "El marcador espera lo que tu emisión va retrasada, así ningún gol se destripa antes de verlo, y se ilumina cuando hay gol.",
-    "La app reconoce el partido por la guía de programación, y puedes elegirlo tú u ocultar el marcador con el botón «Marcador» del reproductor.",
-    "Puedes desactivar el marcador o cambiar su retraso en los ajustes, en «Partidos»."
+    "Nuevo: la guía de partidos propia de RA TV sabe qué partido emite cada canal deportivo (beIN, Alkass, AD Sports, Thmanyah y más), aunque tu proveedor no tenga guía de programación.",
+    "El marcador aparece ahora en más canales, porque reconoce el partido por nuestra guía.",
+    "El nombre del partido aparece con el canal en el reproductor, la lista de canales, la guía de programación y la lista de partidos."
   ]
 }

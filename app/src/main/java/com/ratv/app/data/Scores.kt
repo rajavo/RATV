@@ -51,13 +51,25 @@ class ScoreMatch(
     val home: String,
     val away: String,
     val state: String,
-    val status: String
+    val status: String,
+    /** The TV channels that show it, as Kooora names them ("beIN Sports Mena 1", "ALKASS Five"). */
+    val tv: List<String> = emptyList(),
+    val venue: String? = null
 ) {
     /** ESPN's matches have its live scores; the others (ids starting with "y") are Yallakora's. */
     val fromEspn: Boolean get() = !id.startsWith("y")
 }
 
-class ScoreSchedule(val updated: Long, val leagues: List<ScoreLeague>, val teams: Map<String, ScoreTeam>, val matches: List<ScoreMatch>) {
+/** A match of another competition on the Arab world's channels: for the guide only, it has no live score. */
+class GuideMatch(val time: Long, val home: String, val away: String, val competition: String, val tv: List<String>)
+
+class ScoreSchedule(
+    val updated: Long,
+    val leagues: List<ScoreLeague>,
+    val teams: Map<String, ScoreTeam>,
+    val matches: List<ScoreMatch>,
+    val guide: List<GuideMatch> = emptyList()
+) {
     private val leagueById = leagues.associateBy { it.id }
     private val order = leagues.withIndex().associate { it.value.id to it.index }
     private val byId = matches.associateBy { it.id }
@@ -111,7 +123,7 @@ object Scores {
     private const val DATA_URL = "https://github.com/rajavo/RATV/releases/download/kora-data/fixtures.json"
     private const val ESPN = "https://site.api.espn.com"
     private const val YALLAKORA = "https://www.yallakora.com"
-    private const val FRESH_MS = 3L * 60L * 60_000L
+    private const val FRESH_MS = 90L * 60_000L
     private const val RETRY_MS = 10L * 60_000L
     private const val MIN = 60_000L
 
@@ -126,7 +138,7 @@ object Scores {
 
     private fun cacheFile(context: Context) = File(context.filesDir, "score_fixtures.json")
 
-    /** The schedule: kept on the device, downloaded again when 3 hours old. Null when there is none yet. */
+    /** The schedule: kept on the device, downloaded again when an hour and a half old. Null when there is none yet. */
     suspend fun schedule(context: Context): ScoreSchedule? = withContext(Dispatchers.IO) {
         lock.withLock {
             val now = System.currentTimeMillis()
@@ -266,12 +278,22 @@ object Scores {
                     home = m.getString("h"),
                     away = m.getString("a"),
                     state = m.optString("st", "pre"),
-                    status = m.optString("sn")
+                    status = m.optString("sn"),
+                    tv = m.optJSONArray("tv")?.strings().orEmpty(),
+                    venue = m.optStringOrNull("v")
                 )
             )
         }
         matches.sortBy { it.time }
-        return ScoreSchedule(o.optLong("updated") * 1000L, leagues, teams, matches)
+        val guide = ArrayList<GuideMatch>()
+        o.optJSONArray("guide")?.forEachObject { g ->
+            val tv = g.optJSONArray("tv")?.strings().orEmpty()
+            val t = g.optLong("t")
+            if (tv.isNotEmpty() && t > 0L) {
+                guide.add(GuideMatch(t * 1000L, g.optString("a"), g.optString("b"), g.optString("c"), tv))
+            }
+        }
+        return ScoreSchedule(o.optLong("updated") * 1000L, leagues, teams, matches, guide)
     }
 
     /** The state of match [id] in one answer of ESPN's scoreboard, null when it is not there. */
@@ -365,6 +387,9 @@ object Scores {
     private inline fun JSONArray.forEachObject(block: (JSONObject) -> Unit) {
         for (i in 0 until length()) optJSONObject(i)?.let(block)
     }
+
+    private fun JSONArray.strings(): List<String> =
+        (0 until length()).mapNotNull { i -> optString(i).trim().takeIf { it.isNotEmpty() && it != "null" } }
 
     private fun JSONObject.optStringOrNull(key: String): String? =
         if (has(key) && !isNull(key)) optString(key).takeIf { it.isNotBlank() } else null

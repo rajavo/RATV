@@ -96,7 +96,8 @@ data class SeriesInfo(
     val seasons: List<Int> get() = episodes.keys.sorted()
 }
 
-data class Programme(val start: Long, val end: Long, val title: String, val desc: String?)
+/** A programme of the guide; [matchId] is the schedule's match when RA TV's sports guide put it there. */
+data class Programme(val start: Long, val end: Long, val title: String, val desc: String?, val matchId: String? = null)
 
 data class AccountInfo(
     val status: String?,
@@ -193,6 +194,8 @@ fun yearOf(name: String): String? = YEAR_REGEX.find(name)?.value
 fun isAdultName(name: String): Boolean = ADULT_WORD.containsMatchIn(name)
 
 fun Map<String, List<Programme>>.forChannel(ch: Channel): List<Programme> {
+    // RA TV's sports guide first: it already holds the provider's programmes of that channel too.
+    this[SportsGuide.KEY + ch.id]?.let { return it }
     val id = ch.epgId?.lowercase()?.takeIf { it.isNotBlank() } ?: return emptyList()
     return this[id] ?: emptyList()
 }
