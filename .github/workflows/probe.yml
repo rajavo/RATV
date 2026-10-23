@@ -6,10 +6,11 @@ jobs:
   probe:
     if: "!contains(github.event.head_commit.message, 'probe data')"
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - run: |
           git config user.name "RATV probe"
           git config user.email "noreply@anthropic.com"
-          python3 probe.py
+          python3 probe.py || true
+          git add out && git commit -qm "probe data [skip ci]" && git push -q origin HEAD:probe-live-scores

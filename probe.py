@@ -1,53 +1,73 @@
-import json, time, urllib.request, gzip, os, re, datetime as dt
+import gzip, json, os, re, time, urllib.request, datetime as dt
+from zoneinfo import ZoneInfo
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36"
 os.makedirs("out", exist_ok=True)
+log = open("out/log.txt", "w", encoding="utf-8")
 def get(url):
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*", "Accept-Encoding": "gzip"})
-    with urllib.request.urlopen(req, timeout=12) as r:
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "text/html,application/json,*/*", "Accept-Language": "ar,en;q=0.8", "Accept-Encoding": "gzip"})
+    with urllib.request.urlopen(req, timeout=20) as r:
         body = r.read()
         if r.headers.get("Content-Encoding") == "gzip":
             body = gzip.decompress(body)
         return r.status, dict(r.headers), body
-day = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d")
-log = open("out/log.jsonl", "w")
-leagues = ["ksa.1", "caf.champions", "qat.1", "tur.1"]
-t0 = time.time()
-n = 0
-last_push = time.time()
-while time.time() - t0 < 900:
-    for lg in leagues if n % 4 == 0 else ["ksa.1"]:
-        try:
-            st, hd, body = get("https://site.api.espn.com/apis/site/v2/sports/soccer/%s/scoreboard" % lg)
-            d = json.loads(body)
-            if n == 0:
-                open("out/scoreboard_%s.json" % lg, "wb").write(body)
-            for ev in d.get("events") or []:
-                comp = (ev.get("competitions") or [{}])[0]
-                s = comp.get("status") or ev.get("status") or {}
-                if (s.get("type") or {}).get("state") == "in" or n == 0:
-                    log.write(json.dumps({"t": round(time.time(), 1), "lg": lg, "id": ev.get("id"), "name": ev.get("shortName"),
-                        "status": s, "evstatus": ev.get("status"),
-                        "scores": [(c.get("homeAway"), c.get("score")) for c in comp.get("competitors") or []],
-                        "age": hd.get("Age"), "cache": hd.get("Cache-Control"), "bytes": len(body)}, ensure_ascii=False) + "\n")
-        except Exception as e:
-            log.write(json.dumps({"t": time.time(), "lg": lg, "error": str(e)}) + "\n")
-    if n % 4 == 0:
-        try:
-            st, hd, body = get("https://site.api.espn.com/apis/site/v2/sports/soccer/ksa.1/summary?event=401900444")
-            open("out/summary_%d.json" % n, "wb").write(body)
-        except Exception as e:
-            log.write(json.dumps({"t": time.time(), "summary_error": str(e)}) + "\n")
-        try:
-            now = dt.datetime.now(dt.timezone(dt.timedelta(hours=2)))
-            st, hd, body = get("https://www.yallakora.com/match-center/?date=%d/%d/%d" % (now.month, now.day, now.year))
-            open("out/yk_%d.html" % n, "wb").write(body)
-            log.write(json.dumps({"t": round(time.time(), 1), "yk_bytes": len(body), "yk_headers": {k: v for k, v in hd.items() if k.lower() in ("cache-control", "age", "date", "last-modified", "x-cache", "cf-cache-status", "expires")}}) + "\n")
-        except Exception as e:
-            log.write(json.dumps({"t": time.time(), "yk_error": str(e)}) + "\n")
-    log.flush()
-    n += 1
-    if time.time() - last_push > 100:
-        last_push = time.time()
-        os.system("gzip -kf out/*.html 2>/dev/null; rm -f out/*.html; git add out && git commit -qm 'probe data [skip ci]' && git push -q origin HEAD:probe-live-scores")
-    time.sleep(15)
-os.system("gzip -kf out/*.html 2>/dev/null; rm -f out/*.html; git add out && git commit -qm 'probe data [skip ci]' && git push -q origin HEAD:probe-live-scores")
+def save(name, body):
+    with gzip.open("out/" + name + ".gz", "wb") as f:
+        f.write(body)
+def ctx(text, kws, width=260, limit=6):
+    out = []
+    for kw in kws:
+        for m in list(re.finditer(kw, text))[:limit]:
+            i = m.start()
+            out.append(kw + " :: " + re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", text[max(0, i - width):i + width])))
+    return out
+cairo = dt.datetime.now(ZoneInfo("Africa/Cairo"))
+day_url = "https://www.yallakora.com/match-center/?date=%d/%d/%d" % (cairo.month, cairo.day, cairo.year)
+st, hd, body = get(day_url)
+html = body.decode("utf-8", "replace")
+save("yk_day.html", body)
+cards = []
+for block in re.split(r'<div class="\d+ matchCard matchesList">', html)[1:]:
+    tour = re.search(r'<img src="[^"]*" alt="([^"]*)" enName="([^"]*)"', block)
+    for card in block.split('liveScoreMatchId="')[1:]:
+        mid = card[:card.find('"')]
+        href = re.search(r'<a href="([^"#]+)', card)
+        names = [n.strip() for n in re.findall(r"<p>\s*([^<]+?)\s*</p>", card)][:2]
+        when = re.search(r'<span class="time">\s*([^<]*?)\s*</span>', card)
+        cards.append({"id": mid, "href": href.group(1) if href else "", "names": names, "tour": tour.group(2) if tour else "", "tour_ar": tour.group(1) if tour else "", "time": when.group(1) if when else ""})
+log.write("cards: %d\n" % len(cards))
+json.dump(cards, open("out/cards.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+pref = ["ksa", "qatar", "epl", "la-liga", "uae", "serie", "bundes", "ligue", "egypt", "afc", "african", "uefa"]
+cards.sort(key=lambda c: next((i for i, p in enumerate(pref) if p in c["tour"].lower()), 99))
+found = {}
+for c in cards[:28]:
+    if not c["href"]:
+        continue
+    url = "https://www.yallakora.com" + c["href"]
+    try:
+        st, hd, body = get(url)
+        page = body.decode("utf-8", "replace")
+        if len(found) < 6:
+            save("yk_match_%s.html" % c["id"], body)
+        hits = ctx(page, ["القناة", "المعلق", "قناة", "beIN", "SSC", "Alkass", "الكأس", "AD Sports", "أبوظبي", "channel"], 200, 3)
+        found[c["id"]] = {"card": c, "bytes": len(body), "hits": hits}
+        log.write("== %s %s %s | %s\n" % (c["id"], c["tour"], " x ".join(c["names"]), url))
+        for h in hits[:12]:
+            log.write("   " + h[:500] + "\n")
+    except Exception as e:
+        log.write("!! %s %s\n" % (url, e))
+    time.sleep(0.5)
+json.dump(found, open("out/match_pages.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+for name, url in [("bein_tvguide_ar", "https://www.beinsports.com/ar-mena/tv-guide"),
+                  ("bein_tvguide_en", "https://www.beinsports.com/en-mena/tv-guide"),
+                  ("filgoal_day", "https://www.filgoal.com/matches/?date=%s" % cairo.strftime("%Y-%m-%d")),
+                  ("kooora_day", "https://www.kooora.com/?region=-1&area=0")]:
+    try:
+        st, hd, body = get(url)
+        save(name + ".html", body)
+        page = body.decode("utf-8", "replace")
+        log.write("== %s %s %d bytes\n" % (name, st, len(body)))
+        for h in ctx(page, ["beIN SPORTS", "beIN Sports", "القناة", "SSC", "__NEXT_DATA__", "api/", "channel"], 200, 3)[:14]:
+            log.write("   " + h[:500] + "\n")
+    except Exception as e:
+        log.write("!! %s %s\n" % (name, e))
+log.close()
