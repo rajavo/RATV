@@ -660,6 +660,9 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_live_unstable(os.path.join(MEDIA, "live.ts"))
         if p.startswith("/live/"):
             name = "live_multi.ts" if os.path.basename(p).startswith("201.") else "live.ts"
+            # Racing SD (its name says so) and Kids Fun (its name says nothing) are weak SD channels.
+            if os.path.basename(p).split(".")[0] in ("203", "301") and os.path.exists(os.path.join(MEDIA, "live_sd.ts")):
+                name = "live_sd.ts"
             return self.send_file(os.path.join(MEDIA, name), "video/mp2t")
         if p.startswith("/movie/") or p.startswith("/series/"):
             return self.send_file(os.path.join(MEDIA, "movie.mp4"), "video/mp4")

@@ -344,6 +344,92 @@ def t_settings_deep():
     deep_settings_and_back(NAV, "ar")
 
 
+def controls_texts(tag):
+    """OK shows the player's controls; returns what they say."""
+    key("DPAD_CENTER", pause=1.5)
+    root = S.dump(tag)
+    return S.all_texts(root)
+
+
+def enhance_log():
+    out = S.shell("logcat -d -s RATVEnhance:I")
+    lines = [l for l in out.splitlines() if "RATVEnhance" in l]
+    for l in lines[-8:]:
+        S.log("  " + l.strip())
+    return "\n".join(lines)
+
+
+def t_enhance():
+    """Smart picture enhancement: turned on in the settings, then on two weak SD channels (one known
+    by its name, one by the size of its picture), then off again from the player's own button (the
+    same SD picture both ways, to compare)."""
+    S.shell("logcat -c")
+    S.shell("setprop debug.ratv.enhancekeep 1")  # the emulator draws in software: keep it on for the pictures
+    try:
+        go_tab("حسابي")
+        time.sleep(2)
+        found = None
+        for _ in range(30):
+            _, f = log_focus("enhance-setting")
+            if f and "تحسين الصورة الذكي" in f:
+                found = f
+                break
+            key("DPAD_DOWN", pause=0.6)
+        expect(found, "no picture enhancement row in the settings")
+        key("DPAD_CENTER", pause=1.5)
+        S.shot("enhance-setting")
+        go_tab("الرئيسية", tries=40)
+        f = focus_home_item("شاهد الآن", "enhance-hero")
+        expect(f and "شاهد الآن" in f, "watch-now not focused (focus: %s)" % f)
+        key("DPAD_CENTER", pause=8)
+        # Kids Fun (7): its name says nothing; its 720x576 picture is seen and enhanced before it shows.
+        # (The digits reach the player with or without its controls up.)
+        S.shell("input keyevent KEYCODE_7")
+        time.sleep(12)
+        S.shot("enhance-kids")
+        texts = controls_texts("enhance-kids")
+        S.shot("enhance-kids-controls")
+        expect("Kids Fun" in texts, "the 7 key did not open Kids Fun: %s" % texts[:300])
+        expect("تحسين الصورة: يعمل" in texts, "Kids Fun (SD) is not enhanced: %s" % texts[:300])
+        # Racing SD (6): enhanced from the start, by its name.
+        time.sleep(5)  # the controls go by themselves
+        S.shell("input keyevent KEYCODE_6")
+        time.sleep(10)
+        S.shot("enhance-racing")
+        texts = controls_texts("enhance-racing")
+        S.shot("enhance-racing-controls")
+        expect("Racing SD" in texts, "the 6 key did not open Racing SD: %s" % texts[:300])
+        expect("تحسين الصورة: يعمل" in texts, "Racing SD is not enhanced: %s" % texts[:300])
+        log = enhance_log()
+        expect("(enhanced)" in log, "the enhancement never drew a picture")
+        expect("failed on this device" not in log, "the enhancement failed: " + log[-400:])
+        # Off from the player's button: the same picture without the enhancement.
+        time.sleep(5)  # the controls go by themselves; OK brings them back with the remote on play/pause
+        key("DPAD_CENTER", pause=1.2)
+        key("DPAD_DOWN", pause=0.8)
+        pill = None
+        for direction in ["DPAD_LEFT"] * 6 + ["DPAD_RIGHT"] * 12:
+            _, f = log_focus("enhance-pill")
+            if f and "تحسين الصورة" in f:
+                pill = f
+                break
+            key(direction, pause=0.6)
+        S.shot("enhance-pill")
+        expect(pill, "no enhance button in the player's controls")
+        key("DPAD_CENTER", pause=12)
+        S.shot("enhance-off")
+        texts = controls_texts("enhance-off")
+        expect("تحسين الصورة: يعمل" not in texts and "تحسين الصورة" in texts, "the button did not turn the enhancement off: %s" % texts[:300])
+        expect("Racing SD" in texts, "the channel did not stay on after the switch: %s" % texts[:300])
+    finally:
+        S.shell("setprop debug.ratv.enhancekeep ''")
+        for _ in range(4):
+            key("BACK", pause=1.5)
+            _, n = S.wait_for(timeout=4, text="الرئيسية")
+            if n is not None:
+                break
+
+
 def t_languages():
     """The interface in English and in Spanish (chosen for the test with debug.ratv.lang), then Arabic again."""
     try:
@@ -399,6 +485,7 @@ if __name__ == "__main__":
         ("match-link", t_match_link),
         ("settings", t_settings),
         ("settings-deep", t_settings_deep),
+        ("enhance", t_enhance),
         ("languages", t_languages),
     ]:
         S.step(name, fn)
