@@ -359,12 +359,29 @@ def enhance_log():
     return "\n".join(lines)
 
 
+def press_enhance_pill(tag):
+    """With the player showing: brings its controls up, goes to the enhance button and presses it.
+    Returns what the button said before."""
+    time.sleep(5)  # the controls go by themselves; OK brings them back with the remote on play/pause
+    key("DPAD_CENTER", pause=1.2)
+    key("DPAD_DOWN", pause=0.8)
+    for direction in ["DPAD_LEFT"] * 6 + ["DPAD_RIGHT"] * 12:
+        _, f = log_focus(tag)
+        if f and "تحسين الصورة" in f:
+            key("DPAD_CENTER", pause=1)
+            return f
+        key(direction, pause=0.6)
+    S.shot(tag)
+    raise RuntimeError("no enhance button in the player's controls (%s)" % tag)
+
+
 def t_enhance():
     """Smart picture enhancement: turned on in the settings, then on two weak SD channels (one known
-    by its name, one by the size of its picture), then off again from the player's own button (the
-    same SD picture both ways, to compare)."""
+    by its name, one by the size of its picture); off from the player's own button (the same SD
+    picture both ways, to compare); the light strength of weaker chips; and, on this emulator that
+    draws in software (far too slow for it), stepping down by itself while the channel goes on."""
     S.shell("logcat -c")
-    S.shell("setprop debug.ratv.enhancekeep 1")  # the emulator draws in software: keep it on for the pictures
+    S.shell("setprop debug.ratv.enhancekeep 1")  # keep it on for the pictures, whatever the speed
     try:
         go_tab("حسابي")
         time.sleep(2)
@@ -401,51 +418,46 @@ def t_enhance():
         expect("Racing SD" in texts, "the 6 key did not open Racing SD: %s" % texts[:300])
         expect("تحسين الصورة: يعمل" in texts, "Racing SD is not enhanced: %s" % texts[:300])
         log = enhance_log()
-        expect("(enhanced)" in log, "the enhancement never drew a picture")
-        expect("failed on this device" not in log, "the enhancement failed: " + log[-400:])
+        expect("(enhanced)" in log, "the full enhancement never drew a picture")
+        expect("came out black" not in log, "the enhanced picture came out black: " + log[-400:])
         # Off from the player's button: the same picture without the enhancement.
-        time.sleep(5)  # the controls go by themselves; OK brings them back with the remote on play/pause
-        key("DPAD_CENTER", pause=1.2)
-        key("DPAD_DOWN", pause=0.8)
-        pill = None
-        for direction in ["DPAD_LEFT"] * 6 + ["DPAD_RIGHT"] * 12:
-            _, f = log_focus("enhance-pill")
-            if f and "تحسين الصورة" in f:
-                pill = f
-                break
-            key(direction, pause=0.6)
-        S.shot("enhance-pill")
-        expect(pill, "no enhance button in the player's controls")
-        key("DPAD_CENTER", pause=12)
+        pill = press_enhance_pill("enhance-pill")
+        expect("يعمل" in pill, "the button did not say the enhancement was on: %s" % pill)
+        time.sleep(11)
         S.shot("enhance-off")
         texts = controls_texts("enhance-off")
         expect("تحسين الصورة: يعمل" not in texts and "تحسين الصورة" in texts, "the button did not turn the enhancement off: %s" % texts[:300])
         expect("Racing SD" in texts, "the channel did not stay on after the switch: %s" % texts[:300])
         expect("trying HLS" not in S.shell("logcat -d -s RATVPlayback:I"), "stalls from the enhancement were taken for a weak line (switched to HLS)")
-        # The safety: this emulator draws in software, far too slowly for the enhancement. Without the
-        # test's "keep" switch the app must notice by itself, turn it off, and go on playing.
-        S.shell("setprop debug.ratv.enhancekeep ''")
-        time.sleep(5)
-        key("DPAD_CENTER", pause=1.2)
-        key("DPAD_DOWN", pause=0.8)
-        pill = None
-        for direction in ["DPAD_LEFT"] * 6 + ["DPAD_RIGHT"] * 12:
-            _, f = log_focus("enhance-pill-2")
-            if f and "تحسين الصورة" in f:
-                pill = f
-                break
-            key(direction, pause=0.6)
-        expect(pill, "no enhance button the second time")
-        key("DPAD_CENTER", pause=25)
-        S.shot("enhance-auto-off")
+        # The light strength, as weaker chips get it (Mali 400 series and the like).
+        S.shell("setprop debug.ratv.enhancegpu weak")
+        press_enhance_pill("enhance-pill-light")
+        time.sleep(11)
+        S.shot("enhance-light")
+        texts = controls_texts("enhance-light")
+        S.shot("enhance-light-controls")
         log = enhance_log()
-        texts = controls_texts("enhance-auto-off")
-        S.shot("enhance-auto-off-controls")
-        expect("falls behind" in log and "off for pictures this heavy" in log, "the enhancement did not turn itself off on a device too slow for it")
-        expect("تحسين الصورة: يعمل" not in texts, "the enhancement is still on after falling behind: %s" % texts[:300])
+        expect("(light)" in log, "the light enhancement never drew a picture")
+        expect("تحسين الصورة: يعمل" in texts, "the light enhancement is not on: %s" % texts[:300])
+        expect("came out black" not in log, "the light picture came out black: " + log[-400:])
+        # The safety: without the test's switches the app must find this emulator too slow for the full
+        # strength, step down by itself (to light, or off if light is too slow as well), and play on.
+        S.shell("setprop debug.ratv.enhancegpu ''")
+        S.shell("setprop debug.ratv.enhancekeep ''")
+        press_enhance_pill("enhance-pill-off2")   # off
+        time.sleep(6)
+        press_enhance_pill("enhance-pill-on2")    # on again: from the full strength
+        time.sleep(28)
+        S.shot("enhance-auto")
+        log = enhance_log()
+        texts = controls_texts("enhance-auto")
+        S.shot("enhance-auto-controls")
+        expect("full enhancement does not work out" in log, "the full enhancement did not step down on a device too slow for it")
         expect("Racing SD" in texts, "the channel did not go on playing: %s" % texts[:300])
+        S.log("after stepping down: " + ("still on (light)" if "تحسين الصورة: يعمل" in texts else "off"))
     finally:
         S.shell("setprop debug.ratv.enhancekeep ''")
+        S.shell("setprop debug.ratv.enhancegpu ''")
         for _ in range(4):
             key("BACK", pause=1.5)
             _, n = S.wait_for(timeout=4, text="الرئيسية")
