@@ -10,6 +10,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -50,6 +51,12 @@ class Repository(private val context: Context, val prefs: Prefs) {
 
     private val _epg = MutableStateFlow<Map<String, List<Programme>>>(emptyMap())
     val epg: StateFlow<Map<String, List<Programme>>> = _epg.asStateFlow()
+
+    // The guide is the provider's, with RA TV's own guide of the sports channels over it (SportsGuide).
+    @Volatile private var providerEpg: Map<String, List<Programme>> = emptyMap()
+    @Volatile private var sportsGuide: Map<String, List<Programme>> = emptyMap()
+    @Volatile private var guideSchedule: ScoreSchedule? = null
+    private val guideLock = Any()
 
     private val _epgLoading = MutableStateFlow(false)
     val epgLoading: StateFlow<Boolean> = _epgLoading.asStateFlow()
@@ -379,7 +386,10 @@ class Repository(private val context: Context, val prefs: Prefs) {
             val file = fetch(p, "epg.xml", url, force, ttl)
             val now = System.currentTimeMillis()
             val map = Http.openMaybeGzip(file).use { EpgParser.parse(it, wanted, now - 3 * HOUR, now + 2 * DAY) }
-            if (_playlist.value?.id == p.id) _epg.value = map
+            if (_playlist.value?.id == p.id) {
+                providerEpg = map
+                rebuildSportsGuide()
+            }
         } catch (e: Exception) {
             // The guide is optional; keep whatever we had.
         } finally {
@@ -425,7 +435,11 @@ class Repository(private val context: Context, val prefs: Prefs) {
         setSeries(emptyList())
         m3uEpisodes = emptyMap()
         m3uEpgUrl = null
-        _epg.value = emptyMap()
+        synchronized(guideLock) {
+            providerEpg = emptyMap()
+            sportsGuide = emptyMap()
+            _epg.value = emptyMap()
+        }
         movieInfoCache.clear()
         seriesInfoCache.clear()
     }
@@ -435,6 +449,47 @@ class Repository(private val context: Context, val prefs: Prefs) {
         channelIndex = unique.associateBy { it.id }
         siblingIndex = unique.groupBy { channelKey(it.name) }.filterValues { it.size > 1 }
         _channels.value = unique
+        if (unique.isNotEmpty()) refreshSportsGuide() else rebuildSportsGuide()
+    }
+
+    // ------------------------------------------------ RA TV's guide of the sports channels
+
+    /** Reads the schedule again (downloaded when an hour and a half old) and puts its matches on the channels. */
+    fun refreshSportsGuide() {
+        scope.launch(Dispatchers.Default) {
+            Scores.schedule(context)?.let { guideSchedule = it }
+            rebuildSportsGuide()
+        }
+    }
+
+    private fun rebuildSportsGuide() = synchronized(guideLock) {
+        val s = guideSchedule
+        val list = _channels.value
+        val built = if (s == null || list.isEmpty()) {
+            emptyMap()
+        } else {
+            val sportCats = _liveCats.value.filter { looksSports(it.name) }.mapTo(HashSet()) { it.id }
+            val sports = list.filter { it.categoryId in sportCats || looksSports(it.name) }.mapTo(HashSet()) { it.id }
+            try {
+                SportsGuide.build(s, list, sports, providerEpg, System.currentTimeMillis(), com.ratv.app.i18n.I18n.lang == "ar")
+            } catch (e: Exception) {
+                android.util.Log.w("RATVGuide", "sports guide failed", e)
+                emptyMap()
+            }
+        }
+        sportsGuide = built
+        _epg.value = if (built.isEmpty()) providerEpg else providerEpg + built
+        if (built.isNotEmpty()) android.util.Log.i("RATVGuide", "sports guide: ${built.size} channels")
+    }
+
+    init {
+        // The matches move on (and the schedule gets their channels every 3 hours): look again every 20 minutes.
+        scope.launch {
+            while (true) {
+                delay(20 * 60_000L)
+                if (_channels.value.isNotEmpty()) refreshSportsGuide()
+            }
+        }
     }
 
     private fun setMovies(list: List<Movie>) {

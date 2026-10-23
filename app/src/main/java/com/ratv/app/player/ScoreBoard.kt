@@ -343,7 +343,9 @@ fun rememberScoreBoard(enabled: Boolean, channel: Channel?, programme: Programme
 
 /** The match a programme shows: named in its title, or else in its description ("الدوري الإنجليزي" over "ليفربول × أرسنال"). */
 private fun guideMatch(s: ScoreSchedule, p: Programme): ScoreMatch? =
-    Scores.matchFor(s, p.title, p.start, p.end)
+    // Put there by RA TV's own sports guide: its very match.
+    p.matchId?.let { s.match(it) }
+        ?: Scores.matchFor(s, p.title, p.start, p.end)
         ?: p.desc?.takeIf { it.isNotBlank() }?.let { Scores.matchFor(s, p.title + " " + it.take(240), p.start, p.end) }
 
 /** What the board shows at [at] (elapsed realtime, already moved back by the delay), null for nothing. */

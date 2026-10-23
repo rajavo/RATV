@@ -13,6 +13,7 @@ empties the schedule.
 """
 import concurrent.futures
 import datetime as dt
+import difflib
 import json
 import os
 import re
@@ -365,6 +366,109 @@ def learn_names(matches, teams, cards):
     return learned
 
 
+# ------------------------------------------------------------------ Kooora: the channels that show each match
+
+# Today's matches with the TV channels showing them ("beIN Sports Mena 1", "ALKASS Five", "Thmanyah"…),
+# for RA TV's own guide of the sports channels: a channel whose provider guide says nothing still
+# shows the match it carries, and its scoreboard. The page is today's by the clock of the machine
+# asking (New York's on GitHub), which covers the matches of the Gulf's day.
+KOOORA_URL = "https://www.kooora.com/%D9%83%D8%B1%D8%A9-%D8%A7%D9%84%D9%82%D8%AF%D9%85/%D9%85%D8%A8%D8%A7%D8%B1%D9%8A%D8%A7%D8%AA-%D8%A7%D9%84%D9%8A%D9%88%D9%85"
+
+
+def kooora_day():
+    try:
+        html = get(KOOORA_URL, ua=BROWSER)[2].decode("utf-8", "replace")
+    except Exception as e:
+        return "error", "%s: %s" % (type(e).__name__, e)
+    m = re.search(r'<script id="__NEXT_DATA__" type="application/json"[^>]*>(.*?)</script>', html, re.S)
+    if not m:
+        return "error", "no match data in the page"
+    try:
+        data = (json.loads(m.group(1)).get("props") or {}).get("pageProps", {}).get("data") or []
+    except ValueError as e:
+        return "error", "unreadable match data: %s" % e
+    out = []
+    for block in data:
+        comp = (block.get("competition") or {}).get("name") or ""
+        for mt in block.get("matches") or []:
+            tv = [c.get("name").strip() for c in (mt.get("tvChannels") or []) if (c.get("name") or "").strip()]
+            t = ts(mt.get("startDate"))
+            a = ((mt.get("teamA") or {}).get("name") or "").strip()
+            b = ((mt.get("teamB") or {}).get("name") or "").strip()
+            if tv and t and a and b:
+                out.append({"t": t, "a": a, "b": b, "comp": comp, "tv": tv,
+                            "la": ((mt.get("teamA") or {}).get("image") or {}).get("url") or "",
+                            "lb": ((mt.get("teamB") or {}).get("image") or {}).get("url") or ""})
+    return "ok", out
+
+
+# The Arab world's sports channels: the matches of other competitions on them still go in RA TV's
+# guide (without a scoreboard, as nothing gives their live score).
+ARAB_CHANNEL = re.compile(r"bein|alkass|al kass|ssc|thmanyah|ad sport|abu dhabi|dubai sport|sharjah|ktv|oman sport|"
+                          r"bahrain sport|iraqiya|on time sport|الشارقة|الكأس|ثمانية|أبوظبي|دبي|الرابعة", re.I)
+
+
+def name_key(s):
+    """A team name folded for comparing spellings (نوتنجهام فوريست / نوتنغهام فورست)."""
+    s = re.sub("[\u064B-\u065F\u0670\u0640]", "", (s or "").lower())
+    for a, b in (("أ", "ا"), ("إ", "ا"), ("آ", "ا"), ("ة", "ه"), ("ى", "ي"), ("غ", "ج"), ("ڤ", "ف"), ("ؤ", "و"), ("ئ", "ي")):
+        s = s.replace(a, b)
+    words = [w[2:] if w.startswith("ال") and len(w) > 3 else w for w in re.split(r"[\s\-.']+", s) if w]
+    return "".join(words)
+
+
+def name_sim(a, b):
+    ka, kb = name_key(a), name_key(b)
+    if not ka or not kb:
+        return 0.0
+    if len(ka) >= 3 and len(kb) >= 3 and (ka in kb or kb in ka):
+        return 0.95
+    return difflib.SequenceMatcher(None, ka, kb).ratio()
+
+
+def attach_tv(matches, teams, kooora):
+    """Puts Kooora's channels on the same matches of the schedule: same kick-off (10 minutes), both teams alike."""
+    by_minute = {}
+    for m in matches.values():
+        by_minute.setdefault(m["t"] // 60, []).append(m)
+    attached, unmatched = 0, []
+    for k in kooora:
+        best, score = None, 0.0
+        for d in range(-10, 11):
+            for m in by_minute.get(k["t"] // 60 + d, []):
+                h, a = teams.get(m["h"]) or {}, teams.get(m["a"]) or {}
+                hn = [h.get("ar") or "", h.get("en") or ""]
+                an = [a.get("ar") or "", a.get("en") or ""]
+                # One team as good as the same name, the other at least alike (ملقا / مالاجا), either way round.
+                for x, y in (
+                    (max(name_sim(k["a"], n) for n in hn), max(name_sim(k["b"], n) for n in an)),
+                    (max(name_sim(k["b"], n) for n in hn), max(name_sim(k["a"], n) for n in an)),
+                ):
+                    if max(x, y) < 0.85 or min(x, y) < 0.35:
+                        continue
+                    s = x + y - abs(d) * 0.01
+                    if s > score:
+                        best, score = m, s
+        if best is not None:
+            best["tv"] = list(dict.fromkeys((best.get("tv") or []) + k["tv"]))
+            attached += 1
+        else:
+            unmatched.append(k)
+    return attached, unmatched
+
+
+def guide_extras(unmatched, previous, now):
+    """Matches outside the schedule shown on the Arab world's channels, for the guide only."""
+    out = [{"t": k["t"], "a": k["a"], "b": k["b"], "c": k["comp"], "tv": k["tv"], "la": k["la"], "lb": k["lb"]}
+           for k in unmatched if any(ARAB_CHANNEL.search(n) for n in k["tv"])]
+    seen = {(g["t"], g["a"]) for g in out}
+    for g in (previous or {}).get("guide") or []:
+        if g.get("t", 0) >= now - 3 * 3600 and (g.get("t"), g.get("a")) not in seen:
+            out.append(g)
+    out.sort(key=lambda g: g["t"])
+    return out
+
+
 # ------------------------------------------------------------------ checks for the report
 
 def discover_leagues():
@@ -418,6 +522,7 @@ def main():
     yk_pages = {}
     with concurrent.futures.ThreadPoolExecutor(WORKERS) as pool:
         yk_jobs = {pool.submit(yk_day, d): d for d in days} if yk_leagues else {}
+        kooora_job = pool.submit(kooora_day)
         # First today's request of every league: a league ESPN does not know is not asked again.
         first = {pool.submit(fetch_day, lg["id"], today): lg["id"] for lg in leagues}
         for f in concurrent.futures.as_completed(first):
@@ -484,6 +589,20 @@ def main():
         except Exception as e:
             yk_errors.append("%s parse: %r" % (day, e))
     learned = learn_names(matches, teams, yk_all)
+
+    # The channels of today's matches, from Kooora; the ones found before stay for the others.
+    k_state, k_payload = kooora_job.result()
+    tv_attached, tv_unmatched = (attach_tv(matches, teams, k_payload) if k_state == "ok" else (0, []))
+    extras = guide_extras(tv_unmatched, previous, int(time.time()))
+    if k_state != "ok":
+        errors.append("kooora " + k_payload)
+    kept_tv = 0
+    if previous:
+        old_tv = {str(m.get("id")): m.get("tv") for m in previous.get("matches") or [] if m.get("tv")}
+        for m in matches.values():
+            if not m.get("tv") and m["id"] in old_tv:
+                m["tv"] = old_tv[m["id"]]
+                kept_tv += 1
     if yk_leagues and (yk_errors or yk_count == 0):
         failed_leagues.update(lg["id"] for lg in yk_leagues)
     errors.extend("yallakora " + e for e in yk_errors)
@@ -537,6 +656,7 @@ def main():
         "leagues": league_out,
         "teams": team_out,
         "matches": match_list,
+        "guide": extras,
     }
     with open(os.path.join(out_dir, "fixtures.json"), "w", encoding="utf-8") as f:
         json.dump(fixtures, f, ensure_ascii=False, separators=(",", ":"))
@@ -589,6 +709,11 @@ def main():
         "yallakora": {"pages": len(yk_pages), "matches": yk_count, "errors": yk_errors[:10],
                       "competitions": sorted({"%s | %s" % (c["tour_en"], c["tour_ar"]) for c in yk_all})},
         "learned_names": {tid: {"en": teams[tid]["en"], "ar": ar} for tid, ar in learned.items()},
+        "tv": {"kooora": k_state, "kooora_matches": len(k_payload) if k_state == "ok" else 0, "attached": tv_attached,
+               "kept_from_previous": kept_tv, "matches_with_tv": sum(1 for m in match_list if m.get("tv")),
+               "guide_only": len(extras),
+               "unmatched": ["%s %s × %s (%s) %s" % (dt.datetime.fromtimestamp(k["t"], dt.timezone.utc).strftime("%H:%M"), k["a"], k["b"],
+                                                    k["comp"], ", ".join(k["tv"][:3])) for k in tv_unmatched[:80]]},
         "espn_leagues": discover_leagues(),
         "teams": sorted(({"id": tid, "en": t["en"], "ar": t.get("ar"), "leagues": sorted(t["leagues"])}
                          for tid, t in teams.items()), key=lambda x: (x["leagues"], x["en"])),
@@ -599,6 +724,8 @@ def main():
     print("matches: %d, teams: %d (no Arabic name: %d), requests: %d, errors: %d, kept: %d, %.0f s" % (
         len(match_list), len(team_out), len(report["teams_without_arabic"]), len(results), len(errors), kept,
         time.time() - started))
+    print("channels: Kooora %s, %d matches with channels there, %d put on the schedule, %d kept from before, %d for the guide only" % (
+        k_state, report["tv"]["kooora_matches"], tv_attached, kept_tv, len(extras)))
     for lg in per_league:
         print("  %-22s %-8s %3d matches %s" % (lg["id"], lg["status"], lg["matches"], lg["why"]))
     if not match_list:

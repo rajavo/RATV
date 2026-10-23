@@ -78,8 +78,10 @@ fun findMatch(req: MatchRequest, channels: List<Channel>, epg: Map<String, List<
     for (ch in channels) {
         for (p in epg.forChannel(ch)) {
             if (abs(p.start - req.start) > WINDOW_MS) continue
+            // RA TV's sports guide names the very match; otherwise both teams in the title.
+            val sameMatch = req.id.isNotBlank() && p.matchId == req.id
             val t = tokens.getOrPut(p.title) { eventTokens(p.title) }
-            if (t.none { it in home } || t.none { it in away }) continue
+            if (!sameMatch && (t.none { it in home } || t.none { it in away })) continue
             found.putIfAbsent(ch.id, ch)
             start = minOf(start, p.start)
             end = maxOf(end, p.end)
