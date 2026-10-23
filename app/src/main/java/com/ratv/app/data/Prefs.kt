@@ -264,6 +264,16 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("enhance", false)
         set(value) = sp.edit().putBoolean("enhance", value).apply()
 
+    /** The scoreboard over a sports channel while it shows a match (ScoreBoard.kt). */
+    var scoreBoard: Boolean
+        get() = sp.getBoolean("scoreBoard", true)
+        set(value) = sp.edit().putBoolean("scoreBoard", value).apply()
+
+    /** How late the scoreboard tells the score: seconds, or -1 for as late as the picture runs behind. */
+    var scoreDelay: Int
+        get() = sp.getInt("scoreDelay", -1)
+        set(value) = sp.edit().putInt("scoreDelay", value).apply()
+
     /** The device's graphics could not run the enhancement: it stays off until turned on again. */
     var enhanceBroken: Boolean
         get() = sp.getBoolean("enhanceBroken", false)

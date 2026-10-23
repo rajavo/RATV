@@ -135,7 +135,10 @@ fun FindMatchScreen(nav: Navigator) {
                             ch,
                             epg.forChannel(ch).current(now)?.title,
                             if (ch.id == firstId) Modifier.focusRequester(first) else Modifier
-                        ) { nav.playLive(ch.id) }
+                        ) {
+                            MatchLinks.watching = ch.id to r
+                            nav.playLive(ch.id)
+                        }
                     }
                 }
             }
@@ -146,7 +149,10 @@ fun FindMatchScreen(nav: Navigator) {
                         Text(tr("قنوات الرياضة في اشتراكك"), style = T.body(15.sp, FontWeight.Bold), modifier = Modifier.padding(top = 6.dp))
                     }
                     items(sports, key = { it.id }) { ch ->
-                        ChannelLine(ch, epg.forChannel(ch).current(now)?.title, Modifier) { nav.playLive(ch.id) }
+                        ChannelLine(ch, epg.forChannel(ch).current(now)?.title, Modifier) {
+                            MatchLinks.watching = ch.id to r
+                            nav.playLive(ch.id)
+                        }
                     }
                 }
             }

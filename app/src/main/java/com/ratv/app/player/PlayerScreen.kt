@@ -206,6 +206,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     var typedNumber by remember { mutableStateOf("") }
     var previousChannel by remember { mutableStateOf<Channel?>(null) }
     var sourcesOpen by remember { mutableStateOf(false) }
+    // The scoreboard's match picker (ScoreBoard.kt).
+    var scorePickOpen by remember { mutableStateOf(false) }
     var audioVersion by remember { mutableIntStateOf(0) }
     var audioTracks by remember { mutableIntStateOf(0) }
     var videoHeight by remember { mutableIntStateOf(0) }
@@ -333,6 +335,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         panelOpen = false
         sourcesOpen = false
         subsOpen = false
+        scorePickOpen = false
         reconnectAttempts = 0
         reconnecting = false
         videoHeight = 0
@@ -1022,8 +1025,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // ------------------------------------------------------- behaviour
-    LaunchedEffect(controlsVisible, isPlaying, lastTouch, panelOpen, showTracks, sourcesOpen, subsOpen) {
-        if (controlsVisible && isPlaying && !panelOpen && !showTracks && !sourcesOpen && !subsOpen) {
+    LaunchedEffect(controlsVisible, isPlaying, lastTouch, panelOpen, showTracks, sourcesOpen, subsOpen, scorePickOpen) {
+        if (controlsVisible && isPlaying && !panelOpen && !showTracks && !sourcesOpen && !subsOpen && !scorePickOpen) {
             delay(4_000L)
             controlsVisible = false
         }
@@ -1054,11 +1057,12 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     BackHandler(enabled = locked) { locked = false }
-    BackHandler(enabled = !locked && (panelOpen || showTracks || sourcesOpen || subsOpen)) {
+    BackHandler(enabled = !locked && (panelOpen || showTracks || sourcesOpen || subsOpen || scorePickOpen)) {
         panelOpen = false
         showTracks = false
         sourcesOpen = false
         subsOpen = false
+        scorePickOpen = false
     }
 
     val zapList = remember(item?.channel?.categoryId, channels) {
@@ -1075,6 +1079,32 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val audioOptions = remember(player, audioVersion, sourcesOpen) { trackOptions(player, C.TRACK_TYPE_AUDIO) }
     val liveChannel = item?.channel
     val isSports = remember(liveChannel?.id) { liveChannel?.let { repo.isSportsChannel(it) } == true }
+    // The scoreboard of the match this channel shows, all the way through it (ScoreBoard.kt).
+    val scoreBoardOn = remember { repo.prefs.scoreBoard }
+    val scoreDelay = remember { repo.prefs.scoreDelay }
+    val scoreBoard = rememberScoreBoard(
+        enabled = scoreBoardOn && item?.isLive == true,
+        channel = liveChannel,
+        programme = programme,
+        isSports = isSports
+    )
+    val scoreCandidates = remember(scoreBoard.schedule, now / 60_000L) { scoreBoard.candidates(System.currentTimeMillis()) }
+    // How late the board tells the game: as far as the picture runs behind the server, and a little more
+    // for the way to the server, so a goal is never on the board before it is on the screen.
+    val scoreDelayHold = remember { longArrayOf(-1L) }
+    fun scoreDelayMs(): Long {
+        val target = if (scoreDelay >= 0) {
+            scoreDelay * 1000L
+        } else {
+            val offset = if (usingHls) player.currentLiveOffset.takeIf { it != C.TIME_UNSET && it in 0L..120_000L } else null
+            (offset ?: reserveMs).coerceIn(0L, 40_000L) + 10_000L
+        }
+        // Moves slowly, so the reserve going up and down never makes the clock jump.
+        val held = scoreDelayHold[0]
+        val next = if (held < 0L || scoreDelay >= 0) target else held + (target - held).coerceIn(-250L, 250L)
+        scoreDelayHold[0] = next
+        return next
+    }
     val sameEvent by produceState<List<Channel>?>(null, liveChannel?.id, programme?.title, sourcesOpen) {
         val ch = liveChannel
         value = if (ch == null) emptyList() else withContext(Dispatchers.Default) {
@@ -1165,7 +1195,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         if (event.type != KeyEventType.KeyDown) return false
         val live = item?.isLive == true
         val code = event.nativeKeyEvent.keyCode
-        val panels = panelOpen || sourcesOpen || showTracks || subsOpen
+        val panels = panelOpen || sourcesOpen || showTracks || subsOpen || scorePickOpen
         // Number keys: type a channel number; it opens 1.5 s after the last digit (or at once with OK).
         val digit = when (code) {
             in android.view.KeyEvent.KEYCODE_0..android.view.KeyEvent.KEYCODE_9 -> code - android.view.KeyEvent.KEYCODE_0
@@ -1238,7 +1268,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             showControls()
             return true
         }
-        if (panelOpen || sourcesOpen || showTracks || subsOpen || playerError != null || notFound) return false
+        if (panelOpen || sourcesOpen || showTracks || subsOpen || scorePickOpen || playerError != null || notFound) return false
         if (controlsVisible) {
             touch()
             return false
@@ -1292,11 +1322,11 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // Keep the remote's focus somewhere useful as the controls come and go.
-    LaunchedEffect(controlsVisible, locked, panelOpen, showTracks, sourcesOpen, subsOpen) {
+    LaunchedEffect(controlsVisible, locked, panelOpen, showTracks, sourcesOpen, subsOpen, scorePickOpen) {
         delay(80L)
-        if (controlsVisible && !locked && !panelOpen && !showTracks && !sourcesOpen && !subsOpen) {
+        if (controlsVisible && !locked && !panelOpen && !showTracks && !sourcesOpen && !subsOpen && !scorePickOpen) {
             if (isTv) runCatching { playPauseFocus.requestFocus() }
-        } else if (!panelOpen && !showTracks && !sourcesOpen && !subsOpen) {
+        } else if (!panelOpen && !showTracks && !sourcesOpen && !subsOpen && !scorePickOpen) {
             runCatching { rootFocus.requestFocus() }
         }
     }
@@ -1309,7 +1339,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // On TV the first Back only hides the controls.
-    BackHandler(enabled = isTv && controlsVisible && !locked && !panelOpen && !showTracks && !sourcesOpen && !subsOpen) {
+    BackHandler(enabled = isTv && controlsVisible && !locked && !panelOpen && !showTracks && !sourcesOpen && !subsOpen && !scorePickOpen) {
         controlsVisible = false
     }
 
@@ -1436,6 +1466,16 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                     .align(Alignment.TopStart)
                     .padding(start = 20.dp, top = 84.dp)
             )
+        }
+
+        if (!inPip) {
+            val boardTop = when {
+                controlsVisible && !locked -> 112.dp
+                banner != null -> 96.dp
+                resizeNotice != null || streamNotice != null || reconnecting || (reconnectAttempts > 0 && buffering) || netTrouble -> 70.dp
+                else -> if (isTv) 18.dp else 12.dp
+            }
+            ScoreBoardOverlay(scoreBoard, boardTop, isTv) { scoreDelayMs() }
         }
 
         // How much reserve there is; while the internet is down, how long the picture can still go on.
@@ -1570,7 +1610,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 }
             } else {
                 AnimatedVisibility(
-                    visible = controlsVisible && !panelOpen && !sourcesOpen && !subsOpen && item != null,
+                    visible = controlsVisible && !panelOpen && !sourcesOpen && !subsOpen && !scorePickOpen && item != null,
                     enter = fadeIn(),
                     exit = fadeOut(),
                     modifier = Modifier.fillMaxSize()
@@ -1599,6 +1639,17 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                                 null
                             },
                             onEnhance = { toggleEnhance() },
+                            scoreLabel = if (item.isLive && scoreBoardOn &&
+                                (scoreBoard.match != null || scoreBoard.hidden || (isSports && scoreCandidates.isNotEmpty()))
+                            ) {
+                                tr("لوحة النتيجة")
+                            } else {
+                                null
+                            },
+                            onScore = {
+                                touch()
+                                scorePickOpen = true
+                            },
                             fourKName = if (item.isLive) fourK?.name else upgrade?.title,
                             onFourK = {
                                 if (item.isLive) {
@@ -1715,6 +1766,23 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 }
 
                 AnimatedVisibility(
+                    visible = scorePickOpen,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    ScorePickPanel(
+                        state = scoreBoard,
+                        onPick = { matchId ->
+                            liveChannel?.let { pickScoreMatch(scoreBoard, it.id, matchId) }
+                            scorePickOpen = false
+                        },
+                        onClose = { scorePickOpen = false },
+                        tv = isTv
+                    )
+                }
+
+                AnimatedVisibility(
                     visible = subsOpen,
                     enter = fadeIn(),
                     exit = fadeOut(),
@@ -1734,7 +1802,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             }
 
             val error = playerError
-            if (error != null && !panelOpen && !sourcesOpen && !subsOpen) {
+            if (error != null && !panelOpen && !sourcesOpen && !subsOpen && !scorePickOpen) {
                 Column(
                     Modifier
                         .align(Alignment.Center)
@@ -1807,6 +1875,8 @@ private fun Controls(
     resolution: String?,
     enhanceLabel: String?,
     onEnhance: () -> Unit,
+    scoreLabel: String?,
+    onScore: () -> Unit,
     fourKName: String?,
     onFourK: () -> Unit,
     showSources: Boolean,
@@ -1980,6 +2050,7 @@ private fun Controls(
                     PillButton(RIcons.Calendar, tr("الدليل"), onGuide)
                     if (showSources) PillButton(RIcons.Mic, tr("المعلق والجودة"), onSources)
                     if (enhanceLabel != null) PillButton(RIcons.Sparkle, enhanceLabel, onEnhance)
+                    if (scoreLabel != null) PillButton(RIcons.Scoreboard, scoreLabel, onScore)
                     if (nextLabel != null) {
                         Text(
                             nextLabel,
