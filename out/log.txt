@@ -1,0 +1,10 @@
+JS push( :: (self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[9175],{48688:(s,_,e)=>{(window.__NEXT_P=window.__NEXT_P||[]).push(["/[sports-category]/live-scores",function(){return e(55316)}])},55316:(s,_,e)=>{"use s
+JS push( :: (self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[9175],{48688:(s,_,e)=>{(window.__NEXT_P=window.__NEXT_P||[]).push(["/[sports-category]/live-scores",function(){return e(55316)}])},55316:(s,_,e)=>{"use strict";e.r(_),e.d(_,{__N_SSP:()=>u,default:()=>c});var n=e(21414),r=
+URL /كرة-القدم/مباريات-اليوم -> 200 https://www.kooora.com/كرة-القدم/مباريات-اليوم 1457296 bytes page=/[sports-category]/live-scores date=2026-10-23 dayType=today matches=207 first=2026-10-24T00:00:00.000Z
+URL /كرة-القدم/مباريات-الغد -> error HTTP Error 404: Not Found
+URL /كرة-القدم/مباريات-غدا -> error HTTP Error 404: Not Found
+URL /كرة-القدم/مباريات-اليوم?date=2026-10-24 -> 200 https://www.kooora.com/كرة-القدم/مباريات-اليوم?date=2026-10-24 1457296 bytes page=/[sports-category]/live-scores date=2026-10-23 dayType=today matches=207 first=2026-10-24T00:00:00.000Z
+URL /كرة-القدم/مباريات/2026-10-24 -> error HTTP Error 404: Not Found
+URL /كرة-القدم/مباريات?date=2026-10-24 -> error HTTP Error 404: Not Found
+URL /football/live-scores?date=2026-10-24 -> 200 https://www.kooora.com/كرة-القدم/مباريات-اليوم 1457296 bytes page=/[sports-category]/live-scores date=2026-10-23 dayType=today matches=207 first=2026-10-24T00:00:00.000Z
+URL /كرة-القدم/live-scores?date=2026-10-24 -> 200 https://www.kooora.com/كرة-القدم/مباريات-اليوم 1457296 bytes page=/[sports-category]/live-scores date=2026-10-23 dayType=today matches=207 first=2026-10-24T00:00:00.000Z
