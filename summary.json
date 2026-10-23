@@ -1,0 +1,45 @@
+{
+ "results": [
+  {
+   "step": "setup",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "today",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "tomorrow",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "yesterday",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "filter",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "details",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "offline",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "real-data",
+   "ok": true,
+   "error": ""
+  }
+ ],
+ "kora_crashed": false
+}

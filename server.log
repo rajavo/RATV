@@ -1,0 +1,26 @@
+serving /tmp/kora-www on port 8000
+23/Oct/2026 17:19:01 "GET /update/version.json HTTP/1.1" 200 -
+23/Oct/2026 17:21:10 "GET /fixtures.json HTTP/1.1" 200 -
+23/Oct/2026 17:21:10 "GET /update/version.json HTTP/1.1" 200 -
+23/Oct/2026 17:21:10 "GET /apis/site/v2/sports/soccer/ksa.1/scoreboard?dates=20261023 HTTP/1.1" 200 -
+23/Oct/2026 17:21:10 "GET /logo/ksa.png HTTP/1.1" 200 -
+23/Oct/2026 17:21:10 "GET /logo/929.png HTTP/1.1" 200 -
+23/Oct/2026 17:21:10 "GET /logo/ksa.png HTTP/1.1" 200 -
+23/Oct/2026 17:21:10 "GET /logo/817.png HTTP/1.1" 200 -
+23/Oct/2026 17:21:10 "GET /logo/eng.png HTTP/1.1" 200 -
+23/Oct/2026 17:21:10 "GET /logo/eng.png HTTP/1.1" 200 -
+23/Oct/2026 17:21:10 "GET /logo/359.png HTTP/1.1" 200 -
+23/Oct/2026 17:21:21 "GET /logo/86.png HTTP/1.1" 200 -
+23/Oct/2026 17:21:21 "GET /logo/83.png HTTP/1.1" 200 -
+23/Oct/2026 17:21:28 "GET /logo/ksa.png HTTP/1.1" 200 -
+23/Oct/2026 17:22:10 "GET /apis/site/v2/sports/soccer/ksa.1/scoreboard?dates=20261023 HTTP/1.1" 200 -
+23/Oct/2026 17:22:40 "GET /fixtures.json HTTP/1.1" 404 -
+23/Oct/2026 17:22:40 "GET /update/version.json HTTP/1.1" 200 -
+23/Oct/2026 17:22:40 "GET /apis/site/v2/sports/soccer/ksa.1/scoreboard?dates=20261023 HTTP/1.1" 200 -
+23/Oct/2026 17:22:40 "GET /logo/ksa.png HTTP/1.1" 200 -
+23/Oct/2026 17:22:40 "GET /logo/817.png HTTP/1.1" 200 -
+23/Oct/2026 17:22:40 "GET /logo/ksa.png HTTP/1.1" 200 -
+23/Oct/2026 17:22:40 "GET /logo/929.png HTTP/1.1" 200 -
+23/Oct/2026 17:22:40 "GET /logo/359.png HTTP/1.1" 200 -
+23/Oct/2026 17:22:40 "GET /logo/eng.png HTTP/1.1" 200 -
+23/Oct/2026 17:22:40 "GET /logo/eng.png HTTP/1.1" 200 -

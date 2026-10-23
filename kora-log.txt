@@ -1,0 +1,8 @@
+10-23 12:21:09.212  4104  4128 I RAKora  : schedule: 6 matches, 5 competitions
+10-23 12:21:09.291  4104  4129 I RAKora  : live: 1 of 1 matches
+10-23 12:22:09.587  4104  4132 I RAKora  : live: 1 of 1 matches
+10-23 12:22:26.590  4104  4104 I RAKora  : watch NOT_INSTALLED: ratv://match?home=Al%20Hilal&away=Al%20Nassr&homeAr=%D8%A7%D9%84%D9%87%D9%84%D8%A7%D9%84&awayAr=%D8%A7%D9%84%D9%86%D8%B5%D8%B1&start=1792773068000&league=%D8%AF%D9%88%D8%B1%D9%8A%20%D8%B1%D9%88%D8%B4%D9%86%20%D8%A7%D9%84%D8%B3%D8%B9%D9%88%D8%AF%D9%8A&leagueEn=Saudi%20Pro%20League&id=9001
+10-23 12:22:39.683  5793  5817 W RAKora  : schedule download failed: java.io.IOException: HTTP 404 for http://10.0.2.2:8000/fixtures.json
+10-23 12:22:39.771  5793  5830 I RAKora  : live: 1 of 1 matches
+10-23 12:22:46.110  5921  5943 I RAKora  : schedule: 875 matches, 28 competitions
+10-23 12:22:46.299  5921  5945 I RAKora  : live: 3 of 3 matches
