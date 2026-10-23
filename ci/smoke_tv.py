@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Drives RATV on an Android TV emulator with remote keys only (CI only)."""
 import json
+import re
 import os
 import sys
 import time
@@ -469,6 +470,131 @@ def t_enhance():
                 break
 
 
+def mock(path):
+    import urllib.request
+    return json.loads(urllib.request.urlopen("http://127.0.0.1:8000" + path, timeout=5).read())
+
+
+def board_node(root):
+    """The scoreboard over the picture (its description tells the teams, the score and the clock)."""
+    for n in S.nodes(root):
+        if (n.get("content-desc") or "").startswith("لوحة النتيجة:"):
+            return n
+    return None
+
+
+def wait_board(tag, timeout=45, contains=None, gone=False):
+    end = time.time() + timeout
+    n = None
+    while time.time() < end:
+        root = S.dump()
+        n = board_node(root)
+        if gone and n is None:
+            return None
+        if not gone and n is not None and (contains is None or contains in n.get("content-desc")):
+            S.dump(tag)
+            return n
+        time.sleep(1.5)
+    S.dump(tag + "-timeout")
+    return n
+
+
+def press_pill(word, tag):
+    """With the player showing: brings its controls up, goes to the button holding [word] and presses it."""
+    time.sleep(5)  # the controls go by themselves; OK brings them back with the remote on play/pause
+    key("DPAD_CENTER", pause=1.2)
+    key("DPAD_DOWN", pause=0.8)
+    for direction in ["DPAD_LEFT"] * 6 + ["DPAD_RIGHT"] * 12:
+        _, f = log_focus(tag)
+        if f and word in f:
+            key("DPAD_CENTER", pause=1.5)
+            return f
+        key(direction, pause=0.6)
+    S.shot(tag)
+    raise RuntimeError("no «%s» button in the player's controls (%s)" % (word, tag))
+
+
+def focus_row(word, tag):
+    """Up, then down a list until the focus holds [word]."""
+    for direction in ["DPAD_UP"] * 6 + ["DPAD_DOWN"] * 12:
+        _, f = log_focus(tag)
+        if f and word in f:
+            return f
+        key(direction, pause=0.7)
+    return None
+
+
+def t_scoreboard():
+    """The scoreboard on a sports channel showing a match: found from the guide, with the live score
+    and clock of (mock) ESPN; a goal lights it up; the controls move it down; a match picked by hand
+    (a Yallakora one); and the board hidden on the channel."""
+    S.shell("logcat -c")
+    try:
+        f = focus_home_item("شاهد الآن", "board-hero")
+        expect(f and "شاهد الآن" in f, "watch-now not focused (focus: %s)" % f)
+        key("DPAD_CENTER", pause=6)
+        S.shell("input keyevent KEYCODE_4")  # Sport 1 HD: its guide says الدوري الإسباني: ريال مدريد × برشلونة
+        n = wait_board("board", timeout=60)
+        S.shot("board")
+        logs = S.shell("logcat -d -s RATVScore:I RATVScores:I RATVScores:W")
+        for line in logs.splitlines()[-6:]:
+            S.log("  " + line.strip())
+        expect(n is not None, "no scoreboard on Sport 1 HD")
+        d = n.get("content-desc")
+        S.log("board: " + d)
+        expect("ريال مدريد" in d and "برشلونة" in d, "the board does not show the game of the guide: " + d)
+        expect("2 - 1" in d, "the board does not show the live score 2-1: " + d)
+        m = re.search(r"(\d\d):(\d\d)", d)
+        expect(m is not None, "no game clock on the board: " + d)
+        expect(20 <= int(m.group(1)) <= 45, "the game clock is far off: " + d)
+        top_alone = S.bounds(n)[1]
+        # A goal for the home side: the board tells it once it is on the screen (as late as the picture).
+        mock("/espn/goal?id=900001&side=home")
+        _, g = S.wait_for(timeout=110, text="هدف!", save="board-goal")
+        S.shot("board-goal")
+        expect(g is not None, "the goal did not light up the board")
+        n = wait_board("board-goal2", timeout=10, contains="3 - 1")
+        expect(n is not None, "the board did not count the goal")
+        # The controls up: the board moves down, under their top bar.
+        key("DPAD_CENTER", pause=1.5)
+        S.shot("board-controls")
+        root = S.dump("board-controls")
+        texts = S.all_texts(root)
+        expect("لوحة النتيجة" in texts, "no scoreboard button in the controls: " + texts[:300])
+        n = board_node(root)
+        expect(n is not None and S.bounds(n)[1] > top_alone + 40, "the board did not move down under the controls")
+        # Picked by hand: a Yallakora match.
+        press_pill("لوحة النتيجة", "board-pill")
+        _, p = S.wait_for(timeout=8, contains="بدون لوحة", save="board-pick")
+        S.shot("board-pick")
+        expect(p is not None, "the match picker did not open")
+        texts = S.all_texts(S.dump("board-pick2"))
+        expect("الهلال × النصر" in texts and "الشمال × نادي قطر" in texts, "the matches being played are not all listed: " + texts[:400])
+        expect("برشلونة × ريال مدريد" not in texts, "a match over long ago is offered: " + texts[:400])
+        expect(focus_row("الشمال", "board-pick-yk"), "could not reach the Yallakora match with the remote")
+        key("DPAD_CENTER", pause=2)
+        n = wait_board("board-yk", timeout=40, contains="الشمال")
+        S.shot("board-yk")
+        expect(n is not None, "the picked match is not on the board")
+        d = n.get("content-desc")
+        S.log("board: " + d)
+        expect("1 - 0" in d and "نادي قطر" in d, "the Yallakora match is not shown right: " + d)
+        # Hidden on this channel.
+        press_pill("لوحة النتيجة", "board-pill2")
+        _, p = S.wait_for(timeout=8, contains="بدون لوحة")
+        expect(p is not None, "the match picker did not open again")
+        expect(focus_row("بدون لوحة", "board-hide"), "could not reach «no scoreboard» with the remote")
+        key("DPAD_CENTER", pause=2)
+        expect(wait_board("board-hidden", timeout=10, gone=True) is None, "the board did not go when hidden")
+        S.shot("board-hidden")
+    finally:
+        for _ in range(4):
+            key("BACK", pause=1.5)
+            _, n = S.wait_for(timeout=4, text="الرئيسية")
+            if n is not None:
+                break
+
+
 def t_languages():
     """The interface in English and in Spanish (chosen for the test with debug.ratv.lang), then Arabic again."""
     try:
@@ -522,6 +648,7 @@ if __name__ == "__main__":
         ("series", t_series),
         ("matches", t_matches),
         ("match-link", t_match_link),
+        ("scoreboard", t_scoreboard),
         ("settings", t_settings),
         ("settings-deep", t_settings_deep),
         ("enhance", t_enhance),

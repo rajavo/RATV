@@ -298,6 +298,69 @@ def m3u():
 
 
 
+# The scoreboard: the schedule of جدول RA كورة, ESPN's live scoreboard and Yallakora's match centre.
+# The guide's game (ريال مدريد × برشلونة on Sport 1) is 2-1 at minute 24 when first asked, and the
+# test scores a goal through /espn/goal.
+KICKOFF = NOW - 23 * 60
+SCORES = {"900001": [2, 1], "900002": [0, 0]}
+ESPN_T0 = [None]
+
+
+def kora_fixtures():
+    teams = {
+        "86": {"en": "Real Madrid", "ar": "ريال مدريد", "logo": BASE + "/logo/l3.png"},
+        "83": {"en": "Barcelona", "ar": "برشلونة", "logo": BASE + "/logo/l4.png"},
+        "929": {"en": "Al Hilal", "ar": "الهلال", "logo": ""},
+        "817": {"en": "Al Nassr", "ar": "النصر", "logo": BASE + "/logo/missing.png"},
+        "y:الشمال": {"en": "", "ar": "الشمال", "logo": BASE + "/logo/l5.png"},
+        "y:نادي قطر": {"en": "", "ar": "نادي قطر", "logo": ""},
+    }
+    matches = [
+        {"id": "900003", "lg": "esp.1", "t": NOW - 6 * 3600, "h": "83", "a": "86", "st": "post", "sn": "FULL_TIME"},
+        {"id": "900002", "lg": "ksa.1", "t": NOW - 10 * 60, "h": "929", "a": "817", "st": "in", "sn": "FIRST_HALF"},
+        {"id": "y112832", "lg": "qat.1", "t": NOW - 15 * 60, "h": "y:الشمال", "a": "y:نادي قطر", "st": "in", "sn": "IN_PROGRESS"},
+        {"id": "900001", "lg": "esp.1", "t": KICKOFF, "h": "86", "a": "83", "st": "in", "sn": "FIRST_HALF"},
+    ]
+    leagues = [
+        {"id": "ksa.1", "ar": "دوري روشن السعودي", "short": "روشن", "en": "Saudi Pro League", "logo": ""},
+        {"id": "qat.1", "ar": "دوري نجوم قطر", "short": "القطري", "en": "", "logo": ""},
+        {"id": "esp.1", "ar": "الدوري الإسباني", "short": "الإسباني", "en": "LaLiga", "logo": ""},
+    ]
+    return {"v": 1, "updated": NOW, "leagues": leagues, "teams": teams, "matches": matches}
+
+
+def espn_scoreboard(league):
+    if ESPN_T0[0] is None:
+        ESPN_T0[0] = time.time()
+    minute = 24 + int((time.time() - ESPN_T0[0]) // 60)
+    events = []
+    for eid, lg, t in (("900001", "esp.1", KICKOFF), ("900002", "ksa.1", NOW - 600)):
+        if lg != league:
+            continue
+        hs, as_ = SCORES[eid]
+        status = {"clock": minute * 60.0, "displayClock": "%d'" % minute, "period": 1,
+                  "type": {"id": "25", "name": "STATUS_FIRST_HALF", "state": "in", "completed": False,
+                           "detail": "%d'" % minute, "shortDetail": "%d'" % minute}}
+        events.append({"id": eid, "date": datetime.fromtimestamp(t, timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
+                       "status": status,
+                       "competitions": [{"id": eid, "status": status, "competitors": [
+                           {"homeAway": "home", "score": str(hs)}, {"homeAway": "away", "score": str(as_)}]}]})
+    return {"leagues": [{"id": league}], "events": events}
+
+
+def yallakora_page():
+    return """<html><body>
+<div class="1 matchCard matchesList"><div class="title"><img src="q.png" alt="دوري نجوم قطر" enName="qatar-league"></div><div class="ul">
+<div liveScoreMatchId="112832" class="item now liItem"><a href="/qatar-league/3041/match/112832/x"><div class="allData">
+<div class="topData"><div class="date">الأسبوع السابع </div><div class="matchStatus"> <span>الشوط الأول</span> </div></div>
+<div class="teamCntnr"><div class="teamsData"><div class="teams teamA"><img src="a.png" alt="الشمال" /> <p>الشمال</p> </div>
+<div class="MResult"> <span class="score">1</span> <span>-</span> <span class="score">0</span> <span class="time">17:30</span> </div>
+<div class="teams teamB"><img src="b.png" alt="نادي قطر" /> <p>نادي قطر</p> </div></div></div></div></a></div>
+<div liveScoreMatchId="112999" class="item future liItem"><a href="#"><div class="matchStatus"> <span>لم تبدأ</span> </div>
+<div class="MResult"> <span class="score">-</span> <span>-</span> <span class="score">-</span> <span class="time">21:00</span> </div></a></div>
+</div></div></body></html>"""
+
+
 def release_notes():
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "release-notes.json")
     try:
@@ -578,6 +641,19 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_json({"versionCode": 99999, "versionName": "9.9.9", "apk": "RATV.apk", "notes": release_notes()})
         if p == "/update/RATV.apk":
             return self.send_file(os.path.join(MEDIA, "RATV.apk"), "application/vnd.android.package-archive")
+        if p == "/kora/fixtures.json":
+            note("kora")
+            return self.send_json(kora_fixtures())
+        if p.startswith("/espn/apis/site/v2/sports/soccer/") and p.endswith("/scoreboard"):
+            note("espn", league=p.split("/")[-2], dates=q.get("dates"))
+            return self.send_json(espn_scoreboard(p.split("/")[-2]))
+        if p == "/espn/goal":  # the test scores a goal
+            SCORES[q.get("id", "900001")][0 if q.get("side", "home") == "home" else 1] += 1
+            note("goal", scores=SCORES)
+            return self.send_json({"ok": True, "scores": SCORES})
+        if p.startswith("/yk/match-center"):
+            note("yallakora", date=q.get("date"))
+            return self._send(yallakora_page().encode("utf-8"), "text/html; charset=utf-8")
         if p == "/__stats":  # connections per test channel
             stats = {str(k): v for k, v in CONNECTIONS.items()}
             stats.update({"hls%d" % k: v for k, v in HLS_REQUESTS.items()})

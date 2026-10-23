@@ -269,6 +269,10 @@ def s_launch():
     shell("setprop debug.ratv.subs http://10.0.2.2:8000")
     shell("setprop debug.ratv.speed http://10.0.2.2:8000")
     shell("setprop debug.ratv.update http://10.0.2.2:8000/update")
+    # The scoreboard's schedule and live scores come from the mock provider too.
+    shell("setprop debug.ratv.kora http://10.0.2.2:8000/kora/fixtures.json")
+    shell("setprop debug.ratv.espn http://10.0.2.2:8000/espn")
+    shell("setprop debug.ratv.yk http://10.0.2.2:8000/yk")
     log("debug.ratv.subs=" + shell("getprop debug.ratv.subs").strip())
     log(shell("am start -W -n %s/.MainActivity" % PKG).strip())
     time.sleep(1.5)
