@@ -63,6 +63,9 @@ CHANNELS = [
     (207, 24, "AR| beIN SPORTS 3 HD", "2", "", None),
     (208, 25, "beIN SPORTS 1 FHD", "2", "bein1.ratv", None),
     (209, 26, "BEIN SPORT 2", "2", "", None),
+    # The sources name only the brand of these: "Thmanyah" (one match now), "SSC" (two at once).
+    (210, 27, "ثمانية 3 HD", "2", "", None),
+    (211, 28, "SSC 2 HD", "2", "", None),
 ]
 # The same game, named in Arabic on one channel and in English on another.
 MATCH = {
@@ -309,7 +312,7 @@ def m3u():
 # The guide's game (ريال مدريد × برشلونة on Sport 1) is 2-1 at minute 24 when first asked, and the
 # test scores a goal through /espn/goal.
 KICKOFF = NOW - 23 * 60
-SCORES = {"900001": [2, 1], "900002": [0, 0], "900004": [1, 0], "900005": [0, 0]}
+SCORES = {"900001": [2, 1], "900002": [0, 0], "900004": [1, 0], "900005": [0, 0], "900006": [2, 0]}
 ESPN_T0 = [None]
 
 
@@ -325,6 +328,12 @@ def kora_fixtures():
         "359": {"en": "Arsenal", "ar": "أرسنال", "logo": BASE + "/logo/l2.png"},
         "243": {"en": "Sevilla", "ar": "إشبيلية", "logo": ""},
         "94": {"en": "Valencia", "ar": "فالنسيا", "logo": ""},
+        "2994": {"en": "Al Ittihad", "ar": "الاتحاد", "logo": ""},
+        "21447": {"en": "Al Diriyah", "ar": "الدرعية", "logo": ""},
+        "2999": {"en": "Al Shabab", "ar": "الشباب", "logo": ""},
+        "21448": {"en": "Al Fateh", "ar": "الفتح", "logo": ""},
+        "21449": {"en": "Al Taawoun", "ar": "التعاون", "logo": ""},
+        "21450": {"en": "Al Raed", "ar": "الرائد", "logo": ""},
     }
     matches = [
         {"id": "900003", "lg": "esp.1", "t": NOW - 6 * 3600, "h": "83", "a": "86", "st": "post", "sn": "FULL_TIME"},
@@ -335,6 +344,12 @@ def kora_fixtures():
          "tv": ["beIN Sports Mena 3", "beIN Sports ENG 3", "Arena 1 Premium"], "v": "Anfield"},
         {"id": "900005", "lg": "esp.1", "t": NOW - 10 * 60, "h": "243", "a": "94", "st": "in", "sn": "FIRST_HALF",
          "tv": ["beIN Sports Mena 1", "DAZN LALIGA"]},
+        {"id": "900006", "lg": "ksa.1", "t": NOW - 20 * 60, "h": "2994", "a": "21447", "st": "in", "sn": "FIRST_HALF",
+         "tv": ["Thmanyah"]},
+        {"id": "900007", "lg": "ksa.kings.cup", "t": NOW - 5 * 60, "h": "2999", "a": "21448", "st": "in", "sn": "FIRST_HALF",
+         "tv": ["SSC"]},
+        {"id": "900008", "lg": "ksa.kings.cup", "t": NOW - 5 * 60, "h": "21449", "a": "21450", "st": "in", "sn": "FIRST_HALF",
+         "tv": ["SSC"]},
     ]
     leagues = [
         {"id": "ksa.1", "ar": "دوري روشن السعودي", "short": "روشن", "en": "Saudi Pro League", "logo": ""},
@@ -353,7 +368,7 @@ def espn_scoreboard(league):
     minute = 24 + int((time.time() - ESPN_T0[0]) // 60)
     events = []
     for eid, lg, t in (("900001", "esp.1", KICKOFF), ("900002", "ksa.1", NOW - 600), ("900004", "eng.1", NOW - 1800),
-                       ("900005", "esp.1", NOW - 600)):
+                       ("900005", "esp.1", NOW - 600), ("900006", "ksa.1", NOW - 1200)):
         if lg != league:
             continue
         hs, as_ = SCORES[eid]

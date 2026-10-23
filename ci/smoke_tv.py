@@ -652,6 +652,24 @@ def t_sports_guide():
         S.shot("guide-bein2-controls")
         expect("بولتون واندررز × ميدلزبره" in texts, "the guide of beIN 2 does not say its match: " + texts[:400])
         expect(board_node(S.dump()) is None, "a board on a match nothing gives the score of")
+        # 27: ثمانية 3, and the sources say only "Thmanyah": the brand's only match now is on all its channels.
+        time.sleep(5)
+        open_number(27)
+        n = wait_board("guide-thmanyah3", timeout=45, contains="الاتحاد")
+        S.shot("guide-thmanyah3")
+        expect(n is not None and "2 - 0" in n.get("content-desc"), "no board for the brand's only match on ثمانية 3")
+        # 28: SSC 2, and two matches named only "SSC" at once: the player asks, and OK opens the match list.
+        time.sleep(3)
+        open_number(28)
+        _, q = S.wait_for(timeout=20, contains="أكثر من مباراة الحين", save="guide-ask")
+        S.shot("guide-ask")
+        expect(q is not None, "no question when two matches of the brand are on at once")
+        expect(board_node(S.dump()) is None, "a board for one of two matches the channel may show")
+        key("DPAD_CENTER", pause=2)
+        _, p = S.wait_for(timeout=8, contains="بدون لوحة", save="guide-ask-pick")
+        S.shot("guide-ask-pick")
+        expect(p is not None, "OK did not open the match list after the question")
+        key("BACK", pause=1.5)
     finally:
         for _ in range(4):
             key("BACK", pause=1.5)
