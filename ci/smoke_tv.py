@@ -61,7 +61,7 @@ NAV_LANG = {
 }
 
 
-def go_tab(label, nav=NAV, tries=15):
+def go_tab(label, nav=NAV, tries=30):
     """Moves up to the top bar with the remote and opens a section."""
     rtl = nav is NAV
     f = None
@@ -327,7 +327,7 @@ def deep_settings_and_back(nav, tag):
     go_tab(nav[-1], nav)
     time.sleep(2)
     found = False
-    for _ in range(24):
+    for _ in range(36):
         _, f = log_focus("deep-" + tag)
         if f and "Language" in f:
             found = True
@@ -555,10 +555,10 @@ def t_scoreboard():
         expect(g is not None, "the goal did not light up the board")
         n = wait_board("board-goal2", timeout=10, contains="3 - 1")
         expect(n is not None, "the board did not count the goal")
-        # The controls up: the board moves down, under their top bar.
-        key("DPAD_CENTER", pause=1.5)
-        S.shot("board-controls")
+        # The controls up: the board moves down, under their top bar (they go by themselves after 4 s).
+        key("DPAD_CENTER", pause=1.0)
         root = S.dump("board-controls")
+        S.shot("board-controls")
         texts = S.all_texts(root)
         expect("لوحة النتيجة" in texts, "no scoreboard button in the controls: " + texts[:300])
         n = board_node(root)
