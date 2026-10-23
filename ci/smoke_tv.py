@@ -69,7 +69,8 @@ def go_tab(label, nav=NAV, tries=15):
         if f in nav:
             break
         # Up reaches the bar; from the search box, back towards the sections.
-        searching = f and ("ابحث" in f or "Search" in f or "Busca" in f)
+        # (by the start of its text: a settings row in Spanish describes itself with "Busca subtítulos…")
+        searching = f and f.startswith(("ابحث", "Search", "Buscar", "Busca canales"))
         key(("DPAD_RIGHT" if rtl else "DPAD_LEFT") if searching else "DPAD_UP")
     _, f = log_focus("nav-start")
     if f not in nav:
