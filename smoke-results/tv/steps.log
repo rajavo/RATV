@@ -2149,3 +2149,322 @@ Status: o
 21:31:59 screenshot 33-stuck-before-En vivo.png 1920x1080
 21:32:06 !! RuntimeError('top bar not reached (focus: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay)')
 21:32:06 screenshot 34-fail-languages.png 1920x1080
+01:25:24 == launch
+01:26:10 debug.ratv.subs=http://10.0.2.2:8000
+01:26:12 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 1227
+WaitTime: 1233
+Complete
+01:26:15 screenshot 01-splash.png 1920x1080
+01:26:15 == login-screen
+01:26:22 focus[login-initial]: http://server.example:8080
+01:26:22 screenshot 02-login.png 1920x1080
+01:26:22 == keyboard-on-ok
+01:26:26 screenshot 03-login-keyboard.png 1920x1080
+01:26:30 == fill-with-remote
+01:26:40 focus[login-user]: username
+01:26:57 focus[login-name]: مثال: اشتراك المنزل
+01:27:00 focus[login-submit]: دخول
+01:27:01 screenshot 04-login-filled.png 1920x1080
+01:27:12 screenshot 05-home.png 1920x1080
+01:27:13 == home-focus
+01:27:14 focus[home-focus]: مباشر | RATV News HD | وثائقي الطبيعة | بدأ 01:15 · متبقي 17د | شاهد الآن
+01:27:14 screenshot 06-home-focus.png 1920x1080
+01:27:14 == player-remote
+01:27:26 screenshot 07-player.png 1920x1080
+01:27:30 screenshot 08-player-zap.png 1920x1080
+01:27:33 screenshot 09-player-controls.png 1920x1080
+01:27:35 screenshot 10-player-controls-moved.png 1920x1080
+01:27:39 screenshot 11-player-controls-hidden.png 1920x1080
+01:27:46 screenshot 12-home-after-player.png 1920x1080
+01:27:46 == player-numbers
+01:27:47 focus[nav-search]: مباشر | Gulf 24 FHD | Cartoon Hour | بدأ 00:45 · متبقي 17د | شاهد الآن
+01:27:50 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+01:27:53 focus[nav-search]: أفلام
+01:27:55 focus[nav-start]: أفلام
+01:28:01 focus[nav-target]: الرئيسية
+01:28:07 focus[numbers-hero]: الرئيسية
+01:28:10 focus[numbers-hero]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+01:28:13 focus[numbers-hero]: مباشر | Gulf 24 FHD | Cartoon Hour | بدأ 00:45 · متبقي 16د | شاهد الآن
+01:28:25 screenshot 13-player-number-typed.png 1920x1080
+01:28:30 screenshot 14-player-number.png 1920x1080
+01:28:30 !! RuntimeError('the 5 key did not open channel 5 (Sport 2 4K):  |  |  |  |  |  |  |  |  |  |  |  |  |  | ')
+01:28:31 screenshot 15-fail-player-numbers.png 1920x1080
+01:28:31 == update-notes
+01:28:32 focus[nav-search]: (android.view.View, no text)
+01:28:36 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة
+01:28:39 focus[nav-search]: 13 | Sky Sports Main | LaLiga: Real Madrid v Barcelona
+01:28:43 focus[nav-search]: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة
+01:28:46 focus[nav-search]: 11 | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة
+01:28:50 focus[nav-search]: 6 | Racing SD
+01:28:53 focus[nav-search]: 5 | Sport 2 4K | نشرة الأخبار
+01:28:57 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة
+01:29:00 focus[nav-search]: 13 | Sky Sports Main | LaLiga: Real Madrid v Barcelona
+01:29:04 focus[nav-search]: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة
+01:29:07 focus[nav-search]: 11 | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة
+01:29:11 focus[nav-search]: 6 | Racing SD
+01:29:14 focus[nav-search]: 5 | Sport 2 4K | نشرة الأخبار
+01:29:18 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة
+01:29:21 focus[nav-search]: 13 | Sky Sports Main | LaLiga: Real Madrid v Barcelona
+01:29:25 focus[nav-start]: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة
+01:29:25 screenshot 16-stuck-before-الرئيسية.png 1920x1080
+01:29:25 !! RuntimeError('top bar not reached (focus: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة)')
+01:29:26 screenshot 17-fail-update-notes.png 1920x1080
+01:29:26 == movies
+01:29:28 focus[nav-search]: (android.view.View, no text)
+01:29:31 focus[nav-search]: 11 | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة
+01:29:35 focus[nav-search]: 6 | Racing SD
+01:29:38 focus[nav-search]: 5 | Sport 2 4K | نشرة الأخبار
+01:29:42 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة
+01:29:45 focus[nav-search]: 13 | Sky Sports Main | LaLiga: Real Madrid v Barcelona
+01:29:49 focus[nav-search]: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة
+01:29:52 focus[nav-search]: 11 | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة
+01:29:56 focus[nav-search]: 6 | Racing SD
+01:29:59 focus[nav-search]: 5 | Sport 2 4K | نشرة الأخبار
+01:30:03 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة
+01:30:06 focus[nav-search]: 13 | Sky Sports Main | LaLiga: Real Madrid v Barcelona
+01:30:10 focus[nav-search]: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة
+01:30:13 focus[nav-search]: 11 | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة
+01:30:17 focus[nav-search]: 6 | Racing SD
+01:30:20 focus[nav-start]: 5 | Sport 2 4K | نشرة الأخبار
+01:30:21 screenshot 18-stuck-before-أفلام.png 1920x1080
+01:30:21 !! RuntimeError('top bar not reached (focus: 5 | Sport 2 4K | نشرة الأخبار)')
+01:30:21 screenshot 19-fail-movies.png 1920x1080
+01:30:21 == live
+01:30:23 focus[nav-search]: (android.view.View, no text)
+01:30:27 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة
+01:30:30 focus[nav-search]: 13 | Sky Sports Main | LaLiga: Real Madrid v Barcelona
+01:30:34 focus[nav-search]: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة
+01:30:37 focus[nav-search]: 11 | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة
+01:30:40 focus[nav-search]: 6 | Racing SD
+01:30:44 focus[nav-search]: 5 | Sport 2 4K | نشرة الأخبار
+01:30:47 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة
+01:30:51 focus[nav-search]: 13 | Sky Sports Main | LaLiga: Real Madrid v Barcelona
+01:30:54 focus[nav-search]: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة
+01:30:58 focus[nav-search]: 11 | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة
+01:31:02 focus[nav-search]: 6 | Racing SD
+01:31:05 focus[nav-search]: 5 | Sport 2 4K | نشرة الأخبار
+01:31:09 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة
+01:31:12 focus[nav-search]: 13 | Sky Sports Main | LaLiga: Real Madrid v Barcelona
+01:31:16 focus[nav-start]: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة
+01:31:16 screenshot 20-stuck-before-مباشر.png 1920x1080
+01:31:16 !! RuntimeError('top bar not reached (focus: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة)')
+01:31:17 screenshot 21-fail-live.png 1920x1080
+01:31:17 == series
+01:31:19 focus[nav-search]: (android.view.View, no text)
+01:31:22 focus[nav-search]: 11 | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة
+01:31:26 focus[nav-search]: 6 | Racing SD
+01:31:29 focus[nav-search]: 5 | Sport 2 4K | نشرة الأخبار
+01:31:32 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة
+01:31:36 focus[nav-search]: 13 | Sky Sports Main | LaLiga: Real Madrid v Barcelona
+01:31:39 focus[nav-search]: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة
+01:31:43 focus[nav-search]: 11 | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة
+01:31:46 focus[nav-search]: 6 | Racing SD
+01:31:50 focus[nav-search]: 5 | Sport 2 4K | نشرة الأخبار
+01:31:53 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة
+01:31:57 focus[nav-search]: 13 | Sky Sports Main | LaLiga: Real Madrid v Barcelona
+01:32:00 focus[nav-search]: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة
+01:32:04 focus[nav-search]: 11 | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة
+01:32:07 focus[nav-search]: 6 | Racing SD
+01:32:11 focus[nav-start]: 5 | Sport 2 4K | نشرة الأخبار
+01:32:11 screenshot 22-stuck-before-مسلسلات.png 1920x1080
+01:32:11 !! RuntimeError('top bar not reached (focus: 5 | Sport 2 4K | نشرة الأخبار)')
+01:32:12 screenshot 23-fail-series.png 1920x1080
+01:32:12 == matches
+01:32:14 focus[nav-search]: (android.view.View, no text)
+01:32:17 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة
+01:32:21 focus[nav-search]: 13 | Sky Sports Main | LaLiga: Real Madrid v Barcelona
+01:32:24 focus[nav-search]: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة
+01:32:27 focus[nav-search]: 11 | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة
+01:32:31 focus[nav-search]: 6 | Racing SD
+01:32:34 focus[nav-search]: 5 | Sport 2 4K | نشرة الأخبار
+01:32:38 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة
+01:32:41 focus[nav-search]: 13 | Sky Sports Main | LaLiga: Real Madrid v Barcelona
+01:32:45 focus[nav-search]: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة
+01:32:48 focus[nav-search]: 11 | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة
+01:32:52 focus[nav-search]: 6 | Racing SD
+01:32:55 focus[nav-search]: 5 | Sport 2 4K | نشرة الأخبار
+01:32:59 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة
+01:33:02 focus[nav-search]: 13 | Sky Sports Main | LaLiga: Real Madrid v Barcelona
+01:33:06 focus[nav-start]: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة
+01:33:06 screenshot 24-stuck-before-المباريات.png 1920x1080
+01:33:06 !! RuntimeError('top bar not reached (focus: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة)')
+01:33:07 screenshot 25-fail-matches.png 1920x1080
+01:33:07 == match-link
+01:33:07 Starting: Intent { act=android.intent.action.VIEW dat=ratv://match?home=Real Madrid&away=Barcelona&homeAr=ريال مدريد&awayAr=برشلونة&start=1792718287488&league=الدوري الإسباني pkg=com.ratv.app }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+Status: o
+01:33:11 screenshot 26-match-link.png 1920x1080
+01:33:13 focus[match-link]: Sport 1 4K | الحين: الدوري الإسباني: ريال مدريد × برشلونة
+01:33:21 screenshot 27-match-link-play.png 1920x1080
+01:33:28 == settings
+01:33:30 focus[nav-search]: الاحتياطي ضد انقطاع النت: 64 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة
+01:33:33 focus[nav-search]: الاحتياطي ضد انقطاع النت: 60 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة
+01:33:37 focus[nav-search]: الاحتياطي ضد انقطاع النت: 57 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة
+01:33:40 focus[nav-search]: الاحتياطي ضد انقطاع النت: 53 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة
+01:33:44 focus[nav-search]: الاحتياطي ضد انقطاع النت: 50 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة
+01:33:47 focus[nav-search]: الاحتياطي ضد انقطاع النت: 46 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة
+01:33:51 focus[nav-search]: الاحتياطي ضد انقطاع النت: 43 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة
+01:33:54 focus[nav-search]: الاحتياطي ضد انقطاع النت: 39 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة
+01:33:58 focus[nav-search]: الاحتياطي ضد انقطاع النت: 36 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة
+01:34:01 focus[nav-search]: الاحتياطي ضد انقطاع النت: 32 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة
+01:34:05 focus[nav-search]: الاحتياطي ضد انقطاع النت: 59 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة
+01:34:08 focus[nav-search]: الاحتياطي ضد انقطاع النت: 55 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة
+01:34:12 focus[nav-search]: الاحتياطي ضد انقطاع النت: 52 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة
+01:34:15 focus[nav-search]: الاحتياطي ضد انقطاع النت: 48 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة
+01:34:19 focus[nav-search]: الاحتياطي ضد انقطاع النت: 45 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة
+01:34:22 focus[nav-start]: الاحتياطي ضد انقطاع النت: 42 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة
+01:34:23 screenshot 28-stuck-before-حسابي.png 1920x1080
+01:34:23 !! RuntimeError('top bar not reached (focus: الاحتياطي ضد انقطاع النت: 42 ث | رجوع | Gulf 24 FHD | 720p | مباشر | Cartoon Hour | صورة داخل صورة | حجم الصورة: ملاءمة | معلومات البث | رجوع 10 ثوانٍ | 10 | إيقاف مؤقت | تقديم 10 ثوانٍ | 10 | 00:45 | 01:45 | القنوات | الدليل | المعلق والجودة | التالي 01:45 · Weekly Review | قفل الشاشة)')
+01:34:24 screenshot 29-fail-settings.png 1920x1080
+01:34:24 == settings-deep
+01:34:26 focus[nav-search]: (android.view.View, no text)
+01:34:29 focus[nav-search]: 1 | RATV News HD | وثائقي الطبيعة
+01:34:33 focus[nav-search]: 23 | Stutter TV SD
+01:34:37 focus[nav-search]: 22 | Stutter TV HD
+01:34:41 focus[nav-search]: 21 | Shaky TS
+01:34:45 focus[nav-search]: انقطع الإنترنت… يكمل التشغيل فور عودته | 20 | Busy Server
+01:34:49 focus[nav-search]: (android.view.View, no text)
+01:34:53 focus[nav-search]: 17 | Overlap Live
+01:34:58 focus[nav-search]: (android.view.View, no text)
+01:35:02 focus[nav-search]: 15 | Frozen Live
+01:35:06 focus[nav-search]: 14 | Unstable Live
+01:35:09 focus[nav-search]: 3 | قناة الأخبار | Weekly Review
+01:35:13 focus[nav-search]: 2 | Gulf 24 FHD | Cartoon Hour
+01:35:17 focus[nav-search]: 1 | RATV News HD | وثائقي الطبيعة
+01:35:20 focus[nav-search]: 23 | Stutter TV SD
+01:35:24 focus[nav-start]: (android.view.View, no text)
+01:35:25 screenshot 30-stuck-before-حسابي.png 1920x1080
+01:35:25 !! RuntimeError('top bar not reached (focus: (android.view.View, no text))')
+01:35:26 screenshot 31-fail-settings-deep.png 1920x1080
+01:35:27 == languages
+01:35:38 screenshot 32-home-en.png 1920x1080
+01:35:40 focus[nav-search]: Live | Stutter TV HD | Stutter TV HD | أخبار | Watch now
+01:35:43 focus[nav-search]: New update available (9.9.9) — press to update
+01:35:46 focus[nav-search]: Matches
+01:35:48 focus[nav-start]: Matches
+01:35:54 focus[nav-target]: My account
+01:35:58 screenshot 33-settings-en.png 1920x1080
+01:36:00 focus[settings-en]: Add user
+01:36:03 focus[settings-en]: اشتراكي | test · 10.0.2.2:8000 | Current
+01:36:05 focus[settings-en]: Add user | Other users stay as they are
+01:36:08 focus[settings-en]: Internet speed test
+01:36:11 focus[settings-en]: Buffer against internet drops | Keeps playing 1 minute without internet (recommended)
+01:36:13 focus[settings-en]: Live stream format | TS (recommended)
+01:36:16 focus[settings-en]: Live stream steadiness | Automatic (recommended)
+01:36:19 focus[settings-en]: Backup version when a channel stalls | If a channel stalls a lot, switch to another version of it in your subscription (lighter quality or a backup link)
+01:36:22 focus[settings-en]: Match frame rate | Sets the screen to 50 or 60 Hz to suit the channel so motion is smooth; the screen may go black for a moment when a channel starts
+01:36:24 focus[settings-en]: Play the picture with the TV's hardware (experimental) | Motion may be smoother on some screens. If the screen goes black or the sound lags, turn it off. Applies the next time you open a channel.
+01:36:27 focus[settings-en]: Always the highest quality available | Picks the highest quality your provider sends
+01:36:30 focus[settings-en]: Open the last channel on start
+01:36:32 focus[settings-en]: Channel preview in the live list | On TV, the selected channel plays in a small window
+01:36:35 focus[settings-en]: Subtitle language | Arabic
+01:36:38 focus[settings-en]: Subtitle font size | Medium
+01:36:40 focus[settings-en]: Turn on subtitles automatically | Looks for subtitles in your language when any movie or episode starts, and translates them automatically if there are none
+01:36:43 focus[settings-en]: Update the guide automatically | Every 12 hours
+01:36:46 focus[settings-en]: Update the guide now
+01:36:48 focus[settings-en]: Block adult content | Hides adult sections, channels, movies and series for all users; a PIN is needed to show them
+01:36:51 focus[settings-en]: Delete watch history
+01:36:54 focus[settings-en]: Language | English
+01:36:58 screenshot 34-language-en.png 1920x1080
+01:37:02 focus[nav-search]: Language | English
+01:37:05 focus[nav-search]: Delete watch history
+01:37:08 focus[nav-search]: Block adult content | Hides adult sections, channels, movies and series for all users; a PIN is needed to show them
+01:37:11 focus[nav-search]: Update the guide now
+01:37:14 focus[nav-search]: Update the guide automatically | Every 12 hours
+01:37:17 focus[nav-search]: Turn on subtitles automatically | Looks for subtitles in your language when any movie or episode starts, and translates them automatically if there are none
+01:37:20 focus[nav-search]: Subtitle font size | Medium
+01:37:23 focus[nav-search]: Subtitle language | Arabic
+01:37:27 focus[nav-search]: Channel preview in the live list | On TV, the selected channel plays in a small window
+01:37:30 focus[nav-search]: Open the last channel on start
+01:37:33 focus[nav-search]: Always the highest quality available | Picks the highest quality your provider sends
+01:37:36 focus[nav-search]: Play the picture with the TV's hardware (experimental) | Motion may be smoother on some screens. If the screen goes black or the sound lags, turn it off. Applies the next time you open a channel.
+01:37:39 focus[nav-search]: Match frame rate | Sets the screen to 50 or 60 Hz to suit the channel so motion is smooth; the screen may go black for a moment when a channel starts
+01:37:42 focus[nav-search]: Backup version when a channel stalls | If a channel stalls a lot, switch to another version of it in your subscription (lighter quality or a backup link)
+01:37:45 focus[nav-search]: Live stream steadiness | Automatic (recommended)
+01:37:48 focus[nav-search]: Live stream format | TS (recommended)
+01:37:51 focus[nav-search]: Buffer against internet drops | Keeps playing 1 minute without internet (recommended)
+01:37:54 focus[nav-search]: Internet speed test
+01:37:58 focus[nav-search]: Add user | Other users stay as they are
+01:38:01 focus[nav-search]: اشتراكي | test · 10.0.2.2:8000 | Current
+01:38:04 focus[nav-search]: Add user
+01:38:07 focus[nav-search]: Home
+01:38:08 focus[nav-start]: Home
+01:38:11 focus[nav-target]: Live
+01:38:18 screenshot 35-live-en.png 1920x1080
+01:38:28 screenshot 36-home-es.png 1920x1080
+01:38:29 focus[nav-search]: En vivo | Stutter TV HD | Stutter TV HD | أخبار | Ver ahora
+01:38:32 focus[nav-search]: Nueva actualización disponible (9.9.9) — pulsa para actualizar
+01:38:36 focus[nav-search]: Series
+01:38:37 focus[nav-start]: Series
+01:38:40 focus[nav-target]: Mi cuenta
+01:38:45 screenshot 37-settings-es.png 1920x1080
+01:38:47 focus[settings-es]: Añadir usuario
+01:38:49 focus[settings-es]: اشتراكي | test · 10.0.2.2:8000 | Actual
+01:38:52 focus[settings-es]: Añadir usuario | Los demás usuarios no cambian
+01:38:55 focus[settings-es]: Test de velocidad
+01:38:57 focus[settings-es]: Búfer contra cortes de internet | Sigue 1 minuto sin internet (recomendado)
+01:39:00 focus[settings-es]: Formato en vivo | TS (recomendado)
+01:39:03 focus[settings-es]: Estabilidad en vivo | Automático (recomendado)
+01:39:05 focus[settings-es]: Versión alternativa si el canal se corta | Si un canal se corta mucho, pasa a otra versión del mismo en tu suscripción (calidad más ligera o enlace de respaldo)
+01:39:08 focus[settings-es]: Igualar la frecuencia de imagen | Ajusta la pantalla a 50 o 60 Hz según el canal para un movimiento suave; la pantalla puede quedarse en negro un momento al iniciar un canal
+01:39:11 focus[settings-es]: Reproducir la imagen con el hardware de la TV (experimental) | El movimiento puede ser más suave en algunas pantallas. Si la pantalla se queda en negro o el sonido se retrasa, desactívalo. Se aplica la próxima vez que abras un canal.
+01:39:14 focus[settings-es]: Siempre la máxima calidad disponible | Elige la máxima calidad que envía tu proveedor
+01:39:16 focus[settings-es]: Abrir el último canal al iniciar
+01:39:19 focus[settings-es]: Vista previa del canal en la lista en vivo | En la TV, el canal elegido se muestra en una ventana pequeña
+01:39:22 focus[settings-es]: Idioma de subtítulos | Árabe
+01:39:24 focus[settings-es]: Tamaño de los subtítulos | Mediano
+01:39:27 focus[settings-es]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:39:30 focus[settings-es]: Actualizar la guía automáticamente | Cada 12 horas
+01:39:32 focus[settings-es]: Actualizar la guía ahora
+01:39:35 focus[settings-es]: Bloquear contenido para adultos | Oculta secciones, canales, películas y series para adultos en todos los usuarios; hace falta un PIN para mostrarlos
+01:39:38 focus[settings-es]: Borrar historial
+01:39:40 focus[settings-es]: Idioma de la app · Language | Español
+01:39:45 screenshot 38-language-es.png 1920x1080
+01:39:48 focus[nav-search]: Idioma de la app · Language | Español
+01:39:51 focus[nav-search]: Borrar historial
+01:39:54 focus[nav-search]: Bloquear contenido para adultos | Oculta secciones, canales, películas y series para adultos en todos los usuarios; hace falta un PIN para mostrarlos
+01:39:57 focus[nav-search]: Actualizar la guía ahora
+01:40:01 focus[nav-search]: Actualizar la guía automáticamente | Cada 12 horas
+01:40:04 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:07 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:10 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:13 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:16 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:19 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:22 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:25 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:28 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:31 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:34 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:37 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:40 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:43 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:47 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:50 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:53 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:56 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:40:59 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:02 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:05 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:08 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:11 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:14 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:17 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:20 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:23 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:26 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:29 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:32 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:36 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:39 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:42 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:45 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:48 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:51 focus[nav-start]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+01:41:51 screenshot 39-stuck-before-En vivo.png 1920x1080
+01:41:57 !! RuntimeError('top bar not reached (focus: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay)')
+01:41:57 screenshot 40-fail-languages.png 1920x1080
