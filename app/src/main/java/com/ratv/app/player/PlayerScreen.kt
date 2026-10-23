@@ -514,6 +514,11 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 firstFrame = true
             }
 
+            // A new channel or film on the same player has not shown its first picture yet.
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                firstFrame = false
+            }
+
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                 mix.onMainPlayWhenReady(playWhenReady)
             }
