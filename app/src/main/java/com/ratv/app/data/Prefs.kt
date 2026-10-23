@@ -243,6 +243,21 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("autoVersion", false)
         set(value) = sp.edit().putBoolean("autoVersion", value).apply()
 
+    /** Smart picture enhancement of weak channels (under 720 lines), done by the TV itself. */
+    var enhance: Boolean
+        get() = sp.getBoolean("enhance", false)
+        set(value) = sp.edit().putBoolean("enhance", value).apply()
+
+    /** The device's graphics could not run the enhancement: it stays off until turned on again. */
+    var enhanceBroken: Boolean
+        get() = sp.getBoolean("enhanceBroken", false)
+        set(value) = sp.edit().putBoolean("enhanceBroken", value).apply()
+
+    /** Pixels a second this device keeps up with when enhancing (lowered when it falls behind). */
+    var enhanceMaxRate: Long
+        get() = sp.getLong("enhanceMaxRate", Long.MAX_VALUE)
+        set(value) = sp.edit().putLong("enhanceMaxRate", value).apply()
+
     /** On a TV, switch the screen to 50 or 60 Hz to match the channel, for even motion. */
     var matchFrameRate: Boolean
         // On by default on a TV: 25 and 50 fps channels (most Arabic and sports ones) judder on 60 Hz.

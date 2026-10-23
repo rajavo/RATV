@@ -109,6 +109,10 @@ object RIcons {
     val Sliders: ImageVector by lazy {
         stroke("sliders", "M20 7h-9M6 7H4M20 17h-3M12 17H4", circle(8.5f, 7f, 2.5f), circle(14.5f, 17f, 2.5f))
     }
+    // A four-pointed spark and a small one: the picture enhancement.
+    val Sparkle: ImageVector by lazy {
+        stroke("sparkle", "M10 3.5l1.7 4.8 4.8 1.7-4.8 1.7L10 16.5l-1.7-4.8L3.5 10l4.8-1.7z", "M18 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z")
+    }
     val Captions: ImageVector by lazy { stroke("captions", rrect(3f, 5f, 18f, 14f, 2.5f), "M7 14.5h3.5M13.5 14.5H17M7 11h2M12 11h5") }
     val Trophy: ImageVector by lazy {
         stroke("trophy", "M8 4h8v5a4 4 0 0 1-8 0z", "M8 6H5.5a2.5 2.5 0 0 0 2.7 3.6", "M16 6h2.5a2.5 2.5 0 0 1-2.7 3.6", "M12 13v4", "M8.5 21h7", "M10 17h4v4h-4z")
