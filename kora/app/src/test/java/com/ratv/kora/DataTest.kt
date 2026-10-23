@@ -17,7 +17,8 @@ class DataTest {
                   "99":{"en":"Wolverhampton Wanderers","s":"Wolves","logo":""},
                   "y:الأهلي":{"en":"","ar":"الأهلي","logo":"https://y/a.webp"}},
          "matches":[
-           {"id":"700","lg":"ksa.1","t":1792605600,"h":"929","a":"817","st":"post","sn":"FULL_TIME","hs":2,"as":1,"v":"Kingdom Arena","c":"Riyadh"},
+           {"id":"700","lg":"ksa.1","t":1792605600,"h":"929","a":"817","st":"post","sn":"FULL_TIME","hs":2,"as":1,"v":"Kingdom Arena","c":"Riyadh",
+            "tv":["Thmanyah","MBC Shahid","beIN Sports Mena 2"]},
            {"id":"701","lg":"ksa.1","t":1792600000,"h":"817","a":"99","st":"pre","sn":"SCHEDULED","tbd":1},
            {"id":"y5","lg":"egy.1","t":1792609999,"h":"y:الأهلي","a":"929","st":"pre","sn":"SCHEDULED","n":"الأسبوع الثامن"}
          ]}
@@ -118,5 +119,25 @@ class DataTest {
         assertEquals("811 مباراة", Fmt.matches(811))
         assertEquals("\u200E67'\u200E", Fmt.ltr("67'"))
         assertEquals("استراحة", Fmt.ltr("استراحة"))
+    }
+
+    @Test
+    fun channelsOfTheArabWorldByTheirUsualNames() {
+        val m = ScheduleParser.parse(sample).matches.first { it.id == "700" }
+        assertEquals(listOf("Thmanyah", "MBC Shahid", "beIN Sports Mena 2"), m.tv)
+        assertEquals(listOf("ثمانية", "beIN SPORTS 2"), Channels.arab(m.tv))
+        assertEquals(
+            listOf("beIN SPORTS 1", "beIN SPORTS 1 English", "beIN SPORTS MAX 4", "beIN SPORTS XTRA 1", "الكأس 5", "الكأس 6",
+                "أبوظبي الرياضية 1", "دبي الرياضية 1", "الشارقة الرياضية", "SSC 1", "العراقية الرياضية"),
+            Channels.arab(
+                listOf(
+                    "beIN Sports Mena 1", "beIN Sports ENG 1", "Arena 1 Premium", "TOD TV", "beIN Sports MAX 4", "beIN Sports XTRA 1",
+                    "beIN SPORTS CONNECT", "ALKASS Five", "ALKASS Six", "Shoof", "Abu Dhabi Sports 1", "Dubai Sport 1",
+                    "الشارقة الرياضية", "SSC 1", "Al Iraqiya Sports", "Almanasa", "Viaplay Denmark", "stc tv", "starzplay", "شاشا",
+                    "beIN Sports France 1", "beIN Sports Mena 1"
+                )
+            )
+        )
+        assertTrue(ScheduleParser.parse(sample).matches.first { it.id == "701" }.tv.isEmpty())
     }
 }

@@ -32,7 +32,9 @@ data class Match(
     val clock: String?,
     val venue: String?,
     val city: String?,
-    val note: String?
+    val note: String?,
+    /** The channels that show it, as the schedule names them (Channels.arab keeps the Arab world's). */
+    val tv: List<String> = emptyList()
 ) {
     /** Matches from ESPN get live scores; the Arab leagues ESPN lacks come from another source. */
     val fromEspn: Boolean get() = !id.startsWith("y")
@@ -102,7 +104,8 @@ object ScheduleParser {
                     clock = m.optStringOrNull("clk"),
                     venue = m.optStringOrNull("v"),
                     city = m.optStringOrNull("c"),
-                    note = m.optStringOrNull("n")
+                    note = m.optStringOrNull("n"),
+                    tv = m.optJSONArray("tv")?.let { a -> (0 until a.length()).mapNotNull { i -> a.optString(i).trim().takeIf { it.isNotEmpty() } } }.orEmpty()
                 )
             )
         }

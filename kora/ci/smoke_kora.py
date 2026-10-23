@@ -185,8 +185,9 @@ def write_schedule(offset_min):
     matches = [
         {"id": "9000", "lg": "eng.1", "t": today0 - 86400 + 20 * 3600, "h": "364", "a": "382", "st": "post", "sn": "FULL_TIME", "hs": 3, "as": 1},
         {"id": "9001", "lg": "ksa.1", "t": now - 50 * 60, "h": "929", "a": "817", "st": "in", "sn": "FIRST_HALF", "hs": 1, "as": 0,
-         "clk": "5'", "v": "Kingdom Arena", "c": "Riyadh"},
-        {"id": "9002", "lg": "eng.1", "t": now + 2 * 3600, "h": "359", "a": "363", "st": "pre", "sn": "SCHEDULED"},
+         "clk": "5'", "v": "Kingdom Arena", "c": "Riyadh", "tv": ["Thmanyah", "MBC Shahid"]},
+        {"id": "9002", "lg": "eng.1", "t": now + 2 * 3600, "h": "359", "a": "363", "st": "pre", "sn": "SCHEDULED",
+         "tv": ["beIN Sports Mena 1", "beIN Sports ENG 1", "Viaplay Denmark", "TOD TV", "beIN SPORTS CONNECT"]},
         {"id": "y9003", "lg": "egy.1", "t": now + 3 * 3600, "h": "y:الأهلي", "a": "y:الزمالك", "st": "pre", "sn": "SCHEDULED",
          "n": "الأسبوع الثامن"},
         {"id": "9004", "lg": "esp.1", "t": today0 + 86400 + 21 * 3600, "h": "86", "a": "83", "st": "pre", "sn": "SCHEDULED"},
@@ -233,6 +234,10 @@ def s_today():
         expect(want in t, "'%s' is missing from today's schedule" % want)
     expect("67'" in t, "the live minute (67') from the live scores did not arrive")
     expect("ريال مدريد" not in t, "tomorrow's match shows today")
+    # The channels under each match: the Arab world's, by their usual names; no apps or foreign channels.
+    expect("ثمانية" in t, "the channel of the Saudi match (ثمانية) is missing")
+    expect("beIN SPORTS 1" in t and "beIN SPORTS 1 English" in t, "the beIN channels of the English match are missing")
+    expect("Viaplay" not in t and "TOD" not in t and "CONNECT" not in t and "Shahid" not in t, "an app or a foreign channel shows: " + t[:500])
     f = focused(root)
     log("selected at start: %s" % f)
     expect(f and "اليوم" in f, "the remote does not start on today (selected: %s)" % f)
@@ -292,6 +297,7 @@ def s_details():
     expect(root is not None, "the match details did not open")
     t = texts(root)
     expect("Kingdom Arena" in t, "the stadium is missing from the details")
+    expect("القنوات: ثمانية" in t, "the channels are missing from the details: " + t[:400])
     expect("67'" in t, "the live minute is missing from the details")
     f = focused(root)
     expect(f and "شاهد على RA TV" in f, "the watch button is not selected (%s)" % f)
