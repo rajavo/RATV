@@ -181,23 +181,30 @@ def t_player_numbers():
     f = focus_home_item("شاهد الآن", "numbers-hero")
     expect(f and "شاهد الآن" in f, "watch-now not focused (focus: %s)" % f)
     key("DPAD_CENTER", pause=9)
-    S.shell("input keyevent KEYCODE_5")
-    time.sleep(0.7)
-    S.shot("player-number-typed")
-    time.sleep(3)
-    root = S.dump("player-number")
-    S.shot("player-number")
-    texts = S.all_texts(root)
-    expect("Sport 2 4K" in texts, "the 5 key did not open channel 5 (Sport 2 4K): %s" % texts[:300])
-    S.shell("input keyevent KEYCODE_LAST_CHANNEL")
-    time.sleep(3)
-    root = S.dump("player-last-channel")
-    S.shot("player-last-channel")
-    back_texts = S.all_texts(root)
-    key("BACK", pause=2)
-    expect("Sport 2 4K" not in back_texts, "the previous-channel key did not go back: %s" % back_texts[:300])
-    _, n = S.wait_for(timeout=15, text="الرئيسية")
-    expect(n is not None, "Back did not return from the player")
+    try:
+        S.shell("input keyevent KEYCODE_5")
+        time.sleep(0.6)
+        S.shot("player-number-typed")
+        key("DPAD_CENTER", pause=0.8)  # OK opens the typed number at once
+        root = S.dump("player-number")
+        S.shot("player-number")
+        texts = S.all_texts(root)
+        expect("Sport 2 4K" in texts, "the 5 key did not open channel 5 (Sport 2 4K): %s" % texts[:300])
+        time.sleep(3.5)  # the banner goes
+        S.shell("input keyevent KEYCODE_LAST_CHANNEL")
+        time.sleep(0.8)
+        root = S.dump("player-last-channel")
+        S.shot("player-last-channel")
+        back_texts = S.all_texts(root)
+        names = [t for t in back_texts.split(" | ") if t.strip() and not t.strip().isdigit()]
+        expect(names and "Sport 2 4K" not in back_texts, "the previous-channel key did not go back: %s" % back_texts[:300])
+    finally:
+        # Out of the player whatever happened, so the next steps start from the home screen.
+        for _ in range(3):
+            key("BACK", pause=2)
+            _, n = S.wait_for(timeout=4, text="الرئيسية")
+            if n is not None:
+                break
 
 
 def t_update_notes():
