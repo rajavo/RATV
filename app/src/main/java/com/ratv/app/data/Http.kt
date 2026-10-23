@@ -19,13 +19,17 @@ class HttpException(val code: Int) : IOException("HTTP $code")
 
 /**
  * Name lookups: when one fails (the first thing to fail on a shaky line), the address found last
- * time is used, so a reconnect does not wait for the name server.
+ * time is used, so a reconnect does not wait for the name server. IPv4 addresses come first: on a
+ * home line whose IPv6 is broken, each connection would otherwise wait out its timeout on the IPv6
+ * address before trying IPv4 (the picture would stop for those seconds at every reconnect).
  */
 object StickyDns : Dns {
     private val known = ConcurrentHashMap<String, List<InetAddress>>()
 
     override fun lookup(hostname: String): List<InetAddress> = try {
-        Dns.SYSTEM.lookup(hostname).also { if (it.isNotEmpty()) known[hostname] = it }
+        Dns.SYSTEM.lookup(hostname)
+            .sortedBy { if (it is java.net.Inet4Address) 0 else 1 }
+            .also { if (it.isNotEmpty()) known[hostname] = it }
     } catch (e: UnknownHostException) {
         known[hostname] ?: throw e
     }

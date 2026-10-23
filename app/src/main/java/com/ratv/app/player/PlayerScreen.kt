@@ -100,6 +100,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.C
+import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.PlaybackException
@@ -107,6 +108,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.Tracks
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.DecoderReuseEvaluation
 import androidx.media3.exoplayer.analytics.AnalyticsListener
 import androidx.media3.exoplayer.source.LoadEventInfo
 import androidx.media3.exoplayer.source.MediaLoadData
@@ -214,9 +216,41 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val playPauseFocus = remember { FocusRequester() }
     val retryFocus = remember { FocusRequester() }
 
-    val player = remember {
+    // Smart enhancement of weak pictures (Enhance.kt): this player has it when the setting is on and
+    // the item playing is known (or seen) to be under 720 lines. HD goes straight to the screen.
+    var enhanceSetting by remember { mutableStateOf(repo.prefs.enhance) }
+    var enhanceBroken by remember { mutableStateOf(repo.prefs.enhanceBroken) }
+    var enhanceMaxRate by remember { mutableLongStateOf(repo.prefs.enhanceMaxRate) }
+    var enhanceFor by remember { mutableStateOf<String?>(null) }
+    // Where a film or episode carries on when its player is made again (enhancement on or off).
+    var resumeAt by remember { mutableStateOf<Pair<String, Long>?>(null) }
+    val enhanceWanted = current?.let { enhanceFor == enhanceKey(it) } == true
+    val playerViewRef = remember { arrayOfNulls<PlayerView>(1) }
+
+    /** True when [item] should be enhanced: a weak picture this TV keeps up with. */
+    fun wantsEnhance(item: Playable, seenHeight: Int? = null, seenFps: Float = 0f): Boolean {
+        if (!enhanceSetting || enhanceBroken) return false
+        val known = EnhanceMemory.get(context, enhanceKey(item))
+        val h = seenHeight ?: known?.height ?: nameHintHeight(item.channel?.name ?: item.title) ?: return false
+        if (h !in 1 until ENHANCE_BELOW_HEIGHT) return false
+        val fps = if (seenFps > 0f) seenFps else known?.fps ?: 25f
+        return enhanceRate(h, fps) <= enhanceMaxRate
+    }
+
+    /** The shape the enhanced picture is stretched to (fill or a fixed shape), or null to keep its own. */
+    fun stretchFor(index: Int): Float? {
+        val mode = resizeModes[index]
+        if (mode.resize != AspectRatioFrameLayout.RESIZE_MODE_FILL) return null
+        return mode.ratio ?: if (view.width > 0 && view.height > 0) view.width.toFloat() / view.height else 16f / 9f
+    }
+
+    val player = remember(enhanceWanted) {
         Steadiness.mode = repo.prefs.liveSteady
-        createPlayer(context, repo.prefs.bufferMode, repo.prefs.bestQuality, live = kind == "live", tunneling = isTv && repo.prefs.tunneling)
+        createPlayer(
+            context, repo.prefs.bufferMode, repo.prefs.bestQuality, live = kind == "live",
+            tunneling = isTv && repo.prefs.tunneling,
+            enhance = enhanceWanted, stretchAspect = stretchFor(resizeIndex)
+        )
     }
     val cushion = remember { cushionMs(repo.prefs.bufferMode) }
     val liveFormat = remember { repo.prefs.liveFormat }
@@ -251,7 +285,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     var measuredFps by remember { mutableFloatStateOf(0f) }
     var videoWidth by remember { mutableIntStateOf(0) }
     val scope = rememberCoroutineScope()
-    val mix = remember { MixController(context, scope, player, repo.prefs.bufferMode) }
+    val mix = remember(player) { MixController(context, scope, player, repo.prefs.bufferMode) }
     val subs = remember { SubtitleController(scope, repo.prefs) }
     val inPip = rememberIsInPictureInPicture(activity)
     val canPip = remember {
@@ -292,6 +326,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         saveProgress()
         mix.stop()
         current = item
+        enhanceFor = if (wantsEnhance(item)) enhanceKey(item) else null
         panelOpen = false
         sourcesOpen = false
         subsOpen = false
@@ -330,11 +365,12 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         } else {
             episodes = resolved.episodes
             current = resolved.playable
+            enhanceFor = if (wantsEnhance(resolved.playable)) enhanceKey(resolved.playable) else null
         }
     }
 
     // ------------------------------------------------- start the stream
-    LaunchedEffect(current, hlsFailedFor, hlsPreferredFor) {
+    LaunchedEffect(player, current, hlsFailedFor, hlsPreferredFor) {
         val item = current ?: return@LaunchedEffect
         playerError = null
         ended = false
@@ -346,7 +382,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         stallTimes.clear()
         droppedFrames = 0
         measuredFps = 0f
-        player.setMediaItem(mediaItemFor(url, live = item.isLive), item.startPosition.coerceAtLeast(0L))
+        val resume = resumeAt?.takeIf { it.first == item.id && !item.isLive }?.second
+        resumeAt = null
+        player.setMediaItem(mediaItemFor(url, live = item.isLive), (resume ?: item.startPosition).coerceAtLeast(0L))
         player.prepare()
         player.playWhenReady = true
         if (item.isLive) repo.noteChannelPlayed(item.id)
@@ -398,7 +436,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // The subtitle line follows the picture closely.
-    LaunchedEffect(subs.isOn) {
+    LaunchedEffect(player, subs.isOn) {
         subs.positionMs = { player.currentPosition }
         if (subs.isOn) selectTrack(player, C.TRACK_TYPE_TEXT, null)
         while (subs.isOn) {
@@ -423,7 +461,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
 
     // ------------------------------------------------------- listeners
     // When the network comes back, a live channel waiting to reconnect tries at once.
-    DisposableEffect(Unit) {
+    DisposableEffect(player) {
         val cm = context.applicationContext.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as? android.net.ConnectivityManager
         val main = android.os.Handler(android.os.Looper.getMainLooper())
         val callback = object : android.net.ConnectivityManager.NetworkCallback() {
@@ -464,9 +502,16 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     DisposableEffect(player) {
+        // Whether this player enhances the picture (it is made again to change that).
+        val pipeline = enhanceWanted
+        var firstFrame = false
         val listener = object : Player.Listener {
             override fun onIsPlayingChanged(playing: Boolean) {
                 isPlaying = playing
+            }
+
+            override fun onRenderedFirstFrame() {
+                firstFrame = true
             }
 
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
@@ -485,6 +530,16 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             override fun onPlayerError(error: PlaybackException) {
                 val now = current
                 when {
+                    // The device's graphics could not run the enhancement: play the usual way.
+                    pipeline && (error.errorCode == PlaybackException.ERROR_CODE_VIDEO_FRAME_PROCESSOR_INIT_FAILED ||
+                        error.errorCode == PlaybackException.ERROR_CODE_VIDEO_FRAME_PROCESSING_FAILED) -> {
+                        Log.w("RATVEnhance", "the enhancement failed on this device: off", error)
+                        repo.prefs.enhanceBroken = true
+                        enhanceBroken = true
+                        streamNotice = tr("تحسين الصورة ما اشتغل على هذا الجهاز، فأوقفناه")
+                        if (now != null && !now.isLive) resumeAt = now.id to player.currentPosition
+                        enhanceFor = null
+                    }
                     usingHls && now != null && hlsUnsupported(error) -> {
                         hlsFailedFor = now.id // try the channel's own (TS) address
                     }
@@ -523,6 +578,22 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 audioTracks = audio
                 hasTrackChoice = audio > 1 || text > 0
                 audioVersion++
+                // The picture's size, remembered for the enhancement. It is known well before the
+                // store is full, so the enhancement can still be switched on (or off) before the
+                // channel shows; later it waits for the next time the channel is opened.
+                val video = tracks.groups.firstOrNull { it.type == C.TRACK_TYPE_VIDEO && it.isSelected }
+                    ?.let { g -> (0 until g.length).firstOrNull { g.isTrackSelected(it) }?.let { g.getTrackFormat(it) } }
+                val item = current
+                if (video != null && video.height > 0 && item != null) {
+                    EnhanceMemory.put(context, enhanceKey(item), video.height, video.frameRate)
+                    if (!firstFrame && !player.isPlaying) {
+                        val want = wantsEnhance(item, seenHeight = video.height, seenFps = video.frameRate)
+                        if (want != pipeline) {
+                            Log.i("RATVEnhance", "picture ${video.width}x${video.height}: enhancement " + if (want) "on" else "off")
+                            enhanceFor = if (want) enhanceKey(item) else null
+                        }
+                    }
+                }
             }
         }
         player.addListener(listener)
@@ -594,23 +665,57 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             override fun onVideoSizeChanged(eventTime: AnalyticsListener.EventTime, videoSize: VideoSize) {
                 if (videoSize.width > 0) videoWidth = videoSize.width
             }
+
+            override fun onVideoInputFormatChanged(
+                eventTime: AnalyticsListener.EventTime,
+                format: Format,
+                decoderReuseEvaluation: DecoderReuseEvaluation?
+            ) {
+                if (format.height <= 0) return
+                videoHeight = format.height
+                if (format.width > 0) videoWidth = format.width
+                // Through the enhancement the player does not report the picture's shape: the view gets it here.
+                if (pipeline && format.width > 0) {
+                    val par = if (format.pixelWidthHeightRatio > 0f) format.pixelWidthHeightRatio else 1f
+                    playerViewRef[0]?.findViewById<AspectRatioFrameLayout>(androidx.media3.ui.R.id.exo_content_frame)
+                        ?.setAspectRatio(format.width * par / format.height)
+                }
+            }
         }
         player.addAnalyticsListener(loadWatch)
         onDispose {
             player.removeAnalyticsListener(loadWatch)
             player.removeListener(listener)
-            saveProgress()
+            // Its position belongs to the film still playing (not to the next one it is left for).
+            val playingUrl = player.currentMediaItem?.localConfiguration?.uri?.toString()
+            if (playingUrl != null && playingUrl == current?.url) saveProgress()
             mix.release()
-            subs.release()
             player.release()
         }
+    }
+    DisposableEffect(Unit) {
+        onDispose { subs.release() }
     }
 
     // Watches the reserve, the connection and the real frame rate once a second. Playback
     // speed is never touched: speeding up or slowing down shows as judder on a TV.
-    LaunchedEffect(current) {
-        current ?: return@LaunchedEffect
+    LaunchedEffect(player, current) {
+        val watched = current ?: return@LaunchedEffect
+        val pipeline = enhanceWanted
         if (player.playbackParameters.speed != 1f) player.setPlaybackSpeed(1f)
+        // A picture that stops while the sound goes on (the decoder stuck), or a clock that stops
+        // while playing, is started again: at most three times for one channel.
+        var outFramesSeen = -1L
+        var framesStuckSince = 0L
+        var watchPos = -1L
+        var posStuckSince = 0L
+        var watchRestarts = 0
+        var fpsRemembered = false
+        // How the TV keeps up with the enhancement: dropped pictures over 6 s, after 5 s of playing.
+        var playingSince = 0L
+        var windowStart = 0L
+        var windowFrames = -1L
+        var windowDropped = 0L
         var lastBuffered = player.bufferedPosition
         var lastFrames = -1L
         var lastFramesAt = 0L
@@ -669,6 +774,87 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                     lastFramesAt = t
                 }
             }
+            val counters = player.videoDecoderCounters
+            val outFrames = counters?.let { (it.renderedOutputBufferCount + it.droppedBufferCount + it.skippedOutputBufferCount).toLong() } ?: -1L
+            val hasVideo = (player.videoFormat?.height ?: 0) > 0
+            if (!fpsRemembered && measuredFps > 0f && videoHeight > 0) {
+                fpsRemembered = true
+                EnhanceMemory.put(context, enhanceKey(watched), videoHeight, measuredFps)
+            }
+            if (player.isPlaying && hasVideo && outFrames >= 0) {
+                if (outFrames != outFramesSeen) {
+                    outFramesSeen = outFrames
+                    framesStuckSince = 0L
+                } else if (framesStuckSince == 0L) {
+                    framesStuckSince = tick
+                }
+            } else {
+                outFramesSeen = outFrames
+                framesStuckSince = 0L
+            }
+            if (player.isPlaying) {
+                if (watchPos < 0L || kotlin.math.abs(pos - watchPos) > 200L) {
+                    watchPos = pos
+                    posStuckSince = 0L
+                } else if (posStuckSince == 0L) {
+                    posStuckSince = tick
+                }
+            } else {
+                watchPos = pos
+                posStuckSince = 0L
+            }
+            // Only a channel that was really moving (10 pictures a second or more) counts as frozen:
+            // some radio channels show one still picture.
+            // (Not in the last half minute of a film, whose picture may end before its sound.)
+            val nearEnd = !watched.isLive && player.duration > 0L && player.duration - pos < 30_000L
+            val pictureFrozen = framesStuckSince > 0L && tick - framesStuckSince >= 5_000L && measuredFps >= 10f && !nearEnd
+            val clockStopped = posStuckSince > 0L && tick - posStuckSince >= 6_000L
+            if ((pictureFrozen || clockStopped) && watchRestarts < 3) {
+                watchRestarts++
+                Log.i("RATVPlayback", if (pictureFrozen) "the picture froze while the sound went on: starting again" else "the clock stopped while playing: starting again")
+                framesStuckSince = 0L
+                posStuckSince = 0L
+                outFramesSeen = -1L
+                watchPos = -1L
+                val at = player.currentPosition
+                player.stop()
+                player.prepare()
+                if (watched.isLive) player.seekToDefaultPosition() else player.seekTo(at)
+                player.playWhenReady = true
+            }
+            if (pipeline && counters != null && enhanceWanted) {
+                if (player.isPlaying && hasVideo) {
+                    if (playingSince == 0L) playingSince = tick
+                    if (tick - playingSince >= 5_000L) {
+                        if (windowFrames < 0L) {
+                            windowStart = tick
+                            windowFrames = outFrames
+                            windowDropped = counters.droppedBufferCount.toLong()
+                        } else if (tick - windowStart >= 6_000L) {
+                            val frames = outFrames - windowFrames
+                            val dropped = counters.droppedBufferCount - windowDropped
+                            windowStart = tick
+                            windowFrames = outFrames
+                            windowDropped = counters.droppedBufferCount.toLong()
+                            val keep = com.ratv.app.data.debugProperty("debug.ratv.enhancekeep") == "1"
+                            if (frames >= 30L && dropped * 100L > frames * 12L && !keep) {
+                                // The TV falls behind: no enhancement for pictures this heavy from now on.
+                                val rate = enhanceRate(videoHeight.takeIf { it > 0 } ?: 576, if (measuredFps > 0f) measuredFps else 25f)
+                                val limit = rate * 8L / 10L
+                                Log.i("RATVEnhance", "the TV falls behind ($dropped of $frames pictures dropped): off for pictures this heavy")
+                                repo.prefs.enhanceMaxRate = limit
+                                enhanceMaxRate = limit
+                                streamNotice = tr("التلفزيون ما لحق على تحسين الصورة في هذي الجودة، فأوقفناه لها")
+                                if (!watched.isLive) resumeAt = watched.id to player.currentPosition
+                                enhanceFor = null
+                            }
+                        }
+                    }
+                } else {
+                    playingSince = 0L
+                    windowFrames = -1L
+                }
+            }
             delay(1_000L)
         }
     }
@@ -690,7 +876,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // Reconnect by itself after a network drop instead of stopping with an error.
-    LaunchedEffect(reconnectAttempts, reconnecting) {
+    LaunchedEffect(player, reconnectAttempts, reconnecting) {
         if (!reconnecting) return@LaunchedEffect
         delay(minOf(1_500L * reconnectAttempts, 10_000L))
         val playing = current ?: return@LaunchedEffect
@@ -801,7 +987,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         item?.channel?.let { repo.siblings(it) }.orEmpty()
     }
     val fourK = siblings.firstOrNull { it.quality == "4K" }?.takeIf { item?.channel?.quality != "4K" }
-    val audioOptions = remember(audioVersion, sourcesOpen) { trackOptions(player, C.TRACK_TYPE_AUDIO) }
+    val audioOptions = remember(player, audioVersion, sourcesOpen) { trackOptions(player, C.TRACK_TYPE_AUDIO) }
     val liveChannel = item?.channel
     val isSports = remember(liveChannel?.id) { liveChannel?.let { repo.isSportsChannel(it) } == true }
     val sameEvent by produceState<List<Channel>?>(null, liveChannel?.id, programme?.title, sourcesOpen) {
@@ -862,6 +1048,31 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     fun showControls() {
         controlsVisible = true
         touch()
+    }
+
+    /** The player's "enhance picture" button: the same switch as in the settings. */
+    fun toggleEnhance() {
+        val item = current ?: return
+        touch()
+        val on = !enhanceWanted
+        if (on) {
+            repo.prefs.enhance = true
+            enhanceSetting = true
+            // Turned on by hand: try again even where it was stopped before.
+            repo.prefs.enhanceBroken = false
+            enhanceBroken = false
+            repo.prefs.enhanceMaxRate = Long.MAX_VALUE
+            enhanceMaxRate = Long.MAX_VALUE
+        } else {
+            repo.prefs.enhance = false
+            enhanceSetting = false
+        }
+        val next = if (on && wantsEnhance(item, seenHeight = videoHeight.takeIf { it > 0 }, seenFps = measuredFps)) enhanceKey(item) else null
+        if (next != enhanceFor) {
+            if (!item.isLive) resumeAt = item.id to player.currentPosition
+            enhanceFor = next
+        }
+        streamNotice = if (on) tr("تحسين الصورة الذكي: يشتغل") else tr("تحسين الصورة الذكي: مطفي")
     }
 
     /** TV remote: OK shows the controls, up/down change channel, left/right seek, media keys work anywhere. */
@@ -1038,9 +1249,13 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                     isFocusableInTouchMode = false
                     descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
                     setPlayer(exoPlayer)
+                    playerViewRef[0] = this
                 }
             },
-            update = { it.resizeMode = resizeModes[resizeIndex].resize },
+            update = {
+                it.resizeMode = resizeModes[resizeIndex].resize
+                if (it.player !== exoPlayer) it.player = exoPlayer
+            },
             modifier = resizeModes[resizeIndex].ratio?.let { Modifier.align(Alignment.Center).aspectRatio(it) } ?: Modifier.fillMaxSize()
         )
 
@@ -1119,6 +1334,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 steadyExtraMs = if (current?.isLive == true) Steadiness.extraMs else 0L,
                 dropped = droppedFrames,
                 offline = netTrouble,
+                enhanced = if (enhanceWanted && videoHeight in 1 until ENHANCE_BELOW_HEIGHT) "${videoHeight}p → ${enhancedHeight(videoHeight)}p" else null,
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(start = 20.dp, top = 84.dp)
@@ -1279,7 +1495,13 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                             canPip = canPip,
                             resizeLabel = resizeModes[resizeIndex].label,
                             hasNextEpisode = nextEpisode != null,
-                            resolution = resolutionLabel(videoHeight),
+                            resolution = resolutionLabel(videoHeight)?.let { if (enhanceWanted) "$it ✦" else it },
+                            enhanceLabel = if (videoHeight in 1 until ENHANCE_BELOW_HEIGHT) {
+                                if (enhanceWanted) tr("تحسين الصورة: يعمل") else tr("تحسين الصورة")
+                            } else {
+                                null
+                            },
+                            onEnhance = { toggleEnhance() },
                             fourKName = if (item.isLive) fourK?.name else upgrade?.title,
                             onFourK = {
                                 if (item.isLive) {
@@ -1329,6 +1551,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                                 resizeIndex = (resizeIndex + 1) % resizeModes.size
                                 repo.prefs.resizeMode = resizeIndex
                                 resizeNotice = resizeModes[resizeIndex].label
+                                if (enhanceWanted) player.setVideoEffects(listOf(TvEnhanceEffect(stretchFor(resizeIndex))))
                             },
                             onStats = {
                                 touch()
@@ -1485,6 +1708,8 @@ private fun Controls(
     resizeLabel: String,
     hasNextEpisode: Boolean,
     resolution: String?,
+    enhanceLabel: String?,
+    onEnhance: () -> Unit,
     fourKName: String?,
     onFourK: () -> Unit,
     showSources: Boolean,
@@ -1657,6 +1882,7 @@ private fun Controls(
                     PillButton(RIcons.ListIcon, tr("القنوات"), onChannels)
                     PillButton(RIcons.Calendar, tr("الدليل"), onGuide)
                     if (showSources) PillButton(RIcons.Mic, tr("المعلق والجودة"), onSources)
+                    if (enhanceLabel != null) PillButton(RIcons.Sparkle, enhanceLabel, onEnhance)
                     if (nextLabel != null) {
                         Text(
                             nextLabel,
@@ -1673,6 +1899,7 @@ private fun Controls(
                 } else {
                     PillButton(RIcons.Captions, if (subtitlesOn) tr("الترجمة: مفعّلة") else tr("الترجمة"), onSubtitles)
                     if (hasNextEpisode) PillButton(RIcons.SkipNext, tr("الحلقة التالية"), onNextEpisode)
+                    if (enhanceLabel != null) PillButton(RIcons.Sparkle, enhanceLabel, onEnhance)
                     Spacer(Modifier.weight(1f))
                 }
                 GlassIcon(RIcons.Lock, tr("قفل الشاشة"), onLock)
@@ -1813,9 +2040,9 @@ private fun ChannelPanel(
 @Composable
 private fun TracksDialog(player: Player, onDismiss: () -> Unit) {
     var version by remember { mutableIntStateOf(0) }
-    val audio = remember(version) { trackOptions(player, C.TRACK_TYPE_AUDIO) }
-    val text = remember(version) { trackOptions(player, C.TRACK_TYPE_TEXT) }
-    val textOff = remember(version) { isTrackTypeDisabled(player, C.TRACK_TYPE_TEXT) || text.none { it.selected } }
+    val audio = remember(player, version) { trackOptions(player, C.TRACK_TYPE_AUDIO) }
+    val text = remember(player, version) { trackOptions(player, C.TRACK_TYPE_TEXT) }
+    val textOff = remember(player, version) { isTrackTypeDisabled(player, C.TRACK_TYPE_TEXT) || text.none { it.selected } }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -1887,6 +2114,7 @@ private fun StatsPanel(
     steadyExtraMs: Long,
     dropped: Int,
     offline: Boolean,
+    enhanced: String?,
     modifier: Modifier = Modifier
 ) {
     fun codec(mime: String?) = mime?.substringAfter('/')?.uppercase() ?: "—"
@@ -1919,7 +2147,8 @@ private fun StatsPanel(
             tr("الاحتياطي") to tr("{0} ث", reserveMs / 1000L) + (if (steadyExtraMs > 0) tr(" (يجمع {0} ث زيادة)", steadyExtraMs / 1000L) else ""),
             tr("التوقفات") to "$stalls",
             tr("إعادة الاتصال") to "$reconnects",
-            tr("إطارات ساقطة") to "$dropped"
+            tr("إطارات ساقطة") to "$dropped",
+            tr("تحسين الصورة") to (enhanced ?: tr("لا"))
         )
         lines.forEach { (k, v) ->
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {

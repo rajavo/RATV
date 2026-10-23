@@ -143,6 +143,7 @@ fun SettingsScreen(nav: Navigator) {
     var liveSteady by remember { mutableStateOf(repo.prefs.liveSteady) }
     var matchFrameRate by remember { mutableStateOf(repo.prefs.matchFrameRate) }
     var tunneling by remember { mutableStateOf(repo.prefs.tunneling) }
+    var enhance by remember { mutableStateOf(repo.prefs.enhance) }
     val focusManager = androidx.compose.ui.platform.LocalFocusManager.current
     var autoVersion by remember { mutableStateOf(repo.prefs.autoVersion) }
     val onTv = rememberIsTv()
@@ -317,6 +318,20 @@ fun SettingsScreen(nav: Navigator) {
                 ) {
                     tunneling = it
                     repo.prefs.tunneling = it
+                }
+            }
+            Divider()
+            ToggleRow(
+                tr("تحسين الصورة الذكي"),
+                tr("يرفع وضوح القنوات الضعيفة (أقل من 720) داخل التلفزيون نفسه، بدون أي استهلاك إضافي للنت. ينطفي لحاله إذا ما لحق عليه الجهاز."),
+                enhance
+            ) {
+                enhance = it
+                repo.prefs.enhance = it
+                if (it) {
+                    // Turned on by hand: try again even where it was stopped before.
+                    repo.prefs.enhanceBroken = false
+                    repo.prefs.enhanceMaxRate = Long.MAX_VALUE
                 }
             }
             Divider()

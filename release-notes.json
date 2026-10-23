@@ -1,26 +1,20 @@
 {
   "ar": [
-    "حركة أنعم على التلفزيون: التطبيق يضبط الشاشة على 50 أو 60 هرتز حسب القناة، فيخف التقطيع في الحركة (تقدر تطفيه من الإعدادات: «مطابقة معدل الإطارات»).",
-    "ريموت التلفزيون: اكتب رقم القناة بالأزرار وتفتح على طول، وزر القناة السابقة يرجعك للي قبلها، وأزرار الدليل والمعلومات تشتغل.",
-    "ثبات أعلى للبث المباشر: احتياطي أكبر قبل التشغيل وبعد أي توقف، وإصلاح الصورة اللي كانت تعلق لما السيرفر يعيد تشغيل القناة.",
-    "خيار جديد للتلفزيونات: «تشغيل الصورة بعتاد التلفزيون (تجريبي)» لحركة أنعم على بعض الشاشات.",
-    "لغة الواجهة: عربي أو إنجليزي أو إسباني من الإعدادات.",
-    "صار يطلع لك وش الجديد في كل تحديث قبل ما تثبّته."
+    "جديد: «تحسين الصورة الذكي» يرفع وضوح القنوات الضعيفة (أقل من 720) داخل التلفزيون نفسه، بدون أي استهلاك إضافي للنت. شغّله من الإعدادات أو من زر «تحسين الصورة» وقت المشاهدة.",
+    "تحسين الصورة ينطفي لحاله إذا ما لحق عليه الجهاز، فما يسبب تقطيع.",
+    "ثبات أعلى: إذا علقت الصورة والصوت شغّال، أو وقف البث بدون سبب، يرجع يشتغل لحاله خلال ثواني.",
+    "رجوع أسرع للبث بعد انقطاع النت في بعض الراوترات."
   ],
   "en": [
-    "Smoother motion on TV: the app sets the screen to 50 or 60 Hz to suit each channel, so motion judders less (turn it off in Settings: “Match frame rate”).",
-    "TV remote: type a channel number to open it at once; the previous-channel key takes you back, and the guide and info keys work.",
-    "Steadier live channels: a bigger buffer before playing and after any stall, and a fix for the picture freezing when the server restarts a channel.",
-    "New option for TVs: “Play the picture with the TV's hardware (experimental)” for smoother motion on some screens.",
-    "Interface language: Arabic, English or Spanish, in Settings.",
-    "Each update now shows what's new before you install it."
+    "New: “Smart picture enhancement” sharpens weak channels (below 720) on the TV itself, with no extra internet use. Turn it on in Settings or with the “Enhance picture” button while watching.",
+    "The enhancement turns itself off if the device can't keep up, so it never causes stutter.",
+    "Steadier: if the picture freezes while the sound goes on, or the stream stops for no reason, it starts again by itself within seconds.",
+    "Faster recovery after an internet drop on some routers."
   ],
   "es": [
-    "Movimiento más suave en la TV: la app ajusta la pantalla a 50 o 60 Hz según el canal, así hay menos tirones (puedes desactivarlo en Ajustes: «Igualar la frecuencia de imagen»).",
-    "Mando de la TV: escribe el número de un canal para abrirlo al instante; la tecla de canal anterior te devuelve al último, y las teclas de guía e información funcionan.",
-    "Canales en vivo más estables: más búfer antes de empezar y tras cualquier parada, y se corrige la imagen congelada cuando el servidor reinicia un canal.",
-    "Nueva opción para TV: «Reproducir la imagen con el hardware de la TV (experimental)» para un movimiento más suave en algunas pantallas.",
-    "Idioma de la interfaz: árabe, inglés o español, en Ajustes.",
-    "Cada actualización muestra ahora sus novedades antes de instalarla."
+    "Nuevo: «Mejora inteligente de imagen» da más nitidez a los canales débiles (menos de 720) en la propia TV, sin gastar más internet. Actívala en Ajustes o con el botón «Mejorar imagen» mientras ves.",
+    "La mejora se desactiva sola si el dispositivo no puede seguir el ritmo, así que nunca causa cortes.",
+    "Más estable: si la imagen se congela mientras sigue el sonido, o la emisión se detiene sin motivo, vuelve a empezar sola en segundos.",
+    "Recuperación más rápida tras un corte de internet en algunos routers."
   ]
 }
