@@ -179,7 +179,9 @@ def focus_home_item(word, tag, presses=5):
 
 
 def t_player_numbers():
-    """Number keys open a channel by its number; the previous-channel key goes back to the one before."""
+    """Number keys open a channel by its number; the previous-channel key goes back to the one before.
+    Changing channel is no stall of the line: it must not raise the steadiness wait."""
+    S.shell("logcat -c")
     f = focus_home_item("شاهد الآن", "numbers-hero")
     expect(f and "شاهد الآن" in f, "watch-now not focused (focus: %s)" % f)
     key("DPAD_CENTER", pause=9)
@@ -200,6 +202,8 @@ def t_player_numbers():
         back_texts = S.all_texts(root)
         names = [t for t in back_texts.split(" | ") if t.strip() and not t.strip().isdigit()]
         expect(names and "Sport 2 4K" not in back_texts, "the previous-channel key did not go back: %s" % back_texts[:300])
+        playback = S.shell("logcat -d -s RATVPlayback:I")
+        expect("steadiness level" not in playback, "changing channel was taken for a stall: " + playback[-300:])
     finally:
         # Out of the player whatever happened, so the next steps start from the home screen.
         for _ in range(3):
