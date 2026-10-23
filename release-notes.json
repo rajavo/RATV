@@ -1,23 +1,20 @@
 {
   "ar": [
-    "ثبات أعلى مع النت المتذبذب: التطبيق صار يتذكّر إن خطك يتذبذب حتى لو قفلته، فيجمع احتياطي أكبر من أول قناة.",
-    "إصلاح: تغيير القناة كان ينحسب كأنه تقطيع، فكان يبطّئ فتح القنوات ويغيّر صيغة البث بدون داعي.",
-    "احتياطي أكبر للخطوط الضعيفة: لين 15 ثانية زيادة تلقائياً، و20 مع «أقصى ثبات».",
-    "إذا ثبت إن صيغة HLS أثبت على سيرفرك، تنفتح فيها القنوات على طول وقت ما يكون النت متذبذب.",
-    "معلومات البث (ⓘ) توضّح الهرتزات اللي يدعمها تلفزيونك."
+    "جديد: لوحة نتيجة فوق القنوات الرياضية طول المباراة، فيها شعار الفريقين والنتيجة الحية ووقت المباراة.",
+    "النتيجة تتأخر على قد تأخر البث عندك، فما ينحرق عليك هدف قبل ما تشوفه، ولما ينزل هدف تنوّر اللوحة.",
+    "التطبيق يعرف المباراة من دليل البرامج، وتقدر تختارها بنفسك أو تخفي اللوحة من زر «لوحة النتيجة» في المشغّل.",
+    "تقدر تطفي اللوحة أو تغيّر تأخير النتيجة من الإعدادات، في قسم «المباريات»."
   ],
   "en": [
-    "Steadier on a fluctuating internet: the app now remembers your line fluctuates, even after you close it, and stores a bigger reserve from the first channel.",
-    "Fixed: changing channel counted as a stall, which slowed channels down and changed the stream format for no reason.",
-    "A bigger reserve for weak lines: up to 15 seconds more automatically, 20 with “Maximum steadiness”.",
-    "When HLS proves steadier on your server, channels open as HLS straight away while the internet fluctuates.",
-    "Stream information (ⓘ) shows the refresh rates your TV supports."
+    "New: a scoreboard over sports channels for the whole match, with both teams' crests, the live score and the match clock.",
+    "The score waits as long as your stream runs behind, so no goal is spoiled before you see it, and the board lights up for a goal.",
+    "The app finds the match from the programme guide, and you can pick it yourself or hide the board with the “Scoreboard” button in the player.",
+    "You can turn the board off or change the score delay in the settings, under “Matches”."
   ],
   "es": [
-    "Más estable con un internet que fluctúa: la app recuerda que tu línea fluctúa, aunque la cierres, y guarda una reserva mayor desde el primer canal.",
-    "Corregido: cambiar de canal contaba como un corte, lo que hacía más lenta la apertura de canales y cambiaba el formato sin motivo.",
-    "Más reserva para líneas débiles: hasta 15 segundos más en automático y 20 con «Máxima estabilidad».",
-    "Si HLS resulta más estable en tu servidor, los canales se abren en HLS directamente mientras el internet fluctúa.",
-    "La información de la emisión (ⓘ) muestra las frecuencias que admite tu TV."
+    "Nuevo: un marcador sobre los canales deportivos durante todo el partido, con los escudos de los dos equipos, el resultado en vivo y el tiempo de juego.",
+    "El marcador espera lo que tu emisión va retrasada, así ningún gol se destripa antes de verlo, y se ilumina cuando hay gol.",
+    "La app reconoce el partido por la guía de programación, y puedes elegirlo tú u ocultar el marcador con el botón «Marcador» del reproductor.",
+    "Puedes desactivar el marcador o cambiar su retraso en los ajustes, en «Partidos»."
   ]
 }

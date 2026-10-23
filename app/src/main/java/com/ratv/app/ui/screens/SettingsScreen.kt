@@ -43,6 +43,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -104,6 +105,16 @@ private val steadyLabels get() = linkedMapOf(
     "max" to tr("أقصى ثبات: للنت أو السيرفر الضعيف")
 )
 
+private val scoreDelayLabels get() = linkedMapOf(
+    -1 to tr("تلقائي: على قد تأخر البث عندك (موصى به)"),
+    0 to tr("بدون تأخير"),
+    15 to tr("{0} ثانية", 15),
+    30 to tr("{0} ثانية", 30),
+    45 to tr("{0} ثانية", 45),
+    60 to tr("دقيقة"),
+    90 to tr("دقيقة ونص")
+)
+
 private val liveFormatLabels get() = linkedMapOf(
     "ts" to tr("TS (موصى به)"),
     "hls" to "HLS",
@@ -137,6 +148,9 @@ fun SettingsScreen(nav: Navigator) {
     var showFormat by remember { mutableStateOf(false) }
     var liveFormat by remember { mutableStateOf(repo.prefs.liveFormat) }
     var showSteady by remember { mutableStateOf(false) }
+    var scoreBoard by remember { mutableStateOf(repo.prefs.scoreBoard) }
+    var scoreDelay by remember { mutableIntStateOf(repo.prefs.scoreDelay) }
+    var showScoreDelay by remember { mutableStateOf(false) }
     var showPalette by remember { mutableStateOf(false) }
     var showLanguage by remember { mutableStateOf(false) }
     val hostContext = androidx.compose.ui.platform.LocalContext.current
@@ -356,6 +370,22 @@ fun SettingsScreen(nav: Navigator) {
             ToggleRow(tr("معاينة القناة في قائمة المباشر"), tr("على التلفزيون تُعرض القناة المختارة في نافذة صغيرة"), livePreview) {
                 livePreview = it
                 repo.prefs.livePreview = it
+            }
+        }
+
+        GroupTitle(tr("المباريات"))
+        Group {
+            ToggleRow(
+                tr("لوحة النتيجة في المباريات"),
+                tr("تظهر فوق القناة الرياضية طول المباراة: الفريقين والنتيجة ووقت المباراة. تنعرف المباراة من دليل البرامج، وتقدر تختارها بنفسك من زر «لوحة النتيجة» في المشغّل."),
+                scoreBoard
+            ) {
+                scoreBoard = it
+                repo.prefs.scoreBoard = it
+            }
+            if (scoreBoard) {
+                Divider()
+                ValueRow(tr("تأخير النتيجة"), scoreDelayLabels[scoreDelay] ?: tr("تلقائي")) { showScoreDelay = true }
             }
         }
 
@@ -607,6 +637,44 @@ fun SettingsScreen(nav: Navigator) {
                     }
                     Text(
                         tr("مع «تلقائي»: إذا وقف البث، يجمع التطبيق احتياطياً أكبر قبل ما يكمل (5 ثوانٍ زيادة، لين 15)، فتقل التوقفات مع النت المتذبذب أو السيرفر الضعيف، ويتذكّر هذا حتى لو قفلت التطبيق، ويرجع لطبيعته بعد 20 دقيقة بدون تقطيع. «أقصى ثبات» يجمع أكبر احتياطي دائماً (20 ثانية زيادة)، والقنوات تفتح أبطأ بثوانٍ."),
+                        style = T.caption
+                    )
+                }
+            },
+            containerColor = RColors.Surface
+        )
+    }
+
+    if (showScoreDelay) {
+        AlertDialog(
+            onDismissRequest = { showScoreDelay = false },
+            confirmButton = { TextButton(onClick = { showScoreDelay = false }) { Text(tr("تم"), color = RColors.Saffron) } },
+            title = { Text(tr("تأخير النتيجة"), style = T.h2) },
+            text = {
+                Column(Modifier.verticalScroll(rememberScrollState())) {
+                    scoreDelayLabels.forEach { (key, label) ->
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 48.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .tvClickable(RoundedCornerShape(10.dp), role = Role.RadioButton) {
+                                    scoreDelay = key
+                                    repo.prefs.scoreDelay = key
+                                },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = scoreDelay == key,
+                                onClick = null,
+                                colors = RadioButtonDefaults.colors(selectedColor = RColors.Saffron)
+                            )
+                            Spacer(Modifier.size(8.dp))
+                            Text(label, style = T.body(15.sp))
+                        }
+                    }
+                    Text(
+                        tr("البث عندك متأخر ثواني عن الملعب، والنتيجة توصل أحياناً قبل الصورة. مع «تلقائي» تتأخر النتيجة على قد تأخر الصورة، فما ينحرق عليك هدف قبل ما تشوفه. إذا تأخرت النتيجة كثير بعد الهدف اختر وقت أقل، وإذا سبقت الهدف اختر وقت أكثر."),
                         style = T.caption
                     )
                 }

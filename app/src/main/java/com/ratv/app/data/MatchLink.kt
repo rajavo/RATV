@@ -6,7 +6,7 @@ import kotlin.math.abs
 
 /**
  * A match to watch, sent by the schedule app (جدول RA كورة):
- * ratv://match?home=Al%20Hilal&away=Al%20Nassr&homeAr=الهلال&awayAr=النصر&start=<ms>&league=دوري%20روشن
+ * ratv://match?home=Al%20Hilal&away=Al%20Nassr&homeAr=الهلال&awayAr=النصر&start=<ms>&league=دوري%20روشن&id=<match id>
  */
 data class MatchRequest(
     val home: String,
@@ -14,7 +14,9 @@ data class MatchRequest(
     val homeAr: String,
     val awayAr: String,
     val start: Long,
-    val league: String
+    val league: String,
+    /** The match's id in the schedule, for its scoreboard (empty from older versions of the schedule app). */
+    val id: String = ""
 ) {
     val homeName: String get() = homeAr.ifBlank { home }
     val awayName: String get() = awayAr.ifBlank { away }
@@ -25,7 +27,7 @@ data class MatchRequest(
             if (uri == null || uri.scheme != "ratv" || uri.host != "match") return null
             fun q(name: String) = runCatching { uri.getQueryParameter(name) }.getOrNull().orEmpty().trim()
             val start = q("start").toLongOrNull() ?: return null
-            val r = MatchRequest(q("home"), q("away"), q("homeAr"), q("awayAr"), start, q("league"))
+            val r = MatchRequest(q("home"), q("away"), q("homeAr"), q("awayAr"), start, q("league"), q("id"))
             if (r.homeName.isBlank() || r.awayName.isBlank()) return null
             return r
         }
@@ -38,6 +40,10 @@ object MatchLinks {
 
     /** The match the "where is it on" screen shows. */
     val current = MutableStateFlow<MatchRequest?>(null)
+
+    /** The channel picked on that screen, with its match: the player shows that match's scoreboard there. */
+    @Volatile
+    var watching: Pair<String, MatchRequest>? = null
 }
 
 /** Words of club names too common to tell two clubs apart ("Leeds United", "West Ham United"). */
