@@ -421,6 +421,29 @@ def t_enhance():
         texts = controls_texts("enhance-off")
         expect("تحسين الصورة: يعمل" not in texts and "تحسين الصورة" in texts, "the button did not turn the enhancement off: %s" % texts[:300])
         expect("Racing SD" in texts, "the channel did not stay on after the switch: %s" % texts[:300])
+        expect("trying HLS" not in S.shell("logcat -d -s RATVPlayback:I"), "stalls from the enhancement were taken for a weak line (switched to HLS)")
+        # The safety: this emulator draws in software, far too slowly for the enhancement. Without the
+        # test's "keep" switch the app must notice by itself, turn it off, and go on playing.
+        S.shell("setprop debug.ratv.enhancekeep ''")
+        time.sleep(5)
+        key("DPAD_CENTER", pause=1.2)
+        key("DPAD_DOWN", pause=0.8)
+        pill = None
+        for direction in ["DPAD_LEFT"] * 6 + ["DPAD_RIGHT"] * 12:
+            _, f = log_focus("enhance-pill-2")
+            if f and "تحسين الصورة" in f:
+                pill = f
+                break
+            key(direction, pause=0.6)
+        expect(pill, "no enhance button the second time")
+        key("DPAD_CENTER", pause=25)
+        S.shot("enhance-auto-off")
+        log = enhance_log()
+        texts = controls_texts("enhance-auto-off")
+        S.shot("enhance-auto-off-controls")
+        expect("falls behind" in log and "off for pictures this heavy" in log, "the enhancement did not turn itself off on a device too slow for it")
+        expect("تحسين الصورة: يعمل" not in texts, "the enhancement is still on after falling behind: %s" % texts[:300])
+        expect("Racing SD" in texts, "the channel did not go on playing: %s" % texts[:300])
     finally:
         S.shell("setprop debug.ratv.enhancekeep ''")
         for _ in range(4):
