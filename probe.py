@@ -3,7 +3,7 @@ UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like 
 os.makedirs("out", exist_ok=True)
 def get(url):
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*", "Accept-Encoding": "gzip"})
-    with urllib.request.urlopen(req, timeout=25) as r:
+    with urllib.request.urlopen(req, timeout=12) as r:
         body = r.read()
         if r.headers.get("Content-Encoding") == "gzip":
             body = gzip.decompress(body)
@@ -13,7 +13,8 @@ log = open("out/log.jsonl", "w")
 leagues = ["ksa.1", "caf.champions", "qat.1", "tur.1"]
 t0 = time.time()
 n = 0
-while time.time() - t0 < 330:
+last_push = time.time()
+while time.time() - t0 < 900:
     for lg in leagues if n % 4 == 0 else ["ksa.1"]:
         try:
             st, hd, body = get("https://site.api.espn.com/apis/site/v2/sports/soccer/%s/scoreboard" % lg)
@@ -45,4 +46,8 @@ while time.time() - t0 < 330:
             log.write(json.dumps({"t": time.time(), "yk_error": str(e)}) + "\n")
     log.flush()
     n += 1
+    if time.time() - last_push > 100:
+        last_push = time.time()
+        os.system("gzip -kf out/*.html 2>/dev/null; rm -f out/*.html; git add out && git commit -qm 'probe data [skip ci]' && git push -q origin HEAD:probe-live-scores")
     time.sleep(15)
+os.system("gzip -kf out/*.html 2>/dev/null; rm -f out/*.html; git add out && git commit -qm 'probe data [skip ci]' && git push -q origin HEAD:probe-live-scores")
