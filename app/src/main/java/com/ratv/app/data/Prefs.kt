@@ -2,6 +2,7 @@ package com.ratv.app.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.ratv.app.ui.components.isTvDevice
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -14,6 +15,7 @@ import org.json.JSONObject
  */
 class Prefs(context: Context) {
     private val sp = context.getSharedPreferences("ratv", Context.MODE_PRIVATE)
+    private val onTv = context.isTvDevice()
 
     init {
         migrate()
@@ -232,13 +234,19 @@ class Prefs(context: Context) {
         get() = sp.getString("uiLanguage", "ar") ?: "ar"
         set(value) = sp.edit().putString("uiLanguage", value).apply()
 
+    /** Video timed by the TV's own hardware (tunneled playback), for screens where it plays smoother. */
+    var tunneling: Boolean
+        get() = sp.getBoolean("tunneling", false)
+        set(value) = sp.edit().putBoolean("tunneling", value).apply()
+
     var autoVersion: Boolean
         get() = sp.getBoolean("autoVersion", false)
         set(value) = sp.edit().putBoolean("autoVersion", value).apply()
 
     /** On a TV, switch the screen to 50 or 60 Hz to match the channel, for even motion. */
     var matchFrameRate: Boolean
-        get() = sp.getBoolean("matchFrameRate", false)
+        // On by default on a TV: 25 and 50 fps channels (most Arabic and sports ones) judder on 60 Hz.
+        get() = sp.getBoolean("matchFrameRate", onTv)
         set(value) = sp.edit().putBoolean("matchFrameRate", value).apply()
 
     /** Always take the highest quality an adaptive stream offers. */

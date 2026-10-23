@@ -200,6 +200,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     var upgrade by remember { mutableStateOf<Playable?>(null) }
     var upgradeEpisodes by remember { mutableStateOf<List<Episode>?>(null) }
     var banner by remember { mutableStateOf<Channel?>(null) }
+    // Digits typed on the remote (a channel number), and the channel watched before this one.
+    var typedNumber by remember { mutableStateOf("") }
+    var previousChannel by remember { mutableStateOf<Channel?>(null) }
     var sourcesOpen by remember { mutableStateOf(false) }
     var audioVersion by remember { mutableIntStateOf(0) }
     var audioTracks by remember { mutableIntStateOf(0) }
@@ -213,7 +216,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
 
     val player = remember {
         Steadiness.mode = repo.prefs.liveSteady
-        createPlayer(context, repo.prefs.bufferMode, repo.prefs.bestQuality, live = kind == "live")
+        createPlayer(context, repo.prefs.bufferMode, repo.prefs.bestQuality, live = kind == "live", tunneling = isTv && repo.prefs.tunneling)
     }
     val cushion = remember { cushionMs(repo.prefs.bufferMode) }
     val liveFormat = remember { repo.prefs.liveFormat }
@@ -284,6 +287,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
 
     fun play(item: Playable, showControls: Boolean = true, auto: Boolean = false) {
         if (!auto) versionsTried.clear()
+        // The channel left behind, for the remote's "previous channel" key.
+        current?.channel?.let { old -> if (old.id != item.channel?.id) previousChannel = old }
         saveProgress()
         mix.stop()
         current = item
@@ -821,6 +826,22 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         banner = target
     }
 
+    /** Opens the channel whose number was typed on the remote. */
+    fun openTypedNumber() {
+        val n = typedNumber.toIntOrNull()
+        typedNumber = ""
+        if (n == null) return
+        val target = channels.firstOrNull { it.num == n }
+        if (target == null) {
+            streamNotice = tr("لا توجد قناة برقم {0}", n)
+            return
+        }
+        if (target.id != item?.channel?.id) {
+            play(liveToPlayable(target), showControls = false)
+            banner = target
+        }
+    }
+
     fun seekBy(delta: Long) {
         if (!seekable) return
         touch()
@@ -847,6 +868,48 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     fun onRemoteKey(event: KeyEvent): Boolean {
         if (event.type != KeyEventType.KeyDown) return false
         val live = item?.isLive == true
+        val code = event.nativeKeyEvent.keyCode
+        val panels = panelOpen || sourcesOpen || showTracks || subsOpen
+        // Number keys: type a channel number; it opens 1.5 s after the last digit (or at once with OK).
+        val digit = when (code) {
+            in android.view.KeyEvent.KEYCODE_0..android.view.KeyEvent.KEYCODE_9 -> code - android.view.KeyEvent.KEYCODE_0
+            in android.view.KeyEvent.KEYCODE_NUMPAD_0..android.view.KeyEvent.KEYCODE_NUMPAD_9 -> code - android.view.KeyEvent.KEYCODE_NUMPAD_0
+            else -> -1
+        }
+        if (digit >= 0 && live && !panels && !locked) {
+            typedNumber = (typedNumber + digit).takeLast(4)
+            return true
+        }
+        if (typedNumber.isNotEmpty() && (event.key == Key.DirectionCenter || event.key == Key.Enter || event.key == Key.NumPadEnter)) {
+            openTypedNumber()
+            return true
+        }
+        when (code) {
+            android.view.KeyEvent.KEYCODE_LAST_CHANNEL -> {
+                val back = previousChannel
+                if (live && back != null) {
+                    play(liveToPlayable(back), showControls = false)
+                    banner = back
+                }
+                return true
+            }
+            android.view.KeyEvent.KEYCODE_INFO -> {
+                showControls()
+                return true
+            }
+            android.view.KeyEvent.KEYCODE_GUIDE -> {
+                if (live) navigator.guide()
+                return true
+            }
+            android.view.KeyEvent.KEYCODE_CAPTIONS -> {
+                if (!live) subsOpen = true
+                return true
+            }
+            android.view.KeyEvent.KEYCODE_MEDIA_STOP -> {
+                navigator.back()
+                return true
+            }
+        }
         when (event.key) {
             Key.MediaPlayPause, Key.MediaPlay, Key.MediaPause -> {
                 togglePlay()
@@ -917,6 +980,13 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         if (banner != null) {
             delay(3_000L)
             banner = null
+        }
+    }
+
+    LaunchedEffect(typedNumber) {
+        if (typedNumber.isNotEmpty()) {
+            delay(1_500L)
+            openTypedNumber()
         }
     }
 
@@ -1125,6 +1195,20 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         val told = streamNotice
         if (told != null && notice == null && !inPip) {
             TopNotice(told, RIcons.Swap)
+        }
+
+        // The channel number being typed on the remote, as TVs show it.
+        if (typedNumber.isNotEmpty() && !inPip) {
+            Box(
+                Modifier
+                    .align(AbsoluteAlignment.TopLeft)
+                    .absolutePadding(left = 40.dp, top = 30.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(Color(0xCC0B0C10))
+                    .padding(horizontal = 22.dp, vertical = 8.dp)
+            ) {
+                Text(typedNumber, style = T.display(40.sp, FontWeight.ExtraBold, RColors.Saffron))
+            }
         }
 
         val zapped = banner

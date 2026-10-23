@@ -274,7 +274,8 @@ fun createPlayer(
     bufferMode: String,
     bestQuality: Boolean,
     handleAudioFocus: Boolean = true,
-    live: Boolean = false
+    live: Boolean = false,
+    tunneling: Boolean = false
 ): ExoPlayer {
     val reserve = maxOf(cushionMs(bufferMode).toInt(), 15_000)
     // min buffer, max buffer, stored before starting, stored before resuming after a stall (ms)
@@ -330,6 +331,13 @@ fun createPlayer(
         player.trackSelectionParameters = player.trackSelectionParameters.buildUpon()
             .setForceHighestSupportedBitrate(true)
             .build()
+    }
+    // Tunneled playback: the TV's hardware times the picture with the sound (used only where the
+    // device's decoder supports it for the stream; otherwise playback goes on the usual way).
+    if (tunneling) {
+        (player.trackSelector as? androidx.media3.exoplayer.trackselection.DefaultTrackSelector)?.let { s ->
+            s.setParameters(s.buildUponParameters().setTunnelingEnabled(true))
+        }
     }
     return player
 }
