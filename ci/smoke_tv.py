@@ -162,6 +162,56 @@ def t_player_remote():
     expect(n is not None, "Back did not return from the player")
 
 
+def focus_home_item(word, tag, presses=5):
+    """From the top bar, down the home screen until the focus holds [word]."""
+    go_tab("الرئيسية")
+    time.sleep(2)
+    f = None
+    for _ in range(presses):
+        _, f = log_focus(tag)
+        if f and word in f:
+            return f
+        key("DPAD_DOWN", pause=0.8)
+    _, f = log_focus(tag)
+    return f
+
+
+def t_player_numbers():
+    """Number keys open a channel by its number; the previous-channel key goes back to the one before."""
+    f = focus_home_item("شاهد الآن", "numbers-hero")
+    expect(f and "شاهد الآن" in f, "watch-now not focused (focus: %s)" % f)
+    key("DPAD_CENTER", pause=9)
+    S.shell("input keyevent KEYCODE_5")
+    time.sleep(0.7)
+    S.shot("player-number-typed")
+    time.sleep(3)
+    root = S.dump("player-number")
+    S.shot("player-number")
+    texts = S.all_texts(root)
+    expect("Sport 2 4K" in texts, "the 5 key did not open channel 5 (Sport 2 4K): %s" % texts[:300])
+    S.shell("input keyevent KEYCODE_LAST_CHANNEL")
+    time.sleep(3)
+    root = S.dump("player-last-channel")
+    S.shot("player-last-channel")
+    back_texts = S.all_texts(root)
+    key("BACK", pause=2)
+    expect("Sport 2 4K" not in back_texts, "the previous-channel key did not go back: %s" % back_texts[:300])
+    _, n = S.wait_for(timeout=15, text="الرئيسية")
+    expect(n is not None, "Back did not return from the player")
+
+
+def t_update_notes():
+    """The update window lists what the new version fixes (the notes in version.json)."""
+    f = focus_home_item("تحديث جديد متاح", "update-banner")
+    expect(f and "تحديث جديد متاح" in f, "update banner not focused (focus: %s)" % f)
+    key("DPAD_CENTER", pause=2.5)
+    root = S.dump("update-notes")
+    S.shot("update-notes")
+    texts = S.all_texts(root)
+    key("BACK", pause=1.5)
+    expect("وش الجديد في هذا التحديث" in texts and "إصلاح تجريبي للفحص" in texts, "the update window shows no notes: %s" % texts[:300])
+
+
 def t_movies():
     go_tab("أفلام")
     _, n = S.wait_for(timeout=20, contains="Desert Night")
@@ -322,6 +372,8 @@ if __name__ == "__main__":
         ("fill-with-remote", t_fill_with_remote),
         ("home-focus", t_home_focus),
         ("player-remote", t_player_remote),
+        ("player-numbers", t_player_numbers),
+        ("update-notes", t_update_notes),
         ("movies", t_movies),
         ("live", t_live),
         ("series", t_series),
