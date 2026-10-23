@@ -230,7 +230,8 @@ def s_today():
     shot("today")
     t = texts(root if root is not None else dump())
     log("today: " + t[:900])
-    for want in ("اليوم", "النصر", "آرسنال", "تشيلسي", "الأهلي", "الزمالك", "دوري روشن السعودي", "مباشر الحين"):
+    # (The Egyptian match is further down, past the bottom of the screen: the filter step brings it up.)
+    for want in ("اليوم", "النصر", "آرسنال", "تشيلسي", "دوري روشن السعودي", "الدوري المصري الممتاز", "مباشر الحين"):
         expect(want in t, "'%s' is missing from today's schedule" % want)
     expect("67'" in t, "the live minute (67') from the live scores did not arrive")
     expect("ريال مدريد" not in t, "tomorrow's match shows today")
@@ -277,6 +278,11 @@ def s_filter():
     shot("filtered")
     expect(root is not None, "the competition filter did not hide the other matches")
     expect("آرسنال" in texts(root), "the English match is missing after choosing the English league")
+    move_until("DPAD_LEFT", "المصري")
+    key("DPAD_CENTER", 1.5)
+    root = wait_text("الأهلي", timeout=10, save="filtered-egypt")
+    shot("filtered-egypt")
+    expect(root is not None and "الزمالك" in texts(root), "the Egyptian match is missing after choosing the Egyptian league")
     move_until("DPAD_RIGHT", "الكل")
     key("DPAD_CENTER", 1.5)
     expect(wait_text("الهلال", timeout=10) is not None, "«الكل» did not bring every match back")

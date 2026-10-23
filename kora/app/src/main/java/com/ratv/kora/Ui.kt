@@ -575,12 +575,12 @@ private fun MatchRow(m: Match, s: Schedule, now: Long, tv: Boolean, modifier: Mo
         if (channels.isNotEmpty()) {
             Text(
                 "📺  " + channels.take(3).joinToString("  ·  "),
-                style = t(if (tv) 14f else 12.5f, color = C.Text2, align = TextAlign.Center),
+                style = t(if (tv) 14f else 12.5f, color = C.Text2, align = TextAlign.Center).copy(lineHeight = if (tv) 17.sp else 15.sp),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = if (tv) 6.dp else 4.dp)
+                    .padding(top = 3.dp)
             )
         }
     }
