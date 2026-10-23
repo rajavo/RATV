@@ -396,8 +396,16 @@ def kooora_day():
             a = ((mt.get("teamA") or {}).get("name") or "").strip()
             b = ((mt.get("teamB") or {}).get("name") or "").strip()
             if tv and t and a and b:
-                out.append({"t": t, "a": a, "b": b, "comp": comp, "tv": tv})
+                out.append({"t": t, "a": a, "b": b, "comp": comp, "tv": tv,
+                            "la": ((mt.get("teamA") or {}).get("image") or {}).get("url") or "",
+                            "lb": ((mt.get("teamB") or {}).get("image") or {}).get("url") or ""})
     return "ok", out
+
+
+# The Arab world's sports channels: the matches of other competitions on them still go in RA TV's
+# guide (without a scoreboard, as nothing gives their live score).
+ARAB_CHANNEL = re.compile(r"bein|alkass|al kass|ssc|thmanyah|ad sport|abu dhabi|dubai sport|sharjah|ktv|oman sport|"
+                          r"bahrain sport|iraqiya|on time sport|الشارقة|الكأس|ثمانية|أبوظبي|دبي|الرابعة", re.I)
 
 
 def name_key(s):
@@ -445,9 +453,20 @@ def attach_tv(matches, teams, kooora):
             best["tv"] = list(dict.fromkeys((best.get("tv") or []) + k["tv"]))
             attached += 1
         else:
-            unmatched.append("%s %s × %s (%s) %s" % (
-                dt.datetime.fromtimestamp(k["t"], dt.timezone.utc).strftime("%H:%M"), k["a"], k["b"], k["comp"], ", ".join(k["tv"][:3])))
+            unmatched.append(k)
     return attached, unmatched
+
+
+def guide_extras(unmatched, previous, now):
+    """Matches outside the schedule shown on the Arab world's channels, for the guide only."""
+    out = [{"t": k["t"], "a": k["a"], "b": k["b"], "c": k["comp"], "tv": k["tv"], "la": k["la"], "lb": k["lb"]}
+           for k in unmatched if any(ARAB_CHANNEL.search(n) for n in k["tv"])]
+    seen = {(g["t"], g["a"]) for g in out}
+    for g in (previous or {}).get("guide") or []:
+        if g.get("t", 0) >= now - 3 * 3600 and (g.get("t"), g.get("a")) not in seen:
+            out.append(g)
+    out.sort(key=lambda g: g["t"])
+    return out
 
 
 # ------------------------------------------------------------------ checks for the report
@@ -574,6 +593,7 @@ def main():
     # The channels of today's matches, from Kooora; the ones found before stay for the others.
     k_state, k_payload = kooora_job.result()
     tv_attached, tv_unmatched = (attach_tv(matches, teams, k_payload) if k_state == "ok" else (0, []))
+    extras = guide_extras(tv_unmatched, previous, int(time.time()))
     if k_state != "ok":
         errors.append("kooora " + k_payload)
     kept_tv = 0
@@ -636,6 +656,7 @@ def main():
         "leagues": league_out,
         "teams": team_out,
         "matches": match_list,
+        "guide": extras,
     }
     with open(os.path.join(out_dir, "fixtures.json"), "w", encoding="utf-8") as f:
         json.dump(fixtures, f, ensure_ascii=False, separators=(",", ":"))
@@ -690,7 +711,9 @@ def main():
         "learned_names": {tid: {"en": teams[tid]["en"], "ar": ar} for tid, ar in learned.items()},
         "tv": {"kooora": k_state, "kooora_matches": len(k_payload) if k_state == "ok" else 0, "attached": tv_attached,
                "kept_from_previous": kept_tv, "matches_with_tv": sum(1 for m in match_list if m.get("tv")),
-               "unmatched": tv_unmatched[:80]},
+               "guide_only": len(extras),
+               "unmatched": ["%s %s × %s (%s) %s" % (dt.datetime.fromtimestamp(k["t"], dt.timezone.utc).strftime("%H:%M"), k["a"], k["b"],
+                                                    k["comp"], ", ".join(k["tv"][:3])) for k in tv_unmatched[:80]]},
         "espn_leagues": discover_leagues(),
         "teams": sorted(({"id": tid, "en": t["en"], "ar": t.get("ar"), "leagues": sorted(t["leagues"])}
                          for tid, t in teams.items()), key=lambda x: (x["leagues"], x["en"])),
@@ -701,8 +724,8 @@ def main():
     print("matches: %d, teams: %d (no Arabic name: %d), requests: %d, errors: %d, kept: %d, %.0f s" % (
         len(match_list), len(team_out), len(report["teams_without_arabic"]), len(results), len(errors), kept,
         time.time() - started))
-    print("channels: Kooora %s, %d matches with channels there, %d put on the schedule, %d kept from before" % (
-        k_state, report["tv"]["kooora_matches"], tv_attached, kept_tv))
+    print("channels: Kooora %s, %d matches with channels there, %d put on the schedule, %d kept from before, %d for the guide only" % (
+        k_state, report["tv"]["kooora_matches"], tv_attached, kept_tv, len(extras)))
     for lg in per_league:
         print("  %-22s %-8s %3d matches %s" % (lg["id"], lg["status"], lg["matches"], lg["why"]))
     if not match_list:
