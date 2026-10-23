@@ -243,6 +243,22 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("autoVersion", false)
         set(value) = sp.edit().putBoolean("autoVersion", value).apply()
 
+    /** Servers where HLS proved steadier than TS for a channel that kept stalling. */
+    fun hlsHelps(host: String): Boolean = host in (sp.getStringSet("hlsHelps", null) ?: emptySet())
+
+    fun setHlsHelps(host: String, helps: Boolean) {
+        val now = (sp.getStringSet("hlsHelps", null) ?: emptySet()).toMutableSet()
+        if (helps) now.add(host) else now.remove(host)
+        sp.edit().putStringSet("hlsHelps", now).apply()
+    }
+
+    /** True once HLS failed on two channels of a server: its channels stay TS unless chosen otherwise. */
+    fun hlsBroken(host: String): Boolean = sp.getInt("hlsFail:$host", 0) >= 2
+
+    fun noteHlsFailed(host: String) {
+        sp.edit().putInt("hlsFail:$host", sp.getInt("hlsFail:$host", 0) + 1).apply()
+    }
+
     /** Smart picture enhancement of weak channels (under 720 lines), done by the TV itself. */
     var enhance: Boolean
         get() = sp.getBoolean("enhance", false)

@@ -247,6 +247,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
 
     val player = remember(enhanceWanted, if (enhanceWanted) enhanceStrength else ENHANCE_OFF) {
         Steadiness.mode = repo.prefs.liveSteady
+        Steadiness.attach(context)
         createPlayer(
             context, repo.prefs.bufferMode, repo.prefs.bestQuality, live = kind == "live",
             tunneling = isTv && repo.prefs.tunneling,
@@ -261,6 +262,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // A channel that keeps stalling as TS is tried as HLS (when the server offers it): HLS can store
     // much more ahead, as its pieces come faster than they are shown.
     var hlsPreferredFor by remember { mutableStateOf<String?>(null) }
+    var autoHlsNoticed by remember { mutableStateOf(false) }
     val hlsAfterStalls = remember { com.ratv.app.data.debugProperty("debug.ratv.hlsafter")?.toIntOrNull() ?: 3 }
     var usingHls by remember { mutableStateOf(false) }
     // A channel that keeps stalling (or failing) moves to another version of itself from the
@@ -376,9 +378,19 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         playerError = null
         ended = false
         val hlsAllowed = repo.account.value?.formats?.contains("m3u8") == true
-        val format = if (hlsPreferredFor == item.id) "hls" else liveFormat
+        // On a line that keeps stalling, a server where HLS proved steadier opens its channels as HLS:
+        // HLS fetches its pieces as fast as the line allows, so the store refills in the good moments.
+        val host = android.net.Uri.parse(item.url).host.orEmpty()
+        val autoHls = item.isLive && liveFormat == "ts" && hlsAllowed && Steadiness.unsteadyLine &&
+            repo.prefs.hlsHelps(host) && !repo.prefs.hlsBroken(host)
+        val format = if (hlsPreferredFor == item.id || autoHls) "hls" else liveFormat
         val url = if (item.isLive && hlsFailedFor != item.id) liveStreamUrl(item.url, format, hlsAllowed) else item.url
         usingHls = url != item.url
+        if (autoHls && usingHls && !autoHlsNoticed) {
+            autoHlsNoticed = true
+            Log.i("RATVPlayback", "unsteady line: channels open as HLS on $host")
+            streamNotice = tr("النت متذبذب: صرنا نشغّل القنوات بصيغة HLS لأنها تتحمّل التذبذب أكثر")
+        }
         stalls = 0
         stallTimes.clear()
         droppedFrames = 0
@@ -570,6 +582,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                     }
                     usingHls && now != null && hlsUnsupported(error) -> {
                         hlsFailedFor = now.id // try the channel's own (TS) address
+                        val host = android.net.Uri.parse(now.url).host.orEmpty()
+                        repo.prefs.noteHlsFailed(host)
+                        if (repo.prefs.hlsBroken(host)) repo.prefs.setHlsHelps(host, false)
                     }
                     error.errorCode == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW -> {
                         player.seekToDefaultPosition()
@@ -627,6 +642,22 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         player.addListener(listener)
         val loadWatch = object : AnalyticsListener {
             private var readyOnce = false
+
+            // A new channel or film, or a seek, waits for its picture: no stall of the line. (Counted,
+            // every change of channel raised the steadiness wait and brought the HLS and version
+            // switches nearer, though the line was fine.)
+            override fun onMediaItemTransition(eventTime: AnalyticsListener.EventTime, mediaItem: MediaItem?, reason: Int) {
+                readyOnce = false
+            }
+
+            override fun onPositionDiscontinuity(
+                eventTime: AnalyticsListener.EventTime,
+                oldPosition: Player.PositionInfo,
+                newPosition: Player.PositionInfo,
+                reason: Int
+            ) {
+                if (reason == Player.DISCONTINUITY_REASON_SEEK || reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT) readyOnce = false
+            }
 
             override fun onLoadError(
                 eventTime: AnalyticsListener.EventTime,
@@ -750,6 +781,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         var posStuckSince = 0L
         var watchRestarts = 0
         var fpsRemembered = false
+        // Seconds a channel that went HLS after its stalls has played calmly since.
+        var hlsCalmSeconds = 0
         // How the TV keeps up with the enhancement: dropped pictures over 6 s, after 5 s of playing.
         var playingSince = 0L
         var windowStart = 0L
@@ -860,6 +893,18 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 player.prepare()
                 if (watched.isLive) player.seekToDefaultPosition() else player.seekTo(at)
                 player.playWhenReady = true
+            }
+            // A channel that kept stalling as TS and then plays two calm minutes as HLS: HLS is steadier on
+            // this server, and an unsteady line then opens all its channels that way.
+            if (watched.isLive && usingHls && hlsPreferredFor == watched.id) {
+                if (stalls > 0) hlsCalmSeconds = 0 else if (player.isPlaying) hlsCalmSeconds++
+                if (hlsCalmSeconds == 120) {
+                    val host = android.net.Uri.parse(watched.url).host.orEmpty()
+                    if (!repo.prefs.hlsHelps(host)) {
+                        Log.i("RATVPlayback", "HLS played two calm minutes after the stalls: steadier on $host")
+                        repo.prefs.setHlsHelps(host, true)
+                    }
+                }
             }
             // Through the enhancement, a channel with its store full that still shows no picture after
             // 7 s: the chip cannot keep up with it (or draws nothing).
@@ -1364,6 +1409,12 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 height = videoHeight,
                 fps = measuredFps,
                 refresh = view.display?.refreshRate ?: 0f,
+                refreshOptions = view.display?.let { d ->
+                    val m = d.mode
+                    d.supportedModes.filter { it.physicalWidth == m.physicalWidth && it.physicalHeight == m.physicalHeight }
+                        .map { kotlin.math.round(it.refreshRate).toInt() }.distinct().sorted()
+                }.orEmpty(),
+                matchOn = repo.prefs.matchFrameRate,
                 video = player.videoFormat?.sampleMimeType,
                 audio = player.audioFormat?.sampleMimeType,
                 decoder = decoderName,
@@ -2150,6 +2201,8 @@ private fun StatsPanel(
     height: Int,
     fps: Float,
     refresh: Float,
+    refreshOptions: List<Int>,
+    matchOn: Boolean,
     video: String?,
     audio: String?,
     decoder: String?,
@@ -2167,12 +2220,19 @@ private fun StatsPanel(
     fun codec(mime: String?) = mime?.substringAfter('/')?.uppercase() ?: "—"
     val fpsText = if (fps > 0f) String.format(java.util.Locale.US, if (fps % 1f == 0f) "%.0f" else "%.2f", fps) else "—"
     val uneven = fps > 0f && refresh > 0f && !refreshFits(refresh, fps)
+    // Whether the TV offers a refresh rate that shows this frame rate evenly.
+    val canMatch = refreshOptions.any { refreshFits(it.toFloat(), fps) }
     val verdict = when {
         dropped > 50 -> tr("الجهاز لا يلحق على فك هذا البث ({0} إطار سقط): جرّب نسخة HD من القناة.", dropped)
         stalls > 0 && offline -> tr("التوقفات من انقطاع الاتصال بالإنترنت.")
         stalls > 0 && reconnects > 5 -> tr("توقف البث {0} مرة والاتصال بالسيرفر انقطع {1} مرة: غالباً من الواي فاي أو من السيرفر. التطبيق يجمع احتياطياً أكبر تلقائياً، وجرّب «أقصى ثبات» أو صيغة HLS من الإعدادات.", stalls, reconnects)
         stalls > 0 -> tr("توقف البث {0} مرة: الاتصال أو السيرفر لم يرسل البث بسرعة كافية. التطبيق يجمع احتياطياً أكبر تلقائياً.", stalls)
-        uneven -> tr("البث {0} إطار والشاشة {1} هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات.", fpsText, refresh.toInt())
+        uneven && !matchOn -> tr("البث {0} إطار والشاشة {1} هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات.", fpsText, refresh.toInt())
+        uneven && !canMatch -> tr(
+            "البث {0} إطار والشاشة {1} هرتز، وتلفزيونك ما يعطي التطبيقات هرتز يناسبه ({2})، فتظهر الحركة متقطعة قليلاً.",
+            fpsText, refresh.toInt(), refreshOptions.ifEmpty { listOf(refresh.toInt()) }.joinToString("، ")
+        )
+        uneven -> tr("البث {0} إطار والشاشة {1} هرتز: «مطابقة معدل الإطارات» بتغيّرها خلال ثواني.", fpsText, refresh.toInt())
         reconnects > 0 -> tr("البث سليم: انقطع الاتصال {0} مرة ورجع على طول بدون توقف.", reconnects)
         else -> tr("البث سليم: لا توقفات ولا إطارات ساقطة.")
     }
@@ -2187,7 +2247,11 @@ private fun StatsPanel(
         val lines = listOf(
             tr("الصيغة") to format,
             tr("الصورة") to (if (height > 0) tr("{0}{1} · {2} إطار/ث", if (width > 0) "$width×" else "", height, fpsText) else "—"),
-            tr("الشاشة") to (if (refresh > 0f) tr("{0} هرتز", refresh.toInt()) else "—"),
+            tr("الشاشة") to (if (refresh > 0f) {
+                if (refreshOptions.size > 1) tr("{0} هرتز (يدعم {1})", refresh.toInt(), refreshOptions.joinToString("، ")) else tr("{0} هرتز", refresh.toInt())
+            } else {
+                "—"
+            }),
             tr("الترميز") to tr("{0} · صوت {1}", codec(video), codec(audio)),
             tr("فك الترميز") to (decoder ?: "—"),
             tr("سرعة الاتصال") to (if (bandwidthBps > 0 && bandwidthBps != 12_000_000L) String.format(java.util.Locale.US, tr("%.1f ميجابت"), bandwidthBps / 1_000_000.0) else "—"),
