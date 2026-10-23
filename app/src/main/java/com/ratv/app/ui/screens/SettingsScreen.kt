@@ -321,9 +321,17 @@ fun SettingsScreen(nav: Navigator) {
                 }
             }
             Divider()
+            // How it went on this device: light if the full strength was too heavy, none if both were.
+            val enhanceNote = when {
+                !enhance -> ""
+                repo.prefs.enhanceStrength <= com.ratv.app.player.ENHANCE_OFF ->
+                    "\n" + tr("أوقفناه على هذا الجهاز لأنه ما لحق عليه. أطفئه وشغّله من جديد عشان نجرّب مرة ثانية.")
+                repo.prefs.enhanceStrength == com.ratv.app.player.ENHANCE_LIGHT -> "\n" + tr("يشتغل على هذا الجهاز بالتحسين الخفيف.")
+                else -> ""
+            }
             ToggleRow(
                 tr("تحسين الصورة الذكي"),
-                tr("يرفع وضوح القنوات الضعيفة (أقل من 720) داخل التلفزيون نفسه، بدون أي استهلاك إضافي للنت. ينطفي لحاله إذا ما لحق عليه الجهاز."),
+                tr("يرفع وضوح القنوات الضعيفة (أقل من 720) داخل التلفزيون نفسه، بدون أي استهلاك إضافي للنت. ينطفي لحاله إذا ما لحق عليه الجهاز.") + enhanceNote,
                 enhance
             ) {
                 enhance = it
@@ -331,7 +339,7 @@ fun SettingsScreen(nav: Navigator) {
                 if (it) {
                     // Turned on by hand: try again even where it was stopped before.
                     repo.prefs.enhanceBroken = false
-                    repo.prefs.enhanceMaxRate = Long.MAX_VALUE
+                    repo.prefs.enhanceStrength = com.ratv.app.player.ENHANCE_FULL
                 }
             }
             Divider()

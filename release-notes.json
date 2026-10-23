@@ -1,20 +1,20 @@
 {
   "ar": [
-    "جديد: «تحسين الصورة الذكي» يرفع وضوح القنوات الضعيفة (أقل من 720) داخل التلفزيون نفسه، بدون أي استهلاك إضافي للنت. شغّله من الإعدادات أو من زر «تحسين الصورة» وقت المشاهدة.",
-    "تحسين الصورة ينطفي لحاله إذا ما لحق عليه الجهاز، فما يسبب تقطيع.",
-    "ثبات أعلى: إذا علقت الصورة والصوت شغّال، أو وقف البث بدون سبب، يرجع يشتغل لحاله خلال ثواني.",
-    "رجوع أسرع للبث بعد انقطاع النت في بعض الراوترات."
+    "إصلاح الشاشة السوداء اللي كانت تطلع مع «تحسين الصورة الذكي» في بعض التلفزيونات.",
+    "تحسين الصورة صار يناسب التلفزيونات الأضعف: يشتغل عليها بتحسين خفيف يوضّح الصورة بدون ثقل.",
+    "إذا كان التحسين الكامل ثقيل على الجهاز، ينتقل لحاله للخفيف بدل ما ينطفي، والإعدادات توضح لك وش اشتغل.",
+    "معلومات البث (ⓘ) صارت توضّح نوع التحسين ومعالج الرسوميات في جهازك."
   ],
   "en": [
-    "New: “Smart picture enhancement” sharpens weak channels (below 720) on the TV itself, with no extra internet use. Turn it on in Settings or with the “Enhance picture” button while watching.",
-    "The enhancement turns itself off if the device can't keep up, so it never causes stutter.",
-    "Steadier: if the picture freezes while the sound goes on, or the stream stops for no reason, it starts again by itself within seconds.",
-    "Faster recovery after an internet drop on some routers."
+    "Fixed the black screen some TVs showed with “Smart picture enhancement”.",
+    "Picture enhancement now suits weaker TVs too: on them it runs as a light enhancement that sharpens the picture without slowing it down.",
+    "If full enhancement is too heavy for the device, it switches to light by itself instead of turning off, and Settings show which one runs.",
+    "Stream information (ⓘ) now shows the enhancement used and your device's graphics chip."
   ],
   "es": [
-    "Nuevo: «Mejora inteligente de imagen» da más nitidez a los canales débiles (menos de 720) en la propia TV, sin gastar más internet. Actívala en Ajustes o con el botón «Mejorar imagen» mientras ves.",
-    "La mejora se desactiva sola si el dispositivo no puede seguir el ritmo, así que nunca causa cortes.",
-    "Más estable: si la imagen se congela mientras sigue el sonido, o la emisión se detiene sin motivo, vuelve a empezar sola en segundos.",
-    "Recuperación más rápida tras un corte de internet en algunos routers."
+    "Se corrigió la pantalla negra que mostraban algunas TV con «Mejora inteligente de imagen».",
+    "La mejora de imagen ahora también va bien en TV más modestas: en ellas funciona como mejora ligera, que da nitidez sin ralentizar.",
+    "Si la mejora completa es demasiado pesada para el dispositivo, pasa sola a la ligera en vez de desactivarse, y Ajustes muestra cuál funciona.",
+    "La información de la emisión (ⓘ) muestra ahora la mejora usada y el chip gráfico de tu dispositivo."
   ]
 }
