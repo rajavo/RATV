@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Drives RATV on an Android TV emulator with remote keys only (CI only)."""
+import json
 import os
 import sys
 import time
@@ -208,15 +209,24 @@ def t_player_numbers():
 
 
 def t_update_notes():
-    """The update window lists what the new version fixes (the notes in version.json)."""
+    """The update window lists what the new version fixes (the notes in version.json), and the remote scrolls them."""
+    try:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "release-notes.json"), encoding="utf-8") as fh:
+            notes = json.load(fh)["ar"]
+    except (OSError, ValueError, KeyError):
+        notes = ["إصلاح تجريبي للفحص"]
     f = focus_home_item("تحديث جديد متاح", "update-banner")
     expect(f and "تحديث جديد متاح" in f, "update banner not focused (focus: %s)" % f)
     key("DPAD_CENTER", pause=2.5)
     root = S.dump("update-notes")
     S.shot("update-notes")
     texts = S.all_texts(root)
+    key("DPAD_DOWN", n=4, pause=0.8)
+    S.shot("update-notes-scrolled")
+    _, f2 = log_focus("update-notes-scrolled")
     key("BACK", pause=1.5)
-    expect("وش الجديد في هذا التحديث" in texts and "إصلاح تجريبي للفحص" in texts, "the update window shows no notes: %s" % texts[:300])
+    expect("وش الجديد في هذا التحديث" in texts and notes[0][:20] in texts, "the update window shows no notes: %s" % texts[:300])
+    expect(f2 is not None and ("تحديث الآن" in f2 or "لاحقاً" in f2), "the update buttons lost the focus (focus: %s)" % f2)
 
 
 def t_movies():

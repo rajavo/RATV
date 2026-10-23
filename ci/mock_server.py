@@ -297,6 +297,17 @@ def m3u():
     return "\n".join(lines) + "\n"
 
 
+
+def release_notes():
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "release-notes.json")
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {"ar": ["إصلاح تجريبي للفحص", "ميزة تجريبية ثانية"],
+                "en": ["A test fix", "A second test feature"],
+                "es": ["Un arreglo de prueba", "Otra función de prueba"]}
+
 class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
@@ -563,10 +574,8 @@ class Handler(BaseHTTPRequestHandler):
         q = {k: v[0] for k, v in parse_qs(u.query).items()}
         p = u.path
         if p == "/update/version.json":  # a newer app version for the update test
-            return self.send_json({"versionCode": 99999, "versionName": "9.9.9", "apk": "RATV.apk", "notes": {
-                "ar": ["إصلاح تجريبي للفحص", "ميزة تجريبية ثانية"],
-                "en": ["A test fix", "A second test feature"],
-                "es": ["Un arreglo de prueba", "Otra función de prueba"]}})
+            # The notes this release will carry (release-notes.json), so the window is checked as customers see it.
+            return self.send_json({"versionCode": 99999, "versionName": "9.9.9", "apk": "RATV.apk", "notes": release_notes()})
         if p == "/update/RATV.apk":
             return self.send_file(os.path.join(MEDIA, "RATV.apk"), "application/vnd.android.package-archive")
         if p == "/__stats":  # connections per test channel
