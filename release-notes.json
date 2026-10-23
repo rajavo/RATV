@@ -1,20 +1,23 @@
 {
   "ar": [
-    "إصلاح الشاشة السوداء اللي كانت تطلع مع «تحسين الصورة الذكي» في بعض التلفزيونات.",
-    "تحسين الصورة صار يناسب التلفزيونات الأضعف: يشتغل عليها بتحسين خفيف يوضّح الصورة بدون ثقل.",
-    "إذا كان التحسين الكامل ثقيل على الجهاز، ينتقل لحاله للخفيف بدل ما ينطفي، والإعدادات توضح لك وش اشتغل.",
-    "معلومات البث (ⓘ) صارت توضّح نوع التحسين ومعالج الرسوميات في جهازك."
+    "ثبات أعلى مع النت المتذبذب: التطبيق صار يتذكّر إن خطك يتذبذب حتى لو قفلته، فيجمع احتياطي أكبر من أول قناة.",
+    "إصلاح: تغيير القناة كان ينحسب كأنه تقطيع، فكان يبطّئ فتح القنوات ويغيّر صيغة البث بدون داعي.",
+    "احتياطي أكبر للخطوط الضعيفة: لين 15 ثانية زيادة تلقائياً، و20 مع «أقصى ثبات».",
+    "إذا ثبت إن صيغة HLS أثبت على سيرفرك، تنفتح فيها القنوات على طول وقت ما يكون النت متذبذب.",
+    "معلومات البث (ⓘ) توضّح الهرتزات اللي يدعمها تلفزيونك."
   ],
   "en": [
-    "Fixed the black screen some TVs showed with “Smart picture enhancement”.",
-    "Picture enhancement now suits weaker TVs too: on them it runs as a light enhancement that sharpens the picture without slowing it down.",
-    "If full enhancement is too heavy for the device, it switches to light by itself instead of turning off, and Settings show which one runs.",
-    "Stream information (ⓘ) now shows the enhancement used and your device's graphics chip."
+    "Steadier on a fluctuating internet: the app now remembers your line fluctuates, even after you close it, and stores a bigger reserve from the first channel.",
+    "Fixed: changing channel counted as a stall, which slowed channels down and changed the stream format for no reason.",
+    "A bigger reserve for weak lines: up to 15 seconds more automatically, 20 with “Maximum steadiness”.",
+    "When HLS proves steadier on your server, channels open as HLS straight away while the internet fluctuates.",
+    "Stream information (ⓘ) shows the refresh rates your TV supports."
   ],
   "es": [
-    "Se corrigió la pantalla negra que mostraban algunas TV con «Mejora inteligente de imagen».",
-    "La mejora de imagen ahora también va bien en TV más modestas: en ellas funciona como mejora ligera, que da nitidez sin ralentizar.",
-    "Si la mejora completa es demasiado pesada para el dispositivo, pasa sola a la ligera en vez de desactivarse, y Ajustes muestra cuál funciona.",
-    "La información de la emisión (ⓘ) muestra ahora la mejora usada y el chip gráfico de tu dispositivo."
+    "Más estable con un internet que fluctúa: la app recuerda que tu línea fluctúa, aunque la cierres, y guarda una reserva mayor desde el primer canal.",
+    "Corregido: cambiar de canal contaba como un corte, lo que hacía más lenta la apertura de canales y cambiaba el formato sin motivo.",
+    "Más reserva para líneas débiles: hasta 15 segundos más en automático y 20 con «Máxima estabilidad».",
+    "Si HLS resulta más estable en tu servidor, los canales se abren en HLS directamente mientras el internet fluctúa.",
+    "La información de la emisión (ⓘ) muestra las frecuencias que admite tu TV."
   ]
 }

@@ -1,5 +1,7 @@
 package com.ratv.app.player
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.SystemClock
 import android.util.Log
 import androidx.media3.common.C
@@ -15,8 +17,11 @@ import androidx.media3.exoplayer.upstream.DefaultAllocator
  * A live channel comes in as fast as it is shown, so the only way to a bigger store is to wait for
  * it before playing. Waiting costs time when a channel opens, so it is done only where it pays:
  * after a channel stalled (a shaky line at home, or a server that sends unevenly), the next start
- * and the next recovery wait 5 s longer, up to 10 s more; after 20 minutes without a stall it steps
- * back down. "fast" never waits longer, "max" always does.
+ * and the next recovery wait 5 s longer, up to 15 s more; after 20 minutes without a stall it steps
+ * back down. "fast" never waits longer, "max" always waits 20 s more.
+ *
+ * What the device learned about its line is kept across restarts (still stepping down with the
+ * calm time that passed), so a TV on a fluctuating line starts with the bigger store at once.
  */
 object Steadiness {
     /** "auto" (the default), "fast" or "max", from the settings. */
@@ -33,9 +38,32 @@ object Steadiness {
     @Volatile
     private var calmSince = 0L
 
+    private var saved: SharedPreferences? = null
+
     private const val STEP_MS = 5_000L
-    private const val MAX_LEVEL = 2
+    private const val MAX_AUTO_LEVEL = 3
+    private const val MAX_LEVEL = 4
     private const val CALM_MS = 20L * 60L * 1000L
+
+    /** Picks up what this device learned before (once per run of the app). */
+    @Synchronized
+    fun attach(context: Context) {
+        if (saved != null) return
+        val sp = context.applicationContext.getSharedPreferences("steadiness", Context.MODE_PRIVATE)
+        saved = sp
+        val stored = sp.getInt("level", 0).coerceIn(0, MAX_AUTO_LEVEL)
+        val since = sp.getLong("since", 0L)
+        val calmFor = (System.currentTimeMillis() - since).coerceAtLeast(0L)
+        val steps = if (since > 0L) (calmFor / CALM_MS).toInt() else stored
+        level = (stored - steps).coerceAtLeast(0)
+        // The calm time already spent at this level counts.
+        calmSince = SystemClock.elapsedRealtime() - (calmFor % CALM_MS)
+        if (level > 0) Log.i("RATVPlayback", "steadiness level $level (kept from before)")
+    }
+
+    private fun save() {
+        saved?.edit()?.putInt("level", level)?.putLong("since", System.currentTimeMillis())?.apply()
+    }
 
     /** How much longer than usual a live channel waits before it plays now (ms). */
     val extraMs: Long
@@ -48,13 +76,25 @@ object Steadiness {
             }
         }
 
+    /** True when the line has stalled again and again lately (or "max" is chosen). */
+    val unsteadyLine: Boolean
+        get() = when (mode) {
+            "fast" -> false
+            "max" -> true
+            else -> {
+                calmDown()
+                level >= 2
+            }
+        }
+
     /** A live channel ran out of picture. */
     fun onStall() {
         calmSince = SystemClock.elapsedRealtime()
-        if (mode == "auto" && level < MAX_LEVEL) {
+        if (mode == "auto" && level < MAX_AUTO_LEVEL) {
             level++
             Log.i("RATVPlayback", "steadiness level $level")
         }
+        save()
     }
 
     private fun calmDown() {
@@ -63,6 +103,7 @@ object Steadiness {
         if (now - calmSince > CALM_MS) {
             level--
             calmSince = now
+            save()
         }
     }
 }
