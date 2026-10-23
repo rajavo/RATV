@@ -278,7 +278,8 @@ fun createPlayer(
     live: Boolean = false,
     tunneling: Boolean = false,
     enhance: Boolean = false,
-    stretchAspect: Float? = null
+    stretchAspect: Float? = null,
+    enhanceStrength: Int = ENHANCE_FULL
 ): ExoPlayer {
     val reserve = maxOf(cushionMs(bufferMode).toInt(), 15_000)
     // min buffer, max buffer, stored before starting, stored before resuming after a stall (ms)
@@ -337,7 +338,7 @@ fun createPlayer(
     }
     // Smart enhancement of a weak picture by the TV's graphics chip (see Enhance.kt). It has to be
     // set before the first prepare; the picture then goes through it instead of straight to the screen.
-    if (enhance) player.setVideoEffects(listOf(TvEnhanceEffect(stretchAspect)))
+    if (enhance) player.setVideoEffects(listOf(TvEnhanceEffect(stretchAspect, enhanceStrength)))
     // Tunneled playback: the TV's hardware times the picture with the sound (used only where the
     // device's decoder supports it for the stream; otherwise playback goes on the usual way).
     // Not with the enhancement, whose picture does not go straight from the decoder to the screen.

@@ -253,10 +253,13 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("enhanceBroken", false)
         set(value) = sp.edit().putBoolean("enhanceBroken", value).apply()
 
-    /** Pixels a second this device keeps up with when enhancing (lowered when it falls behind). */
-    var enhanceMaxRate: Long
-        get() = sp.getLong("enhanceMaxRate", Long.MAX_VALUE)
-        set(value) = sp.edit().putLong("enhanceMaxRate", value).apply()
+    /**
+     * The strongest enhancement this device is given: 2 full, 1 light, 0 none. It steps down by itself
+     * when the device falls behind or its graphics fail; turning the enhancement on again resets it.
+     */
+    var enhanceStrength: Int
+        get() = sp.getInt("enhanceStrength", 2)
+        set(value) = sp.edit().putInt("enhanceStrength", value).apply()
 
     /** On a TV, switch the screen to 50 or 60 Hz to match the channel, for even motion. */
     var matchFrameRate: Boolean
