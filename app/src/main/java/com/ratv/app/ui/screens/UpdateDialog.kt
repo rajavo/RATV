@@ -4,6 +4,7 @@ import com.ratv.app.i18n.tr
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.LinearProgressIndicator
@@ -16,6 +17,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,8 +47,22 @@ fun UpdateDialog(info: Updater.Info, onDismiss: () -> Unit) {
         needsPermission = !Updater.install(context, f)
     }
 
+    val scroll = androidx.compose.foundation.rememberScrollState()
     AlertDialog(
         onDismissRequest = { if (progress == null) onDismiss() },
+        // On a TV the remote only reaches the buttons: up and down scroll a long list of notes.
+        modifier = Modifier.onPreviewKeyEvent { e ->
+            if (e.type != KeyEventType.KeyDown) return@onPreviewKeyEvent false
+            val step = when (e.key) {
+                Key.DirectionDown -> if (scroll.canScrollForward) 160f else 0f
+                Key.DirectionUp -> if (scroll.canScrollBackward) -160f else 0f
+                else -> 0f
+            }
+            if (step == 0f) false else {
+                scope.launch { scroll.animateScrollBy(step) }
+                true
+            }
+        },
         confirmButton = {
             TextButton(
                 enabled = progress == null,
@@ -77,7 +97,7 @@ fun UpdateDialog(info: Updater.Info, onDismiss: () -> Unit) {
         },
         title = { Text(tr("تحديث جديد متاح"), style = T.h2) },
         text = {
-            Column(Modifier.fillMaxWidth().verticalScroll(androidx.compose.foundation.rememberScrollState())) {
+            Column(Modifier.fillMaxWidth().verticalScroll(scroll)) {
                 Text(
                     tr("الإصدار {0} جاهز (عندك {1}). يُنزَّل من صفحة RATV على GitHub، وتبقى اشتراكاتك وإعداداتك كما هي.", info.versionName, BuildConfig.VERSION_NAME),
                     style = T.body(14.sp, color = RColors.Text2)
