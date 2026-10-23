@@ -555,11 +555,16 @@ def t_scoreboard():
         expect(g is not None, "the goal did not light up the board")
         n = wait_board("board-goal2", timeout=10, contains="3 - 1")
         expect(n is not None, "the board did not count the goal")
-        # The controls up: the board moves down, under their top bar (they go by themselves after 4 s).
-        key("DPAD_CENTER", pause=1.0)
-        root = S.dump("board-controls")
-        S.shot("board-controls")
-        texts = S.all_texts(root)
+        # The controls up: the board moves down, under their top bar (they go by themselves after 4 s,
+        # so OK again if they went while the screen was read).
+        texts, root = "", None
+        for _ in range(3):
+            key("DPAD_CENTER", pause=0.8)
+            S.shot("board-controls")
+            root = S.dump("board-controls")
+            texts = S.all_texts(root)
+            if "لوحة النتيجة" in texts:
+                break
         expect("لوحة النتيجة" in texts, "no scoreboard button in the controls: " + texts[:300])
         n = board_node(root)
         expect(n is not None and S.bounds(n)[1] > top_alone + 40, "the board did not move down under the controls")
