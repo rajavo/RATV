@@ -4,6 +4,7 @@ import com.ratv.app.i18n.tr
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
@@ -76,11 +77,26 @@ fun UpdateDialog(info: Updater.Info, onDismiss: () -> Unit) {
         },
         title = { Text(tr("تحديث جديد متاح"), style = T.h2) },
         text = {
-            Column(Modifier.fillMaxWidth()) {
+            Column(Modifier.fillMaxWidth().verticalScroll(androidx.compose.foundation.rememberScrollState())) {
                 Text(
                     tr("الإصدار {0} جاهز (عندك {1}). يُنزَّل من صفحة RATV على GitHub، وتبقى اشتراكاتك وإعداداتك كما هي.", info.versionName, BuildConfig.VERSION_NAME),
                     style = T.body(14.sp, color = RColors.Text2)
                 )
+                // What the update fixes and adds, so the customer sees why it is worth installing.
+                val notes = info.notesFor(com.ratv.app.i18n.I18n.lang)
+                if (notes.isNotEmpty()) {
+                    Text(
+                        tr("وش الجديد في هذا التحديث:"),
+                        style = T.body(15.sp, androidx.compose.ui.text.font.FontWeight.Bold),
+                        modifier = Modifier.padding(top = 14.dp, bottom = 6.dp)
+                    )
+                    notes.forEach { line ->
+                        androidx.compose.foundation.layout.Row(Modifier.padding(vertical = 3.dp)) {
+                            Text("•", style = T.body(14.sp, color = RColors.Saffron), modifier = Modifier.padding(end = 8.dp))
+                            Text(line, style = T.body(14.sp))
+                        }
+                    }
+                }
                 progress?.let { p ->
                     LinearProgressIndicator(
                         progress = { p },

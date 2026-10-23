@@ -50,6 +50,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.input.key.key
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -139,6 +142,8 @@ fun SettingsScreen(nav: Navigator) {
     val hostContext = androidx.compose.ui.platform.LocalContext.current
     var liveSteady by remember { mutableStateOf(repo.prefs.liveSteady) }
     var matchFrameRate by remember { mutableStateOf(repo.prefs.matchFrameRate) }
+    var tunneling by remember { mutableStateOf(repo.prefs.tunneling) }
+    val focusManager = androidx.compose.ui.platform.LocalFocusManager.current
     var autoVersion by remember { mutableStateOf(repo.prefs.autoVersion) }
     val onTv = rememberIsTv()
     var showAbout by remember { mutableStateOf(false) }
@@ -157,6 +162,20 @@ fun SettingsScreen(nav: Navigator) {
         Modifier
             .fillMaxSize()
             .screenBackground()
+            // With the remote, up and down go to the row above or below; where the usual search finds
+            // none (it happened with long translated rows), the previous or next one in order is taken.
+            .onPreviewKeyEvent { e ->
+                if (e.type != androidx.compose.ui.input.key.KeyEventType.KeyDown) return@onPreviewKeyEvent false
+                when (e.key) {
+                    androidx.compose.ui.input.key.Key.DirectionUp ->
+                        focusManager.moveFocus(androidx.compose.ui.focus.FocusDirection.Up) ||
+                            focusManager.moveFocus(androidx.compose.ui.focus.FocusDirection.Previous)
+                    androidx.compose.ui.input.key.Key.DirectionDown ->
+                        focusManager.moveFocus(androidx.compose.ui.focus.FocusDirection.Down) ||
+                            focusManager.moveFocus(androidx.compose.ui.focus.FocusDirection.Next)
+                    else -> false
+                }
+            }
             .verticalScroll(rememberScrollState())
     ) {
         ScreenHeader(tr("حسابي"), Modifier.statusBarsPadding())
@@ -289,6 +308,15 @@ fun SettingsScreen(nav: Navigator) {
                 ) {
                     matchFrameRate = it
                     repo.prefs.matchFrameRate = it
+                }
+                Divider()
+                ToggleRow(
+                    tr("تشغيل الصورة بعتاد التلفزيون (تجريبي)"),
+                    tr("قد تصير الحركة أنعم على بعض الشاشات. إذا صارت الشاشة سوداء أو تأخر الصوت، أطفئه. يطبَّق من المرة الجاية اللي تفتح فيها قناة."),
+                    tunneling
+                ) {
+                    tunneling = it
+                    repo.prefs.tunneling = it
                 }
             }
             Divider()

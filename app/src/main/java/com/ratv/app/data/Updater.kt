@@ -25,7 +25,11 @@ import java.io.IOException
  */
 object Updater {
 
-    class Info(val versionCode: Int, val versionName: String, val apkUrl: String)
+    /** A newer version; [notes] are its fixes and changes by language ("ar", "en", "es"). */
+    class Info(val versionCode: Int, val versionName: String, val apkUrl: String, val notes: Map<String, List<String>> = emptyMap()) {
+        /** The notes in [lang], else in Arabic. */
+        fun notesFor(lang: String): List<String> = notes[lang]?.takeIf { it.isNotEmpty() } ?: notes["ar"].orEmpty()
+    }
 
     private const val RELEASE = "https://github.com/rajavo/RATV/releases/download/latest"
     private const val CHECK_EVERY = 6L * 60L * 60L * 1000L
@@ -45,12 +49,22 @@ object Updater {
         val code = o.optInt("versionCode")
         lastCheck = System.currentTimeMillis()
         val info = if (code > BuildConfig.VERSION_CODE) {
-            Info(code, o.optString("versionName").ifBlank { "1.0.$code" }, base() + "/" + o.optString("apk").ifBlank { "RATV.apk" })
+            Info(code, o.optString("versionName").ifBlank { "1.0.$code" }, base() + "/" + o.optString("apk").ifBlank { "RATV.apk" }, notesOf(o))
         } else {
             null
         }
         _available.value = info
         info
+    }
+
+    private fun notesOf(o: JSONObject): Map<String, List<String>> {
+        val n = o.optJSONObject("notes") ?: return emptyMap()
+        val out = HashMap<String, List<String>>()
+        n.keys().forEach { lang ->
+            val a = n.optJSONArray(lang) ?: return@forEach
+            out[lang] = (0 until a.length()).mapNotNull { i -> a.optString(i).trim().takeIf { it.isNotEmpty() } }
+        }
+        return out
     }
 
     /** Checks quietly now and then (at start-up), so the home screen can offer the update. */
