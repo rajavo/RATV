@@ -600,6 +600,66 @@ def t_scoreboard():
                 break
 
 
+def open_number(n, wait=8):
+    """Types a channel number on the remote while a channel plays (it opens 1.5 s after the last digit)."""
+    for d in str(n):
+        S.shell("input keyevent KEYCODE_%s" % d)
+        time.sleep(0.3)
+    time.sleep(wait)
+
+
+def t_sports_guide():
+    """RA TV's own guide of the sports channels: a channel with no guide (named "AR| beIN SPORTS 3 HD")
+    and one whose guide says only "beIN SPORTS 1" show the match the schedule puts on them (Kooora's
+    "beIN Sports Mena 3"/"Mena 1"), in the controls and on the scoreboard; a match of another
+    competition on beIN 2 is in the guide too, without a board."""
+    try:
+        f = focus_home_item("شاهد الآن", "guide-hero")
+        expect(f and "شاهد الآن" in f, "watch-now not focused (focus: %s)" % f)
+        key("DPAD_CENTER", pause=6)
+        # 24: AR| beIN SPORTS 3 HD, no guide of its own.
+        open_number(24)
+        n = wait_board("guide-bein3", timeout=45, contains="ليفربول")
+        S.shot("guide-bein3")
+        logs = S.shell("logcat -d -s RATVGuide:I RATVScore:I")
+        for line in logs.splitlines()[-5:]:
+            S.log("  " + line.strip())
+        expect(n is not None, "no scoreboard on a beIN channel with no guide of its own")
+        expect("1 - 0" in n.get("content-desc"), "the board does not show the match's score: " + n.get("content-desc"))
+        texts = ""
+        for _ in range(3):
+            key("DPAD_CENTER", pause=0.8)
+            texts = S.all_texts(S.dump("guide-bein3-controls"))
+            if "ليفربول × أرسنال" in texts:
+                break
+        S.shot("guide-bein3-controls")
+        expect("الدوري الإنجليزي الممتاز: ليفربول × أرسنال" in texts, "the controls do not say the match on now: " + texts[:400])
+        time.sleep(5)  # the controls go
+        # 25: beIN SPORTS 1 FHD, whose guide only says "beIN SPORTS 1".
+        open_number(25)
+        n = wait_board("guide-bein1", timeout=45, contains="إشبيلية")
+        S.shot("guide-bein1")
+        expect(n is not None, "the vague guide of beIN 1 did not give way to the match the schedule puts there")
+        # 26: BEIN SPORT 2, a match of a competition outside the schedule: in the guide, no board.
+        time.sleep(3)
+        open_number(26)
+        texts = ""
+        for _ in range(3):
+            key("DPAD_CENTER", pause=0.8)
+            texts = S.all_texts(S.dump("guide-bein2-controls"))
+            if "بولتون" in texts:
+                break
+        S.shot("guide-bein2-controls")
+        expect("بولتون واندررز × ميدلزبره" in texts, "the guide of beIN 2 does not say its match: " + texts[:400])
+        expect(board_node(S.dump()) is None, "a board on a match nothing gives the score of")
+    finally:
+        for _ in range(4):
+            key("BACK", pause=1.5)
+            _, n = S.wait_for(timeout=4, text="الرئيسية")
+            if n is not None:
+                break
+
+
 def t_languages():
     """The interface in English and in Spanish (chosen for the test with debug.ratv.lang), then Arabic again."""
     try:
@@ -654,6 +714,7 @@ if __name__ == "__main__":
         ("matches", t_matches),
         ("match-link", t_match_link),
         ("scoreboard", t_scoreboard),
+        ("sports-guide", t_sports_guide),
         ("settings", t_settings),
         ("settings-deep", t_settings_deep),
         ("enhance", t_enhance),

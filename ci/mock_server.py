@@ -58,6 +58,11 @@ CHANNELS = [
     # lighter version below is fine: RATV must move to it by itself.
     (115, 22, "Stutter TV HD", "1", "", None),
     (116, 23, "Stutter TV SD", "1", "", None),
+    # RA TV's own sports guide: channels named as providers do, with no guide or a vague one; the
+    # schedule says which match each shows (Kooora's names: "beIN Sports Mena 3").
+    (207, 24, "AR| beIN SPORTS 3 HD", "2", "", None),
+    (208, 25, "beIN SPORTS 1 FHD", "2", "bein1.ratv", None),
+    (209, 26, "BEIN SPORT 2", "2", "", None),
 ]
 # The same game, named in Arabic on one channel and in English on another.
 MATCH = {
@@ -257,6 +262,8 @@ def xmltv():
         while t < NOW + 30 * 3600:
             dur = [1800, 3600, 2700, 5400][(i + num) % 4]
             title = TITLES[(i + num) % len(TITLES)]
+            if epg == "bein1.ratv":
+                title = "beIN SPORTS 1"  # a provider's guide that says nothing about the match
             if epg in MATCH:
                 # The game has the same start and end on every channel that shows it.
                 if t == MATCH_START:
@@ -302,7 +309,7 @@ def m3u():
 # The guide's game (ريال مدريد × برشلونة on Sport 1) is 2-1 at minute 24 when first asked, and the
 # test scores a goal through /espn/goal.
 KICKOFF = NOW - 23 * 60
-SCORES = {"900001": [2, 1], "900002": [0, 0]}
+SCORES = {"900001": [2, 1], "900002": [0, 0], "900004": [1, 0], "900005": [0, 0]}
 ESPN_T0 = [None]
 
 
@@ -314,19 +321,30 @@ def kora_fixtures():
         "817": {"en": "Al Nassr", "ar": "النصر", "logo": BASE + "/logo/missing.png"},
         "y:الشمال": {"en": "", "ar": "الشمال", "logo": BASE + "/logo/l5.png"},
         "y:نادي قطر": {"en": "", "ar": "نادي قطر", "logo": ""},
+        "364": {"en": "Liverpool", "ar": "ليفربول", "logo": BASE + "/logo/l1.png"},
+        "359": {"en": "Arsenal", "ar": "أرسنال", "logo": BASE + "/logo/l2.png"},
+        "243": {"en": "Sevilla", "ar": "إشبيلية", "logo": ""},
+        "94": {"en": "Valencia", "ar": "فالنسيا", "logo": ""},
     }
     matches = [
         {"id": "900003", "lg": "esp.1", "t": NOW - 6 * 3600, "h": "83", "a": "86", "st": "post", "sn": "FULL_TIME"},
         {"id": "900002", "lg": "ksa.1", "t": NOW - 10 * 60, "h": "929", "a": "817", "st": "in", "sn": "FIRST_HALF"},
         {"id": "y112832", "lg": "qat.1", "t": NOW - 15 * 60, "h": "y:الشمال", "a": "y:نادي قطر", "st": "in", "sn": "IN_PROGRESS"},
         {"id": "900001", "lg": "esp.1", "t": KICKOFF, "h": "86", "a": "83", "st": "in", "sn": "FIRST_HALF"},
+        {"id": "900004", "lg": "eng.1", "t": NOW - 30 * 60, "h": "364", "a": "359", "st": "in", "sn": "FIRST_HALF",
+         "tv": ["beIN Sports Mena 3", "beIN Sports ENG 3", "Arena 1 Premium"], "v": "Anfield"},
+        {"id": "900005", "lg": "esp.1", "t": NOW - 10 * 60, "h": "243", "a": "94", "st": "in", "sn": "FIRST_HALF",
+         "tv": ["beIN Sports Mena 1", "DAZN LALIGA"]},
     ]
     leagues = [
         {"id": "ksa.1", "ar": "دوري روشن السعودي", "short": "روشن", "en": "Saudi Pro League", "logo": ""},
         {"id": "qat.1", "ar": "دوري نجوم قطر", "short": "القطري", "en": "", "logo": ""},
         {"id": "esp.1", "ar": "الدوري الإسباني", "short": "الإسباني", "en": "LaLiga", "logo": ""},
+        {"id": "eng.1", "ar": "الدوري الإنجليزي الممتاز", "short": "الإنجليزي", "en": "Premier League", "logo": ""},
     ]
-    return {"v": 1, "updated": NOW, "leagues": leagues, "teams": teams, "matches": matches}
+    guide = [{"t": NOW - 5 * 60, "a": "بولتون واندررز", "b": "ميدلزبره", "c": "الدوري الإنجليزي الدرجة الأولى",
+              "tv": ["beIN Sports Mena 2", "beIN Sports ENG 2"], "la": "", "lb": ""}]
+    return {"v": 1, "updated": NOW, "leagues": leagues, "teams": teams, "matches": matches, "guide": guide}
 
 
 def espn_scoreboard(league):
@@ -334,7 +352,8 @@ def espn_scoreboard(league):
         ESPN_T0[0] = time.time()
     minute = 24 + int((time.time() - ESPN_T0[0]) // 60)
     events = []
-    for eid, lg, t in (("900001", "esp.1", KICKOFF), ("900002", "ksa.1", NOW - 600)):
+    for eid, lg, t in (("900001", "esp.1", KICKOFF), ("900002", "ksa.1", NOW - 600), ("900004", "eng.1", NOW - 1800),
+                       ("900005", "esp.1", NOW - 600)):
         if lg != league:
             continue
         hs, as_ = SCORES[eid]
