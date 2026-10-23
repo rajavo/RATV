@@ -501,9 +501,24 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         onDispose { runCatching { lock?.release() } }
     }
 
+    /** The TV cannot keep up with enhancing this picture: off for pictures this heavy from now on. */
+    fun enhanceTooSlow(why: String) {
+        val item = current ?: return
+        if (enhanceFor == null) return
+        val rate = enhanceRate(videoHeight.takeIf { it > 0 } ?: 576, if (measuredFps > 0f) measuredFps else 25f)
+        val limit = rate * 8L / 10L
+        Log.i("RATVEnhance", "the TV falls behind ($why): off for pictures this heavy")
+        repo.prefs.enhanceMaxRate = limit
+        enhanceMaxRate = limit
+        streamNotice = tr("التلفزيون ما لحق على تحسين الصورة في هذي الجودة، فأوقفناه لها")
+        if (!item.isLive) resumeAt = item.id to player.currentPosition
+        enhanceFor = null
+    }
+
     DisposableEffect(player) {
         // Whether this player enhances the picture (it is made again to change that).
         val pipeline = enhanceWanted
+        val deviceStalls = ArrayDeque<Long>()
         var firstFrame = false
         val listener = object : Player.Listener {
             override fun onIsPlayingChanged(playing: Boolean) {
@@ -619,6 +634,16 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 if (state == Player.STATE_READY) {
                     if (readyOnce && stalls > 0) Log.i("RATVPlayback", "playing again after stall $stalls")
                     readyOnce = true
+                } else if (state == Player.STATE_BUFFERING && readyOnce && pipeline && player.totalBufferedDuration >= 3_000L) {
+                    // Through the enhancement, a stall with plenty stored is the TV falling behind, not the
+                    // line: no HLS, no other version, no extra steadiness. Twice in half a minute turns it off.
+                    val t = SystemClock.elapsedRealtime()
+                    deviceStalls.addLast(t)
+                    while (deviceStalls.isNotEmpty() && t - deviceStalls.first() > 30_000L) deviceStalls.removeFirst()
+                    Log.i("RATVEnhance", "stall with ${player.totalBufferedDuration} ms stored: the TV falls behind the enhancement")
+                    if (deviceStalls.size >= 2 && com.ratv.app.data.debugProperty("debug.ratv.enhancekeep") != "1") {
+                        enhanceTooSlow("stalls with the store full")
+                    }
                 } else if (state == Player.STATE_BUFFERING && readyOnce) {
                     stalls++
                     val now = current
@@ -828,7 +853,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 player.playWhenReady = true
             }
             if (pipeline && counters != null && enhanceWanted) {
-                if (player.isPlaying && hasVideo) {
+                val running = player.playWhenReady &&
+                    (player.playbackState == Player.STATE_READY || player.playbackState == Player.STATE_BUFFERING)
+                if (running && hasVideo) {
                     if (playingSince == 0L) playingSince = tick
                     if (tick - playingSince >= 5_000L) {
                         if (windowFrames < 0L) {
@@ -843,15 +870,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                             windowDropped = counters.droppedBufferCount.toLong()
                             val keep = com.ratv.app.data.debugProperty("debug.ratv.enhancekeep") == "1"
                             if (frames >= 30L && dropped * 100L > frames * 12L && !keep) {
-                                // The TV falls behind: no enhancement for pictures this heavy from now on.
-                                val rate = enhanceRate(videoHeight.takeIf { it > 0 } ?: 576, if (measuredFps > 0f) measuredFps else 25f)
-                                val limit = rate * 8L / 10L
-                                Log.i("RATVEnhance", "the TV falls behind ($dropped of $frames pictures dropped): off for pictures this heavy")
-                                repo.prefs.enhanceMaxRate = limit
-                                enhanceMaxRate = limit
-                                streamNotice = tr("التلفزيون ما لحق على تحسين الصورة في هذي الجودة، فأوقفناه لها")
-                                if (!watched.isLive) resumeAt = watched.id to player.currentPosition
-                                enhanceFor = null
+                                enhanceTooSlow("$dropped of $frames pictures dropped")
                             }
                         }
                     }
