@@ -5,12 +5,8 @@ import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -224,7 +220,9 @@ class BoardView(
     /** The game clock ("34:12"), or what is going on instead ("استراحة", "انتهت", "تبدأ 21:00"). */
     val pill: String,
     val clock: Boolean,
-    val live: Boolean
+    val live: Boolean,
+    /** Every other second, for the live dot. */
+    val blink: Boolean = false
 ) {
     fun describe(arabic: Boolean): String {
         val score = if (homeScore != null && awayScore != null) "$homeScore - $awayScore" else "-"
@@ -349,7 +347,7 @@ private fun guideMatch(s: ScoreSchedule, p: Programme): ScoreMatch? =
         ?: p.desc?.takeIf { it.isNotBlank() }?.let { Scores.matchFor(s, p.title + " " + it.take(240), p.start, p.end) }
 
 /** What the board shows at [at] (elapsed realtime, already moved back by the delay), null for nothing. */
-private fun boardView(s: ScoreSchedule, m: ScoreMatch, timeline: MatchTimeline, at: Long): BoardView? {
+private fun boardView(s: ScoreSchedule, m: ScoreMatch, timeline: MatchTimeline, at: Long, blink: Boolean): BoardView? {
     val live = timeline.liveAt(at)
     val now = System.currentTimeMillis()
     if (live != null && live.status.isCalledOff()) return null
@@ -384,7 +382,8 @@ private fun boardView(s: ScoreSchedule, m: ScoreMatch, timeline: MatchTimeline, 
         awayPens = live?.awayPens,
         pill = pill,
         clock = clock != null,
-        live = live?.state == "in"
+        live = live?.state == "in",
+        blink = blink
     )
 }
 
@@ -410,7 +409,7 @@ fun BoxScope.ScoreBoardOverlay(state: ScoreBoardState, top: Dp, tv: Boolean, del
             delay(1_000L)
         }
     }
-    val view = if (match == null || schedule == null) null else boardView(schedule, match, state.timeline, tick - delayMs())
+    val view = if (match == null || schedule == null) null else boardView(schedule, match, state.timeline, tick - delayMs(), (tick / 1000L) % 2L == 1L)
     val topAnimated by animateDpAsState(top, label = "boardTop")
     // The last board stays drawn while it fades out.
     val last = remember { arrayOfNulls<BoardView>(1) }
@@ -486,7 +485,7 @@ private fun ScoreBoardCard(b: BoardView, tv: Boolean) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(7.dp)
         ) {
-            if (b.live && !goalNow) LiveDot()
+            if (b.live && !goalNow) LiveDot(dim = b.blink)
             val pens = if (b.homePens != null && b.awayPens != null && !goalNow) {
                 // Home first in reading order: on the right in Arabic.
                 if (arabic) " (${b.awayPens}-${b.homePens})" else " (${b.homePens}-${b.awayPens})"
@@ -579,15 +578,14 @@ private fun ScoreBox(score: Int?, goal: Boolean, tv: Boolean) {
     }
 }
 
+/** The red live dot, blinking with the clock (once a second, not an endless animation: weak TVs draw less). */
 @Composable
-private fun LiveDot() {
-    val pulse = rememberInfiniteTransition(label = "live")
-    val alpha by pulse.animateFloat(1f, 0.35f, infiniteRepeatable(tween(900), RepeatMode.Reverse), label = "liveAlpha")
+private fun LiveDot(dim: Boolean) {
     Box(
         Modifier
             .size(7.dp)
             .clip(CircleShape)
-            .background(RColors.Live.copy(alpha = alpha))
+            .background(RColors.Live.copy(alpha = if (dim) 0.4f else 1f))
     )
 }
 
