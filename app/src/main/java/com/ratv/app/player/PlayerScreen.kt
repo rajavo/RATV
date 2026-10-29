@@ -154,6 +154,9 @@ private const val MAX_RECONNECTS = 5
 
 /** Stalls counted toward moving to another version of the channel: those of the last 4 minutes. */
 private const val VERSION_WINDOW_MS = 4L * 60L * 1000L
+
+/** A live channel stopping with this much stored did not run out of picture: the line is not to blame. */
+private const val PLENTY_STORED_MS = 3_000L
 private val SoftText = Color(0xFFD9D4CC)
 
 private class ResizeMode(val label: String, val resize: Int, val ratio: Float?)
@@ -266,7 +269,6 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     var introHeard by remember { mutableStateOf<IntroWindow?>(null) }
     var introListed by remember { mutableStateOf<List<IntroWindow>>(emptyList()) }
     var introSkipped by remember { mutableStateOf<String?>(null) }
-    val cushion = remember { cushionMs(repo.prefs.bufferMode) }
     val liveFormat = remember { repo.prefs.liveFormat }
     // Channel whose HLS version failed: it goes back to its own address.
     var hlsFailedFor by remember { mutableStateOf<String?>(null) }
@@ -275,7 +277,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // much more ahead, as its pieces come faster than they are shown.
     var hlsPreferredFor by remember { mutableStateOf<String?>(null) }
     var autoHlsNoticed by remember { mutableStateOf(false) }
-    val hlsAfterStalls = remember { com.ratv.app.data.debugProperty("debug.ratv.hlsafter")?.toIntOrNull() ?: 3 }
+    val hlsAfterStalls = remember { com.ratv.app.data.debugProperty("debug.ratv.hlsafter")?.toIntOrNull() ?: 2 }
     var usingHls by remember { mutableStateOf(false) }
     // A channel that keeps stalling (or failing) moves to another version of itself from the
     // subscription, a lighter quality or a backup link, when there is one. Versions already tried
@@ -293,6 +295,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // Stream information (the ⓘ button), with what playback went through: finds the cause of stutter.
     var showStats by remember { mutableStateOf(false) }
     var stalls by remember { mutableIntStateOf(0) }
+    // Stalls of a live channel that ran out of picture (the line's), as against the player's own hiccups.
+    var lineStalls by remember { mutableIntStateOf(0) }
     var liveReconnects by remember { mutableIntStateOf(0) }
     var droppedFrames by remember { mutableIntStateOf(0) }
     var decoderName by remember { mutableStateOf<String?>(null) }
@@ -443,6 +447,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             streamNotice = tr("النت متذبذب: صرنا نشغّل القنوات بصيغة HLS لأنها تتحمّل التذبذب أكثر")
         }
         stalls = 0
+        lineStalls = 0
         stallTimes.clear()
         droppedFrames = 0
         measuredFps = 0f
@@ -737,14 +742,20 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 } else if (state == Player.STATE_BUFFERING && readyOnce) {
                     stalls++
                     val now = current
-                    if (now?.isLive == true) {
+                    val stored = player.totalBufferedDuration
+                    if (now?.isLive == true && stored >= PLENTY_STORED_MS) {
+                        // The picture stopped with seconds of it stored: the player's own hiccup, not the line's.
+                        // Gathering more, HLS or another version would not help (and starting over loses the store).
+                        Log.i("RATVPlayback", "stall with $stored ms stored: not the line")
+                    } else if (now?.isLive == true) {
+                        lineStalls++
                         Steadiness.onStall()
                         val t = SystemClock.elapsedRealtime()
                         stallTimes.addLast(t)
                         while (stallTimes.isNotEmpty() && t - stallTimes.first() > VERSION_WINDOW_MS) stallTimes.removeFirst()
-                        // Third stall as TS: try the channel as HLS once, if the server offers it.
+                        // Second stall as TS: try the channel as HLS once, if the server offers it.
                         val hlsAllowed = repo.account.value?.formats?.contains("m3u8") == true
-                        if (stalls >= hlsAfterStalls && !usingHls && hlsAllowed && hlsPreferredFor != now.id && hlsFailedFor != now.id &&
+                        if (lineStalls >= hlsAfterStalls && !usingHls && hlsAllowed && hlsPreferredFor != now.id && hlsFailedFor != now.id &&
                             liveStreamUrl(now.url, "hls", true) != now.url
                         ) {
                             Log.i("RATVPlayback", "stalls keep coming as TS: trying HLS")
@@ -1520,9 +1531,16 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                     strokeWidth = 3.dp,
                     modifier = Modifier.size(48.dp)
                 )
-                if (netTrouble) {
+                // After the line stalled, a live channel gathers a bigger store before it goes on: say so,
+                // with how far it got, so the longer wait is understood.
+                val gathering = !netTrouble && current?.isLive == true && lineStalls > 0 && Steadiness.extraMs > 0L
+                if (netTrouble || gathering) {
                     Text(
-                        tr("انقطع الإنترنت… يكمل التشغيل فور عودته"),
+                        if (netTrouble) {
+                            tr("انقطع الإنترنت… يكمل التشغيل فور عودته")
+                        } else {
+                            tr("نجمع احتياطي أكبر عشان ما يقطع مرة ثانية: {0} من {1} ث", reserveMs / 1000L, Steadiness.afterStallTargetMs / 1000L)
+                        },
                         style = T.body(14.sp, FontWeight.Bold),
                         modifier = Modifier
                             .padding(top = 14.dp)
@@ -1591,13 +1609,13 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         val showReserve = playerError == null && !notFound && current != null &&
             ((netTrouble && reserveMs > 0) || (controlsVisible && !buffering))
         if (showReserve) {
-            val liveNow = current?.isLive == true
-            val secs = (if (liveNow) reserveMs else minOf(reserveMs, cushion)) / 1000L
+            val secs = reserveMs / 1000L
+            // Films and episodes store minutes ahead: in minutes past two of them.
+            val amount = if (secs >= 120L) tr("{0} د", secs / 60L) else tr("{0} ث", secs)
             Text(
                 when {
-                    netTrouble -> tr("انقطع الإنترنت — يكمل من الاحتياطي، باقي {0} ث", secs)
-                    liveNow -> tr("الاحتياطي ضد انقطاع النت: {0} ث", secs)
-                    else -> tr("الاحتياطي ضد انقطاع النت: {0} من {1} ث", secs, cushion / 1000L)
+                    netTrouble -> tr("انقطع الإنترنت — يكمل من الاحتياطي، باقي {0}", amount)
+                    else -> tr("الاحتياطي ضد انقطاع النت: {0}", amount)
                 },
                 style = T.body(13.sp, FontWeight.Bold, if (netTrouble) Color.White else RColors.Text),
                 modifier = Modifier
