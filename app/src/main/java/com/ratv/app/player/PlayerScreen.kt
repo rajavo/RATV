@@ -157,6 +157,15 @@ private const val VERSION_WINDOW_MS = 4L * 60L * 1000L
 
 /** A live channel stopping with this much stored did not run out of picture: the line is not to blame. */
 private const val PLENTY_STORED_MS = 3_000L
+
+/**
+ * «تخطي المقدمة» before anything is known of an episode's opening (the first one watched, on an account
+ * with one connection): from GUESS_FROM_MS to GUESS_UNTIL_MS into an episode the button is there, and it
+ * goes to GUESS_TO_MS, where most openings have ended.
+ */
+private const val GUESS_FROM_MS = 5_000L
+private const val GUESS_UNTIL_MS = 85_000L
+private const val GUESS_TO_MS = 90_000L
 private val SoftText = Color(0xFFD9D4CC)
 
 private class ResizeMode(val label: String, val resize: Int, val ratio: Float?)
@@ -1145,6 +1154,17 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         }
     }
 
+    // The guess (see GUESS_FROM_MS): only while nothing is known of this episode's opening.
+    val guessNow: Boolean = introMode != "off" && item != null && item.kind == Playable.KIND_EPISODE && !item.isLive &&
+        introNow == null && introHeard == null && introListed.isEmpty() &&
+        position >= GUESS_FROM_MS && position < GUESS_UNTIL_MS
+
+    fun skipGuess() {
+        touch()
+        Log.i("RATVIntro", "skipped the first ${GUESS_TO_MS / 1000} s (the opening is not known yet)")
+        player.seekTo(GUESS_TO_MS)
+    }
+
     fun skipIntro(w: IntroWindow) {
         touch()
         Log.i("RATVIntro", "skipped from ${player.currentPosition} to ${w.endMs} ms (${w.source})")
@@ -1435,6 +1455,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             nextFromCredits(credits)
             return true
         }
+        if (opening == null && credits == null && guessNow && !controlsVisible && isOk) {
+            skipGuess()
+            return true
+        }
         if (controlsVisible) {
             touch()
             return false
@@ -1714,8 +1738,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         }
 
         val opening = introNow ?: creditsNow
+        val guess = opening == null && guessNow
         AnimatedVisibility(
-            visible = opening != null && !inPip && !panelOpen && !sourcesOpen && !subsOpen && !scorePickOpen && playerError == null,
+            visible = (opening != null || guess) && !inPip && !panelOpen && !sourcesOpen && !subsOpen && !scorePickOpen && playerError == null,
             enter = fadeIn(),
             exit = fadeOut(),
             modifier = Modifier
@@ -1724,7 +1749,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         ) {
             val shown = remember { arrayOfNulls<IntroWindow>(1) }
             if (opening != null) shown[0] = opening
-            shown[0]?.let { w ->
+            if (guess) {
+                IntroSkipButton(tr("تخطي المقدمة"), okHint = isTv) { skipGuess() }
+            } else shown[0]?.let { w ->
                 IntroSkipButton(
                     when (w.kind) {
                         IntroWindow.RECAP -> tr("تخطي الملخص")
