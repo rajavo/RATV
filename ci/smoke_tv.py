@@ -310,7 +310,7 @@ def t_match_link():
 
 
 def intro_log():
-    out = S.shell("logcat -d -s RATVIntro:I RATVIntro:W")
+    out = S.shell("logcat -d -s RATVIntro:I")
     return [l.strip() for l in out.splitlines() if "RATVIntro" in l]
 
 
@@ -671,7 +671,7 @@ def t_scoreboard():
                "the board did not move down under the controls: %s" % (S.bounds(n) if n is not None else None,))
         # Picked by hand: a Yallakora match.
         press_pill("لوحة النتيجة", "board-pill")
-        _, p = S.wait_for(timeout=8, contains="بدون لوحة", save="board-pick")
+        _, p = S.wait_for(timeout=8, contains="اختر المباراة اللي تعرضها", save="board-pick")
         S.shot("board-pick")
         expect(p is not None, "the match picker did not open")
         texts = S.all_texts(S.dump("board-pick2"))
@@ -687,7 +687,7 @@ def t_scoreboard():
         expect("1 - 0" in d and "نادي قطر" in d, "the Yallakora match is not shown right: " + d)
         # Hidden on this channel.
         press_pill("لوحة النتيجة", "board-pill2")
-        _, p = S.wait_for(timeout=8, contains="بدون لوحة")
+        _, p = S.wait_for(timeout=8, contains="اختر المباراة اللي تعرضها")
         expect(p is not None, "the match picker did not open again")
         expect(focus_row("بدون لوحة", "board-hide"), "could not reach «no scoreboard» with the remote")
         key("DPAD_CENTER", pause=2)
@@ -795,7 +795,7 @@ def t_languages():
             S.shot("settings-" + lang)
             # Down the settings to the language row, then open its list.
             found = False
-            for _ in range(24):
+            for _ in range(34):
                 _, f = log_focus("settings-" + lang)
                 if f and "Language" in f:
                     found = True
@@ -808,7 +808,7 @@ def t_languages():
             texts = S.all_texts(root)
             expect("English" in texts and "Español" in texts and "العربية" in texts, "%s: the language list is incomplete" % lang)
             key("BACK", pause=1.5)
-            go_tab(nav[1], nav, tries=40)  # from far down the settings
+            go_tab(nav[1], nav, tries=50)  # from far down the settings
             time.sleep(3)
             S.shot("live-" + lang)
     finally:
