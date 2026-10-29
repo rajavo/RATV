@@ -6,6 +6,7 @@ playlist and plays generated test media, so the app can be exercised end to
 end on an emulator without a real subscription.
 """
 import io
+import random
 import json
 import os
 import sys
@@ -48,6 +49,8 @@ CHANNELS = [
     (109, 16, "Chunky Live", "1", "", None),
     # Cut every 7 s, and each new connection repeats the last 4 s (a burst, like real servers).
     (110, 17, "Overlap Live", "1", "", None),
+    # Misbehaves at random: cuts, short pauses, frozen lines, chunks, slow spells, bursts of 0-6 s (the soak test).
+    (111, 18, "Chaos Live", "1", "", None),
     # A weak server: no burst, and every 12 s it stops for 7 s, then sends what it owes.
     (112, 19, "Weak Server", "1", "", None),
     # A busy server: refuses the first two connections (403), then sends normally.
@@ -633,6 +636,71 @@ class Handler(BaseHTTPRequestHandler):
             out.append("%s/hls/seg%03d.ts" % (BASE, k % len(durations)))
         return self._send(("\n".join(out) + "\n").encode("utf-8"), "application/vnd.apple.mpegurl")
 
+    def send_live_chaos(self, path, sid=111):
+        size = os.path.getsize(path)
+        rate = size / 240.0
+        now = time.time()
+        t0 = CHANNEL_T0.setdefault(sid, now)
+        CONNECTIONS[sid] = CONNECTIONS.get(sid, 0) + 1
+        rng = random.Random(CONNECTIONS[sid] * 7919)
+        burst_s = rng.choice([0, 0, 2, 4, 6])
+        burst = int(burst_s * rate) // 188 * 188
+        live_pos = int((now - t0) * rate)
+        pos = (max(0, live_pos - burst) % size) // 188 * 188
+        run_for = rng.uniform(5, 20)
+        ending = rng.choice(["cut", "pause", "freeze", "chunks", "dip"])
+        note("chaos", channel=sid, n=CONNECTIONS[sid], burst=burst_s, run=round(run_for, 1), then=ending)
+        self.send_response(200)
+        self.send_header("Content-Type", "video/mp2t")
+        self.end_headers()
+        started = time.time()
+        sent = 0
+        chunked = False
+        dip_until = 0.0
+        stage = 0
+        phase_end = started + run_for
+        try:
+            with open(path, "rb") as f:
+                f.seek(pos)
+                if burst:
+                    self.wfile.write(f.read(burst))
+                while True:
+                    if time.time() >= phase_end:
+                        if stage == 1 or ending == "cut":
+                            note("cut", channel=sid)
+                            break
+                        if ending == "freeze":
+                            note("frozen", channel=sid)
+                            while time.time() - started < run_for + 40:
+                                time.sleep(0.5)
+                            break
+                        if ending == "pause":
+                            note("pause", channel=sid)
+                            time.sleep(2.0)
+                        elif ending == "chunks":
+                            note("chunks", channel=sid)
+                            chunked = True
+                        elif ending == "dip":
+                            note("dip", channel=sid)
+                            dip_until = time.time() + 5.0
+                        stage = 1
+                        phase_end = time.time() + 12.0
+                    data = f.read(int((2.0 if chunked else 0.05) * rate) // 188 * 188)
+                    if not data:
+                        f.seek(0)
+                        continue
+                    self.wfile.write(data)
+                    self.wfile.flush()
+                    sent += len(data)
+                    if time.time() < dip_until:
+                        time.sleep(len(data) / rate)  # half speed for a while
+                    ahead = sent / rate - (time.time() - started)
+                    if ahead > 0:
+                        time.sleep(ahead)
+        except (BrokenPipeError, ConnectionResetError, OSError):
+            note("client-left", channel=sid)
+        self.close_connection = True
+
     def send_file(self, path, ctype):
         if not os.path.exists(path):
             self.send_error(404)
@@ -788,6 +856,10 @@ class Handler(BaseHTTPRequestHandler):
                 note("refused", channel=113, n=CONNECTIONS[113])
                 return self.send_error(403)
             return self.send_live_paced(os.path.join(MEDIA, "live.ts"), 1113)
+        if p.startswith("/live/") and os.path.basename(p) == "111.m3u8":
+            return self.send_error(404)
+        if p.startswith("/live/") and os.path.basename(p).startswith("111."):
+            return self.send_live_chaos(os.path.join(MEDIA, "live.ts"))
         if p.startswith("/live/") and os.path.basename(p).startswith("110."):
             return self.send_live_paced(os.path.join(MEDIA, "live.ts"), 110, cut_after=7.0, burst_seconds=4.0)
         if p.startswith("/live/") and os.path.basename(p).startswith("107."):
