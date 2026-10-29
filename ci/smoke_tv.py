@@ -817,6 +817,54 @@ def t_languages():
         S.wait_for(timeout=45, text="الرئيسية")
 
 
+def t_phone_link():
+    """The QR code on the add-user screen: its page takes a link from a phone, and the TV adds it."""
+    import urllib.parse
+    import urllib.request
+    go_tab("حسابي")
+    time.sleep(1.5)
+    _, f = log_focus("phone-settings")
+    expect(f is not None and "إضافة مستخدم" in f, "add-user button not focused (focus: %s)" % f)
+    key("DPAD_CENTER", pause=3)
+    _, n = S.wait_for(timeout=20, text="أضف اشتراكك", save="phone-login")
+    expect(n is not None, "add-user screen not shown")
+    time.sleep(2)
+    root = S.dump("phone-qr")
+    S.shot("phone-qr")
+    expect(any("رمز QR" in (x.get("content-desc") or "") for x in S.nodes(root)), "no QR code on the screen")
+    texts = S.all_texts(root)
+    expect("أرسل الرابط من جوالك" in texts, "no words with the QR code")
+    out = S.shell("logcat -d -s RATVPhone:I")
+    urls = re.findall(r"phone page at http://[0-9.]+:(\d+)/(\w+)", out)
+    expect(urls, "the phone page did not start")
+    port, token = urls[-1]
+    S.log("phone page on port %s" % port)
+    S.adb("forward", "tcp:18686", "tcp:" + port)
+    base = "http://127.0.0.1:18686/"
+
+    def post(fields, path=token):
+        data = urllib.parse.urlencode(fields).encode()
+        return urllib.request.urlopen(base + path, data=data, timeout=15).read().decode("utf-8")
+
+    page = urllib.request.urlopen(base + token, timeout=15).read().decode("utf-8")
+    expect('name="link"' in page and "أرسل للتلفزيون" in page, "the phone page has no form")
+    try:
+        urllib.request.urlopen(base + "wrong1", timeout=15)
+        expect(False, "a wrong address was answered")
+    except urllib.error.HTTPError as e:
+        expect(e.code == 404, "wrong address gave %s" % e.code)
+    empty = post({"link": "  "})
+    expect("الصق رابط القائمة أولاً" in empty, "an empty link was not refused")
+    ok = post({"link": "http://10.0.2.2:8000/playlist.m3u", "epg": ""})
+    expect("وصل الرابط للتلفزيون" in ok, "the link was not taken")
+    _, n = S.wait_for(timeout=90, text="الرئيسية", save="phone-home")
+    S.shot("phone-home")
+    expect(n is not None, "the TV did not add the playlist sent from the phone")
+    log = S.shell("logcat -d -s RATVPhone:I")
+    expect("a link came from the phone" in log, "the TV did not note the link")
+    expect("10.0.2.2:8000/playlist" not in log, "the link was written to the log")
+
+
 if __name__ == "__main__":
     for name, fn in [
         ("launch", S.s_launch),
@@ -839,6 +887,7 @@ if __name__ == "__main__":
         ("settings-deep", t_settings_deep),
         ("enhance", t_enhance),
         ("languages", t_languages),
+        ("phone-link", t_phone_link),
     ]:
         S.step(name, fn)
     S.finish()
