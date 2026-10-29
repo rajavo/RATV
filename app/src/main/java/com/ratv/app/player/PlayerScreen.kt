@@ -1154,9 +1154,11 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         }
     }
 
-    // The guess (see GUESS_FROM_MS): only while nothing is known of this episode's opening.
-    val guessNow: Boolean = introMode != "off" && item != null && item.kind == Playable.KIND_EPISODE && !item.isLive &&
-        introNow == null && introHeard == null && introListed.isEmpty() &&
+    // The guess (see GUESS_FROM_MS) for every film and episode whose opening is not known: a button at
+    // the start, as on Shahid, for everything on the server (the known openings show it exactly).
+    val guessNow: Boolean = introMode != "off" && item != null && !item.isLive &&
+        (item.kind == Playable.KIND_EPISODE || item.kind == Playable.KIND_MOVIE) &&
+        introNow == null && introHeard == null && introListed.none { it.kind == IntroWindow.INTRO } &&
         position >= GUESS_FROM_MS && position < GUESS_UNTIL_MS
 
     fun skipGuess() {
@@ -1455,7 +1457,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             nextFromCredits(credits)
             return true
         }
-        if (opening == null && credits == null && guessNow && !controlsVisible && isOk) {
+        if (opening == null && credits == null && guessNow && isOk) {
             skipGuess()
             return true
         }
