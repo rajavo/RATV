@@ -145,6 +145,18 @@ def t_home_focus():
     expect(f is not None and "RATV News HD" in f, "hero not focused (focus: %s)" % f)
 
 
+def t_low_latency():
+    """Low-latency Wi-Fi while the app is shown, and a connection kept ready to the subscription's server."""
+    out = S.shell("logcat -d -s RATVNet:I")
+    for l in [l for l in out.splitlines() if "RATVNet" in l][-6:]:
+        S.log("  " + l.strip())
+    expect("Wi-Fi low latency on" in out, "the low-latency Wi-Fi was not asked for")
+    expect("keeping a connection ready to 10.0.2.2" in out, "no connection kept ready to the server")
+    locks = S.shell("dumpsys wifi | grep -i 'RATV:low-latency'")
+    S.log("wifi locks: " + locks.strip()[:300])
+    expect("RATV:low-latency" in locks, "the Wi-Fi lock is not held")
+
+
 def t_player_remote():
     key("DPAD_CENTER", pause=10)
     S.shot("player")
@@ -891,6 +903,7 @@ if __name__ == "__main__":
         ("keyboard-on-ok", t_keyboard_on_ok),
         ("fill-with-remote", t_fill_with_remote),
         ("home-focus", t_home_focus),
+        ("low-latency", t_low_latency),
         ("player-remote", t_player_remote),
         ("player-numbers", t_player_numbers),
         ("update-notes", t_update_notes),
