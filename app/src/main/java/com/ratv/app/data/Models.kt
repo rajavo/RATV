@@ -80,7 +80,9 @@ data class MovieInfo(
     val backdrop: String?,
     val cover: String?,
     val trailer: String?,
-    val originalName: String? = null
+    val originalName: String? = null,
+    /** The film's number on TMDB, when the server gives it (for TheIntroDB's openings). */
+    val tmdb: Int? = null
 )
 
 data class SeriesInfo(
@@ -91,7 +93,9 @@ data class SeriesInfo(
     val rating: String?,
     val backdrop: String?,
     val cover: String?,
-    val episodes: Map<Int, List<Episode>>
+    val episodes: Map<Int, List<Episode>>,
+    /** The series' number on TMDB, when the server gives it. */
+    val tmdb: Int? = null
 ) {
     val seasons: List<Int> get() = episodes.keys.sorted()
 }
