@@ -1,23 +1,20 @@
 {
   "ar": [
-    "جديد: زر «تخطي المقدمة» في المسلسلات. التطبيق يعرف مقدمة المسلسل من صوتها، ومن ثاني حلقة تشوفها يطلع الزر أول ما تبدأ المقدمة: اضغط OK ويتخطاها. والمسلسلات والأفلام المعروفة يعرف مقدمتها من أول حلقة. وتقدر تخليه يتخطاها تلقائي من الإعدادات.",
-    "لوحة النتيجة صارت فوق يسار مكان نتيجة القناة نفسها: تغطيها وتطلع بالعربي مع شعارات الفرق. وتقدر ترجعها فوق بالنص من الإعدادات.",
-    "إصلاح: لوحة النتيجة صارت تبقى لين صافرة النهاية مهما طولت المباراة بالوقت بدل الضائع.",
-    "مباريات الدوري السعودي صارت تطلع لوحتها على كل قنوات ثمانية (ثمانية 1 و2 و3…)، لما تكون مباراة وحدة شغالة.",
-    "لما تكون أكثر من مباراة على قنوات ثمانية بنفس الوقت، يسألك التطبيق: اضغط OK واختر مباراة قناتك، وتطلع النتيجة."
+    "ثبات أقوى بكثير ضد التقطيع في القنوات: إذا وقف البث، يجمع التطبيق احتياطياً أكبر قبل ما يكمل (لين دقيقة كاملة بدل 15 ثانية)، فيتحمّل النت المتذبذب والسيرفر الضعيف أضعاف ما كان، ويقول لك على الشاشة كم جمع.",
+    "الاتصال اللي يعلّق صار يتجدد أسرع (خلال 3 ثواني تقريباً بدل 8)، فما يضيع شي من الاحتياطي.",
+    "الوقفات الخفيفة من التلفزيون نفسه (مو من النت) ما عاد تخلي التطبيق يغيّر صيغة البث أو يبدأ القناة من جديد.",
+    "الأفلام والمسلسلات: الاحتياطي صار 10 أضعاف: تكمل لين 10 دقائق بدون إنترنت بدل دقيقة (على قد ذاكرة التلفزيون)."
   ],
   "en": [
-    "New: a “Skip intro” button in series. The app learns a series' opening by its sound, and from the second episode you watch the button shows as soon as the opening starts: press OK to skip it. Well-known series and films have theirs from the first episode. You can have it skipped automatically in the settings.",
-    "The scoreboard now sits at the top left, where the channel's own score is: it covers it, in Arabic with the teams' crests. You can put it back at the top centre in the settings.",
-    "Fixed: the scoreboard now stays until the final whistle, however long added time runs.",
-    "Saudi league matches now get their scoreboard on every Thmanyah channel (Thmanyah 1, 2, 3…) while only one match is being played.",
-    "When more than one match is on the Thmanyah channels at once, the app asks: press OK and pick your channel's match to see its score."
+    "Much steadier channels: if the stream stops, the app builds a bigger buffer before it goes on (up to a full minute instead of 15 seconds), so it rides out an unsteady internet or a weak server many times better, and shows on screen how much it has gathered.",
+    "A connection that gets stuck is now renewed much sooner (in about 3 seconds instead of 8), so none of the buffer is lost.",
+    "Short hiccups of the TV itself (not of the internet) no longer make the app change the stream format or start the channel again.",
+    "Movies and series: the buffer is ten times bigger: they keep playing up to 10 minutes without internet instead of one (as the TV's memory allows)."
   ],
   "es": [
-    "Nuevo: un botón «Saltar intro» en las series. La app aprende la entrada de cada serie por su sonido, y desde el segundo episodio que veas el botón aparece en cuanto empieza: pulsa OK para saltarla. Las series y películas conocidas la tienen desde el primer episodio. En los ajustes puedes hacer que se salte sola.",
-    "El marcador ahora va arriba a la izquierda, donde está el marcador del propio canal: lo tapa, en árabe y con los escudos de los equipos. En los ajustes puedes volver a ponerlo arriba en el centro.",
-    "Corregido: el marcador se queda hasta el pitido final, por mucho que dure el tiempo añadido.",
-    "Los partidos de la liga saudí muestran ahora su marcador en todos los canales Thmanyah (Thmanyah 1, 2, 3…) mientras se juega un solo partido.",
-    "Cuando hay más de un partido a la vez en los canales Thmanyah, la app te pregunta: pulsa OK y elige el partido de tu canal para ver el marcador."
+    "Canales mucho más estables: si la emisión se para, la app acumula más reserva antes de seguir (hasta un minuto entero en lugar de 15 segundos), así aguanta mucho mejor un internet inestable o un servidor débil, y muestra en pantalla cuánto lleva acumulado.",
+    "Una conexión que se atasca se renueva mucho antes (en unos 3 segundos en lugar de 8), así no se pierde nada de la reserva.",
+    "Los pequeños tirones del propio televisor (no de internet) ya no hacen que la app cambie el formato de la emisión ni empiece el canal de nuevo.",
+    "Películas y series: la reserva es diez veces mayor: siguen hasta 10 minutos sin internet en lugar de uno (según la memoria del televisor)."
   ]
 }

@@ -34,6 +34,10 @@ import java.util.concurrent.atomic.AtomicInteger
  * wait much longer than this server's usual pauses (3 s for a steady stream, up to 8 s for
  * servers that send in chunks) cuts the connection and opens a new one, before the store runs
  * out. A channel that takes a while to start is given its time: the watch begins with the data.
+ * What was learned of the server's pauses carries on to its next connections (a new one is not
+ * given the 8 s of a server not known yet), so a stuck line is cut within about 3 s: the burst a
+ * new connection starts with (the last seconds the server holds) then covers what was missed,
+ * and the store loses nothing.
  *
  * A new connection starts with a burst of the last seconds the server holds, part of which the
  * player already has. Passed on as it is, the picture would jump back or freeze for those seconds,
@@ -78,15 +82,10 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
     /** Data has flowed on the current connection. */
     @Volatile
     private var receiving = false
-    private var openedAt = 0L
 
-    // Longest wait for data seen lately (this 30 s and the previous 30 s): the server's usual pauses.
+    /** What is known of this address's pauses, across its connections (the watch reads it). */
     @Volatile
-    private var windowMax = 0L
-
-    @Volatile
-    private var previousMax = 0L
-    private var windowStart = 0L
+    private var pauses: Pauses? = null
 
     // Joining a new connection to the old one (MPEG-TS packets of 188 bytes).
     private val delivered = ByteArray(TS_PACKET)
@@ -135,10 +134,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         live = length == C.LENGTH_UNSET.toLong() && dataSpec.position == 0L &&
             (scheme == "http" || scheme == "https") && !path.endsWith(".m3u8") && !path.endsWith(".m3u")
         if (live) {
-            openedAt = SystemClock.elapsedRealtime()
-            windowStart = openedAt
-            windowMax = 0L
-            previousMax = 0L
+            pauses = PAUSES.getOrPut(dataSpec.uri.toString()) { Pauses(SystemClock.elapsedRealtime()) }
             receiving = false
             WATCHED.add(this)
         }
@@ -361,13 +357,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
             receiving = true // the first data of a connection: its wait is the server starting up
             return
         }
-        val now = SystemClock.elapsedRealtime()
-        if (now - windowStart > 30_000L) {
-            previousMax = windowMax
-            windowMax = 0L
-            windowStart = now
-        }
-        if (waited > windowMax) windowMax = waited
+        pauses?.note(waited, SystemClock.elapsedRealtime())
     }
 
     /** From the watch thread: cuts a connection that stopped delivering, so [read] opens a new one. */
@@ -375,14 +365,16 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         if (!live || closed || !receiving) return
         val since = waitingSince
         if (since == 0L) return // not reading now (store full), nothing to watch
-        val learned = if (now - openedAt < LEARN_MS) {
+        val p = pauses ?: return
+        val learned = if (now - p.since < LEARN_MS) {
             STALL_MAX_MS
         } else {
-            (maxOf(windowMax, previousMax) * 3).coerceIn(STALL_MIN_MS, STALL_MAX_MS)
+            (p.longest() * 3).coerceIn(STALL_MIN_MS, STALL_MAX_MS)
         }
         // With a big store there is time for the server to carry on by itself (and send what it
         // owes, which a new connection would skip); with a small one, a new connection is better.
-        val limit = maxOf(learned, minOf(STALL_MAX_MS, Steadiness.reserveMs - 2_000L))
+        // Not past 4.5 s: a line stuck for good costs the store every second it is waited for.
+        val limit = maxOf(learned, minOf(STALL_EXTEND_MS, Steadiness.reserveMs - 2_000L))
         if (now - since > limit) {
             receiving = false
             Log.i(TAG, "no data for ${now - since} ms (limit $limit ms): reconnecting")
@@ -404,6 +396,28 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         source?.close()
     }
 
+    /**
+     * The longest waits for data one live address made lately (this 30 s and the previous 30 s):
+     * its usual pauses. Kept across its connections from [since] (its first data in this run).
+     */
+    private class Pauses(val since: Long) {
+        @Volatile private var windowStart = since
+        @Volatile private var windowMax = 0L
+        @Volatile private var previousMax = 0L
+
+        @Synchronized fun note(waited: Long, now: Long) {
+            if (now - windowStart > 30_000L) {
+                // A window with nothing noted (no connection then) says nothing of now.
+                previousMax = if (now - windowStart > 60_000L) 0L else windowMax
+                windowMax = 0L
+                windowStart = now
+            }
+            if (waited > windowMax) windowMax = waited
+        }
+
+        fun longest(): Long = maxOf(windowMax, previousMax)
+    }
+
     class Factory(private val context: Context, private val client: OkHttpClient, private val userAgent: String) :
         DataSource.Factory {
         override fun createDataSource(): DataSource = LiveReconnectingDataSource(context.applicationContext, client, userAgent)
@@ -415,6 +429,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         private const val MAX_RECONNECTS = 25
         private const val STALL_MIN_MS = 3_000L
         private const val STALL_MAX_MS = 8_000L
+        private const val STALL_EXTEND_MS = 4_500L
         private const val LEARN_MS = 12_000L
         private const val KEY_WAIT_MS = 1_500L
         private const val CONTINUOUS_GAP = 45_000L // 0.5 s in 90 kHz ticks
@@ -435,6 +450,9 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
 
         // Live loads ended to start the channel again, by address, and when (cleared by the next load).
         private val ENDED = ConcurrentHashMap<String, Long>()
+
+        // The pauses of each live address, learned across its connections.
+        private val PAUSES = ConcurrentHashMap<String, Pauses>()
 
         /** When the load of [uri] was ended to start the channel again and no new load has begun (0: none). */
         fun loadEndedAt(uri: String): Long = ENDED[uri] ?: 0L
