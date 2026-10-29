@@ -363,6 +363,10 @@ def t_intro():
         key("DPAD_CENTER", pause=3)
         # Episode 1: its sound is printed as the player loads it, and the next one is listened to ahead.
         expect(wait_intro(r"printing its sound", 25, "intro-ep1") is not None, "the first episode's sound is not printed")
+        # Before anything is known of the opening: «تخطي المقدمة» is there in the first minute and a half.
+        _, g = S.wait_for(timeout=12, text="تخطي المقدمة", save="intro-guess")
+        S.shot("intro-guess")
+        expect(g is not None, "no «تخطي المقدمة» in the first minute before the opening is known")
         expect(wait_intro(r"listened ahead: \d+ s of its start, \d+ s of its end", 40, "intro-ahead") is not None,
                "the next episode was not listened to ahead")
         l = wait_intro(r"opening learnt at", 30, "intro-learnt")
