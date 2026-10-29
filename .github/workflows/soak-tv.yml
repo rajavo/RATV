@@ -3,7 +3,7 @@ name: Soak test (TV)
 # Plays one channel for many minutes while the fake server misbehaves at random, on the TV emulator (CI only).
 on:
   push:
-    branches: [ ci-soak-tv ]
+    branches: [ ci-soak-tv, ci-soak-tv-new ]
 
 permissions:
   contents: write
@@ -33,7 +33,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f soak-results/build-error.txt
           git commit -q -m "Build error" || true
-          for i in 1 2 3; do git pull -q --rebase -X theirs origin ci-soak-tv && git push -q origin HEAD:ci-soak-tv && break; sleep 5; done
+          for i in 1 2 3; do git pull -q --rebase -X theirs origin ${{ github.ref_name }} && git push -q origin HEAD:${{ github.ref_name }} && break; sleep 5; done
       - uses: actions/upload-artifact@v4
         with:
           name: apk
@@ -85,6 +85,7 @@ jobs:
           ffmpeg -hide_banner -loglevel error -f lavfi -i testsrc2=size=720x576:rate=25 -f lavfi -i sine=frequency=550:sample_rate=48000 -t 240 -vf setsar=64/45 -c:v libx264 -preset veryfast -pix_fmt yuv420p -b:v 900k -g 50 -c:a aac -b:a 96k -f mpegts ci/media/live_sd.ts
           mkdir -p ci/media/hls
           ffmpeg -hide_banner -loglevel error -i ci/media/live.ts -c copy -f hls -hls_time 4 -hls_list_size 0 -hls_segment_filename ci/media/hls/seg%03d.ts ci/media/hls/full.m3u8
+          ffmpeg -hide_banner -loglevel error -f lavfi -i testsrc2=size=960x540:rate=25 -f lavfi -i sine=frequency=500:sample_rate=48000 -t 1500 -c:v libx264 -preset ultrafast -pix_fmt yuv420p -b:v 800k -g 50 -c:a aac -b:a 64k -f mpegts ci/media/chaos.ts
           ffmpeg -hide_banner -loglevel error -f lavfi -i testsrc=size=1280x720:rate=25 -f lavfi -i sine=frequency=660:sample_rate=48000 -t 120 -c:v libx264 -preset veryfast -pix_fmt yuv420p -b:v 1200k -g 50 -c:a aac -b:a 96k -movflags +faststart ci/media/movie.mp4
           for i in 1 2 3 4 5; do
             ffmpeg -hide_banner -loglevel error -f lavfi -i "color=c=0x$(printf '%02x%02x%02x' $((i*45)) $((210-i*30)) $((90+i*25))):s=256x256" -frames:v 1 ci/media/l$i.png
@@ -136,11 +137,11 @@ jobs:
           dev=${{ matrix.device }}
           rm -rf "/tmp/results-$dev" && cp -r "soak-results/$dev" "/tmp/results-$dev"
           for i in 1 2 3 4 5 6 7 8 9 10; do
-            git fetch -q origin ci-soak-tv || { sleep 5; continue; }
+            git fetch -q origin ${{ github.ref_name }} || { sleep 5; continue; }
             git checkout -q -f -B save-results FETCH_HEAD
             rm -rf "soak-results/$dev" && mkdir -p soak-results && cp -r "/tmp/results-$dev" "soak-results/$dev"
             git add -A -f "soak-results/$dev"
             git commit -q -m "Soak test results ($dev)" || break
-            git push -q origin HEAD:ci-soak-tv && break
+            git push -q origin HEAD:${{ github.ref_name }} && break
             sleep $((5 + RANDOM % 10))
           done

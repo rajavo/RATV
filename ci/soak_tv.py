@@ -67,6 +67,8 @@ def t_soak():
     f = T.focus_home_item("شاهد الآن", "soak-hero")
     T.expect(f and "شاهد الآن" in f, "watch-now not focused (focus: %s)" % f)
     T.key("DPAD_CENTER", pause=6)
+    # The player's own events (state, loads, errors, dropped frames) in the log, for the apps that have it.
+    S.shell("setprop debug.ratv.events 1")
     start = line_count()
     T.open_number(CHAOS_NUMBER, wait=3)
     S.shot("soak-start")

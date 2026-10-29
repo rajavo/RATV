@@ -638,7 +638,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def send_live_chaos(self, path, sid=111):
         size = os.path.getsize(path)
-        rate = size / 240.0
+        rate = size / (1500.0 if path.endswith("chaos.ts") else 240.0)
         now = time.time()
         t0 = CHANNEL_T0.setdefault(sid, now)
         CONNECTIONS[sid] = CONNECTIONS.get(sid, 0) + 1
@@ -859,7 +859,8 @@ class Handler(BaseHTTPRequestHandler):
         if p.startswith("/live/") and os.path.basename(p) == "111.m3u8":
             return self.send_error(404)
         if p.startswith("/live/") and os.path.basename(p).startswith("111."):
-            return self.send_live_chaos(os.path.join(MEDIA, "live.ts"))
+            long_one = os.path.join(MEDIA, "chaos.ts")
+            return self.send_live_chaos(long_one if os.path.exists(long_one) else os.path.join(MEDIA, "live.ts"))
         if p.startswith("/live/") and os.path.basename(p).startswith("110."):
             return self.send_live_paced(os.path.join(MEDIA, "live.ts"), 110, cut_after=7.0, burst_seconds=4.0)
         if p.startswith("/live/") and os.path.basename(p).startswith("107."):
