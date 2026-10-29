@@ -1,408 +1,561 @@
-10-29 14:39:10.385  3724  3724 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:10.387  3724  3724 I AndroidRuntime: Using default boot image
-10-29 14:39:10.387  3724  3724 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:10.436  3724  3724 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:39:11.486  3724  3724 D AndroidRuntime: Shutting down VM
-10-29 14:39:12.045   484   525 I ActivityManager: Start proc 3767:com.ratv.app/u0a76 for pre-top-activity {com.ratv.app/com.ratv.app.MainActivity}
-10-29 14:39:12.072  3767  3767 W com.ratv.app: Unexpected CPU variant for X86 using defaults: x86
-10-29 14:39:12.082  3767  3767 E com.ratv.app: Not starting debugger since process cannot load the jdwp agent.
-10-29 14:39:12.110  3767  3767 D NetworkSecurityConfig: No Network Security Config specified, using platform default
-10-29 14:39:12.110  3767  3767 D NetworkSecurityConfig: No Network Security Config specified, using platform default
-10-29 14:39:12.142  3767  3811 D libEGL  : loaded /vendor/lib/egl/libEGL_emulation.so
-10-29 14:39:12.144  3767  3811 D libEGL  : loaded /vendor/lib/egl/libGLESv1_CM_emulation.so
-10-29 14:39:12.146  3767  3811 D libEGL  : loaded /vendor/lib/egl/libGLESv2_emulation.so
-10-29 14:39:12.360  3767  3803 D HostConnection: HostConnection::get() New Host Connection established 0xf510ba70, tid 3803
-10-29 14:39:12.439  3767  3803 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
-10-29 14:39:12.454  3767  3803 D EGL_emulation: eglCreateContext: 0xf510adc0: maj 3 min 0 rcv 3
-10-29 14:39:12.457  3767  3803 D EGL_emulation: eglMakeCurrent: 0xf510adc0: ver 3 0 (tinfo 0xf5471df0) (first time)
-10-29 14:39:12.658  3767  3803 I Gralloc4: mapper 4.x is not supported
-10-29 14:39:12.659  3767  3803 D HostConnection: createUnique: call
-10-29 14:39:12.659  3767  3803 D HostConnection: HostConnection::get() New Host Connection established 0xf510d1a0, tid 3803
-10-29 14:39:12.659  3767  3803 D goldfish-address-space: allocate: Ask for block of size 0x100
-10-29 14:39:12.666  3767  3803 D goldfish-address-space: allocate: ioctl allocate returned offset 0x3fbffe000 size 0x2000
-10-29 14:39:12.694  3767  3803 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
-10-29 14:39:13.022  3767  3803 I OpenGLRenderer: Davey! duration=884ms; Flags=1, IntendedVsync=89627051339, Vsync=89643718005, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=89659127250, AnimationStart=89659128142, PerformTraversalsStart=89659191661, DrawStart=90200497598, SyncQueued=90205865075, SyncStart=90220555044, IssueDrawCommandsStart=90220602603, SwapBuffers=90414707163, FrameCompleted=90526008376, DequeueBufferDuration=182380, QueueBufferDuration=370992, GpuCompleted=72904454231491230, 
-10-29 14:39:13.027  3767  3767 I Choreographer: Skipped 51 frames!  The application may be doing too much work on its main thread.
-10-29 14:39:13.078  3767  3803 I OpenGLRenderer: Davey! duration=904ms; Flags=0, IntendedVsync=89677059052, Vsync=90527059018, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=90530669108, AnimationStart=90530670310, PerformTraversalsStart=90533257701, DrawStart=90533296062, SyncQueued=90533799121, SyncStart=90534184729, IssueDrawCommandsStart=90534215776, SwapBuffers=90535483984, FrameCompleted=90582410162, DequeueBufferDuration=51637, QueueBufferDuration=345585, GpuCompleted=43984843964424, 
-10-29 14:39:13.836  3767  3767 I Choreographer: Skipped 38 frames!  The application may be doing too much work on its main thread.
-10-29 14:39:14.115  3767  3803 I OpenGLRenderer: Davey! duration=902ms; Flags=0, IntendedVsync=90693577687, Vsync=91326910995, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=91340535917, AnimationStart=91340537169, PerformTraversalsStart=91348112762, DrawStart=91348152657, SyncQueued=91348683599, SyncStart=91372235508, IssueDrawCommandsStart=91372460679, SwapBuffers=91578297092, FrameCompleted=91619260759, DequeueBufferDuration=1010557, QueueBufferDuration=2671788, GpuCompleted=0, 
-10-29 14:39:15.134  3767  3803 I OpenGLRenderer: Davey! duration=1227ms; Flags=0, IntendedVsync=91393561116, Vsync=91626894440, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=91630577795, AnimationStart=91630578958, PerformTraversalsStart=91647626354, DrawStart=91647676497, SyncQueued=91656995235, SyncStart=91674038676, IssueDrawCommandsStart=91676141279, SwapBuffers=92607623429, FrameCompleted=92638490822, DequeueBufferDuration=47058, QueueBufferDuration=3109266, GpuCompleted=72904454231491242, 
-10-29 14:39:15.140  3767  3767 I Choreographer: Skipped 58 frames!  The application may be doing too much work on its main thread.
-10-29 14:39:15.464  3767  3803 I OpenGLRenderer: Davey! duration=1224ms; Flags=0, IntendedVsync=91676855314, Vsync=92643521942, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=92644407235, AnimationStart=92644408317, PerformTraversalsStart=92686830155, DrawStart=92686875169, SyncQueued=92694524430, SyncStart=92761083485, IssueDrawCommandsStart=92761202617, SwapBuffers=92951130438, FrameCompleted=92967863638, DequeueBufferDuration=128409, QueueBufferDuration=5141368, GpuCompleted=72057628414509176, 
-10-29 14:39:15.934  3859  3859 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:15.936  3859  3859 I AndroidRuntime: Using default boot image
-10-29 14:39:15.936  3859  3859 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:15.990  3859  3859 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:39:17.038  3859  3859 D AndroidRuntime: Shutting down VM
-10-29 14:39:17.375  3767  3878 D ProfileInstaller: Installing profile for com.ratv.app
-10-29 14:39:17.548  3884  3884 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:17.550  3884  3884 I AndroidRuntime: Using default boot image
-10-29 14:39:17.550  3884  3884 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:17.604  3884  3884 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:39:18.634  3884  3884 D AndroidRuntime: Shutting down VM
-10-29 14:39:20.616  3911  3911 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:20.617  3911  3911 I AndroidRuntime: Using default boot image
-10-29 14:39:20.617  3911  3911 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:20.671  3911  3911 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:39:21.695  3911  3911 D AndroidRuntime: Shutting down VM
-10-29 14:39:22.391  3767  3784 I com.ratv.app: oneway function results will be dropped but finished with status OK and parcel size 4
-10-29 14:39:22.526  3951  3951 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:22.528  3951  3951 I AndroidRuntime: Using default boot image
-10-29 14:39:22.528  3951  3951 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:22.583  3951  3951 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:39:22.591  3951  3951 D AndroidRuntime: Shutting down VM
-10-29 14:39:25.131  3987  3987 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:25.133  3987  3987 I AndroidRuntime: Using default boot image
-10-29 14:39:25.133  3987  3987 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:25.204  3987  3987 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:39:25.583  3767  3783 I AssistStructure: Flattened final assist data: 3872 bytes, containing 1 windows, 48 views
-10-29 14:39:26.533  3987  3987 D AndroidRuntime: Shutting down VM
-10-29 14:39:26.750  3767  3785 I AssistStructure: Flattened final assist data: 3880 bytes, containing 1 windows, 48 views
-10-29 14:39:27.686  3767  3785 I com.ratv.app: oneway function results will be dropped but finished with status OK and parcel size 4
-10-29 14:39:27.839  4070  4070 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:27.840  4070  4070 I AndroidRuntime: Using default boot image
-10-29 14:39:27.840  4070  4070 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:27.890  4070  4070 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:39:27.898  4070  4070 D AndroidRuntime: Shutting down VM
-10-29 14:39:29.763  4084  4084 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:29.764  4084  4084 I AndroidRuntime: Using default boot image
-10-29 14:39:29.764  4084  4084 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:29.813  4084  4084 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:39:29.821  4084  4084 D AndroidRuntime: Shutting down VM
-10-29 14:39:31.376  4339  4339 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:31.378  4339  4339 I AndroidRuntime: Using default boot image
-10-29 14:39:31.378  4339  4339 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:31.427  4339  4339 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:39:32.466  4339  4339 D AndroidRuntime: Shutting down VM
-10-29 14:39:33.041  4422  4422 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:33.053  4422  4422 I AndroidRuntime: Using default boot image
-10-29 14:39:33.053  4422  4422 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:33.121  4422  4422 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:39:33.126  4422  4422 D AndroidRuntime: Shutting down VM
-10-29 14:39:35.680  4440  4440 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:35.682  4440  4440 I AndroidRuntime: Using default boot image
-10-29 14:39:35.682  4440  4440 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:35.763  4440  4440 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:39:36.395  4440  4440 D AndroidRuntime: Shutting down VM
-10-29 14:39:37.621  3767  4058 I com.ratv.app: oneway function results will be dropped but finished with status OK and parcel size 4
-10-29 14:39:37.796  4463  4463 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:37.797  4463  4463 I AndroidRuntime: Using default boot image
-10-29 14:39:37.798  4463  4463 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:37.866  4463  4463 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:39:37.899  4463  4463 D AndroidRuntime: Shutting down VM
-10-29 14:39:39.613  4477  4477 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:39.615  4477  4477 I AndroidRuntime: Using default boot image
-10-29 14:39:39.615  4477  4477 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:39.681  4477  4477 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:39:39.686  4477  4477 D AndroidRuntime: Shutting down VM
-10-29 14:39:41.181  4493  4493 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:41.183  4493  4493 I AndroidRuntime: Using default boot image
-10-29 14:39:41.183  4493  4493 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:41.253  4493  4493 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:39:41.263  4493  4493 D AndroidRuntime: Shutting down VM
-10-29 14:39:42.655  3767  3767 I Choreographer: Skipped 31 frames!  The application may be doing too much work on its main thread.
-10-29 14:39:43.844  4518  4518 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:43.873  4518  4518 I AndroidRuntime: Using default boot image
-10-29 14:39:43.873  4518  4518 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:43.984  4518  4518 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:39:44.317  4518  4518 D AndroidRuntime: Shutting down VM
-10-29 14:39:45.495  3767  4058 I com.ratv.app: oneway function results will be dropped but finished with status OK and parcel size 4
-10-29 14:39:45.762  4537  4537 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:45.764  4537  4537 I AndroidRuntime: Using default boot image
-10-29 14:39:45.764  4537  4537 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:45.886  4537  4537 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:39:45.935  4537  4537 D AndroidRuntime: Shutting down VM
-10-29 14:39:47.663  4562  4562 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:47.664  4562  4562 I AndroidRuntime: Using default boot image
-10-29 14:39:47.664  4562  4562 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:47.728  4562  4562 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:39:47.734  4562  4562 D AndroidRuntime: Shutting down VM
-10-29 14:39:49.219  4578  4578 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:49.220  4578  4578 I AndroidRuntime: Using default boot image
-10-29 14:39:49.220  4578  4578 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:49.293  4578  4578 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:39:50.321  4578  4578 D AndroidRuntime: Shutting down VM
-10-29 14:39:50.830  4602  4602 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:50.831  4602  4602 I AndroidRuntime: Using default boot image
-10-29 14:39:50.831  4602  4602 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:50.891  4602  4602 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:39:50.896  4602  4602 D AndroidRuntime: Shutting down VM
-10-29 14:39:52.411  4618  4618 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:52.412  4618  4618 I AndroidRuntime: Using default boot image
-10-29 14:39:52.412  4618  4618 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:52.463  4618  4618 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:39:53.511  4618  4618 D AndroidRuntime: Shutting down VM
-10-29 14:39:54.211  4642  4642 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:54.213  4642  4642 I AndroidRuntime: Using default boot image
-10-29 14:39:54.213  4642  4642 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:54.264  4642  4642 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:39:54.271  4642  4642 D AndroidRuntime: Shutting down VM
-10-29 14:39:54.503  3767  3793 I RATVScores: schedule: 9 matches
-10-29 14:39:54.534  3767  3793 I RATVGuide: sports guide: 4 channels
-10-29 14:39:54.748  3767  3814 I TetheringManager: registerTetheringEventCallback:com.ratv.app
-10-29 14:39:54.788  3767  4659 I RATVGuide: sports guide: 4 channels
-10-29 14:39:54.919  3767  3814 W Gralloc4: allocator 3.x is not supported
-10-29 14:39:54.924  3767  4663 D HostConnection: HostConnection::get() New Host Connection established 0xf5104300, tid 4663
-10-29 14:39:54.929  3767  4663 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
-10-29 14:39:54.931  3767  4663 D EGL_emulation: eglCreateContext: 0xf5103880: maj 3 min 0 rcv 3
-10-29 14:39:54.987  3767  4663 D EGL_emulation: eglMakeCurrent: 0xf5103880: ver 3 0 (tinfo 0x7cf0f210) (first time)
-10-29 14:39:54.990  3767  3814 D HostConnection: HostConnection::get() New Host Connection established 0xf512b510, tid 3814
-10-29 14:39:54.993  3767  3814 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
-10-29 14:39:55.441  3767  3803 I OpenGLRenderer: Davey! duration=784ms; Flags=0, IntendedVsync=132159955867, Vsync=132309955861, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=132324328186, AnimationStart=132324329218, PerformTraversalsStart=132331814643, DrawStart=132331858895, SyncQueued=132436179538, SyncStart=132436896564, IssueDrawCommandsStart=132437080988, SwapBuffers=132922698950, FrameCompleted=132945536103, DequeueBufferDuration=399065, QueueBufferDuration=3646989, GpuCompleted=104011120753, 
-10-29 14:39:55.448  3767  3767 I Choreographer: Skipped 30 frames!  The application may be doing too much work on its main thread.
-10-29 14:39:56.865  4854  4854 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:56.867  4854  4854 I AndroidRuntime: Using default boot image
-10-29 14:39:56.867  4854  4854 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:56.937  4854  4854 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:39:57.986  4854  4854 D AndroidRuntime: Shutting down VM
-10-29 14:39:58.603  4921  4921 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:39:58.615  4921  4921 I AndroidRuntime: Using default boot image
-10-29 14:39:58.615  4921  4921 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:39:58.695  4921  4921 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:39:59.776  4921  4921 D AndroidRuntime: Shutting down VM
-10-29 14:40:06.626  5100  5100 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:06.627  5100  5100 I AndroidRuntime: Using default boot image
-10-29 14:40:06.627  5100  5100 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:06.683  5100  5100 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:40:07.714  5100  5100 D AndroidRuntime: Shutting down VM
-10-29 14:40:08.449  5134  5134 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:08.451  5134  5134 I AndroidRuntime: Using default boot image
-10-29 14:40:08.451  5134  5134 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:08.501  5134  5134 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:40:09.534  5134  5134 D AndroidRuntime: Shutting down VM
-10-29 14:40:10.003  5154  5154 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:10.005  5154  5154 I AndroidRuntime: Using default boot image
-10-29 14:40:10.005  5154  5154 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:10.054  5154  5154 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:40:10.073  5154  5154 D AndroidRuntime: Shutting down VM
-10-29 14:40:11.599  5177  5177 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:11.601  5177  5177 I AndroidRuntime: Using default boot image
-10-29 14:40:11.601  5177  5177 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:11.651  5177  5177 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:40:12.678  5177  5177 D AndroidRuntime: Shutting down VM
-10-29 14:40:13.148  5197  5197 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:13.150  5197  5197 I AndroidRuntime: Using default boot image
-10-29 14:40:13.150  5197  5197 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:13.199  5197  5197 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:40:13.204  5197  5197 D AndroidRuntime: Shutting down VM
-10-29 14:40:14.674  5213  5213 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:14.675  5213  5213 I AndroidRuntime: Using default boot image
-10-29 14:40:14.675  5213  5213 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:14.724  5213  5213 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:40:15.751  5213  5213 D AndroidRuntime: Shutting down VM
-10-29 14:40:16.233  5239  5239 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:16.235  5239  5239 I AndroidRuntime: Using default boot image
-10-29 14:40:16.235  5239  5239 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:16.285  5239  5239 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:40:17.314  5239  5239 D AndroidRuntime: Shutting down VM
-10-29 14:40:17.782  5259  5259 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:17.783  5259  5259 I AndroidRuntime: Using default boot image
-10-29 14:40:17.783  5259  5259 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:17.839  5259  5259 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:40:17.845  5259  5259 D AndroidRuntime: Shutting down VM
-10-29 14:40:19.300  5273  5273 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:19.301  5273  5273 I AndroidRuntime: Using default boot image
-10-29 14:40:19.301  5273  5273 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:19.349  5273  5273 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:40:19.353  5273  5273 D AndroidRuntime: Shutting down VM
-10-29 14:40:20.808  5289  5289 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:20.810  5289  5289 I AndroidRuntime: Using default boot image
-10-29 14:40:20.810  5289  5289 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:20.868  5289  5289 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:40:20.872  5289  5289 D AndroidRuntime: Shutting down VM
-10-29 14:40:22.344  5307  5307 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:22.346  5307  5307 I AndroidRuntime: Using default boot image
-10-29 14:40:22.346  5307  5307 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:22.398  5307  5307 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:40:23.427  5307  5307 D AndroidRuntime: Shutting down VM
-10-29 14:40:23.891  5327  5327 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:23.893  5327  5327 I AndroidRuntime: Using default boot image
-10-29 14:40:23.893  5327  5327 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:23.948  5327  5327 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:40:23.952  5327  5327 D AndroidRuntime: Shutting down VM
-10-29 14:40:28.426  5346  5346 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:28.428  5346  5346 I AndroidRuntime: Using default boot image
-10-29 14:40:28.428  5346  5346 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:28.477  5346  5346 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:40:29.503  5346  5346 D AndroidRuntime: Shutting down VM
-10-29 14:40:29.969  5388  5388 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:29.971  5388  5388 I AndroidRuntime: Using default boot image
-10-29 14:40:29.971  5388  5388 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:30.031  5388  5388 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:40:30.036  5388  5388 D AndroidRuntime: Shutting down VM
-10-29 14:40:31.307  5406  5406 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:31.309  5406  5406 I AndroidRuntime: Using default boot image
-10-29 14:40:31.309  5406  5406 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:31.360  5406  5406 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:40:32.387  5406  5406 D AndroidRuntime: Shutting down VM
-10-29 14:40:32.865  5426  5426 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:32.867  5426  5426 I AndroidRuntime: Using default boot image
-10-29 14:40:32.867  5426  5426 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:32.931  5426  5426 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:40:32.939  5426  5426 D AndroidRuntime: Shutting down VM
-10-29 14:40:34.237  5442  5442 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:34.239  5442  5442 I AndroidRuntime: Using default boot image
-10-29 14:40:34.239  5442  5442 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:34.291  5442  5442 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:40:35.317  5442  5442 D AndroidRuntime: Shutting down VM
-10-29 14:40:35.784  5462  5462 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:35.786  5462  5462 I AndroidRuntime: Using default boot image
-10-29 14:40:35.786  5462  5462 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:35.834  5462  5462 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:40:35.839  5462  5462 D AndroidRuntime: Shutting down VM
-10-29 14:40:35.878  3767  3767 I ExoPlayerImpl: Init c0d525e [AndroidXMedia3/1.5.1] [generic_x86, AOSP TV on x86, Google, 30]
-10-29 14:40:35.891  3767  3767 E libc    : Access denied finding property "vendor.display-size"
-10-29 14:40:36.564  3767  5479 I VideoCapabilities: Unsupported profile 4 for video/mp4v-es
-10-29 14:40:36.579  3767  5489 I OMXClient: IOmx service obtained
-10-29 14:40:36.582  3767  5488 D SurfaceUtils: connecting to surface 0xefa464d8, reason connectToSurface
-10-29 14:40:36.582  3767  5488 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 3857409
-10-29 14:40:36.582  3767  5488 D SurfaceUtils: disconnecting from surface 0xefa464d8, reason connectToSurface(reconnect)
-10-29 14:40:36.583  3767  5488 D SurfaceUtils: connecting to surface 0xefa464d8, reason connectToSurface(reconnect)
-10-29 14:40:36.584  3767  5489 E ACodec  : [OMX.google.h264.decoder] setPortMode on output to DynamicANWBuffer failed w/ err -1010
-10-29 14:40:36.586  3767  5489 I ACodec  : codec does not support config priority (err -1010)
-10-29 14:40:36.599  3767  5493 I OMXClient: IOmx service obtained
-10-29 14:40:36.601  3767  5493 I ACodec  : codec does not support config priority (err -2147483648)
-10-29 14:40:36.601  3767  5493 I ACodec  : codec does not support config operating rate (err -2147483648)
-10-29 14:40:36.675  3767  5488 D MediaCodec: [OMX.google.h264.decoder] setting dataspace on output surface to #104
-10-29 14:40:36.970  3767  5488 D SoftwareRenderer: setting dataspace on output surface to #104
-10-29 14:40:36.975  3767  3767 I Choreographer: Skipped 30 frames!  The application may be doing too much work on its main thread.
-10-29 14:40:37.066  3767  5479 D AudioTrack: getTimestamp_l(16): device stall time corrected using current time 174570189944
-10-29 14:40:37.775  3767  5479 W AudioTrack: restartIfDisabled(16): releaseBuffer() track 0xeee341d0 disabled due to previous underrun, restarting
-10-29 14:40:42.435  5770  5770 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:42.437  5770  5770 I AndroidRuntime: Using default boot image
-10-29 14:40:42.438  5770  5770 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:42.532  5770  5770 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:40:42.556  5770  5770 D AndroidRuntime: Shutting down VM
-10-29 14:40:43.383  5832  5832 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:43.408  5832  5832 I AndroidRuntime: Using default boot image
-10-29 14:40:43.409  5832  5832 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:43.503  5832  5832 D AndroidRuntime: Calling main entry com.android.commands.input.Input
-10-29 14:40:43.519  5832  5832 D AndroidRuntime: Shutting down VM
-10-29 14:40:47.447  3767  5479 D AudioTrack: getTimestamp_l(17): device stall time corrected using current time 184951458063
-10-29 14:40:48.480  6019  6019 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
-10-29 14:40:48.482  6019  6019 I AndroidRuntime: Using default boot image
-10-29 14:40:48.482  6019  6019 I AndroidRuntime: Leaving lock profiling enabled
-10-29 14:40:48.572  6019  6019 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
-10-29 14:40:49.634  6019  6019 D AndroidRuntime: Shutting down VM
-10-29 14:41:07.587  3767  5482 I RATVLive: no data for 3116 ms (limit 3000 ms): reconnecting
-10-29 14:41:07.618  3767  5933 I RATVLive: reconnected
-10-29 14:41:08.517  3767  5933 I RATVLive: joined the new connection after skipping 158484 bytes
-10-29 14:41:10.316  3767  5479 E MediaCodecAudioRenderer: Audio sink error
-10-29 14:41:10.316  3767  5479 E MediaCodecAudioRenderer:   L1.n: Unexpected audio track timestamp discontinuity: expected 1000023077332, got 1000023312000
-10-29 14:41:10.316  3767  5479 E MediaCodecAudioRenderer:       at L1.B.l(SourceFile:996)
-10-29 14:41:10.316  3767  5479 E MediaCodecAudioRenderer:       at L1.D.k0(SourceFile:39)
-10-29 14:41:10.316  3767  5479 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
-10-29 14:41:10.316  3767  5479 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
-10-29 14:41:10.316  3767  5479 E MediaCodecAudioRenderer:       at J1.G.e(SourceFile:1168)
-10-29 14:41:10.316  3767  5479 E MediaCodecAudioRenderer:       at J1.G.handleMessage(SourceFile:274)
-10-29 14:41:10.316  3767  5479 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
-10-29 14:41:10.316  3767  5479 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
-10-29 14:41:10.316  3767  5479 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
-10-29 14:41:32.817  3767  5933 I RATVLive: reconnected
-10-29 14:41:32.865  3767  5933 I RATVLive: joined the new connection after skipping 693908 bytes
-10-29 14:41:34.483  3767  5479 E MediaCodecAudioRenderer: Audio sink error
-10-29 14:41:34.483  3767  5479 E MediaCodecAudioRenderer:   L1.n: Unexpected audio track timestamp discontinuity: expected 1000047482667, got 1000047717333
-10-29 14:41:34.483  3767  5479 E MediaCodecAudioRenderer:       at L1.B.l(SourceFile:996)
-10-29 14:41:34.483  3767  5479 E MediaCodecAudioRenderer:       at L1.D.k0(SourceFile:39)
-10-29 14:41:34.483  3767  5479 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
-10-29 14:41:34.483  3767  5479 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
-10-29 14:41:34.483  3767  5479 E MediaCodecAudioRenderer:       at J1.G.e(SourceFile:1168)
-10-29 14:41:34.483  3767  5479 E MediaCodecAudioRenderer:       at J1.G.handleMessage(SourceFile:274)
-10-29 14:41:34.483  3767  5479 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
-10-29 14:41:34.483  3767  5479 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
-10-29 14:41:34.483  3767  5479 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
-10-29 14:42:01.857  3767  5933 I RATVLive: reconnected
-10-29 14:42:01.934  3767  5933 I RATVLive: joined the new connection after skipping 695224 bytes
-10-29 14:42:26.358  3767  5933 I RATVLive: reconnected
-10-29 14:42:26.440  3767  5933 I RATVLive: joined the new connection after skipping 1037384 bytes
-10-29 14:42:28.458  3767  3767 I RATVPlayback: steadiness level 1
-10-29 14:42:28.458  3767  3767 I RATVPlayback: stall 1, reserve 1657 ms
-10-29 14:42:49.669  3767  5933 I RATVLive: reconnected
-10-29 14:42:49.671  3767  5933 I RATVLive: joined the new connection after skipping 5076 bytes
-10-29 14:42:59.524  3767  3767 I RATVPlayback: playing again after stall 1
-10-29 14:42:59.571  3767  3767 I RATVPlayback: steadiness level 2
-10-29 14:42:59.572  3767  3767 I RATVPlayback: stall 2, reserve 31431 ms
-10-29 14:43:03.935  3767  3767 I RATVPlayback: playing again after stall 2
-10-29 14:43:03.967  3767  3767 I RATVPlayback: steadiness level 3
-10-29 14:43:03.967  3767  3767 I RATVPlayback: stalls keep coming as TS: trying HLS
-10-29 14:43:03.967  3767  3767 I RATVPlayback: stall 3, reserve 36908 ms
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal: Playback error
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:   J1.l: Source error
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:       at J1.G.k(SourceFile:55)
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:       at J1.G.handleMessage(SourceFile:342)
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:       at android.os.Handler.dispatchMessage(Handler.java:102)
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:       at android.os.Looper.loop(Looper.java:223)
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:       at android.os.HandlerThread.run(HandlerThread.java:67)
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:   Caused by: F1.u: Response code: 404
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:       at G1.a.d(SourceFile:360)
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:       at F1.l.d(SourceFile:312)
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:       at q4.J.d(SourceFile:49)
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:       at F1.y.d(SourceFile:10)
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:       at F1.j.a(SourceFile:9)
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:       at X1.q.a(SourceFile:16)
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:       at X1.k.run(SourceFile:35)
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:       at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:       at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
-10-29 14:43:04.032  3767  5479 E ExoPlayerImplInternal:       at java.lang.Thread.run(Thread.java:923)
-10-29 14:43:04.053  3767  5488 D SurfaceUtils: disconnecting from surface 0xefa464d8, reason disconnectFromSurface
-10-29 14:43:05.218  3767 11114 I OMXClient: IOmx service obtained
-10-29 14:43:05.253  3767 11113 D SurfaceUtils: connecting to surface 0xefa47e08, reason connectToSurface
-10-29 14:43:05.254  3767 11113 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 3857410
-10-29 14:43:05.254  3767 11113 D SurfaceUtils: disconnecting from surface 0xefa47e08, reason connectToSurface(reconnect)
-10-29 14:43:05.254  3767 11113 D SurfaceUtils: connecting to surface 0xefa47e08, reason connectToSurface(reconnect)
-10-29 14:43:05.254  3767 11114 E ACodec  : [OMX.google.h264.decoder] setPortMode on output to DynamicANWBuffer failed w/ err -1010
-10-29 14:43:05.255  3767 11114 I ACodec  : codec does not support config priority (err -1010)
-10-29 14:43:05.348  3767 11117 I OMXClient: IOmx service obtained
-10-29 14:43:05.356  3767 11117 I ACodec  : codec does not support config priority (err -2147483648)
-10-29 14:43:05.356  3767 11117 I ACodec  : codec does not support config operating rate (err -2147483648)
-10-29 14:43:05.519  3767 11113 D MediaCodec: [OMX.google.h264.decoder] setting dataspace on output surface to #104
-10-29 14:43:05.646  3767 11113 D SoftwareRenderer: setting dataspace on output surface to #104
-10-29 14:43:18.156  3767  5479 D AudioTrack: getTimestamp_l(18): device stall time corrected using current time 335659774939
-10-29 14:43:26.281  3767  5482 I RATVLive: no data for 5878 ms (limit 5648 ms): reconnecting
-10-29 14:43:26.285  3767 11112 I RATVLive: reconnected
-10-29 14:43:26.289  3767 11112 I RATVLive: joined the new connection after skipping 156040 bytes
-10-29 14:43:33.774  3767  5479 E MediaCodecAudioRenderer: Audio sink error
-10-29 14:43:33.774  3767  5479 E MediaCodecAudioRenderer:   L1.n: Unexpected audio track timestamp discontinuity: expected 1000015738666, got 1000018789333
-10-29 14:43:33.774  3767  5479 E MediaCodecAudioRenderer:       at L1.B.l(SourceFile:996)
-10-29 14:43:33.774  3767  5479 E MediaCodecAudioRenderer:       at L1.D.k0(SourceFile:39)
-10-29 14:43:33.774  3767  5479 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
-10-29 14:43:33.774  3767  5479 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
-10-29 14:43:33.774  3767  5479 E MediaCodecAudioRenderer:       at J1.G.e(SourceFile:1168)
-10-29 14:43:33.774  3767  5479 E MediaCodecAudioRenderer:       at J1.G.handleMessage(SourceFile:274)
-10-29 14:43:33.774  3767  5479 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
-10-29 14:43:33.774  3767  5479 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
-10-29 14:43:33.774  3767  5479 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
-10-29 14:43:34.195  3767  3767 I RATVPlayback: position jumped ahead 3044 ms
-10-29 14:43:52.479  3767 11112 I RATVLive: reconnected
-10-29 14:43:52.495  3767 11112 I RATVLive: joined the new connection after skipping 349116 bytes
-10-29 14:44:03.700  3767  3767 I RATVPlayback: stall 1, reserve 9275 ms
-10-29 14:44:16.282  3767 11112 I RATVLive: reconnected
-10-29 14:44:16.412  3767 11112 I RATVLive: joined the new connection after skipping 692780 bytes
-10-29 14:44:27.050  3767  3767 I RATVPlayback: playing again after stall 1
-10-29 14:44:27.112  3767  3767 I RATVPlayback: stall 2, reserve 32837 ms
-10-29 14:44:27.321  3767  3767 I RATVPlayback: playing again after stall 2
-10-29 14:44:27.322  3767  3767 I RATVPlayback: stall 3, reserve 33992 ms
-10-29 14:44:39.032  3767 11112 I RATVLive: reconnected
-10-29 14:44:39.149  3767 11112 I RATVLive: joined the new connection after skipping 692404 bytes
-10-29 14:44:45.113  3767 11112 I RATVLive: the stream's clock jumped: starting the channel again
-10-29 14:45:14.731  3767 11112 I RATVLive: reconnected
-10-29 14:45:14.812  3767 11112 I RATVLive: joined the new connection after skipping 350620 bytes
-10-29 14:45:31.734  3767 11112 I RATVLive: reconnected
-10-29 14:45:31.830  3767 11112 I RATVLive: joined the new connection after skipping 691840 bytes
-10-29 14:45:51.659  3767 11112 I RATVLive: reconnected
-10-29 14:45:51.659  3767 11112 I RATVLive: joined the new connection after skipping 188 bytes
-10-29 14:46:07.561  3767 11112 I RATVLive: reconnected
-10-29 14:46:07.640  3767 11112 I RATVLive: joined the new connection after skipping 692780 bytes
-10-29 14:46:32.213  3767 11112 I RATVLive: reconnected
-10-29 14:46:32.357  3767 11112 I RATVLive: joined the new connection after skipping 1040580 bytes
-10-29 14:46:52.365  3767 11112 I RATVLive: reconnected
-10-29 14:46:52.524  3767 11112 I RATVLive: joined the new connection after skipping 1038136 bytes
-10-29 14:47:20.279  3767 11112 I RATVLive: reconnected
-10-29 14:47:20.385  3767 11112 I RATVLive: joined the new connection after skipping 344416 bytes
-10-29 14:47:20.675  3767 11112 W PesReader: Unexpected start indicator: expected 1 more bytes
-10-29 14:47:39.490  3767 11112 I RATVLive: reconnected
-10-29 14:47:39.496  3767 11112 I RATVLive: joined the new connection after skipping 7332 bytes
-10-29 14:48:04.939  3767 11112 I RATVLive: reconnected
-10-29 14:48:05.131  3767 11112 I RATVLive: joined the new connection after skipping 696540 bytes
-10-29 14:48:33.997  3767  3767 E View    : Virtual view pointing to its host. Ignoring
-10-29 14:59:12.168  3767  3814 I RATVGuide: sports guide: 4 channels
+10-29 17:33:44.518  4051  4051 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:33:44.519  4051  4051 I AndroidRuntime: Using default boot image
+10-29 17:33:44.519  4051  4051 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:33:44.575  4051  4051 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:33:45.753  4051  4051 D AndroidRuntime: Shutting down VM
+10-29 17:33:46.500   485   526 I ActivityManager: Start proc 4275:com.ratv.app/u0a76 for pre-top-activity {com.ratv.app/com.ratv.app.MainActivity}
+10-29 17:33:46.518  4275  4275 W com.ratv.app: Unexpected CPU variant for X86 using defaults: x86
+10-29 17:33:46.520  4275  4275 E com.ratv.app: Not starting debugger since process cannot load the jdwp agent.
+10-29 17:33:46.542  4275  4275 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+10-29 17:33:46.542  4275  4275 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+10-29 17:33:46.589  4275  4319 D libEGL  : loaded /vendor/lib/egl/libEGL_emulation.so
+10-29 17:33:46.590  4275  4319 D libEGL  : loaded /vendor/lib/egl/libGLESv1_CM_emulation.so
+10-29 17:33:46.591  4275  4319 D libEGL  : loaded /vendor/lib/egl/libGLESv2_emulation.so
+10-29 17:33:46.842  4275  4309 D HostConnection: HostConnection::get() New Host Connection established 0xf378eb00, tid 4309
+10-29 17:33:46.856  4275  4309 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-29 17:33:46.895  4275  4309 D EGL_emulation: eglCreateContext: 0xf378dd70: maj 3 min 0 rcv 3
+10-29 17:33:46.898  4275  4309 D EGL_emulation: eglMakeCurrent: 0xf378dd70: ver 3 0 (tinfo 0xf3af2a70) (first time)
+10-29 17:33:47.006  4275  4309 I Gralloc4: mapper 4.x is not supported
+10-29 17:33:47.007  4275  4309 D HostConnection: createUnique: call
+10-29 17:33:47.007  4275  4309 D HostConnection: HostConnection::get() New Host Connection established 0xf37951d0, tid 4309
+10-29 17:33:47.007  4275  4309 D goldfish-address-space: allocate: Ask for block of size 0x100
+10-29 17:33:47.008  4275  4309 D goldfish-address-space: allocate: ioctl allocate returned offset 0x3fbffe000 size 0x2000
+10-29 17:33:47.032  4275  4309 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-29 17:33:47.378  4275  4309 I OpenGLRenderer: Davey! duration=808ms; Flags=1, IntendedVsync=87069531631, Vsync=87219531625, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=87223970812, AnimationStart=87223971203, PerformTraversalsStart=87224075958, DrawStart=87544560248, SyncQueued=87552547106, SyncStart=87559890343, IssueDrawCommandsStart=87559932752, SwapBuffers=87804320550, FrameCompleted=87885809282, DequeueBufferDuration=33963, QueueBufferDuration=1137986, GpuCompleted=9223372034707292159, 
+10-29 17:33:47.383  4275  4275 I Choreographer: Skipped 39 frames!  The application may be doing too much work on its main thread.
+10-29 17:33:48.125  4275  4275 I Choreographer: Skipped 36 frames!  The application may be doing too much work on its main thread.
+10-29 17:33:48.389  4275  4309 I OpenGLRenderer: Davey! duration=852ms; Flags=0, IntendedVsync=88019363951, Vsync=88619363927, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=88632793980, AnimationStart=88632795453, PerformTraversalsStart=88640684738, DrawStart=88640721868, SyncQueued=88641313471, SyncStart=88666339831, IssueDrawCommandsStart=88666384535, SwapBuffers=88845301579, FrameCompleted=88896792014, DequeueBufferDuration=58139, QueueBufferDuration=308826, GpuCompleted=9223372032559808514, 
+10-29 17:33:48.623  4275  4286 I com.ratv.app: Background young concurrent copying GC freed 35772(2063KB) AllocSpace objects, 2(104KB) LOS objects, 87% free, 3660KB/27MB, paused 2.488ms total 102.503ms
+10-29 17:33:49.657  4275  4309 I OpenGLRenderer: Davey! duration=1476ms; Flags=0, IntendedVsync=88689108195, Vsync=88972441517, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=88977696028, AnimationStart=88977697100, PerformTraversalsStart=88983697793, DrawStart=88983740703, SyncQueued=88989105089, SyncStart=88989396392, IssueDrawCommandsStart=88989469549, SwapBuffers=90135002838, FrameCompleted=90165521452, DequeueBufferDuration=181699, QueueBufferDuration=480797, GpuCompleted=9223372032559808514, 
+10-29 17:33:49.661  4275  4275 I Choreographer: Skipped 70 frames!  The application may be doing too much work on its main thread.
+10-29 17:33:49.923  4275  4309 I OpenGLRenderer: Davey! duration=1368ms; Flags=0, IntendedVsync=89002741897, Vsync=90169408517, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=90169628215, AnimationStart=90169629116, PerformTraversalsStart=90182332782, DrawStart=90182367377, SyncQueued=90200687179, SyncStart=90260610696, IssueDrawCommandsStart=90260708960, SwapBuffers=90423345246, FrameCompleted=90431119296, DequeueBufferDuration=41146, QueueBufferDuration=2205524, GpuCompleted=9223372032559808514, 
+10-29 17:33:50.281  4370  4370 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:33:50.283  4370  4370 I AndroidRuntime: Using default boot image
+10-29 17:33:50.283  4370  4370 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:33:50.354  4370  4370 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:33:51.455  4370  4370 D AndroidRuntime: Shutting down VM
+10-29 17:33:52.168  4452  4452 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:33:52.169  4452  4452 I AndroidRuntime: Using default boot image
+10-29 17:33:52.169  4452  4452 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:33:52.277  4452  4452 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:33:52.639  4275  4484 D ProfileInstaller: Installing profile for com.ratv.app
+10-29 17:33:53.337  4452  4452 D AndroidRuntime: Shutting down VM
+10-29 17:33:55.428  4583  4583 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:33:55.430  4583  4583 I AndroidRuntime: Using default boot image
+10-29 17:33:55.430  4583  4583 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:33:55.491  4583  4583 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:33:56.518  4583  4583 D AndroidRuntime: Shutting down VM
+10-29 17:33:57.212  4275  4292 I com.ratv.app: oneway function results will be dropped but finished with status OK and parcel size 4
+10-29 17:33:57.309  4275  4292 I AssistStructure: Flattened final assist data: 3940 bytes, containing 1 windows, 48 views
+10-29 17:33:57.394  4674  4674 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:33:57.395  4674  4674 I AndroidRuntime: Using default boot image
+10-29 17:33:57.395  4674  4674 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:33:57.460  4674  4674 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:33:57.469  4674  4674 D AndroidRuntime: Shutting down VM
+10-29 17:33:57.901  4275  4291 I AssistStructure: Flattened final assist data: 3972 bytes, containing 1 windows, 49 views
+10-29 17:34:00.052  4707  4707 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:00.054  4707  4707 I AndroidRuntime: Using default boot image
+10-29 17:34:00.054  4707  4707 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:00.110  4707  4707 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:00.745  4707  4707 D AndroidRuntime: Shutting down VM
+10-29 17:34:01.792  4275  4724 I com.ratv.app: oneway function results will be dropped but finished with status OK and parcel size 4
+10-29 17:34:01.916  4732  4732 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:01.917  4732  4732 I AndroidRuntime: Using default boot image
+10-29 17:34:01.917  4732  4732 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:01.973  4732  4732 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:01.978  4732  4732 D AndroidRuntime: Shutting down VM
+10-29 17:34:03.672  4746  4746 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:03.673  4746  4746 I AndroidRuntime: Using default boot image
+10-29 17:34:03.673  4746  4746 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:03.720  4746  4746 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:03.725  4746  4746 D AndroidRuntime: Shutting down VM
+10-29 17:34:05.203  4766  4766 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:05.204  4766  4766 I AndroidRuntime: Using default boot image
+10-29 17:34:05.204  4766  4766 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:05.253  4766  4766 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:34:06.275  4766  4766 D AndroidRuntime: Shutting down VM
+10-29 17:34:06.758  4789  4789 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:06.759  4789  4789 I AndroidRuntime: Using default boot image
+10-29 17:34:06.759  4789  4789 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:06.807  4789  4789 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:06.811  4789  4789 D AndroidRuntime: Shutting down VM
+10-29 17:34:09.318  4805  4805 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:09.319  4805  4805 I AndroidRuntime: Using default boot image
+10-29 17:34:09.319  4805  4805 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:09.366  4805  4805 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:09.376  4805  4805 D AndroidRuntime: Shutting down VM
+10-29 17:34:10.438  4275  4723 I com.ratv.app: oneway function results will be dropped but finished with status OK and parcel size 4
+10-29 17:34:10.555  4825  4825 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:10.557  4825  4825 I AndroidRuntime: Using default boot image
+10-29 17:34:10.557  4825  4825 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:10.612  4825  4825 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:10.619  4825  4825 D AndroidRuntime: Shutting down VM
+10-29 17:34:12.365  4859  4859 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:12.367  4859  4859 I AndroidRuntime: Using default boot image
+10-29 17:34:12.367  4859  4859 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:12.427  4859  4859 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:12.441  4859  4859 D AndroidRuntime: Shutting down VM
+10-29 17:34:13.907  4873  4873 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:13.908  4873  4873 I AndroidRuntime: Using default boot image
+10-29 17:34:13.908  4873  4873 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:13.955  4873  4873 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:13.959  4873  4873 D AndroidRuntime: Shutting down VM
+10-29 17:34:16.658  4891  4891 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:16.673  4891  4891 I AndroidRuntime: Using default boot image
+10-29 17:34:16.673  4891  4891 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:16.828  4891  4891 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:17.318  4891  4891 D AndroidRuntime: Shutting down VM
+10-29 17:34:18.433  4275  4724 I com.ratv.app: oneway function results will be dropped but finished with status OK and parcel size 4
+10-29 17:34:18.768  4910  4910 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:18.770  4910  4910 I AndroidRuntime: Using default boot image
+10-29 17:34:18.770  4910  4910 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:18.935  4910  4910 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:18.988  4910  4910 D AndroidRuntime: Shutting down VM
+10-29 17:34:20.698  4926  4926 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:20.700  4926  4926 I AndroidRuntime: Using default boot image
+10-29 17:34:20.700  4926  4926 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:20.747  4926  4926 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:20.752  4926  4926 D AndroidRuntime: Shutting down VM
+10-29 17:34:22.222  4943  4943 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:22.223  4943  4943 I AndroidRuntime: Using default boot image
+10-29 17:34:22.223  4943  4943 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:22.272  4943  4943 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:34:23.296  4943  4943 D AndroidRuntime: Shutting down VM
+10-29 17:34:23.763  4963  4963 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:23.764  4963  4963 I AndroidRuntime: Using default boot image
+10-29 17:34:23.764  4963  4963 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:23.818  4963  4963 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:23.822  4963  4963 D AndroidRuntime: Shutting down VM
+10-29 17:34:25.307  4979  4979 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:25.308  4979  4979 I AndroidRuntime: Using default boot image
+10-29 17:34:25.308  4979  4979 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:25.357  4979  4979 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:34:26.395  4979  4979 D AndroidRuntime: Shutting down VM
+10-29 17:34:27.100  5005  5005 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:27.101  5005  5005 I AndroidRuntime: Using default boot image
+10-29 17:34:27.101  5005  5005 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:27.156  5005  5005 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:27.169  5005  5005 D AndroidRuntime: Shutting down VM
+10-29 17:34:27.512  4275  4299 I RATVScores: schedule: 9 matches
+10-29 17:34:27.537  4275  4311 I RATVGuide: sports guide: 4 channels
+10-29 17:34:27.787  4275  4308 I TetheringManager: registerTetheringEventCallback:com.ratv.app
+10-29 17:34:27.813  4275  5023 I RATVGuide: sports guide: 4 channels
+10-29 17:34:27.868  4275  4308 W Gralloc4: allocator 3.x is not supported
+10-29 17:34:27.891  4275  5027 D HostConnection: HostConnection::get() New Host Connection established 0xf37aaf60, tid 5027
+10-29 17:34:27.936  4275  5027 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-29 17:34:27.938  4275  5027 D EGL_emulation: eglCreateContext: 0xf37ab4a0: maj 3 min 0 rcv 3
+10-29 17:34:27.939  4275  5027 D EGL_emulation: eglMakeCurrent: 0xf37ab4a0: ver 3 0 (tinfo 0xc34ce350) (first time)
+10-29 17:34:27.952  4275  4308 D HostConnection: HostConnection::get() New Host Connection established 0xf37aaef0, tid 4308
+10-29 17:34:27.961  4275  4308 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+10-29 17:34:29.700  5030  5030 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:29.702  5030  5030 I AndroidRuntime: Using default boot image
+10-29 17:34:29.702  5030  5030 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:29.750  5030  5030 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:34:30.782  5030  5030 D AndroidRuntime: Shutting down VM
+10-29 17:34:31.264  5054  5054 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:31.266  5054  5054 I AndroidRuntime: Using default boot image
+10-29 17:34:31.266  5054  5054 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:31.325  5054  5054 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:34:32.349  5054  5054 D AndroidRuntime: Shutting down VM
+10-29 17:34:39.076  5084  5084 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:39.078  5084  5084 I AndroidRuntime: Using default boot image
+10-29 17:34:39.078  5084  5084 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:39.136  5084  5084 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:34:40.160  5084  5084 D AndroidRuntime: Shutting down VM
+10-29 17:34:40.886  5114  5114 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:40.888  5114  5114 I AndroidRuntime: Using default boot image
+10-29 17:34:40.888  5114  5114 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:40.946  5114  5114 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:34:41.977  5114  5114 D AndroidRuntime: Shutting down VM
+10-29 17:34:42.455  5134  5134 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:42.457  5134  5134 I AndroidRuntime: Using default boot image
+10-29 17:34:42.457  5134  5134 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:42.511  5134  5134 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:42.516  5134  5134 D AndroidRuntime: Shutting down VM
+10-29 17:34:43.984  5150  5150 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:43.985  5150  5150 I AndroidRuntime: Using default boot image
+10-29 17:34:43.985  5150  5150 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:44.052  5150  5150 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:34:45.080  5150  5150 D AndroidRuntime: Shutting down VM
+10-29 17:34:45.553  5170  5170 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:45.555  5170  5170 I AndroidRuntime: Using default boot image
+10-29 17:34:45.555  5170  5170 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:45.606  5170  5170 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:45.611  5170  5170 D AndroidRuntime: Shutting down VM
+10-29 17:34:47.109  5190  5190 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:47.111  5190  5190 I AndroidRuntime: Using default boot image
+10-29 17:34:47.111  5190  5190 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:47.172  5190  5190 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:34:48.200  5190  5190 D AndroidRuntime: Shutting down VM
+10-29 17:34:48.684  5212  5212 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:48.686  5212  5212 I AndroidRuntime: Using default boot image
+10-29 17:34:48.686  5212  5212 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:48.736  5212  5212 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:34:49.760  5212  5212 D AndroidRuntime: Shutting down VM
+10-29 17:34:50.241  5239  5239 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:50.242  5239  5239 I AndroidRuntime: Using default boot image
+10-29 17:34:50.242  5239  5239 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:50.293  5239  5239 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:50.298  5239  5239 D AndroidRuntime: Shutting down VM
+10-29 17:34:51.757  5256  5256 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:51.759  5256  5256 I AndroidRuntime: Using default boot image
+10-29 17:34:51.759  5256  5256 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:51.807  5256  5256 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:51.810  5256  5256 D AndroidRuntime: Shutting down VM
+10-29 17:34:53.283  5270  5270 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:53.284  5270  5270 I AndroidRuntime: Using default boot image
+10-29 17:34:53.284  5270  5270 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:53.340  5270  5270 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:53.344  5270  5270 D AndroidRuntime: Shutting down VM
+10-29 17:34:54.832  5287  5287 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:54.834  5287  5287 I AndroidRuntime: Using default boot image
+10-29 17:34:54.834  5287  5287 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:54.883  5287  5287 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:34:55.909  5287  5287 D AndroidRuntime: Shutting down VM
+10-29 17:34:56.389  5309  5309 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:34:56.390  5309  5309 I AndroidRuntime: Using default boot image
+10-29 17:34:56.390  5309  5309 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:34:56.438  5309  5309 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:34:56.441  5309  5309 D AndroidRuntime: Shutting down VM
+10-29 17:35:00.910  5327  5327 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:35:00.912  5327  5327 I AndroidRuntime: Using default boot image
+10-29 17:35:00.912  5327  5327 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:35:00.967  5327  5327 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:35:01.992  5327  5327 D AndroidRuntime: Shutting down VM
+10-29 17:35:02.459  5349  5349 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:35:02.461  5349  5349 I AndroidRuntime: Using default boot image
+10-29 17:35:02.461  5349  5349 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:35:02.517  5349  5349 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:35:02.522  5349  5349 D AndroidRuntime: Shutting down VM
+10-29 17:35:03.803  5413  5413 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:35:03.805  5413  5413 I AndroidRuntime: Using default boot image
+10-29 17:35:03.805  5413  5413 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:35:03.855  5413  5413 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:35:04.897  5413  5413 D AndroidRuntime: Shutting down VM
+10-29 17:35:05.365  5435  5435 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:35:05.367  5435  5435 I AndroidRuntime: Using default boot image
+10-29 17:35:05.367  5435  5435 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:35:05.419  5435  5435 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:35:05.424  5435  5435 D AndroidRuntime: Shutting down VM
+10-29 17:35:06.693  5453  5453 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:35:06.695  5453  5453 I AndroidRuntime: Using default boot image
+10-29 17:35:06.695  5453  5453 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:35:06.742  5453  5453 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:35:07.770  5453  5453 D AndroidRuntime: Shutting down VM
+10-29 17:35:08.241  5473  5473 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:35:08.242  5473  5473 I AndroidRuntime: Using default boot image
+10-29 17:35:08.242  5473  5473 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:35:08.292  5473  5473 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:35:08.301  5473  5473 D AndroidRuntime: Shutting down VM
+10-29 17:35:08.446  4275  4275 I ExoPlayerImpl: Init e87b537 [AndroidXMedia3/1.5.1] [generic_x86, AOSP TV on x86, Google, 30]
+10-29 17:35:08.459  4275  4275 E libc    : Access denied finding property "vendor.display-size"
+10-29 17:35:09.270  4275  5490 I VideoCapabilities: Unsupported profile 4 for video/mp4v-es
+10-29 17:35:09.298  4275  5497 I OMXClient: IOmx service obtained
+10-29 17:35:09.300  4275  5496 D SurfaceUtils: connecting to surface 0xee109738, reason connectToSurface
+10-29 17:35:09.303  4275  5496 I MediaCodec: [OMX.google.h264.decoder] setting surface generation to 4377601
+10-29 17:35:09.304  4275  5496 D SurfaceUtils: disconnecting from surface 0xee109738, reason connectToSurface(reconnect)
+10-29 17:35:09.304  4275  5496 D SurfaceUtils: connecting to surface 0xee109738, reason connectToSurface(reconnect)
+10-29 17:35:09.305  4275  5497 E ACodec  : [OMX.google.h264.decoder] setPortMode on output to DynamicANWBuffer failed w/ err -1010
+10-29 17:35:09.306  4275  5497 I ACodec  : codec does not support config priority (err -1010)
+10-29 17:35:09.319  4275  5501 I OMXClient: IOmx service obtained
+10-29 17:35:09.322  4275  5501 I ACodec  : codec does not support config priority (err -2147483648)
+10-29 17:35:09.322  4275  5501 I ACodec  : codec does not support config operating rate (err -2147483648)
+10-29 17:35:09.405  4275  5496 D MediaCodec: [OMX.google.h264.decoder] setting dataspace on output surface to #104
+10-29 17:35:09.579  4275  5496 D SoftwareRenderer: setting dataspace on output surface to #104
+10-29 17:35:10.178  4275  5490 D AudioTrack: getTimestamp_l(16): device stall time corrected using current time 170685696730
+10-29 17:35:10.942  4275  4286 I com.ratv.app: Background concurrent copying GC freed 342031(12MB) AllocSpace objects, 49(3004KB) LOS objects, 49% free, 12MB/25MB, paused 28us total 213.116ms
+10-29 17:35:14.859  5778  5778 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:35:14.860  5778  5778 I AndroidRuntime: Using default boot image
+10-29 17:35:14.860  5778  5778 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:35:14.926  5778  5778 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:35:14.936  5778  5778 D AndroidRuntime: Shutting down VM
+10-29 17:35:15.745  5838  5838 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:35:15.746  5838  5838 I AndroidRuntime: Using default boot image
+10-29 17:35:15.748  5838  5838 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:35:15.835  5838  5838 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-29 17:35:15.844  5838  5838 D AndroidRuntime: Shutting down VM
+10-29 17:35:20.790  4275  5490 D AudioTrack: getTimestamp_l(17): device stall time corrected using current time 181297851003
+10-29 17:35:21.197  6013  6013 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-29 17:35:21.214  6013  6013 I AndroidRuntime: Using default boot image
+10-29 17:35:21.214  6013  6013 I AndroidRuntime: Leaving lock profiling enabled
+10-29 17:35:21.374  6013  6013 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-29 17:35:22.467  6013  6013 D AndroidRuntime: Shutting down VM
+10-29 17:35:40.622  4275  5493 I RATVLive: no data for 3030 ms (limit 3000 ms): reconnecting
+10-29 17:35:40.625  4275  5971 I RATVLive: reconnected
+10-29 17:35:41.616  4275  5971 I RATVLive: joined the new connection after skipping 122012 bytes
+10-29 17:36:05.837  4275  5971 I RATVLive: reconnected
+10-29 17:36:05.860  4275  5971 I RATVLive: joined the new connection after skipping 470752 bytes
+10-29 17:36:34.869  4275  5971 I RATVLive: reconnected
+10-29 17:36:34.883  4275  5971 I RATVLive: joined the new connection after skipping 473572 bytes
+10-29 17:36:59.338  4275  5971 I RATVLive: reconnected
+10-29 17:36:59.358  4275  5971 I RATVLive: joined the new connection after skipping 705000 bytes
+10-29 17:37:22.618  4275  5971 I RATVLive: reconnected
+10-29 17:37:22.719  4275  5971 I RATVLive: joined the new connection after skipping 12220 bytes
+10-29 17:37:44.468  4275  5971 I RATVLive: reconnected
+10-29 17:37:44.468  4275  5971 I RATVLive: joined the new connection after skipping 564 bytes
+10-29 17:38:02.795  4275  4275 I RATVPlayback: steadiness level 1
+10-29 17:38:02.795  4275  4275 I RATVPlayback: stall 1, reserve 21 ms
+10-29 17:38:06.907  4275  5493 I RATVLive: no data for 6345 ms (limit 6147 ms): reconnecting
+10-29 17:38:06.915  4275  5971 I RATVLive: reconnected
+10-29 17:38:07.012  4275  5971 I RATVLive: joined the new connection after skipping 228984 bytes
+10-29 17:38:07.081  4275  5490 E MediaCodecAudioRenderer: Audio sink error
+10-29 17:38:07.081  4275  5490 E MediaCodecAudioRenderer:   L1.r: Unexpected audio track timestamp discontinuity: expected 1000161600000, got 1000165866667
+10-29 17:38:07.081  4275  5490 E MediaCodecAudioRenderer:       at L1.F.l(SourceFile:998)
+10-29 17:38:07.081  4275  5490 E MediaCodecAudioRenderer:       at L1.H.k0(SourceFile:39)
+10-29 17:38:07.081  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
+10-29 17:38:07.081  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
+10-29 17:38:07.081  4275  5490 E MediaCodecAudioRenderer:       at J1.H.e(SourceFile:1168)
+10-29 17:38:07.081  4275  5490 E MediaCodecAudioRenderer:       at J1.H.handleMessage(SourceFile:274)
+10-29 17:38:07.081  4275  5490 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
+10-29 17:38:07.081  4275  5490 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
+10-29 17:38:07.081  4275  5490 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
+10-29 17:38:25.623  4275  4275 I RATVPlayback: playing again after stall 1
+10-29 17:38:26.024  4275  4275 I RATVPlayback: position jumped ahead 3687 ms
+10-29 17:38:33.066  4275  5971 I RATVLive: reconnected
+10-29 17:38:33.071  4275  5971 I RATVLive: joined the new connection after skipping 236504 bytes
+10-29 17:38:56.845  4275  5971 I RATVLive: reconnected
+10-29 17:38:56.873  4275  5971 I RATVLive: joined the new connection after skipping 474700 bytes
+10-29 17:39:17.253  4275  5490 E MediaCodecAudioRenderer: Audio sink error
+10-29 17:39:17.253  4275  5490 E MediaCodecAudioRenderer:   L1.r: Unexpected audio track timestamp discontinuity: expected 1000217749333, got 1000218090667
+10-29 17:39:17.253  4275  5490 E MediaCodecAudioRenderer:       at L1.F.l(SourceFile:998)
+10-29 17:39:17.253  4275  5490 E MediaCodecAudioRenderer:       at L1.H.k0(SourceFile:39)
+10-29 17:39:17.253  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
+10-29 17:39:17.253  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
+10-29 17:39:17.253  4275  5490 E MediaCodecAudioRenderer:       at J1.H.e(SourceFile:1168)
+10-29 17:39:17.253  4275  5490 E MediaCodecAudioRenderer:       at J1.H.handleMessage(SourceFile:274)
+10-29 17:39:17.253  4275  5490 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
+10-29 17:39:17.253  4275  5490 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
+10-29 17:39:17.253  4275  5490 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
+10-29 17:39:19.578  4275  5971 I RATVLive: reconnected
+10-29 17:39:19.614  4275  5971 I RATVLive: joined the new connection after skipping 473384 bytes
+10-29 17:39:40.008  4275  5971 I RATVLive: reconnected
+10-29 17:39:40.008  4275  5971 I RATVLive: joined the new connection after skipping 2068 bytes
+10-29 17:40:09.619  4275  5971 I RATVLive: reconnected
+10-29 17:40:09.625  4275  5971 I RATVLive: joined the new connection after skipping 234624 bytes
+10-29 17:40:26.617  4275  5971 I RATVLive: reconnected
+10-29 17:40:26.633  4275  5971 I RATVLive: joined the new connection after skipping 469624 bytes
+10-29 17:40:29.760  4275  5490 E MediaCodecAudioRenderer: Audio sink error
+10-29 17:40:29.760  4275  5490 E MediaCodecAudioRenderer:   L1.r: Unexpected audio track timestamp discontinuity: expected 1000290581334, got 1000290794667
+10-29 17:40:29.760  4275  5490 E MediaCodecAudioRenderer:       at L1.F.l(SourceFile:998)
+10-29 17:40:29.760  4275  5490 E MediaCodecAudioRenderer:       at L1.H.k0(SourceFile:39)
+10-29 17:40:29.760  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
+10-29 17:40:29.760  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
+10-29 17:40:29.760  4275  5490 E MediaCodecAudioRenderer:       at J1.H.e(SourceFile:1168)
+10-29 17:40:29.760  4275  5490 E MediaCodecAudioRenderer:       at J1.H.handleMessage(SourceFile:274)
+10-29 17:40:29.760  4275  5490 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
+10-29 17:40:29.760  4275  5490 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
+10-29 17:40:29.760  4275  5490 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
+10-29 17:40:46.529  4275  5971 I RATVLive: reconnected
+10-29 17:40:46.529  4275  5971 I RATVLive: joined the new connection after skipping 3196 bytes
+10-29 17:41:02.435  4275  5971 I RATVLive: reconnected
+10-29 17:41:02.468  4275  5971 I RATVLive: joined the new connection after skipping 473196 bytes
+10-29 17:41:27.055  4275  5971 I RATVLive: reconnected
+10-29 17:41:27.102  4275  5971 I RATVLive: joined the new connection after skipping 707256 bytes
+10-29 17:41:47.162  4275  5971 I RATVLive: reconnected
+10-29 17:41:47.202  4275  5971 I RATVLive: joined the new connection after skipping 707820 bytes
+10-29 17:42:15.032  4275  5971 I RATVLive: reconnected
+10-29 17:42:15.078  4275  5971 I RATVLive: joined the new connection after skipping 243084 bytes
+10-29 17:42:34.196  4275  5971 I RATVLive: reconnected
+10-29 17:42:34.196  4275  5971 I RATVLive: joined the new connection after skipping 1504 bytes
+10-29 17:42:57.847  4275  4275 E View    : Virtual view pointing to its host. Ignoring
+10-29 17:43:01.670  4275  5971 I RATVLive: reconnected
+10-29 17:43:01.690  4275  5971 I RATVLive: joined the new connection after skipping 471504 bytes
+10-29 17:43:14.593  4275  5971 I RATVLive: reconnected
+10-29 17:43:14.593  4275  5971 I RATVLive: joined the new connection after skipping 564 bytes
+10-29 17:43:30.658  4275  5493 I RATVLive: no data for 6208 ms (limit 5967 ms): reconnecting
+10-29 17:43:30.670  4275  5971 I RATVLive: reconnected
+10-29 17:43:30.670  4275  5971 I RATVLive: joined the new connection after skipping 3572 bytes
+10-29 17:43:44.312  4275  5490 E MediaCodecAudioRenderer: Audio sink error
+10-29 17:43:44.312  4275  5490 E MediaCodecAudioRenderer:   L1.r: Unexpected audio track timestamp discontinuity: expected 1000485354667, got 1000485696000
+10-29 17:43:44.312  4275  5490 E MediaCodecAudioRenderer:       at L1.F.l(SourceFile:998)
+10-29 17:43:44.312  4275  5490 E MediaCodecAudioRenderer:       at L1.H.k0(SourceFile:39)
+10-29 17:43:44.312  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
+10-29 17:43:44.312  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
+10-29 17:43:44.312  4275  5490 E MediaCodecAudioRenderer:       at J1.H.e(SourceFile:1168)
+10-29 17:43:44.312  4275  5490 E MediaCodecAudioRenderer:       at J1.H.handleMessage(SourceFile:274)
+10-29 17:43:44.312  4275  5490 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
+10-29 17:43:44.312  4275  5490 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
+10-29 17:43:44.312  4275  5490 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
+10-29 17:43:52.814  4275  5971 I RATVLive: reconnected
+10-29 17:43:52.862  4275  5971 I RATVLive: joined the new connection after skipping 8272 bytes
+10-29 17:44:12.311  4275  5490 E MediaCodecAudioRenderer: Audio sink error
+10-29 17:44:12.311  4275  5490 E MediaCodecAudioRenderer:   L1.r: Unexpected audio track timestamp discontinuity: expected 1000513685333, got 1000514026667
+10-29 17:44:12.311  4275  5490 E MediaCodecAudioRenderer:       at L1.F.l(SourceFile:998)
+10-29 17:44:12.311  4275  5490 E MediaCodecAudioRenderer:       at L1.H.k0(SourceFile:39)
+10-29 17:44:12.311  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
+10-29 17:44:12.311  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
+10-29 17:44:12.311  4275  5490 E MediaCodecAudioRenderer:       at J1.H.e(SourceFile:1168)
+10-29 17:44:12.311  4275  5490 E MediaCodecAudioRenderer:       at J1.H.handleMessage(SourceFile:274)
+10-29 17:44:12.311  4275  5490 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
+10-29 17:44:12.311  4275  5490 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
+10-29 17:44:12.311  4275  5490 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
+10-29 17:44:14.109  4275  5971 I RATVLive: reconnected
+10-29 17:44:14.110  4275  5971 I RATVLive: joined the new connection after skipping 3760 bytes
+10-29 17:44:41.902  4275  5971 I RATVLive: reconnected
+10-29 17:44:41.909  4275  5971 I RATVLive: joined the new connection after skipping 234060 bytes
+10-29 17:44:57.852  4275  5971 I RATVLive: reconnected
+10-29 17:44:57.903  4275  5971 I RATVLive: joined the new connection after skipping 6392 bytes
+10-29 17:45:17.157  4275  5490 E MediaCodecAudioRenderer: Audio sink error
+10-29 17:45:17.157  4275  5490 E MediaCodecAudioRenderer:   L1.r: Unexpected audio track timestamp discontinuity: expected 1000578880001, got 1000579221333
+10-29 17:45:17.157  4275  5490 E MediaCodecAudioRenderer:       at L1.F.l(SourceFile:998)
+10-29 17:45:17.157  4275  5490 E MediaCodecAudioRenderer:       at L1.H.k0(SourceFile:39)
+10-29 17:45:17.157  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
+10-29 17:45:17.157  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
+10-29 17:45:17.157  4275  5490 E MediaCodecAudioRenderer:       at J1.H.e(SourceFile:1168)
+10-29 17:45:17.157  4275  5490 E MediaCodecAudioRenderer:       at J1.H.handleMessage(SourceFile:274)
+10-29 17:45:17.157  4275  5490 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
+10-29 17:45:17.157  4275  5490 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
+10-29 17:45:17.157  4275  5490 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
+10-29 17:45:22.321  4275  5971 I RATVLive: reconnected
+10-29 17:45:22.321  4275  5971 I RATVLive: joined the new connection after skipping 3572 bytes
+10-29 17:45:37.043  4275  5971 I RATVLive: reconnected
+10-29 17:45:37.057  4275  5971 I RATVLive: joined the new connection after skipping 235000 bytes
+10-29 17:45:47.650  4275  5971 I RATVLive: reconnected
+10-29 17:45:47.689  4275  5971 I RATVLive: joined the new connection after skipping 472068 bytes
+10-29 17:46:13.708  4275  5971 I RATVLive: reconnected
+10-29 17:46:13.725  4275  5971 I RATVLive: joined the new connection after skipping 474888 bytes
+10-29 17:46:21.987  4275  5971 I RATVLive: reconnected
+10-29 17:46:21.987  4275  5971 I RATVLive: joined the new connection after skipping 3760 bytes
+10-29 17:46:32.446  4275  5490 E MediaCodecAudioRenderer: Audio sink error
+10-29 17:46:32.446  4275  5490 E MediaCodecAudioRenderer:   L1.r: Unexpected audio track timestamp discontinuity: expected 1000654506666, got 1000654997333
+10-29 17:46:32.446  4275  5490 E MediaCodecAudioRenderer:       at L1.F.l(SourceFile:998)
+10-29 17:46:32.446  4275  5490 E MediaCodecAudioRenderer:       at L1.H.k0(SourceFile:39)
+10-29 17:46:32.446  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
+10-29 17:46:32.446  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
+10-29 17:46:32.446  4275  5490 E MediaCodecAudioRenderer:       at J1.H.e(SourceFile:1168)
+10-29 17:46:32.446  4275  5490 E MediaCodecAudioRenderer:       at J1.H.handleMessage(SourceFile:274)
+10-29 17:46:32.446  4275  5490 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
+10-29 17:46:32.446  4275  5490 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
+10-29 17:46:32.446  4275  5490 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
+10-29 17:46:39.819  4275  5971 I RATVLive: reconnected
+10-29 17:46:39.840  4275  5971 I RATVLive: joined the new connection after skipping 472632 bytes
+10-29 17:47:05.333  4275  5971 I RATVLive: reconnected
+10-29 17:47:05.342  4275  5971 I RATVLive: joined the new connection after skipping 234624 bytes
+10-29 17:47:31.085  4275  5971 I RATVLive: reconnected
+10-29 17:47:31.122  4275  5971 I RATVLive: joined the new connection after skipping 471128 bytes
+10-29 17:47:55.651  4275  5971 I RATVLive: reconnected
+10-29 17:47:55.651  4275  5971 I RATVLive: joined the new connection after skipping 5452 bytes
+10-29 17:48:14.171  4275  5490 E MediaCodecAudioRenderer: Audio sink error
+10-29 17:48:14.171  4275  5490 E MediaCodecAudioRenderer:   L1.r: Unexpected audio track timestamp discontinuity: expected 1000756714666, got 1000757056000
+10-29 17:48:14.171  4275  5490 E MediaCodecAudioRenderer:       at L1.F.l(SourceFile:998)
+10-29 17:48:14.171  4275  5490 E MediaCodecAudioRenderer:       at L1.H.k0(SourceFile:39)
+10-29 17:48:14.171  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
+10-29 17:48:14.171  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
+10-29 17:48:14.171  4275  5490 E MediaCodecAudioRenderer:       at J1.H.e(SourceFile:1168)
+10-29 17:48:14.171  4275  5490 E MediaCodecAudioRenderer:       at J1.H.handleMessage(SourceFile:274)
+10-29 17:48:14.171  4275  5490 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
+10-29 17:48:14.171  4275  5490 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
+10-29 17:48:14.171  4275  5490 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
+10-29 17:48:18.390  4275  5971 I RATVLive: reconnected
+10-29 17:48:18.391  4275  5971 I RATVLive: joined the new connection after skipping 3572 bytes
+10-29 17:48:44.937  4275  5971 I RATVLive: reconnected
+10-29 17:48:44.966  4275  5971 I RATVLive: joined the new connection after skipping 473948 bytes
+10-29 17:49:15.681  4275  5971 I RATVLive: reconnected
+10-29 17:49:15.701  4275  5971 I RATVLive: joined the new connection after skipping 469060 bytes
+10-29 17:49:39.084  4275  5971 I RATVLive: reconnected
+10-29 17:49:39.084  4275  5971 I RATVLive: joined the new connection after skipping 564 bytes
+10-29 17:49:55.983  4275  5971 I RATVLive: reconnected
+10-29 17:49:56.001  4275  5971 I RATVLive: joined the new connection after skipping 707632 bytes
+10-29 17:50:23.615  4275  5971 I RATVLive: reconnected
+10-29 17:50:23.625  4275  5971 I RATVLive: joined the new connection after skipping 237256 bytes
+10-29 17:50:49.001  4275  5971 I RATVLive: reconnected
+10-29 17:50:49.001  4275  5971 I RATVLive: joined the new connection after skipping 564 bytes
+10-29 17:51:10.548  4275  5971 I RATVLive: reconnected
+10-29 17:51:10.603  4275  5971 I RATVLive: joined the new connection after skipping 716656 bytes
+10-29 17:51:38.186  4275  5971 I RATVLive: reconnected
+10-29 17:51:38.194  4275  5971 I RATVLive: joined the new connection after skipping 237632 bytes
+10-29 17:51:44.477  4275  5971 I RATVLive: reconnected
+10-29 17:51:44.576  4275  5971 I RATVLive: joined the new connection after skipping 249100 bytes
+10-29 17:52:07.165  4275  5971 I RATVLive: reconnected
+10-29 17:52:07.222  4275  5971 I RATVLive: joined the new connection after skipping 709888 bytes
+10-29 17:52:25.386  4275  5490 E MediaCodecAudioRenderer: Audio sink error
+10-29 17:52:25.386  4275  5490 E MediaCodecAudioRenderer:   L1.r: Unexpected audio track timestamp discontinuity: expected 1001008277334, got 1001008618667
+10-29 17:52:25.386  4275  5490 E MediaCodecAudioRenderer:       at L1.F.l(SourceFile:998)
+10-29 17:52:25.386  4275  5490 E MediaCodecAudioRenderer:       at L1.H.k0(SourceFile:39)
+10-29 17:52:25.386  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
+10-29 17:52:25.386  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
+10-29 17:52:25.386  4275  5490 E MediaCodecAudioRenderer:       at J1.H.e(SourceFile:1168)
+10-29 17:52:25.386  4275  5490 E MediaCodecAudioRenderer:       at J1.H.handleMessage(SourceFile:274)
+10-29 17:52:25.386  4275  5490 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
+10-29 17:52:25.386  4275  5490 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
+10-29 17:52:25.386  4275  5490 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
+10-29 17:52:37.300  4275  5971 I RATVLive: reconnected
+10-29 17:52:37.300  4275  5971 I RATVLive: joined the new connection after skipping 3196 bytes
+10-29 17:53:06.258  4275  5971 I RATVLive: reconnected
+10-29 17:53:06.258  4275  5971 I RATVLive: joined the new connection after skipping 1316 bytes
+10-29 17:53:31.568  4275  5971 I RATVLive: reconnected
+10-29 17:53:31.568  4275  5971 I RATVLive: joined the new connection after skipping 2632 bytes
+10-29 17:53:46.575  4275  4315 I RATVGuide: sports guide: 4 channels
+10-29 17:53:49.702  4275  5490 E MediaCodecAudioRenderer: Audio sink error
+10-29 17:53:49.702  4275  5490 E MediaCodecAudioRenderer:   L1.r: Unexpected audio track timestamp discontinuity: expected 1001092928000, got 1001093269333
+10-29 17:53:49.702  4275  5490 E MediaCodecAudioRenderer:       at L1.F.l(SourceFile:998)
+10-29 17:53:49.702  4275  5490 E MediaCodecAudioRenderer:       at L1.H.k0(SourceFile:39)
+10-29 17:53:49.702  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
+10-29 17:53:49.702  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
+10-29 17:53:49.702  4275  5490 E MediaCodecAudioRenderer:       at J1.H.e(SourceFile:1168)
+10-29 17:53:49.702  4275  5490 E MediaCodecAudioRenderer:       at J1.H.handleMessage(SourceFile:274)
+10-29 17:53:49.702  4275  5490 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
+10-29 17:53:49.702  4275  5490 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
+10-29 17:53:49.702  4275  5490 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
+10-29 17:54:05.405  4275  5971 I RATVLive: reconnected
+10-29 17:54:05.405  4275  5971 I RATVLive: joined the new connection after skipping 0 bytes
+10-29 17:54:12.851  4275  5971 I RATVLive: reconnected
+10-29 17:54:12.883  4275  5971 I RATVLive: joined the new connection after skipping 469248 bytes
+10-29 17:54:24.771  4275  5493 I RATVLive: no data for 6323 ms (limit 6150 ms): reconnecting
+10-29 17:54:24.780  4275  5971 I RATVLive: reconnected
+10-29 17:54:24.793  4275  5971 I RATVLive: joined the new connection after skipping 184428 bytes
+10-29 17:54:35.136  4275  5971 I RATVLive: reconnected
+10-29 17:54:35.136  4275  5971 I RATVLive: joined the new connection after skipping 1692 bytes
+10-29 17:54:36.113  4275  5490 E MediaCodecAudioRenderer: Audio sink error
+10-29 17:54:36.113  4275  5490 E MediaCodecAudioRenderer:   L1.r: Unexpected audio track timestamp discontinuity: expected 1001139690666, got 1001143786667
+10-29 17:54:36.113  4275  5490 E MediaCodecAudioRenderer:       at L1.F.l(SourceFile:998)
+10-29 17:54:36.113  4275  5490 E MediaCodecAudioRenderer:       at L1.H.k0(SourceFile:39)
+10-29 17:54:36.113  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
+10-29 17:54:36.113  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
+10-29 17:54:36.113  4275  5490 E MediaCodecAudioRenderer:       at J1.H.e(SourceFile:1168)
+10-29 17:54:36.113  4275  5490 E MediaCodecAudioRenderer:       at J1.H.handleMessage(SourceFile:274)
+10-29 17:54:36.113  4275  5490 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
+10-29 17:54:36.113  4275  5490 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
+10-29 17:54:36.113  4275  5490 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
+10-29 17:54:36.703  4275  4275 I RATVPlayback: position jumped ahead 4101 ms
+10-29 17:54:41.039  4275  5971 I RATVLive: reconnected
+10-29 17:54:41.039  4275  5971 I RATVLive: joined the new connection after skipping 2068 bytes
+10-29 17:54:48.816  4275  5490 E MediaCodecAudioRenderer: Audio sink error
+10-29 17:54:48.816  4275  5490 E MediaCodecAudioRenderer:   L1.r: Unexpected audio track timestamp discontinuity: expected 1001156480001, got 1001156757333
+10-29 17:54:48.816  4275  5490 E MediaCodecAudioRenderer:       at L1.F.l(SourceFile:998)
+10-29 17:54:48.816  4275  5490 E MediaCodecAudioRenderer:       at L1.H.k0(SourceFile:39)
+10-29 17:54:48.816  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
+10-29 17:54:48.816  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
+10-29 17:54:48.816  4275  5490 E MediaCodecAudioRenderer:       at J1.H.e(SourceFile:1168)
+10-29 17:54:48.816  4275  5490 E MediaCodecAudioRenderer:       at J1.H.handleMessage(SourceFile:274)
+10-29 17:54:48.816  4275  5490 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
+10-29 17:54:48.816  4275  5490 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
+10-29 17:54:48.816  4275  5490 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
+10-29 17:54:52.560  4275  5493 I RATVLive: no data for 6372 ms (limit 6150 ms): reconnecting
+10-29 17:54:52.565  4275  5971 I RATVLive: reconnected
+10-29 17:54:54.100  4275  5971 I RATVLive: joined the new connection after skipping 182736 bytes
+10-29 17:54:59.722  4275  5490 E MediaCodecAudioRenderer: Audio sink error
+10-29 17:54:59.722  4275  5490 E MediaCodecAudioRenderer:   L1.r: Unexpected audio track timestamp discontinuity: expected 1001167679999, got 1001175530667
+10-29 17:54:59.722  4275  5490 E MediaCodecAudioRenderer:       at L1.F.l(SourceFile:998)
+10-29 17:54:59.722  4275  5490 E MediaCodecAudioRenderer:       at L1.H.k0(SourceFile:39)
+10-29 17:54:59.722  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
+10-29 17:54:59.722  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
+10-29 17:54:59.722  4275  5490 E MediaCodecAudioRenderer:       at J1.H.e(SourceFile:1168)
+10-29 17:54:59.722  4275  5490 E MediaCodecAudioRenderer:       at J1.H.handleMessage(SourceFile:274)
+10-29 17:54:59.722  4275  5490 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
+10-29 17:54:59.722  4275  5490 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
+10-29 17:54:59.722  4275  5490 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)
+10-29 17:55:00.721  4275  4275 I RATVPlayback: position jumped ahead 7853 ms
+10-29 17:55:05.992  4275  5971 I RATVLive: reconnected
+10-29 17:55:05.999  4275  5971 I RATVLive: joined the new connection after skipping 239700 bytes
+10-29 17:55:11.324  4275  5490 E MediaCodecAudioRenderer: Audio sink error
+10-29 17:55:11.324  4275  5490 E MediaCodecAudioRenderer:   L1.r: Unexpected audio track timestamp discontinuity: expected 1001187136001, got 1001187477333
+10-29 17:55:11.324  4275  5490 E MediaCodecAudioRenderer:       at L1.F.l(SourceFile:998)
+10-29 17:55:11.324  4275  5490 E MediaCodecAudioRenderer:       at L1.H.k0(SourceFile:39)
+10-29 17:55:11.324  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.K(SourceFile:335)
+10-29 17:55:11.324  4275  5490 E MediaCodecAudioRenderer:       at Q1.r.z(SourceFile:84)
+10-29 17:55:11.324  4275  5490 E MediaCodecAudioRenderer:       at J1.H.e(SourceFile:1168)
+10-29 17:55:11.324  4275  5490 E MediaCodecAudioRenderer:       at J1.H.handleMessage(SourceFile:274)
+10-29 17:55:11.324  4275  5490 E MediaCodecAudioRenderer:       at android.os.Handler.dispatchMessage(Handler.java:102)
+10-29 17:55:11.324  4275  5490 E MediaCodecAudioRenderer:       at android.os.Looper.loop(Looper.java:223)
+10-29 17:55:11.324  4275  5490 E MediaCodecAudioRenderer:       at android.os.HandlerThread.run(HandlerThread.java:67)

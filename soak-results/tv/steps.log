@@ -57,3 +57,62 @@ Complete
 15:00:55 screenshot 10-soak-20.png 1920x1080
 15:00:55 soak: {"reconnects": 18, "joined": 18, "not_joined": 0, "cut_stuck": 2, "stalls": 7, "went_back": 0, "jumped_ahead": 1, "restarts": 1, "steadiness": 3, "hls": 1, "minutes": 20, "reserve_at_stalls_ms": [1657, 31431, 36908, 9275, 32837, 33992]}
 15:00:56 screenshot 11-soak-end.png 1920x1080
+17:33:00 == launch
+17:33:46 debug.ratv.subs=http://10.0.2.2:8000
+17:33:47 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 937
+WaitTime: 938
+Complete
+17:33:50 screenshot 01-splash.png 1920x1080
+17:33:50 == login-screen
+17:33:57 focus[login-initial]: http://server.example:8080
+17:33:57 screenshot 02-login.png 1920x1080
+17:33:57 == fill-with-remote
+17:34:07 focus[login-user]: username
+17:34:24 focus[login-name]: مثال: اشتراك المنزل
+17:34:27 focus[login-submit]: دخول
+17:34:27 screenshot 03-login-filled.png 1920x1080
+17:34:39 screenshot 04-home.png 1920x1080
+17:34:39 == home-focus
+17:34:41 focus[home-focus]: مباشر | RATV News HD | Live Match | بدأ 16:15 · متبقي 10د | شاهد الآن
+17:34:41 screenshot 05-home-focus.png 1920x1080
+17:34:41 == soak
+17:34:42 focus[nav-search]: مباشر | RATV News HD | Live Match | بدأ 16:15 · متبقي 10د | شاهد الآن
+17:34:45 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:49 focus[nav-search]: أفلام
+17:34:50 focus[nav-start]: أفلام
+17:34:56 focus[nav-target]: الرئيسية
+17:35:02 focus[soak-hero]: الرئيسية
+17:35:05 focus[soak-hero]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:08 focus[soak-hero]: مباشر | RATV News HD | Live Match | بدأ 16:15 · متبقي 10د | شاهد الآن
+17:35:21 screenshot 06-soak-start.png 1920x1080
+17:35:23 chaos channel on screen: False
+17:36:23 minute 1: {"reconnects": 2, "joined": 2, "not_joined": 0, "cut_stuck": 1, "stalls": 0, "went_back": 0, "jumped_ahead": 0, "restarts": 0, "steadiness": 0, "hls": 0}
+17:37:23 minute 2: {"reconnects": 5, "joined": 5, "not_joined": 0, "cut_stuck": 1, "stalls": 0, "went_back": 0, "jumped_ahead": 0, "restarts": 0, "steadiness": 0, "hls": 0}
+17:38:23 minute 3: {"reconnects": 7, "joined": 7, "not_joined": 0, "cut_stuck": 2, "stalls": 1, "went_back": 0, "jumped_ahead": 0, "restarts": 0, "steadiness": 1, "hls": 0}
+17:39:23 minute 4: {"reconnects": 10, "joined": 10, "not_joined": 0, "cut_stuck": 2, "stalls": 1, "went_back": 0, "jumped_ahead": 1, "restarts": 0, "steadiness": 1, "hls": 0}
+17:40:23 minute 5: {"reconnects": 12, "joined": 12, "not_joined": 0, "cut_stuck": 2, "stalls": 1, "went_back": 0, "jumped_ahead": 1, "restarts": 0, "steadiness": 1, "hls": 0}
+17:40:24 screenshot 07-soak-05.png 1920x1080
+17:41:24 minute 6: {"reconnects": 15, "joined": 15, "not_joined": 0, "cut_stuck": 2, "stalls": 1, "went_back": 0, "jumped_ahead": 1, "restarts": 0, "steadiness": 1, "hls": 0}
+17:42:24 minute 7: {"reconnects": 18, "joined": 18, "not_joined": 0, "cut_stuck": 2, "stalls": 1, "went_back": 0, "jumped_ahead": 1, "restarts": 0, "steadiness": 1, "hls": 0}
+17:43:24 minute 8: {"reconnects": 21, "joined": 21, "not_joined": 0, "cut_stuck": 2, "stalls": 1, "went_back": 0, "jumped_ahead": 1, "restarts": 0, "steadiness": 1, "hls": 0}
+17:44:24 minute 9: {"reconnects": 24, "joined": 24, "not_joined": 0, "cut_stuck": 3, "stalls": 1, "went_back": 0, "jumped_ahead": 1, "restarts": 0, "steadiness": 1, "hls": 0}
+17:45:24 minute 10: {"reconnects": 27, "joined": 27, "not_joined": 0, "cut_stuck": 3, "stalls": 1, "went_back": 0, "jumped_ahead": 1, "restarts": 0, "steadiness": 1, "hls": 0}
+17:45:24 screenshot 08-soak-10.png 1920x1080
+17:46:24 minute 11: {"reconnects": 31, "joined": 31, "not_joined": 0, "cut_stuck": 3, "stalls": 1, "went_back": 0, "jumped_ahead": 1, "restarts": 0, "steadiness": 1, "hls": 0}
+17:47:24 minute 12: {"reconnects": 33, "joined": 33, "not_joined": 0, "cut_stuck": 3, "stalls": 1, "went_back": 0, "jumped_ahead": 1, "restarts": 0, "steadiness": 1, "hls": 0}
+17:48:24 minute 13: {"reconnects": 36, "joined": 36, "not_joined": 0, "cut_stuck": 3, "stalls": 1, "went_back": 0, "jumped_ahead": 1, "restarts": 0, "steadiness": 1, "hls": 0}
+17:49:24 minute 14: {"reconnects": 38, "joined": 38, "not_joined": 0, "cut_stuck": 3, "stalls": 1, "went_back": 0, "jumped_ahead": 1, "restarts": 0, "steadiness": 1, "hls": 0}
+17:50:24 minute 15: {"reconnects": 41, "joined": 41, "not_joined": 0, "cut_stuck": 3, "stalls": 1, "went_back": 0, "jumped_ahead": 1, "restarts": 0, "steadiness": 1, "hls": 0}
+17:50:25 screenshot 09-soak-15.png 1920x1080
+17:51:25 minute 16: {"reconnects": 43, "joined": 43, "not_joined": 0, "cut_stuck": 3, "stalls": 1, "went_back": 0, "jumped_ahead": 1, "restarts": 0, "steadiness": 1, "hls": 0}
+17:52:25 minute 17: {"reconnects": 46, "joined": 46, "not_joined": 0, "cut_stuck": 3, "stalls": 1, "went_back": 0, "jumped_ahead": 1, "restarts": 0, "steadiness": 1, "hls": 0}
+17:53:25 minute 18: {"reconnects": 48, "joined": 48, "not_joined": 0, "cut_stuck": 3, "stalls": 1, "went_back": 0, "jumped_ahead": 1, "restarts": 0, "steadiness": 1, "hls": 0}
+17:54:25 minute 19: {"reconnects": 51, "joined": 51, "not_joined": 0, "cut_stuck": 3, "stalls": 1, "went_back": 0, "jumped_ahead": 1, "restarts": 0, "steadiness": 1, "hls": 0}
+17:55:25 minute 20: {"reconnects": 56, "joined": 56, "not_joined": 0, "cut_stuck": 5, "stalls": 1, "went_back": 0, "jumped_ahead": 3, "restarts": 0, "steadiness": 1, "hls": 0}
+17:55:25 screenshot 10-soak-20.png 1920x1080
+17:55:25 soak: {"reconnects": 56, "joined": 56, "not_joined": 0, "cut_stuck": 5, "stalls": 1, "went_back": 0, "jumped_ahead": 3, "restarts": 0, "steadiness": 1, "hls": 0, "minutes": 20, "reserve_at_stalls_ms": [21]}
+17:55:26 screenshot 11-soak-end.png 1920x1080
