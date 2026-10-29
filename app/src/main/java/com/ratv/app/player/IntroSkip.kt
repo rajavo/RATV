@@ -923,7 +923,8 @@ object IntroProbe {
                     val buf = c.getInputBuffer(i)
                     val n = if (buf == null) -1 else ex.readSampleData(buf, 0)
                     val t = ex.sampleTime
-                    if (n < 0 || t < 0 || t >= untilUs) {
+                    // (The first pieces of a file may come before 0: the encoder's lead-in.)
+                    if (n < 0 || t >= untilUs) {
                         c.queueInputBuffer(i, 0, 0, 0L, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
                         inputDone = true
                     } else {
