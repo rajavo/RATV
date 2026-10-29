@@ -7334,3 +7334,445 @@ Status: o
 14:17:15 focus[nav-start]: Partidos
 14:17:18 focus[nav-target]: En vivo
 14:17:24 screenshot 66-live-es.png 1920x1080
+17:31:39 == launch
+17:32:27 debug.ratv.subs=http://10.0.2.2:8000
+17:32:28 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 902
+WaitTime: 903
+Complete
+17:32:31 screenshot 01-splash.png 1920x1080
+17:32:31 == login-screen
+17:32:37 focus[login-initial]: http://server.example:8080
+17:32:37 screenshot 02-login.png 1920x1080
+17:32:37 == keyboard-on-ok
+17:32:40 screenshot 03-login-keyboard.png 1920x1080
+17:32:44 == fill-with-remote
+17:32:55 focus[login-user]: username
+17:33:12 focus[login-name]: مثال: اشتراك المنزل
+17:33:15 focus[login-submit]: دخول
+17:33:15 screenshot 04-login-filled.png 1920x1080
+17:33:27 screenshot 05-home.png 1920x1080
+17:33:27 == home-focus
+17:33:29 focus[home-focus]: مباشر | RATV News HD | Live Match | بدأ 16:15 · متبقي 11د | شاهد الآن
+17:33:29 screenshot 06-home-focus.png 1920x1080
+17:33:29 == player-remote
+17:33:40 screenshot 07-player.png 1920x1080
+17:33:44 screenshot 08-player-zap.png 1920x1080
+17:33:47 screenshot 09-player-controls.png 1920x1080
+17:33:49 screenshot 10-player-controls-moved.png 1920x1080
+17:33:53 screenshot 11-player-controls-hidden.png 1920x1080
+17:34:00 screenshot 12-home-after-player.png 1920x1080
+17:34:00 == player-numbers
+17:34:02 focus[nav-search]: مباشر | Gulf 24 FHD | Cartoon Hour | بدأ 17:15 · متبقي 41د | شاهد الآن
+17:34:05 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:08 focus[nav-search]: أفلام
+17:34:09 focus[nav-start]: أفلام
+17:34:15 focus[nav-target]: الرئيسية
+17:34:21 focus[numbers-hero]: الرئيسية
+17:34:24 focus[numbers-hero]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:27 focus[numbers-hero]: مباشر | Gulf 24 FHD | Cartoon Hour | بدأ 17:15 · متبقي 40د | شاهد الآن
+17:34:39 screenshot 13-player-number-typed.png 1920x1080
+17:34:43 screenshot 14-player-number.png 1920x1080
+17:34:51 screenshot 15-player-last-channel.png 1920x1080
+17:34:55 == update-notes
+17:34:57 focus[nav-search]: مباشر | Gulf 24 FHD | Cartoon Hour | بدأ 17:15 · متبقي 40د | شاهد الآن
+17:35:00 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:03 focus[nav-search]: أفلام
+17:35:04 focus[nav-start]: أفلام
+17:35:10 focus[nav-target]: الرئيسية
+17:35:16 focus[update-banner]: الرئيسية
+17:35:19 focus[update-banner]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:24 screenshot 16-update-notes.png 1920x1080
+17:35:30 screenshot 17-update-notes-scrolled.png 1920x1080
+17:35:31 focus[update-notes-scrolled]: لاحقاً
+17:35:33 == movies
+17:35:35 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:38 focus[nav-search]: أفلام
+17:35:39 focus[nav-start]: أفلام
+17:35:41 focus[nav-target]: أفلام
+17:35:48 focus[movies]: Desert Night (2023) | 7.4 | Desert Night (2023)
+17:35:48 screenshot 18-movies.png 1920x1080
+17:35:53 focus[movie-detail]: تشغيل
+17:35:54 screenshot 19-movie-detail.png 1920x1080
+17:36:08 screenshot 20-player-movie-seek.png 1920x1080
+17:36:12 screenshot 21-movie-detail-after.png 1920x1080
+17:36:14 == live
+17:36:16 focus[nav-search]: Desert Night (2023) | 7.4 | Desert Night (2023)
+17:36:19 focus[nav-search]: المباريات
+17:36:21 focus[nav-start]: المباريات
+17:36:24 focus[nav-target]: مباشر
+17:36:31 focus[live]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+17:36:31 screenshot 22-live.png 1920x1080
+17:36:37 focus[live-moved]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+17:36:38 screenshot 23-live-moved.png 1920x1080
+17:36:38 == series
+17:36:40 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+17:36:43 focus[nav-search]: 3 | قناة الأخبار | Weekly Review
+17:36:47 focus[nav-search]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+17:36:51 focus[nav-search]: 1 | RATV News HD | Live Match | HD
+17:36:54 focus[nav-search]: المباريات
+17:36:56 focus[nav-start]: المباريات
+17:37:01 focus[nav-target]: مسلسلات
+17:37:06 focus[series]: Sands of Time | 8.1 | Sands of Time
+17:37:12 focus[series-detail]: تشغيل الحلقة 1
+17:37:13 screenshot 24-series-detail.png 1920x1080
+17:37:15 == matches
+17:37:17 focus[nav-search]: Sands of Time | 8.1 | Sands of Time
+17:37:20 focus[nav-search]: المباريات
+17:37:21 focus[nav-start]: المباريات
+17:37:23 focus[nav-target]: المباريات
+17:37:29 screenshot 25-matches.png 1920x1080
+17:37:30 == match-link
+17:37:30 Starting: Intent { act=android.intent.action.VIEW dat=ratv://match?home=Real Madrid&away=Barcelona&homeAr=ريال مدريد&awayAr=برشلونة&start=1793294550744&league=الدوري الإسباني pkg=com.ratv.app }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+Status: o
+17:37:34 screenshot 26-match-link.png 1920x1080
+17:37:35 focus[match-link]: Sport 1 4K | الحين: الدوري الإسباني: ريال مدريد × برشلونة
+17:37:44 screenshot 27-match-link-play.png 1920x1080
+17:37:51 == scoreboard
+17:37:52 focus[nav-search]: الآن
+17:37:55 focus[nav-search]: جدول 30 يوم
+17:37:58 focus[nav-search]: ابحث | ابحث
+17:38:01 focus[nav-search]: حسابي
+17:38:03 focus[nav-start]: حسابي
+17:38:12 focus[nav-target]: الرئيسية
+17:38:18 focus[board-hero]: مباشر | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة | بدأ 17:00 · متبقي 1س 21د | شاهد الآن
+17:38:30 screenshot 28-board.png 1920x1080
+17:38:30   --------- beginning of main
+17:38:30   --------- beginning of system
+17:38:30   10-29 17:38:18.964  4074  4074 I RATVScore: board on Sport 1 4K: 900001 (link)
+17:38:30 board: لوحة النتيجة: ريال مدريد 2 - 1 برشلونة، 23:50
+17:39:24 screenshot 29-board-goal.png 1920x1080
+17:39:31 screenshot 30-board-corner.png 1920x1080
+17:39:31 board alone at (60, 28, 638, 154)
+17:39:34 screenshot 31-board-controls.png 1920x1080
+17:39:46 focus[board-pill]: لوحة النتيجة
+17:39:52 screenshot 32-board-pick.png 1920x1080
+17:39:56 focus[board-pick-yk]: ريال مدريد × برشلونة | الدوري الإسباني · بدأت 17:07 · من دليل البرامج | المختار
+17:39:59 focus[board-pick-yk]: ن | الشمال × نادي قطر | دوري نجوم قطر · بدأت 17:15
+17:40:09 screenshot 33-board-yk.png 1920x1080
+17:40:09 board: لوحة النتيجة: الشمال 1 - 0 نادي قطر، مباشر
+17:40:20 focus[board-pill2]: لوحة النتيجة
+17:40:26 focus[board-hide]: ن | الشمال × نادي قطر | دوري نجوم قطر · بدأت 17:15 | المختار
+17:40:29 focus[board-hide]: ا | ا | الهلال × النصر | دوري روشن السعودي · بدأت 17:20
+17:40:32 focus[board-hide]: ا | ا | الاتحاد × الدرعية | دوري روشن السعودي · بدأت 17:10
+17:40:35 focus[board-hide]: بدون لوحة | تختفي من هذي القناة لين تخلص المباراة
+17:40:40 screenshot 34-board-hidden.png 1920x1080
+17:40:44 == sports-guide
+17:40:46 focus[nav-search]: مباشر | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | بدأ 17:00 · متبقي 1س 19د | شاهد الآن
+17:40:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:40:52 focus[nav-search]: أفلام
+17:40:53 focus[nav-start]: أفلام
+17:41:00 focus[nav-target]: الرئيسية
+17:41:06 focus[guide-hero]: الرئيسية
+17:41:08 focus[guide-hero]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:11 focus[guide-hero]: مباشر | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | بدأ 17:00 · متبقي 1س 18د | شاهد الآن
+17:41:32 screenshot 35-guide-bein3.png 1920x1080
+17:41:32   10-29 17:38:18.964  4074  4074 I RATVScore: board on Sport 1 4K: 900001 (link)
+17:41:32   10-29 17:39:59.615  4074  4074 I RATVScore: board on Sport 1 HD: y112832 (hand)
+17:41:32   --------- beginning of crash
+17:41:32   10-29 17:40:35.571  4074  4074 I RATVScore: board on Sport 1 HD: none (-)
+17:41:32   10-29 17:41:20.894  4074  4074 I RATVScore: board on AR| beIN SPORTS 3 HD: 900004 (guide)
+17:41:36 screenshot 36-guide-bein3-controls.png 1920x1080
+17:41:55 screenshot 37-guide-bein1.png 1920x1080
+17:42:12 screenshot 38-guide-bein2-controls.png 1920x1080
+17:42:33 screenshot 39-guide-thmanyah3.png 1920x1080
+17:42:50 screenshot 40-guide-ask.png 1920x1080
+17:42:59 screenshot 41-guide-ask-pick.png 1920x1080
+17:43:05 == intro
+17:43:06 focus[nav-search]: مباشر | SSC 2 HD | SSC 2 HD | رياضة | شاهد الآن
+17:43:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:43:12 focus[nav-search]: أفلام
+17:43:14 focus[nav-start]: أفلام
+17:43:17 focus[nav-target]: مسلسلات
+17:43:23 focus[intro-series]: Sands of Time | 8.1 | Sands of Time
+17:43:29 focus[intro-detail]: تشغيل الحلقة 1
+17:43:33   10-29 17:43:29.671  4074 28373 I RATVIntro: Sands of Time الموسم 1 · الحلقة 1: printing its sound (audio/mp4a-latm with OMX.google.aac.decoder)
+17:43:41 screenshot 42-intro-ep1.png 1920x1080
+17:43:53   10-29 17:43:52.842  4074 28373 I RATVIntro: Sands of Time الموسم 1 · الحلقة 1: kept 99 s of prints
+17:43:59   10-29 17:43:59.182  4074 30218 I RATVIntro: Sands of Time الموسم 1 · الحلقة 2: opening learnt at 14.7-55.0 s (shared with an episode before)
+17:44:13 screenshot 43-intro-button.png 1920x1080
+17:44:15   10-29 17:44:12.964  4074  4074 I RATVIntro: skipped from 19634 to 55000 ms (sound)
+17:44:16 screenshot 44-intro-skipped.png 1920x1080
+17:44:22   10-29 17:44:22.285  4074  4074 I RATVIntro: TheIntroDB: 1:1000-7000
+17:44:30   10-29 17:44:29.034  4074 32224 I RATVIntro: Sands of Time الموسم 1 · الحلقة 3: the opening found again at 7.7-48.0 s
+17:44:34 screenshot 45-intro-button3.png 1920x1080
+17:44:37   10-29 17:44:12.964  4074  4074 I RATVIntro: skipped from 19634 to 55000 ms (sound)
+17:44:37 TheIntroDB asked: ['tmdb_id=550', 'tmdb_id=1399&season=1&episode=1&duration_ms=120000', 'tmdb_id=1399&season=1&episode=2&duration_ms=120000', 'tmdb_id=1399&season=1&episode=3&duration_ms=120000']
+17:44:48 == settings
+17:44:50 focus[nav-search]: Sands of Time | 8.1 | Sands of Time
+17:44:53 focus[nav-search]: المباريات
+17:44:54 focus[nav-start]: المباريات
+17:45:01 focus[nav-target]: حسابي
+17:45:06 focus[settings]: إضافة مستخدم
+17:45:06 screenshot 46-settings.png 1920x1080
+17:45:06 == settings-deep
+17:45:08 focus[nav-search]: إضافة مستخدم
+17:45:11 focus[nav-search]: الرئيسية
+17:45:13 focus[nav-start]: الرئيسية
+17:45:22 focus[nav-target]: حسابي
+17:45:28 focus[deep-ar]: حسابي
+17:45:30 focus[deep-ar]: تحديث المحتوى
+17:45:33 focus[deep-ar]: حذف اشتراكي
+17:45:36 focus[deep-ar]: إضافة مستخدم | يبقى المستخدمون الآخرون كما هم
+17:45:38 focus[deep-ar]: قياس سرعة النت
+17:45:41 focus[deep-ar]: الاحتياطي ضد انقطاع النت | يكمل 10 دقائق بدون إنترنت (موصى به)
+17:45:44 focus[deep-ar]: صيغة البث المباشر | TS (موصى به)
+17:45:46 focus[deep-ar]: ثبات البث المباشر | تلقائي (موصى به)
+17:45:49 focus[deep-ar]: نسخة بديلة للقناة لما تقطّع | لو القناة قطّعت كثير، ينتقل لنسخة ثانية منها في اشتراكك (جودة أخف أو رابط احتياطي)
+17:45:52 focus[deep-ar]: مطابقة معدل الإطارات | يضبط الشاشة على 50 أو 60 هرتز حسب القناة فتصير الحركة ناعمة بدون تقطيع، وقد تسودّ الشاشة لحظة عند تشغيل القناة
+17:45:54 focus[deep-ar]: تشغيل الصورة بعتاد التلفزيون (تجريبي) | قد تصير الحركة أنعم على بعض الشاشات. إذا صارت الشاشة سوداء أو تأخر الصوت، أطفئه. يطبَّق من المرة الجاية اللي تفتح فيها قناة.
+17:45:57 focus[deep-ar]: تحسين الصورة الذكي | يرفع وضوح القنوات الضعيفة (أقل من 720) داخل التلفزيون نفسه، بدون أي استهلاك إضافي للنت. ينطفي لحاله إذا ما لحق عليه الجهاز.
+17:46:00 focus[deep-ar]: أعلى جودة متاحة دائماً | يختار أعلى جودة يرسلها المزوّد للبث
+17:46:03 focus[deep-ar]: فتح آخر قناة عند التشغيل
+17:46:05 focus[deep-ar]: معاينة القناة في قائمة المباشر | على التلفزيون تُعرض القناة المختارة في نافذة صغيرة
+17:46:08 focus[deep-ar]: لوحة النتيجة في المباريات | تظهر فوق القناة الرياضية طول المباراة: الفريقين والنتيجة ووقت المباراة. تنعرف المباراة من دليل البرامج، وتقدر تختارها بنفسك من زر «لوحة النتيجة» في المشغّل.
+17:46:11 focus[deep-ar]: مكان لوحة النتيجة | فوق يسار: مكان نتيجة القناة (موصى به)
+17:46:13 focus[deep-ar]: تأخير النتيجة | تلقائي: على قد تأخر البث عندك (موصى به)
+17:46:16 focus[deep-ar]: تخطي المقدمة | يطلع زر «تخطي المقدمة» (موصى به)
+17:46:19 focus[deep-ar]: لغة الترجمة | العربية
+17:46:21 focus[deep-ar]: حجم خط الترجمة | متوسط
+17:46:24 focus[deep-ar]: تشغيل الترجمة تلقائياً | تبحث عن ترجمة بلغتك عند بدء أي فيلم أو حلقة، وتترجمها آلياً إن لم تتوفر
+17:46:27 focus[deep-ar]: تحديث الدليل تلقائياً | كل 12 ساعة
+17:46:29 focus[deep-ar]: تحديث الدليل الآن
+17:46:32 focus[deep-ar]: حجب محتوى البالغين | يحجب أقسام وقنوات وأفلام ومسلسلات البالغين في كل المستخدمين، ويلزم رمز سري لإظهارها
+17:46:35 focus[deep-ar]: حذف سجل المشاهدة
+17:46:37 focus[deep-ar]: لغة التطبيق · Language | العربية
+17:46:39 focus[up-ar]: لغة التطبيق · Language | العربية
+17:46:42 focus[up-ar]: حذف سجل المشاهدة
+17:46:44 focus[up-ar]: حجب محتوى البالغين | يحجب أقسام وقنوات وأفلام ومسلسلات البالغين في كل المستخدمين، ويلزم رمز سري لإظهارها
+17:46:47 focus[up-ar]: تحديث الدليل الآن
+17:46:50 focus[up-ar]: تحديث الدليل تلقائياً | كل 12 ساعة
+17:46:52 focus[up-ar]: تشغيل الترجمة تلقائياً | تبحث عن ترجمة بلغتك عند بدء أي فيلم أو حلقة، وتترجمها آلياً إن لم تتوفر
+17:46:55 focus[up-ar]: حجم خط الترجمة | متوسط
+17:46:55 screenshot 47-up-ar-6.png 1920x1080
+17:46:58 focus[up-ar]: لغة الترجمة | العربية
+17:47:01 focus[up-ar]: تخطي المقدمة | يطلع زر «تخطي المقدمة» (موصى به)
+17:47:03 focus[up-ar]: تأخير النتيجة | تلقائي: على قد تأخر البث عندك (موصى به)
+17:47:06 focus[up-ar]: مكان لوحة النتيجة | فوق يسار: مكان نتيجة القناة (موصى به)
+17:47:09 focus[up-ar]: لوحة النتيجة في المباريات | تظهر فوق القناة الرياضية طول المباراة: الفريقين والنتيجة ووقت المباراة. تنعرف المباراة من دليل البرامج، وتقدر تختارها بنفسك من زر «لوحة النتيجة» في المشغّل.
+17:47:11 focus[up-ar]: معاينة القناة في قائمة المباشر | على التلفزيون تُعرض القناة المختارة في نافذة صغيرة
+17:47:12 screenshot 48-up-ar-12.png 1920x1080
+17:47:14 focus[up-ar]: فتح آخر قناة عند التشغيل
+17:47:17 focus[up-ar]: أعلى جودة متاحة دائماً | يختار أعلى جودة يرسلها المزوّد للبث
+17:47:20 focus[up-ar]: تحسين الصورة الذكي | يرفع وضوح القنوات الضعيفة (أقل من 720) داخل التلفزيون نفسه، بدون أي استهلاك إضافي للنت. ينطفي لحاله إذا ما لحق عليه الجهاز.
+17:47:22 focus[up-ar]: تشغيل الصورة بعتاد التلفزيون (تجريبي) | قد تصير الحركة أنعم على بعض الشاشات. إذا صارت الشاشة سوداء أو تأخر الصوت، أطفئه. يطبَّق من المرة الجاية اللي تفتح فيها قناة.
+17:47:25 focus[up-ar]: مطابقة معدل الإطارات | يضبط الشاشة على 50 أو 60 هرتز حسب القناة فتصير الحركة ناعمة بدون تقطيع، وقد تسودّ الشاشة لحظة عند تشغيل القناة
+17:47:28 focus[up-ar]: نسخة بديلة للقناة لما تقطّع | لو القناة قطّعت كثير، ينتقل لنسخة ثانية منها في اشتراكك (جودة أخف أو رابط احتياطي)
+17:47:30 focus[up-ar]: ثبات البث المباشر | تلقائي (موصى به)
+17:47:33 focus[up-ar]: صيغة البث المباشر | TS (موصى به)
+17:47:36 focus[up-ar]: الاحتياطي ضد انقطاع النت | يكمل 10 دقائق بدون إنترنت (موصى به)
+17:47:38 focus[up-ar]: قياس سرعة النت
+17:47:41 focus[up-ar]: إضافة مستخدم | يبقى المستخدمون الآخرون كما هم
+17:47:44 focus[up-ar]: اشتراكي | test · 10.0.2.2:8000 | الحالي
+17:47:46 focus[up-ar]: إضافة مستخدم
+17:47:49 focus[up-ar]: الرئيسية
+17:47:49 == enhance
+17:47:51 focus[nav-search]: الرئيسية
+17:47:52 focus[nav-start]: الرئيسية
+17:48:01 focus[nav-target]: حسابي
+17:48:07 focus[enhance-setting]: حسابي
+17:48:10 focus[enhance-setting]: تحديث المحتوى
+17:48:13 focus[enhance-setting]: حذف اشتراكي
+17:48:15 focus[enhance-setting]: إضافة مستخدم | يبقى المستخدمون الآخرون كما هم
+17:48:18 focus[enhance-setting]: قياس سرعة النت
+17:48:21 focus[enhance-setting]: الاحتياطي ضد انقطاع النت | يكمل 10 دقائق بدون إنترنت (موصى به)
+17:48:24 focus[enhance-setting]: صيغة البث المباشر | TS (موصى به)
+17:48:26 focus[enhance-setting]: ثبات البث المباشر | تلقائي (موصى به)
+17:48:29 focus[enhance-setting]: نسخة بديلة للقناة لما تقطّع | لو القناة قطّعت كثير، ينتقل لنسخة ثانية منها في اشتراكك (جودة أخف أو رابط احتياطي)
+17:48:32 focus[enhance-setting]: مطابقة معدل الإطارات | يضبط الشاشة على 50 أو 60 هرتز حسب القناة فتصير الحركة ناعمة بدون تقطيع، وقد تسودّ الشاشة لحظة عند تشغيل القناة
+17:48:34 focus[enhance-setting]: تشغيل الصورة بعتاد التلفزيون (تجريبي) | قد تصير الحركة أنعم على بعض الشاشات. إذا صارت الشاشة سوداء أو تأخر الصوت، أطفئه. يطبَّق من المرة الجاية اللي تفتح فيها قناة.
+17:48:37 focus[enhance-setting]: تحسين الصورة الذكي | يرفع وضوح القنوات الضعيفة (أقل من 720) داخل التلفزيون نفسه، بدون أي استهلاك إضافي للنت. ينطفي لحاله إذا ما لحق عليه الجهاز.
+17:48:39 screenshot 49-enhance-setting.png 1920x1080
+17:48:41 focus[nav-search]: تحسين الصورة الذكي | يرفع وضوح القنوات الضعيفة (أقل من 720) داخل التلفزيون نفسه، بدون أي استهلاك إضافي للنت. ينطفي لحاله إذا ما لحق عليه الجهاز.
+17:48:44 focus[nav-search]: تشغيل الصورة بعتاد التلفزيون (تجريبي) | قد تصير الحركة أنعم على بعض الشاشات. إذا صارت الشاشة سوداء أو تأخر الصوت، أطفئه. يطبَّق من المرة الجاية اللي تفتح فيها قناة.
+17:48:47 focus[nav-search]: مطابقة معدل الإطارات | يضبط الشاشة على 50 أو 60 هرتز حسب القناة فتصير الحركة ناعمة بدون تقطيع، وقد تسودّ الشاشة لحظة عند تشغيل القناة
+17:48:50 focus[nav-search]: نسخة بديلة للقناة لما تقطّع | لو القناة قطّعت كثير، ينتقل لنسخة ثانية منها في اشتراكك (جودة أخف أو رابط احتياطي)
+17:48:53 focus[nav-search]: ثبات البث المباشر | تلقائي (موصى به)
+17:48:56 focus[nav-search]: صيغة البث المباشر | TS (موصى به)
+17:48:59 focus[nav-search]: الاحتياطي ضد انقطاع النت | يكمل 10 دقائق بدون إنترنت (موصى به)
+17:49:02 focus[nav-search]: قياس سرعة النت
+17:49:05 focus[nav-search]: إضافة مستخدم | يبقى المستخدمون الآخرون كما هم
+17:49:09 focus[nav-search]: اشتراكي | test · 10.0.2.2:8000 | الحالي
+17:49:12 focus[nav-search]: إضافة مستخدم
+17:49:15 focus[nav-search]: الرئيسية
+17:49:16 focus[nav-start]: الرئيسية
+17:49:18 focus[nav-target]: الرئيسية
+17:49:22 focus[nav-search]: مباشر | SSC 2 HD | SSC 2 HD | رياضة | شاهد الآن
+17:49:25 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:49:28 focus[nav-search]: أفلام
+17:49:30 focus[nav-start]: أفلام
+17:49:36 focus[nav-target]: الرئيسية
+17:49:42 focus[enhance-hero]: الرئيسية
+17:49:45 focus[enhance-hero]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:49:48 focus[enhance-hero]: مباشر | SSC 2 HD | SSC 2 HD | رياضة | شاهد الآن
+17:50:10 screenshot 50-enhance-kids.png 1920x1080
+17:50:15 screenshot 51-enhance-kids-controls.png 1920x1080
+17:50:31 screenshot 52-enhance-racing.png 1920x1080
+17:50:36 screenshot 53-enhance-racing-controls.png 1920x1080
+17:50:36   10-29 17:50:19.225  4074  4074 I RATVEnhance: stall with 106448 ms stored: the TV falls behind the enhancement
+17:50:36   10-29 17:50:21.171  4074  4074 I RATVEnhance: stall with 104636 ms stored: the TV falls behind the enhancement
+17:50:36   10-29 17:50:25.149  4074  4074 I RATVEnhance: stall with 122798 ms stored: the TV falls behind the enhancement
+17:50:36   10-29 17:50:27.521  4074  4074 I RATVEnhance: stall with 120336 ms stored: the TV falls behind the enhancement
+17:50:36   10-29 17:50:29.232  4074  4074 I RATVEnhance: stall with 118685 ms stored: the TV falls behind the enhancement
+17:50:36   10-29 17:50:31.279  4074  4074 I RATVEnhance: stall with 116644 ms stored: the TV falls behind the enhancement
+17:50:36   10-29 17:50:33.318  4074  4074 I RATVEnhance: stall with 114591 ms stored: the TV falls behind the enhancement
+17:50:36   10-29 17:50:35.305  4074  4074 I RATVEnhance: stall with 112627 ms stored: the TV falls behind the enhancement
+17:50:46 focus[enhance-pill]: تحسين الصورة: يعمل
+17:50:59 screenshot 54-enhance-off.png 1920x1080
+17:51:13 focus[enhance-pill-light]: تحسين الصورة
+17:51:27 screenshot 55-enhance-light.png 1920x1080
+17:51:32 screenshot 56-enhance-light-controls.png 1920x1080
+17:51:32   10-29 17:50:33.318  4074  4074 I RATVEnhance: stall with 114591 ms stored: the TV falls behind the enhancement
+17:51:32   10-29 17:50:35.305  4074  4074 I RATVEnhance: stall with 112627 ms stored: the TV falls behind the enhancement
+17:51:32   10-29 17:50:37.389  4074  4074 I RATVEnhance: stall with 110531 ms stored: the TV falls behind the enhancement
+17:51:32   10-29 17:50:39.330  4074  4074 I RATVEnhance: stall with 108584 ms stored: the TV falls behind the enhancement
+17:51:32   10-29 17:50:41.493  4074  4074 I RATVEnhance: stall with 106419 ms stored: the TV falls behind the enhancement
+17:51:32   10-29 17:51:16.276  4074  8753 I RATVEnhance: picture 1024x576 -> 1024x576 (light)
+17:51:32   10-29 17:51:18.591  4074  4074 I RATVEnhance: stall with 122519 ms stored: the TV falls behind the enhancement
+17:51:32   10-29 17:51:30.597  4074  4074 I RATVEnhance: stall with 110529 ms stored: the TV falls behind the enhancement
+17:51:42 focus[enhance-pill-off2]: تحسين الصورة
+17:52:00 focus[enhance-pill-on2]: تحسين الصورة: يعمل
+17:52:30 screenshot 57-enhance-auto.png 1920x1080
+17:52:30   10-29 17:51:30.597  4074  4074 I RATVEnhance: stall with 110529 ms stored: the TV falls behind the enhancement
+17:52:30   10-29 17:51:32.138  4074  4074 I RATVEnhance: the enhancement does not work out (93 of 211 pictures dropped): off on this device
+17:52:30   10-29 17:51:44.534  4074 10117 I RATVEnhance: picture 1024x576 -> 1920x1080 (enhanced)
+17:52:30   10-29 17:51:47.411  4074  4074 I RATVEnhance: stall with 122509 ms stored: the TV falls behind the enhancement
+17:52:30   10-29 17:51:49.469  4074  4074 I RATVEnhance: stall with 120625 ms stored: the TV falls behind the enhancement
+17:52:30   10-29 17:51:49.469  4074  4074 I RATVEnhance: full enhancement does not work out (stalls with the store full): light enhancement from now on
+17:52:30   10-29 17:51:51.172  4074 10259 I RATVEnhance: picture 1024x576 -> 1024x576 (light)
+17:52:30   10-29 17:51:55.377  4074  4074 I RATVEnhance: stall with 120759 ms stored: the TV falls behind the enhancement
+17:52:35 screenshot 58-enhance-auto-controls.png 1920x1080
+17:52:35 after stepping down: off
+17:52:38 == languages
+17:52:49 screenshot 59-home-en.png 1920x1080
+17:52:50 focus[nav-search]: Live | Racing SD | Racing SD | رياضة | Watch now
+17:52:53 focus[nav-search]: New update available (9.9.9) — press to update
+17:52:56 focus[nav-search]: Matches
+17:52:58 focus[nav-start]: Matches
+17:53:04 focus[nav-target]: My account
+17:53:09 screenshot 60-settings-en.png 1920x1080
+17:53:10 focus[settings-en]: Add user
+17:53:13 focus[settings-en]: اشتراكي | test · 10.0.2.2:8000 | Current
+17:53:16 focus[settings-en]: Add user | Other users stay as they are
+17:53:19 focus[settings-en]: Internet speed test
+17:53:21 focus[settings-en]: Buffer against internet drops | Keeps playing 10 minutes without internet (recommended)
+17:53:24 focus[settings-en]: Live stream format | TS (recommended)
+17:53:27 focus[settings-en]: Live stream steadiness | Automatic (recommended)
+17:53:29 focus[settings-en]: Backup version when a channel stalls | If a channel stalls a lot, switch to another version of it in your subscription (lighter quality or a backup link)
+17:53:32 focus[settings-en]: Match frame rate | Sets the screen to 50 or 60 Hz to suit the channel so motion is smooth; the screen may go black for a moment when a channel starts
+17:53:35 focus[settings-en]: Play the picture with the TV's hardware (experimental) | Motion may be smoother on some screens. If the screen goes black or the sound lags, turn it off. Applies the next time you open a channel.
+17:53:37 focus[settings-en]: Smart picture enhancement | Sharpens weak channels (below 720) on the TV itself, with no extra internet use. It turns itself off if the device can't keep up.
+17:53:40 focus[settings-en]: Always the highest quality available | Picks the highest quality your provider sends
+17:53:43 focus[settings-en]: Open the last channel on start
+17:53:45 focus[settings-en]: Channel preview in the live list | On TV, the selected channel plays in a small window
+17:53:48 focus[settings-en]: Scoreboard during matches | Shown over the sports channel for the whole match: both teams, the score and the match clock. The match is found from the programme guide, and you can pick it yourself with the “Scoreboard” button in the player.
+17:53:51 focus[settings-en]: Scoreboard position | Top left: where the channel's score is (recommended)
+17:53:53 focus[settings-en]: Score delay | Automatic: as late as your stream (recommended)
+17:53:56 focus[settings-en]: Skip intro | Show a “Skip intro” button (recommended)
+17:53:59 focus[settings-en]: Subtitle language | Arabic
+17:54:01 focus[settings-en]: Subtitle font size | Medium
+17:54:04 focus[settings-en]: Turn on subtitles automatically | Looks for subtitles in your language when any movie or episode starts, and translates them automatically if there are none
+17:54:07 focus[settings-en]: Update the guide automatically | Every 12 hours
+17:54:09 focus[settings-en]: Update the guide now
+17:54:12 focus[settings-en]: Block adult content | Hides adult sections, channels, movies and series for all users; a PIN is needed to show them
+17:54:15 focus[settings-en]: Delete watch history
+17:54:18 focus[settings-en]: Language | English
+17:54:22 screenshot 61-language-en.png 1920x1080
+17:54:25 focus[nav-search]: Language | English
+17:54:29 focus[nav-search]: Delete watch history
+17:54:32 focus[nav-search]: Block adult content | Hides adult sections, channels, movies and series for all users; a PIN is needed to show them
+17:54:35 focus[nav-search]: Update the guide now
+17:54:38 focus[nav-search]: Update the guide automatically | Every 12 hours
+17:54:41 focus[nav-search]: Turn on subtitles automatically | Looks for subtitles in your language when any movie or episode starts, and translates them automatically if there are none
+17:54:44 focus[nav-search]: Subtitle font size | Medium
+17:54:47 focus[nav-search]: Subtitle language | Arabic
+17:54:50 focus[nav-search]: Skip intro | Show a “Skip intro” button (recommended)
+17:54:53 focus[nav-search]: Score delay | Automatic: as late as your stream (recommended)
+17:54:56 focus[nav-search]: Scoreboard position | Top left: where the channel's score is (recommended)
+17:54:59 focus[nav-search]: Scoreboard during matches | Shown over the sports channel for the whole match: both teams, the score and the match clock. The match is found from the programme guide, and you can pick it yourself with the “Scoreboard” button in the player.
+17:55:02 focus[nav-search]: Channel preview in the live list | On TV, the selected channel plays in a small window
+17:55:05 focus[nav-search]: Open the last channel on start
+17:55:09 focus[nav-search]: Always the highest quality available | Picks the highest quality your provider sends
+17:55:12 focus[nav-search]: Smart picture enhancement | Sharpens weak channels (below 720) on the TV itself, with no extra internet use. It turns itself off if the device can't keep up.
+17:55:15 focus[nav-search]: Play the picture with the TV's hardware (experimental) | Motion may be smoother on some screens. If the screen goes black or the sound lags, turn it off. Applies the next time you open a channel.
+17:55:18 focus[nav-search]: Match frame rate | Sets the screen to 50 or 60 Hz to suit the channel so motion is smooth; the screen may go black for a moment when a channel starts
+17:55:21 focus[nav-search]: Backup version when a channel stalls | If a channel stalls a lot, switch to another version of it in your subscription (lighter quality or a backup link)
+17:55:24 focus[nav-search]: Live stream steadiness | Automatic (recommended)
+17:55:27 focus[nav-search]: Live stream format | TS (recommended)
+17:55:30 focus[nav-search]: Buffer against internet drops | Keeps playing 10 minutes without internet (recommended)
+17:55:33 focus[nav-search]: Internet speed test
+17:55:36 focus[nav-search]: Add user | Other users stay as they are
+17:55:39 focus[nav-search]: اشتراكي | test · 10.0.2.2:8000 | Current
+17:55:43 focus[nav-search]: Add user
+17:55:46 focus[nav-search]: Home
+17:55:47 focus[nav-start]: Home
+17:55:50 focus[nav-target]: Live
+17:55:56 screenshot 62-live-en.png 1920x1080
+17:56:05 screenshot 63-home-es.png 1920x1080
+17:56:06 focus[nav-search]: En vivo | Racing SD | Racing SD | رياضة | Ver ahora
+17:56:09 focus[nav-search]: Nueva actualización disponible (9.9.9) — pulsa para actualizar
+17:56:12 focus[nav-search]: Series
+17:56:14 focus[nav-start]: Series
+17:56:17 focus[nav-target]: Mi cuenta
+17:56:22 screenshot 64-settings-es.png 1920x1080
+17:56:23 focus[settings-es]: Añadir usuario
+17:56:26 focus[settings-es]: اشتراكي | test · 10.0.2.2:8000 | Actual
+17:56:29 focus[settings-es]: Añadir usuario | Los demás usuarios no cambian
+17:56:31 focus[settings-es]: Test de velocidad
+17:56:34 focus[settings-es]: Búfer contra cortes de internet | Sigue 10 minutos sin internet (recomendado)
+17:56:37 focus[settings-es]: Formato en vivo | TS (recomendado)
+17:56:39 focus[settings-es]: Estabilidad en vivo | Automático (recomendado)
+17:56:42 focus[settings-es]: Versión alternativa si el canal se corta | Si un canal se corta mucho, pasa a otra versión del mismo en tu suscripción (calidad más ligera o enlace de respaldo)
+17:56:45 focus[settings-es]: Igualar la frecuencia de imagen | Ajusta la pantalla a 50 o 60 Hz según el canal para un movimiento suave; la pantalla puede quedarse en negro un momento al iniciar un canal
+17:56:47 focus[settings-es]: Reproducir la imagen con el hardware de la TV (experimental) | El movimiento puede ser más suave en algunas pantallas. Si la pantalla se queda en negro o el sonido se retrasa, desactívalo. Se aplica la próxima vez que abras un canal.
+17:56:50 focus[settings-es]: Mejora inteligente de imagen | Da más nitidez a los canales débiles (menos de 720) en la propia TV, sin gastar más internet. Se desactiva sola si el dispositivo no puede seguir el ritmo.
+17:56:53 focus[settings-es]: Siempre la máxima calidad disponible | Elige la máxima calidad que envía tu proveedor
+17:56:55 focus[settings-es]: Abrir el último canal al iniciar
+17:56:58 focus[settings-es]: Vista previa del canal en la lista en vivo | En la TV, el canal elegido se muestra en una ventana pequeña
+17:57:01 focus[settings-es]: Marcador durante los partidos | Aparece sobre el canal deportivo durante todo el partido: los dos equipos, el marcador y el tiempo de juego. El partido se reconoce por la guía de programación, y puedes elegirlo tú con el botón «Marcador» del reproductor.
+17:57:04 focus[settings-es]: Posición del marcador | Arriba a la izquierda: donde está el marcador del canal (recomendado)
+17:57:06 focus[settings-es]: Retraso del marcador | Automático: según el retraso de tu emisión (recomendado)
+17:57:09 focus[settings-es]: Saltar intro | Mostrar un botón «Saltar intro» (recomendado)
+17:57:12 focus[settings-es]: Idioma de subtítulos | Árabe
+17:57:14 focus[settings-es]: Tamaño de los subtítulos | Mediano
+17:57:17 focus[settings-es]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+17:57:20 focus[settings-es]: Actualizar la guía automáticamente | Cada 12 horas
+17:57:22 focus[settings-es]: Actualizar la guía ahora
+17:57:25 focus[settings-es]: Bloquear contenido para adultos | Oculta secciones, canales, películas y series para adultos en todos los usuarios; hace falta un PIN para mostrarlos
+17:57:28 focus[settings-es]: Borrar historial
+17:57:30 focus[settings-es]: Idioma de la app · Language | Español
+17:57:35 screenshot 65-language-es.png 1920x1080
+17:57:38 focus[nav-search]: Idioma de la app · Language | Español
+17:57:41 focus[nav-search]: Borrar historial
+17:57:44 focus[nav-search]: Bloquear contenido para adultos | Oculta secciones, canales, películas y series para adultos en todos los usuarios; hace falta un PIN para mostrarlos
+17:57:47 focus[nav-search]: Actualizar la guía ahora
+17:57:51 focus[nav-search]: Actualizar la guía automáticamente | Cada 12 horas
+17:57:54 focus[nav-search]: Activar subtítulos automáticamente | Busca subtítulos en tu idioma al empezar cualquier película o episodio, y los traduce automáticamente si no los hay
+17:57:57 focus[nav-search]: Tamaño de los subtítulos | Mediano
+17:58:00 focus[nav-search]: Idioma de subtítulos | Árabe
+17:58:03 focus[nav-search]: Saltar intro | Mostrar un botón «Saltar intro» (recomendado)
+17:58:06 focus[nav-search]: Retraso del marcador | Automático: según el retraso de tu emisión (recomendado)
+17:58:09 focus[nav-search]: Posición del marcador | Arriba a la izquierda: donde está el marcador del canal (recomendado)
+17:58:12 focus[nav-search]: Marcador durante los partidos | Aparece sobre el canal deportivo durante todo el partido: los dos equipos, el marcador y el tiempo de juego. El partido se reconoce por la guía de programación, y puedes elegirlo tú con el botón «Marcador» del reproductor.
+17:58:15 focus[nav-search]: Vista previa del canal en la lista en vivo | En la TV, el canal elegido se muestra en una ventana pequeña
+17:58:18 focus[nav-search]: Abrir el último canal al iniciar
+17:58:22 focus[nav-search]: Siempre la máxima calidad disponible | Elige la máxima calidad que envía tu proveedor
+17:58:25 focus[nav-search]: Mejora inteligente de imagen | Da más nitidez a los canales débiles (menos de 720) en la propia TV, sin gastar más internet. Se desactiva sola si el dispositivo no puede seguir el ritmo.
+17:58:28 focus[nav-search]: Reproducir la imagen con el hardware de la TV (experimental) | El movimiento puede ser más suave en algunas pantallas. Si la pantalla se queda en negro o el sonido se retrasa, desactívalo. Se aplica la próxima vez que abras un canal.
+17:58:31 focus[nav-search]: Igualar la frecuencia de imagen | Ajusta la pantalla a 50 o 60 Hz según el canal para un movimiento suave; la pantalla puede quedarse en negro un momento al iniciar un canal
+17:58:34 focus[nav-search]: Versión alternativa si el canal se corta | Si un canal se corta mucho, pasa a otra versión del mismo en tu suscripción (calidad más ligera o enlace de respaldo)
+17:58:37 focus[nav-search]: Estabilidad en vivo | Automático (recomendado)
+17:58:40 focus[nav-search]: Formato en vivo | TS (recomendado)
+17:58:43 focus[nav-search]: Búfer contra cortes de internet | Sigue 10 minutos sin internet (recomendado)
+17:58:46 focus[nav-search]: Test de velocidad
+17:58:49 focus[nav-search]: Añadir usuario | Los demás usuarios no cambian
+17:58:53 focus[nav-search]: اشتراكي | test · 10.0.2.2:8000 | Actual
+17:58:56 focus[nav-search]: Añadir usuario
+17:58:59 focus[nav-search]: Partidos
+17:59:00 focus[nav-start]: Partidos
+17:59:03 focus[nav-target]: En vivo
+17:59:09 screenshot 66-live-es.png 1920x1080

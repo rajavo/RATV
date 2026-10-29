@@ -1,191 +1,217 @@
 mock IPTV server on port 8000
-13:48:34 GET /player_api.php?username=test&password=test
-13:51:33 GET /player_api.php?username=test&password=test
-13:51:33 GET /player_api.php?username=test&password=test
-13:51:33 GET /player_api.php?username=test&password=test&action=get_live_categories
-13:51:33 GET /player_api.php?username=test&password=test&action=get_live_streams
-13:51:33 EVENT kora {}
-13:51:33 GET /kora/fixtures.json
-13:51:33 GET /player_api.php?username=test&password=test&action=get_series_categories
-13:51:34 GET /player_api.php?username=test&password=test&action=get_series
-13:51:34 GET /player_api.php?username=test&password=test&action=get_vod_categories
-13:51:34 GET /player_api.php?username=test&password=test&action=get_vod_streams
-13:51:34 GET /logo/l1.png
-13:51:34 GET /xmltv.php?username=test&password=test
-13:51:34 GET /update/version.json
-13:51:47 GET /live/test/test/101.ts
-13:51:48 GET /live/test/test/101.ts
-13:51:48 GET /live/test/test/101.ts
-13:51:48 GET /live/test/test/101.ts
-13:51:59 GET /live/test/test/102.ts
-13:51:59 GET /live/test/test/102.ts
-13:51:59 GET /live/test/test/102.ts
-13:52:45 GET /live/test/test/102.ts
-13:52:45 GET /live/test/test/102.ts
-13:52:45 GET /live/test/test/102.ts
-13:52:45 GET /live/test/test/102.ts
-13:52:56 GET /logo/missing.png
-13:52:56 GET /logo/missing.png
-13:52:56 GET /live/test/test/202.ts
-13:52:56 GET /live/test/test/202.ts
-13:52:56 GET /live/test/test/202.ts
-13:52:56 GET /logo/missing.png
-13:52:56 GET /logo/missing.png
-13:53:04 GET /live/test/test/102.ts
-13:53:04 GET /live/test/test/102.ts
-13:53:04 GET /live/test/test/102.ts
-13:54:06 GET /player_api.php?username=test&password=test&action=get_vod_info&vod_id=5001
-13:54:11 EVENT introdb {"query": "tmdb_id=550"}
-13:54:11 GET /introdb/media?tmdb_id=550
-13:54:11 GET /movie/test/test/5001.mp4
-13:54:11 GET /movie/test/test/5001.mp4
-13:54:41 GET /logo/l2.png
-13:54:41 GET /logo/l3.png
-13:54:41 GET /logo/missing.png
-13:54:41 GET /logo/missing.png
-13:54:41 GET /logo/l4.png
-13:54:42 GET /live/test/test/102.ts
-13:54:42 GET /live/test/test/102.ts
-13:54:42 GET /live/test/test/102.ts
-13:54:50 GET /live/test/test/103.ts
-13:54:50 GET /live/test/test/103.ts
-13:54:50 GET /live/test/test/103.ts
-13:54:51 GET /logo/l5.png
-13:54:52 GET /live/test/test/201.ts
-13:54:52 GET /live/test/test/201.ts
-13:54:52 GET /live/test/test/201.ts
-13:54:58 GET /live/test/test/103.ts
-13:54:58 GET /live/test/test/103.ts
-13:54:58 GET /live/test/test/103.ts
-13:55:02 GET /live/test/test/102.ts
-13:55:02 GET /live/test/test/102.ts
-13:55:02 GET /live/test/test/102.ts
-13:55:06 GET /live/test/test/101.ts
-13:55:06 GET /live/test/test/101.ts
-13:55:06 GET /live/test/test/101.ts
-13:55:24 GET /player_api.php?username=test&password=test&action=get_series_info&series_id=7001
-13:55:53 GET /live/test/test/204.ts
-13:55:53 GET /live/test/test/204.ts
-13:55:53 GET /live/test/test/204.ts
-13:55:53 GET /live/test/test/204.ts
-13:55:53 EVENT espn {"league": "esp.1", "dates": "20261029"}
-13:55:53 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261029
-13:56:36 GET /live/test/test/204.ts
-13:56:36 GET /live/test/test/204.ts
-13:56:36 GET /live/test/test/204.ts
-13:56:36 GET /live/test/test/204.ts
-13:56:36 EVENT espn {"league": "esp.1", "dates": "20261029"}
-13:56:36 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261029
-13:56:44 GET /live/test/test/201.ts
-13:56:44 GET /live/test/test/201.ts
-13:56:44 GET /live/test/test/201.ts
-13:56:48 EVENT goal {"scores": {"900001": [3, 1], "900002": [0, 0], "900004": [1, 0], "900005": [0, 0], "900006": [2, 0]}}
-13:56:48 GET /espn/goal?id=900001&side=home
-13:56:56 EVENT espn {"league": "esp.1", "dates": "20261029"}
-13:56:56 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261029
-13:57:16 EVENT espn {"league": "esp.1", "dates": "20261029"}
-13:57:16 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261029
-13:57:36 EVENT espn {"league": "esp.1", "dates": "20261029"}
-13:57:36 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261029
-13:57:56 EVENT espn {"league": "esp.1", "dates": "20261029"}
-13:57:56 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261029
-13:58:04 GET /logo/missing.png
-13:58:04 GET /logo/missing.png
-13:58:16 EVENT espn {"league": "esp.1", "dates": "20261029"}
-13:58:16 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261029
-13:58:18 EVENT yallakora {"date": "10/29/2026"}
-13:58:18 GET /yk/match-center/?date=10/29/2026
-13:58:35 GET /logo/missing.png
-13:58:35 GET /logo/missing.png
-13:59:27 GET /live/test/test/201.ts
-13:59:27 GET /live/test/test/201.ts
-13:59:28 GET /live/test/test/201.ts
-13:59:28 GET /live/test/test/201.ts
-13:59:36 EVENT espn {"league": "eng.1", "dates": "20261029"}
-13:59:36 GET /espn/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=20261029
-13:59:36 GET /live/test/test/207.ts
-13:59:37 GET /live/test/test/207.ts
-13:59:37 GET /live/test/test/207.ts
-13:59:56 EVENT espn {"league": "eng.1", "dates": "20261029"}
-13:59:56 GET /espn/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=20261029
-14:00:00 EVENT espn {"league": "esp.1", "dates": "20261029"}
-14:00:00 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261029
-14:00:00 GET /live/test/test/208.ts
-14:00:00 GET /live/test/test/208.ts
-14:00:00 GET /live/test/test/208.ts
-14:00:17 GET /live/test/test/209.ts
-14:00:17 GET /live/test/test/209.ts
-14:00:17 GET /live/test/test/209.ts
-14:00:38 EVENT espn {"league": "ksa.1", "dates": "20261029"}
-14:00:38 GET /espn/apis/site/v2/sports/soccer/ksa.1/scoreboard?dates=20261029
-14:00:38 GET /live/test/test/210.ts
-14:00:38 GET /live/test/test/210.ts
-14:00:38 GET /live/test/test/210.ts
-14:00:55 GET /live/test/test/211.ts
-14:00:55 GET /live/test/test/211.ts
-14:00:55 GET /live/test/test/211.ts
-14:01:08 GET /logo/missing.png
-14:01:08 GET /logo/missing.png
-14:01:45 EVENT introdb {"query": "tmdb_id=1399&season=1&episode=1&duration_ms=120000"}
-14:01:45 GET /introdb/media?tmdb_id=1399&season=1&episode=1&duration_ms=120000
-14:01:45 GET /introdb/media?tmdb_id=1399&season=1&episode=1&duration_ms=120000
-14:01:45 GET /player_api.php?username=test&password=test&action=get_series_info&series_id=7004
-14:01:45 GET /series/test/test/7001101.mp4
-14:02:05 GET /series/test/test/7001101.mp4
-14:02:06 GET /series/test/test/7001101.mp4
-14:02:08 EVENT introdb {"query": "tmdb_id=1399&season=1&episode=2&duration_ms=120000"}
-14:02:08 GET /introdb/media?tmdb_id=1399&season=1&episode=2&duration_ms=120000
-14:02:08 GET /introdb/media?tmdb_id=1399&season=1&episode=2&duration_ms=120000
-14:02:08 GET /series/test/test/7001102.mp4
-14:02:33 GET /series/test/test/7001102.mp4
-14:02:36 EVENT introdb {"query": "tmdb_id=1399&season=1&episode=3&duration_ms=120000"}
-14:02:36 GET /introdb/media?tmdb_id=1399&season=1&episode=3&duration_ms=120000
-14:02:36 GET /series/test/test/7001103.mp4
-14:02:50 GET /introdb/asked
-14:08:03 GET /live/test/test/211.ts
-14:08:03 GET /live/test/test/211.ts
-14:08:03 GET /live/test/test/211.ts
-14:08:03 GET /live/test/test/211.ts
-14:08:13 GET /live/test/test/301.ts
-14:08:13 GET /live/test/test/301.ts
-14:08:13 GET /live/test/test/301.ts
-14:08:14 GET /live/test/test/301.ts
-14:08:14 GET /live/test/test/301.ts
-14:08:14 GET /live/test/test/301.ts
-14:08:37 GET /live/test/test/203.ts
-14:08:37 GET /live/test/test/203.ts
-14:08:37 GET /live/test/test/203.ts
-14:09:02 GET /live/test/test/203.ts
-14:09:02 GET /live/test/test/203.ts
-14:09:02 GET /live/test/test/203.ts
-14:09:29 GET /live/test/test/203.ts
-14:09:29 GET /live/test/test/203.ts
-14:09:29 GET /live/test/test/203.ts
-14:09:47 GET /live/test/test/203.ts
-14:09:47 GET /live/test/test/203.ts
-14:09:47 GET /live/test/test/203.ts
-14:09:57 GET /live/test/test/203.ts
-14:09:57 GET /live/test/test/203.ts
-14:09:57 GET /live/test/test/203.ts
-14:10:04 GET /live/test/test/203.ts
-14:10:04 GET /live/test/test/203.ts
-14:10:04 GET /live/test/test/203.ts
-14:10:15 GET /live/test/test/203.ts
-14:10:15 GET /live/test/test/203.ts
-14:10:15 GET /live/test/test/203.ts
-14:10:54 GET /player_api.php?username=test&password=test
-14:10:57 GET /update/version.json
-14:14:05 GET /logo/missing.png
-14:14:05 GET /logo/missing.png
-14:14:06 GET /live/test/test/203.ts
-14:14:07 GET /live/test/test/203.ts
-14:14:07 GET /live/test/test/203.ts
-14:14:12 GET /player_api.php?username=test&password=test
-14:14:13 GET /update/version.json
-14:17:18 GET /logo/missing.png
-14:17:18 GET /logo/missing.png
-14:17:19 GET /live/test/test/203.ts
-14:17:20 GET /live/test/test/203.ts
-14:17:20 GET /live/test/test/203.ts
-14:17:26 GET /player_api.php?username=test&password=test
-14:17:27 GET /update/version.json
+17:30:17 GET /player_api.php?username=test&password=test
+17:33:16 GET /player_api.php?username=test&password=test
+17:33:16 GET /player_api.php?username=test&password=test
+17:33:16 GET /player_api.php?username=test&password=test&action=get_live_categories
+17:33:16 GET /player_api.php?username=test&password=test&action=get_live_streams
+17:33:16 EVENT kora {}
+17:33:16 GET /kora/fixtures.json
+17:33:16 GET /player_api.php?username=test&password=test&action=get_series_categories
+17:33:16 GET /player_api.php?username=test&password=test&action=get_vod_categories
+17:33:16 GET /player_api.php?username=test&password=test&action=get_series
+17:33:16 GET /player_api.php?username=test&password=test&action=get_vod_streams
+17:33:16 GET /xmltv.php?username=test&password=test
+17:33:16 GET /logo/l1.png
+17:33:16 GET /update/version.json
+17:33:30 GET /live/test/test/101.ts
+17:33:30 GET /live/test/test/101.ts
+17:33:30 GET /live/test/test/101.ts
+17:33:30 GET /live/test/test/101.ts
+17:33:41 GET /live/test/test/102.ts
+17:33:41 GET /live/test/test/102.ts
+17:33:41 GET /live/test/test/102.ts
+17:34:27 GET /live/test/test/102.ts
+17:34:27 GET /live/test/test/102.ts
+17:34:28 GET /live/test/test/102.ts
+17:34:28 GET /live/test/test/102.ts
+17:34:38 GET /logo/missing.png
+17:34:38 GET /logo/missing.png
+17:34:39 GET /live/test/test/202.ts
+17:34:39 GET /live/test/test/202.ts
+17:34:39 GET /live/test/test/202.ts
+17:34:39 GET /logo/missing.png
+17:34:39 GET /logo/missing.png
+17:34:47 GET /live/test/test/102.ts
+17:34:47 GET /live/test/test/102.ts
+17:34:47 GET /live/test/test/102.ts
+17:35:48 GET /player_api.php?username=test&password=test&action=get_vod_info&vod_id=5001
+17:35:54 EVENT introdb {"query": "tmdb_id=550"}
+17:35:54 GET /introdb/media?tmdb_id=550
+17:35:54 GET /movie/test/test/5001.mp4
+17:35:54 GET /movie/test/test/5001.mp4
+17:36:24 GET /logo/l2.png
+17:36:24 GET /logo/l4.png
+17:36:24 GET /logo/l3.png
+17:36:24 GET /logo/missing.png
+17:36:24 GET /logo/missing.png
+17:36:25 GET /live/test/test/102.ts
+17:36:25 GET /live/test/test/102.ts
+17:36:25 GET /live/test/test/102.ts
+17:36:33 GET /live/test/test/103.ts
+17:36:33 GET /live/test/test/103.ts
+17:36:33 GET /live/test/test/103.ts
+17:36:34 GET /logo/l5.png
+17:36:35 GET /live/test/test/201.ts
+17:36:35 GET /live/test/test/201.ts
+17:36:35 GET /live/test/test/201.ts
+17:36:41 GET /live/test/test/103.ts
+17:36:41 GET /live/test/test/103.ts
+17:36:41 GET /live/test/test/103.ts
+17:36:45 GET /live/test/test/102.ts
+17:36:45 GET /live/test/test/102.ts
+17:36:45 GET /live/test/test/102.ts
+17:36:48 GET /live/test/test/101.ts
+17:36:48 GET /live/test/test/101.ts
+17:36:48 GET /live/test/test/101.ts
+17:37:06 GET /player_api.php?username=test&password=test&action=get_series_info&series_id=7001
+17:37:36 GET /live/test/test/204.ts
+17:37:36 GET /live/test/test/204.ts
+17:37:36 GET /live/test/test/204.ts
+17:37:36 EVENT espn {"league": "esp.1", "dates": "20261029"}
+17:37:36 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261029
+17:37:36 GET /live/test/test/204.ts
+17:38:18 GET /live/test/test/204.ts
+17:38:18 GET /live/test/test/204.ts
+17:38:19 GET /live/test/test/204.ts
+17:38:19 GET /live/test/test/204.ts
+17:38:19 EVENT espn {"league": "esp.1", "dates": "20261029"}
+17:38:19 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261029
+17:38:19 GET /live/test/test/204.ts
+17:38:19 GET /live/test/test/204.ts
+17:38:26 GET /live/test/test/201.ts
+17:38:27 GET /live/test/test/201.ts
+17:38:27 GET /live/test/test/201.ts
+17:38:30 EVENT goal {"scores": {"900001": [3, 1], "900002": [0, 0], "900004": [1, 0], "900005": [0, 0], "900006": [2, 0]}}
+17:38:30 GET /espn/goal?id=900001&side=home
+17:38:39 EVENT espn {"league": "esp.1", "dates": "20261029"}
+17:38:39 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261029
+17:38:59 EVENT espn {"league": "esp.1", "dates": "20261029"}
+17:38:59 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261029
+17:39:19 EVENT espn {"league": "esp.1", "dates": "20261029"}
+17:39:19 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261029
+17:39:39 EVENT espn {"league": "esp.1", "dates": "20261029"}
+17:39:39 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261029
+17:39:46 GET /logo/missing.png
+17:39:46 GET /logo/missing.png
+17:39:59 EVENT espn {"league": "esp.1", "dates": "20261029"}
+17:39:59 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261029
+17:39:59 EVENT yallakora {"date": "10/29/2026"}
+17:39:59 GET /yk/match-center/?date=10/29/2026
+17:40:20 GET /logo/missing.png
+17:40:20 GET /logo/missing.png
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54286)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 498, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 464, in handle_one_request
+    self.raw_requestline = self.rfile.readline(65537)
+                           ~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/usr/lib/python3.14/socket.py", line 725, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+----------------------------------------
+17:41:12 GET /live/test/test/201.ts
+17:41:12 GET /live/test/test/201.ts
+17:41:12 GET /live/test/test/201.ts
+17:41:12 GET /live/test/test/201.ts
+17:41:21 GET /live/test/test/207.ts
+17:41:21 EVENT espn {"league": "eng.1", "dates": "20261029"}
+17:41:21 GET /espn/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=20261029
+17:41:21 GET /live/test/test/207.ts
+17:41:21 GET /live/test/test/207.ts
+17:41:41 EVENT espn {"league": "eng.1", "dates": "20261029"}
+17:41:41 GET /espn/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=20261029
+17:41:44 GET /live/test/test/208.ts
+17:41:44 EVENT espn {"league": "esp.1", "dates": "20261029"}
+17:41:44 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261029
+17:41:44 GET /live/test/test/208.ts
+17:41:44 GET /live/test/test/208.ts
+17:42:01 GET /live/test/test/209.ts
+17:42:01 GET /live/test/test/209.ts
+17:42:01 GET /live/test/test/209.ts
+17:42:22 EVENT espn {"league": "ksa.1", "dates": "20261029"}
+17:42:22 GET /espn/apis/site/v2/sports/soccer/ksa.1/scoreboard?dates=20261029
+17:42:22 GET /live/test/test/210.ts
+17:42:22 GET /live/test/test/210.ts
+17:42:22 GET /live/test/test/210.ts
+17:42:39 GET /live/test/test/211.ts
+17:42:39 GET /live/test/test/211.ts
+17:42:39 GET /live/test/test/211.ts
+17:42:52 GET /logo/missing.png
+17:42:52 GET /logo/missing.png
+17:43:29 GET /player_api.php?username=test&password=test&action=get_series_info&series_id=7004
+17:43:29 EVENT introdb {"query": "tmdb_id=1399&season=1&episode=1&duration_ms=120000"}
+17:43:29 GET /introdb/media?tmdb_id=1399&season=1&episode=1&duration_ms=120000
+17:43:29 GET /introdb/media?tmdb_id=1399&season=1&episode=1&duration_ms=120000
+17:43:29 GET /series/test/test/7001101.mp4
+17:43:29 GET /series/test/test/7001101.mp4
+17:43:49 GET /series/test/test/7001101.mp4
+17:43:50 GET /series/test/test/7001101.mp4
+17:43:53 EVENT introdb {"query": "tmdb_id=1399&season=1&episode=2&duration_ms=120000"}
+17:43:53 GET /introdb/media?tmdb_id=1399&season=1&episode=2&duration_ms=120000
+17:43:53 GET /introdb/media?tmdb_id=1399&season=1&episode=2&duration_ms=120000
+17:43:53 GET /series/test/test/7001102.mp4
+17:44:20 GET /series/test/test/7001102.mp4
+17:44:22 EVENT introdb {"query": "tmdb_id=1399&season=1&episode=3&duration_ms=120000"}
+17:44:22 GET /introdb/media?tmdb_id=1399&season=1&episode=3&duration_ms=120000
+17:44:22 GET /series/test/test/7001103.mp4
+17:44:37 GET /introdb/asked
+17:49:48 GET /live/test/test/211.ts
+17:49:48 GET /live/test/test/211.ts
+17:49:48 GET /live/test/test/211.ts
+17:49:48 GET /live/test/test/211.ts
+17:49:58 GET /live/test/test/301.ts
+17:49:58 GET /live/test/test/301.ts
+17:49:58 GET /live/test/test/301.ts
+17:49:58 GET /live/test/test/301.ts
+17:49:58 GET /live/test/test/301.ts
+17:49:58 GET /live/test/test/301.ts
+17:50:22 GET /live/test/test/203.ts
+17:50:22 GET /live/test/test/203.ts
+17:50:22 GET /live/test/test/203.ts
+17:50:46 GET /live/test/test/203.ts
+17:50:47 GET /live/test/test/203.ts
+17:50:47 GET /live/test/test/203.ts
+17:51:14 GET /live/test/test/203.ts
+17:51:14 GET /live/test/test/203.ts
+17:51:14 GET /live/test/test/203.ts
+17:51:32 GET /live/test/test/203.ts
+17:51:32 GET /live/test/test/203.ts
+17:51:32 GET /live/test/test/203.ts
+17:51:42 GET /live/test/test/203.ts
+17:51:42 GET /live/test/test/203.ts
+17:51:42 GET /live/test/test/203.ts
+17:51:49 GET /live/test/test/203.ts
+17:51:49 GET /live/test/test/203.ts
+17:51:49 GET /live/test/test/203.ts
+17:52:00 GET /live/test/test/203.ts
+17:52:00 GET /live/test/test/203.ts
+17:52:00 GET /live/test/test/203.ts
+17:52:39 GET /player_api.php?username=test&password=test
+17:52:42 GET /update/version.json
+17:55:50 GET /logo/missing.png
+17:55:50 GET /logo/missing.png
+17:55:52 GET /live/test/test/203.ts
+17:55:52 GET /live/test/test/203.ts
+17:55:52 GET /live/test/test/203.ts
+17:55:57 GET /player_api.php?username=test&password=test
+17:55:59 GET /update/version.json
+17:59:04 GET /logo/missing.png
+17:59:04 GET /logo/missing.png
+17:59:05 GET /live/test/test/203.ts
+17:59:05 GET /live/test/test/203.ts
+17:59:05 GET /live/test/test/203.ts
+17:59:11 GET /player_api.php?username=test&password=test
+17:59:13 GET /update/version.json
