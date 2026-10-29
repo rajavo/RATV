@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.provider.Settings
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -49,6 +50,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -90,7 +92,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prefs = Prefs(this)
-        setContent { MainScreen(prefs, ::toggle, ::openUsageAccess, ::openAccessibility) }
+        setContent {
+            var lite by rememberSaveable { mutableStateOf(false) }
+            BackHandler(enabled = lite) { lite = false }
+            if (lite) LiteScreen(prefs) { lite = false }
+            else MainScreen(prefs, ::toggle, ::openUsageAccess, ::openAccessibility) { lite = true }
+        }
     }
 
     private fun toggle() {
@@ -145,7 +152,7 @@ class MainActivity : ComponentActivity() {
 
 // ------------------------------------------------------------------ look
 
-private object C {
+internal object C {
     val Ink = Color(0xFF0B0C10)
     val Surface = Color(0xFF14161C)
     val Surface3 = Color(0xFF262A34)
@@ -159,9 +166,9 @@ private object C {
     val SuccessBg = Color(0xFF10261A)
 }
 
-private val Tajawal = FontFamily(Font(R.font.tajawal_regular, FontWeight.Normal), Font(R.font.tajawal_bold, FontWeight.Bold))
+internal val Tajawal = FontFamily(Font(R.font.tajawal_regular, FontWeight.Normal), Font(R.font.tajawal_bold, FontWeight.Bold))
 
-private fun t(size: Int, bold: Boolean = false, color: Color = C.Text) = TextStyle(
+internal fun t(size: Int, bold: Boolean = false, color: Color = C.Text) = TextStyle(
     fontFamily = Tajawal,
     fontSize = size.sp,
     fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
@@ -171,7 +178,7 @@ private fun t(size: Int, bold: Boolean = false, color: Color = C.Text) = TextSty
 
 /** Clickable with the remote: a saffron ring shows the selected item. */
 @Composable
-private fun Modifier.tvClick(shape: Shape, onClick: () -> Unit): Modifier {
+internal fun Modifier.tvClick(shape: Shape, onClick: () -> Unit): Modifier {
     val source = remember { MutableInteractionSource() }
     val focused by source.collectIsFocusedAsState()
     return this
@@ -182,7 +189,7 @@ private fun Modifier.tvClick(shape: Shape, onClick: () -> Unit): Modifier {
 
 /** A row to read: the remote can select it (to scroll to it), pressing does nothing. */
 @Composable
-private fun Modifier.tvRow(shape: Shape): Modifier {
+internal fun Modifier.tvRow(shape: Shape): Modifier {
     val source = remember { MutableInteractionSource() }
     val focused by source.collectIsFocusedAsState()
     return this
@@ -198,7 +205,7 @@ private class UsageLine(val label: String, val icon: ImageBitmap?, val mbps: Dou
 // ---------------------------------------------------------------- screen
 
 @Composable
-private fun MainScreen(prefs: Prefs, onToggle: () -> Unit, onUsage: () -> Unit, onAccessibility: () -> Unit) {
+private fun MainScreen(prefs: Prefs, onToggle: () -> Unit, onUsage: () -> Unit, onAccessibility: () -> Unit, onLite: () -> Unit) {
     val context = LocalContext.current
     val tv = remember { context.packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK) }
     val running by Focus.running.collectAsState()
@@ -298,6 +305,7 @@ private fun MainScreen(prefs: Prefs, onToggle: () -> Unit, onUsage: () -> Unit, 
                 message?.let { m -> item { Notice(m) } }
                 item { ToggleCard(running, onScreen, Modifier.focusRequester(toggleFocus), onToggle) }
                 if (!ready) item { SetupCard(onUsage, onAccessibility) }
+                item { LiteCard(onLite) }
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         SectionTitle("استهلاك النت الحين")
@@ -374,7 +382,7 @@ private fun Header() {
 }
 
 @Composable
-private fun Notice(text: String) {
+internal fun Notice(text: String) {
     Text(
         text,
         style = t(15, true, C.Text),
@@ -459,7 +467,34 @@ private fun SetupCard(onUsage: () -> Unit, onAccessibility: () -> Unit) {
 }
 
 @Composable
-private fun Pill(label: String, primary: Boolean, onClick: () -> Unit) {
+private fun LiteCard(onClick: () -> Unit) {
+    val shape = RoundedCornerShape(20.dp)
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .tvClick(shape, onClick)
+            .background(C.Surface)
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text("خفّف الشاشة", style = t(18, true, C.Saffron))
+            Text("حركة أسرع، ذاكرة أفضى، وحذف تطبيقات المصنع اللي ما تحتاجها.", style = t(14, color = C.Text2))
+        }
+        Spacer(Modifier.width(12.dp))
+        Text(
+            "افتح",
+            style = t(16, true, C.OnSaffron),
+            modifier = Modifier
+                .clip(RoundedCornerShape(14.dp))
+                .background(C.Saffron)
+                .padding(horizontal = 22.dp, vertical = 10.dp)
+        )
+    }
+}
+
+@Composable
+internal fun Pill(label: String, primary: Boolean, onClick: () -> Unit) {
     Text(
         label,
         style = t(15, true, if (primary) C.OnSaffron else C.Text),
@@ -493,12 +528,12 @@ private fun Stat(label: String, value: String, modifier: Modifier) {
 }
 
 @Composable
-private fun SectionTitle(text: String) {
+internal fun SectionTitle(text: String) {
     Text(text, style = t(18, true), modifier = Modifier.padding(top = 10.dp))
 }
 
 @Composable
-private fun AppIcon(icon: ImageBitmap?) {
+internal fun AppIcon(icon: ImageBitmap?) {
     val m = Modifier
         .size(36.dp)
         .clip(RoundedCornerShape(9.dp))

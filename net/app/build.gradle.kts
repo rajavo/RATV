@@ -71,6 +71,8 @@ dependencies {
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material3:material3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    // Talks to the TV's own debugging service, to remove the factory apps the viewer does not need.
+    implementation("dev.mobile:dadb:1.2.10")
 
     testImplementation("junit:junit:4.13.2")
 }
