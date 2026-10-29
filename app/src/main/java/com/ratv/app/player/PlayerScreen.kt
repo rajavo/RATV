@@ -267,6 +267,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // «تخطي المقدمة» (IntroSkip.kt): the opening of what plays, found by its sound or listed on TheIntroDB.
     val introMode = remember { repo.prefs.introSkip }
     var introHeard by remember { mutableStateOf<IntroWindow?>(null) }
+    var creditsHeard by remember { mutableStateOf<IntroWindow?>(null) }
     var introListed by remember { mutableStateOf<List<IntroWindow>>(emptyList()) }
     var introSkipped by remember { mutableStateOf<String?>(null) }
     val liveFormat = remember { repo.prefs.liveFormat }
@@ -395,12 +396,35 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         val item = current
         val url = item?.url
         introHeard = null
+        creditsHeard = null
+        val ahead = java.util.concurrent.atomic.AtomicBoolean(true)
+        val mainHandler = android.os.Handler(android.os.Looper.getMainLooper())
+        var listen: Runnable? = null
         if (item != null && url != null && item.kind == Playable.KIND_EPISODE && item.seriesId != null && introMode != "off") {
             val key = android.net.Uri.parse(url).let { "${it.host}:${it.port}" } + "/series/" + item.seriesId
             val label = listOfNotNull(item.title, item.subtitle).joinToString(" ")
-            IntroSessions.open(url, IntroSession({ IntroStore.of(context, key) }, item.id, label) { w -> introHeard = w })
+            IntroSessions.open(
+                url,
+                IntroSession({ IntroStore.of(context, key) }, item.id, label, { w -> introHeard = w }, { w -> creditsHeard = w })
+            )
+            // Listening ahead to the next episode (the one before for the last), so the first episode
+            // watched has its opening and credits too: only with a second connection allowed.
+            val index = episodes.indexOfFirst { it.id == item.id }
+            val other = episodes.getOrNull(index + 1) ?: episodes.getOrNull(index - 1)
+            val connections = repo.account.value?.maxCons ?: 1
+            if (index >= 0 && other != null && connections >= 2) {
+                val r = Runnable {
+                    IntroProbe.listen({ IntroStore.of(context, key) }, key, item.id, other.id, other.url, label) { ahead.get() }
+                }
+                listen = r
+                mainHandler.postDelayed(r, 10_000L)
+            }
         }
-        onDispose { if (url != null) IntroSessions.close(url) }
+        onDispose {
+            ahead.set(false)
+            listen?.let { mainHandler.removeCallbacks(it) }
+            if (url != null) IntroSessions.close(url)
+        }
     }
 
     // TheIntroDB's openings and recaps of series and films it knows (by their TMDB number).
@@ -1104,7 +1128,18 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val introNow: IntroWindow? = if (introMode == "off" || item == null || item.isLive) {
         null
     } else {
-        (listOfNotNull(introHeard) + introListed).firstOrNull { position >= it.startMs && position < it.endMs - 1_500L }
+        (listOfNotNull(introHeard) + introListed).firstOrNull {
+            it.kind != IntroWindow.CREDITS && position >= it.startMs && position < it.endMs - 1_500L
+        }
+    }
+
+    // The end credits, while there is a next episode to go to: «الحلقة التالية».
+    val creditsNow: IntroWindow? = if (introMode == "off" || item == null || item.isLive || nextEpisode == null) {
+        null
+    } else {
+        (listOfNotNull(creditsHeard) + introListed).firstOrNull {
+            it.kind == IntroWindow.CREDITS && position >= it.startMs && position < it.endMs - 3_000L
+        }
     }
 
     fun skipIntro(w: IntroWindow) {
@@ -1131,6 +1166,23 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         val sid = currentItem.seriesId ?: return
         val start = repo.historyEntry(Keys.episode(ep.id))?.position ?: 0L
         play(episodePlayable(ep, sid, currentItem.title, currentItem.image, start))
+    }
+
+    fun nextFromCredits(w: IntroWindow) {
+        touch()
+        Log.i("RATVIntro", "next episode from the credits at ${player.currentPosition} ms (${w.source})")
+        playNextEpisode()
+    }
+
+    // «يتخطاها تلقائي»: the next episode 8 s into the credits.
+    LaunchedEffect(creditsNow?.startMs) {
+        val w = creditsNow ?: return@LaunchedEffect
+        if (introMode != "auto") return@LaunchedEffect
+        delay(8_000L)
+        if (player.isPlaying && player.currentPosition >= w.startMs) {
+            nextFromCredits(w)
+            streamNotice = tr("بدأت الحلقة التالية")
+        }
     }
 
     LaunchedEffect(ended) {
@@ -1371,6 +1423,11 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         val opening = introNow
         if (!controlsVisible && opening != null && (event.key == Key.DirectionCenter || event.key == Key.Enter || event.key == Key.NumPadEnter)) {
             skipIntro(opening)
+            return true
+        }
+        val credits = creditsNow
+        if (!controlsVisible && credits != null && (event.key == Key.DirectionCenter || event.key == Key.Enter || event.key == Key.NumPadEnter)) {
+            nextFromCredits(credits)
             return true
         }
         if (controlsVisible) {
@@ -1651,7 +1708,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             SubtitleOverlay(subs.textAt(subPos), subs.size, raised = controlsVisible)
         }
 
-        val opening = introNow
+        val opening = introNow ?: creditsNow
         AnimatedVisibility(
             visible = opening != null && !inPip && !panelOpen && !sourcesOpen && !subsOpen && !scorePickOpen && playerError == null,
             enter = fadeIn(),
@@ -1664,9 +1721,13 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             if (opening != null) shown[0] = opening
             shown[0]?.let { w ->
                 IntroSkipButton(
-                    if (w.kind == IntroWindow.RECAP) tr("تخطي الملخص") else tr("تخطي المقدمة"),
+                    when (w.kind) {
+                        IntroWindow.RECAP -> tr("تخطي الملخص")
+                        IntroWindow.CREDITS -> tr("الحلقة التالية")
+                        else -> tr("تخطي المقدمة")
+                    },
                     okHint = isTv && !controlsVisible
-                ) { skipIntro(w) }
+                ) { if (w.kind == IntroWindow.CREDITS) nextFromCredits(w) else skipIntro(w) }
             }
         }
 
