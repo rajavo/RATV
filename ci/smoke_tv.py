@@ -330,10 +330,11 @@ def wait_intro(pattern, timeout, tag):
 
 
 def t_intro():
-    """«تخطي المقدمة»: episodes 1-3 of Sands of Time share a 40 s opening (from 20 s, 15 s and 8 s). The
-    first is printed as it loads; in the second the opening is learnt before it comes and OK skips it;
-    in the third it is found again by itself, and TheIntroDB's recap of it is asked for; TheIntroDB was
-    asked about the first film too (tmdb 550, when the films' step played it)."""
+    """«تخطي المقدمة» and «الحلقة التالية»: episodes 1-3 of Sands of Time share a 40 s opening (from 20 s,
+    15 s and 8 s) and 20 s of end credits (from 80 s). While the first plays, the next one is listened to
+    ahead, so the first already has its opening (OK skips it) and its credits (OK goes on to the second);
+    in the second and third the opening is found again by itself, and TheIntroDB's recap of the third is
+    asked for; TheIntroDB was asked about the first film too (tmdb 550, when the films' step played it)."""
     S.shell("logcat -c")
     try:
         go_tab("مسلسلات")
@@ -348,29 +349,47 @@ def t_intro():
         _, f = log_focus("intro-detail")
         expect(f is not None and "الحلقة 1" in f, "episode 1 not focused (focus: %s)" % f)
         key("DPAD_CENTER", pause=3)
-        # Episode 1: its sound is printed as the player loads it.
+        # Episode 1: its sound is printed as the player loads it, and the next one is listened to ahead.
         expect(wait_intro(r"printing its sound", 25, "intro-ep1") is not None, "the first episode's sound is not printed")
-        time.sleep(8)
-        S.shot("intro-ep1")
-        # To its end (the remote's right jumps 10 s): the next episode starts by itself.
-        key("DPAD_RIGHT", n=10, pause=0.4)
-        expect(wait_intro(r"kept \d+ s of prints", 40, "intro-ep1-kept") is not None, "the first episode's prints were not kept")
-        l = wait_intro(r"opening learnt at", 40, "intro-learnt")
-        expect(l is not None, "the opening was not learnt in the second episode")
+        expect(wait_intro(r"listened ahead: \d+ s of its start, \d+ s of its end", 40, "intro-ahead") is not None,
+               "the next episode was not listened to ahead")
+        l = wait_intro(r"opening learnt at", 30, "intro-learnt")
+        expect(l is not None, "the opening was not learnt in the first episode")
         m = re.search(r"learnt at ([\d.]+)-([\d.]+) s", l)
-        expect(m is not None and abs(float(m.group(1)) - 15) < 1.5 and abs(float(m.group(2)) - 55) < 1.5,
-               "the opening is not where it is (15-55 s): " + l)
+        expect(m is not None and abs(float(m.group(1)) - 20) < 1.5 and abs(float(m.group(2)) - 60) < 1.5,
+               "the opening is not where it is (20-60 s): " + l)
         _, b = S.wait_for(timeout=40, text="تخطي المقدمة", save="intro-button")
         S.shot("intro-button")
-        expect(b is not None, "no «تخطي المقدمة» during the opening of the second episode")
+        expect(b is not None, "no «تخطي المقدمة» during the opening of the first episode")
         key("DPAD_CENTER", pause=2)
         l = wait_intro(r"skipped from \d+ to \d+ ms \(sound\)", 10, "intro-skip")
         expect(l is not None, "OK did not skip the opening")
         m = re.search(r"skipped from (\d+) to (\d+) ms", l)
-        expect(m is not None and 14000 <= int(m.group(1)) <= 54000 and abs(int(m.group(2)) - 55000) < 1500,
+        expect(m is not None and 18000 <= int(m.group(1)) <= 59000 and abs(int(m.group(2)) - 60000) < 1500,
                "the skip did not go to the end of the opening: " + l)
         S.shot("intro-skipped")
-        # Episode 3: found again; TheIntroDB has its recap.
+        # Its end credits, found from the next episode's: «الحلقة التالية».
+        l = wait_intro(r"the end credits at", 30, "intro-credits")
+        expect(l is not None, "the end credits of the first episode were not found")
+        m = re.search(r"credits at ([\d.]+) s", l)
+        expect(m is not None and abs(float(m.group(1)) - 80) < 1.5, "the credits are not where they are (80 s): " + l)
+        _, b = S.wait_for(timeout=45, text="الحلقة التالية", save="intro-next")
+        S.shot("intro-next")
+        expect(b is not None, "no «الحلقة التالية» during the credits")
+        key("DPAD_CENTER", pause=2)
+        expect(wait_intro(r"next episode from the credits at \d+ ms \(sound\)", 10, "intro-next-ok") is not None,
+               "OK did not go on to the next episode")
+        # Episode 2: the opening found again.
+        l = wait_intro(r"الحلقة 2: the opening found again at", 40, "intro-again2")
+        expect(l is not None, "the opening was not found again in the second episode")
+        m = re.search(r"again at ([\d.]+)-([\d.]+) s", l)
+        expect(m is not None and abs(float(m.group(1)) - 15) < 1.5 and abs(float(m.group(2)) - 55) < 1.5,
+               "the opening is not where it is in the second episode (15-55 s): " + l)
+        _, b = S.wait_for(timeout=40, text="تخطي المقدمة", save="intro-button2")
+        expect(b is not None, "no «تخطي المقدمة» in the second episode")
+        key("DPAD_CENTER", pause=2)
+        S.shot("intro-skipped2")
+        # Episode 3 (to the end of the second: the right jumps 10 s): found again; TheIntroDB has its recap.
         S.shell("logcat -c")
         key("DPAD_RIGHT", n=5, pause=0.4)
         expect(wait_intro(r"TheIntroDB: 1:1000-7000", 30, "intro-db") is not None, "TheIntroDB's recap of the third episode was not used")
