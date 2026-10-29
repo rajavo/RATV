@@ -25,13 +25,27 @@ class HttpException(val code: Int) : IOException("HTTP $code")
  */
 object StickyDns : Dns {
     private val known = ConcurrentHashMap<String, List<InetAddress>>()
+    private val foundAt = ConcurrentHashMap<String, Long>()
 
-    override fun lookup(hostname: String): List<InetAddress> = try {
-        Dns.SYSTEM.lookup(hostname)
-            .sortedBy { if (it is java.net.Inet4Address) 0 else 1 }
-            .also { if (it.isNotEmpty()) known[hostname] = it }
-    } catch (e: UnknownHostException) {
-        known[hostname] ?: throw e
+    /** An address found less than this long ago is used again without asking (one round trip less per channel). */
+    private const val FRESH_MS = 120_000L
+
+    override fun lookup(hostname: String): List<InetAddress> {
+        val cached = known[hostname]
+        val at = foundAt[hostname] ?: 0L
+        if (cached != null && SystemClock.elapsedRealtime() - at < FRESH_MS) return cached
+        return try {
+            Dns.SYSTEM.lookup(hostname)
+                .sortedBy { if (it is java.net.Inet4Address) 0 else 1 }
+                .also {
+                    if (it.isNotEmpty()) {
+                        known[hostname] = it
+                        foundAt[hostname] = SystemClock.elapsedRealtime()
+                    }
+                }
+        } catch (e: UnknownHostException) {
+            cached ?: throw e
+        }
     }
 }
 

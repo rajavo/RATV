@@ -397,6 +397,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         val url = item?.url
         introHeard = null
         creditsHeard = null
+        // The next channel or jump finds a connection ready (LowLatency).
+        com.ratv.app.data.LowLatency.note(url)
+        com.ratv.app.data.LowLatency.spareTaken()
         val ahead = java.util.concurrent.atomic.AtomicBoolean(true)
         val mainHandler = android.os.Handler(android.os.Looper.getMainLooper())
         var listen: Runnable? = null

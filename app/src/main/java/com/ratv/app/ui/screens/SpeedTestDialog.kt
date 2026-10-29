@@ -100,11 +100,21 @@ fun SpeedTestDialog(playlist: Playlist?, onDismiss: () -> Unit) {
                         SpeedLine(tr("استجابة سيرفر الاشتراك"), serverPing?.let { tr("{0} ملي ثانية", it) } ?: if (running) "—" else tr("لا يستجيب"))
                     }
                 }
+                val context = androidx.compose.ui.platform.LocalContext.current
+                val advice = if (running) null else SpeedTest.latencyAdvice(maxOf(ping ?: 0L, serverPing ?: 0L).takeIf { it > 0L }, onWifi(context))
+                if (advice != null) {
+                    Text(advice, style = T.body(13.sp, color = RColors.Text2), modifier = Modifier.padding(top = 12.dp))
+                }
             }
         },
         containerColor = RColors.Surface
     )
 }
+
+private fun onWifi(context: android.content.Context): Boolean = runCatching {
+    val cm = context.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+    cm.getNetworkCapabilities(cm.activeNetwork)?.hasTransport(android.net.NetworkCapabilities.TRANSPORT_WIFI) == true
+}.getOrDefault(false)
 
 @Composable
 private fun SpeedLine(label: String, value: String) {

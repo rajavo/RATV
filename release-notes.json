@@ -1,14 +1,17 @@
 {
   "ar": [
-    "تخطي المقدمة صار أذكى: التطبيق يسمع الحلقة الجاية وأنت تتفرج، فيعرف مقدمة المسلسل من أول حلقة تشوفها (إذا اشتراكك يسمح باتصالين).",
-    "جديد: زر «الحلقة التالية» يطلع أول ما تبدأ أسماء الممثلين في آخر الحلقة. اضغط OK وتبدأ الحلقة اللي بعدها على طول. ومع «يتخطاها تلقائي» تبدأ بنفسها."
+    "استجابة أسرع: التطبيق يطلب من التلفزيون «واي فاي سريع الاستجابة» وهو مفتوح، بدل وضع توفير الطاقة اللي يأخر كل رد.",
+    "تغيير القناة وتقديم الفيلم أسرع: التطبيق يخلي اتصال جاهز مع سيرفر الاشتراك، ويحفظ عناوين السيرفرات، فما ينتظر فتح اتصال جديد كل مرة.",
+    "قياس زمن الاستجابة صار أدق، ولو كان بطيء يقول لك وش تسوي (مثل توصيل التلفزيون بكيبل إنترنت)."
   ],
   "en": [
-    "Skip intro is smarter: the app listens to the next episode while you watch, so it knows a series' opening from the first episode you watch (if your subscription allows two connections).",
-    "New: a “Next episode” button shows as soon as the end credits start. Press OK and the next episode starts at once. With “Skips it by itself” it starts on its own."
+    "Faster answers: the app asks the TV for low-latency Wi-Fi while it is open, instead of the power saving that delays every answer.",
+    "Changing channels and jumping in films is quicker: the app keeps a connection to the subscription's server ready and remembers the servers' addresses, so it does not wait for a new connection each time.",
+    "The response time measure is more accurate, and when it is slow it tells you what to do (such as connecting the TV with an internet cable)."
   ],
   "es": [
-    "Saltar intro es más inteligente: la app escucha el siguiente episodio mientras ves, así reconoce la entrada de una serie desde el primer episodio que veas (si tu suscripción permite dos conexiones).",
-    "Nuevo: un botón «Siguiente episodio» aparece en cuanto empiezan los créditos finales. Pulsa OK y empieza enseguida el siguiente. Con «La salta sola» empieza solo."
+    "Respuestas más rápidas: la app pide al televisor Wi-Fi de baja latencia mientras está abierta, en lugar del ahorro de energía que retrasa cada respuesta.",
+    "Cambiar de canal y saltar en las películas es más rápido: la app mantiene lista una conexión con el servidor de la suscripción y recuerda las direcciones de los servidores, así no espera una conexión nueva cada vez.",
+    "La medida del tiempo de respuesta es más precisa, y si es lento te dice qué hacer (como conectar el televisor con un cable de internet)."
   ]
 }

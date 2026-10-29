@@ -134,6 +134,8 @@
 "الاحتياطي": "Búfer",
 "الاحتياطي ضد انقطاع النت": "Búfer contra cortes de internet",
 "الاحتياطي ضد انقطاع النت: {0}": "Reserva contra cortes de internet: {0}",
+"الاستجابة بطيئة من جهة النت أو السيرفر. جرّب تطفي الراوتر وتشغله، وإذا استمرت كلّم مزوّد الاشتراك.": "Las respuestas son lentas por parte de internet o del servidor. Prueba a apagar y encender el router, y si sigue, contacta con tu proveedor.",
+"الاستجابة بطيئة. وصّل التلفزيون بكيبل إنترنت إذا تقدر، أو قرّب الراوتر منه: الكيبل أسرع استجابة من الواي فاي.": "Las respuestas son lentas. Conecta el televisor con un cable de internet si puedes, o acerca el router: el cable responde más rápido que el Wi-Fi.",
 "الاسم (أ - ي)": "Nombre (A–Z)",
 "الاسم (ي - أ)": "Nombre (Z–A)",
 "البث {0} إطار والشاشة {1} هرتز فتظهر الحركة متقطعة قليلاً: فعّل «مطابقة معدل الإطارات» من الإعدادات.": "La emisión es de {0} fps y la pantalla de {1} Hz, así que el movimiento se ve algo irregular: activa «Igualar la frecuencia de imagen» en Ajustes.",

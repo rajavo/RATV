@@ -129,6 +129,8 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         val source = newSource()
         val length = source.open(dataSpec)
         current = source
+        com.ratv.app.data.LowLatency.note(source.uri?.toString())
+        com.ratv.app.data.LowLatency.spareTaken()
         val scheme = dataSpec.uri.scheme?.lowercase()
         val path = dataSpec.uri.path.orEmpty().lowercase()
         live = length == C.LENGTH_UNSET.toLong() && dataSpec.position == 0L &&
