@@ -1422,14 +1422,16 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             return true
         }
         if (panelOpen || sourcesOpen || showTracks || subsOpen || scorePickOpen || playerError != null || notFound) return false
-        // While «تخطي المقدمة» is up, OK skips.
+        // While «تخطي المقدمة» or «الحلقة التالية» is on the screen, OK takes it, even with the controls
+        // up (else OK would press the controls' focused button: play or pause).
+        val isOk = event.key == Key.DirectionCenter || event.key == Key.Enter || event.key == Key.NumPadEnter
         val opening = introNow
-        if (!controlsVisible && opening != null && (event.key == Key.DirectionCenter || event.key == Key.Enter || event.key == Key.NumPadEnter)) {
+        if (opening != null && isOk) {
             skipIntro(opening)
             return true
         }
         val credits = creditsNow
-        if (!controlsVisible && credits != null && (event.key == Key.DirectionCenter || event.key == Key.Enter || event.key == Key.NumPadEnter)) {
+        if (credits != null && isOk) {
             nextFromCredits(credits)
             return true
         }
@@ -1729,7 +1731,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                         IntroWindow.CREDITS -> tr("الحلقة التالية")
                         else -> tr("تخطي المقدمة")
                     },
-                    okHint = isTv && !controlsVisible
+                    okHint = isTv
                 ) { if (w.kind == IntroWindow.CREDITS) nextFromCredits(w) else skipIntro(w) }
             }
         }
