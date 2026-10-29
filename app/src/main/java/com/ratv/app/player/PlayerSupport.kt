@@ -282,12 +282,15 @@ fun createPlayer(
     enhanceStrength: Int = ENHANCE_FULL,
     introTap: Boolean = false
 ): ExoPlayer {
-    val reserve = maxOf(cushionMs(bufferMode).toInt(), 15_000)
+    // Films and episodes store ten times the reserve chosen in the settings (10 minutes for its "1 minute").
+    val reserve = maxOf(cushionMs(bufferMode).toInt(), 15_000) * 10
     // min buffer, max buffer, stored before starting, stored before resuming after a stall (ms)
-    // Films and episodes download faster than they play: read up to 2.5 minutes further ahead (as
-    // memory allows), so a weak or intermittent line does not stop them.
-    // Live: a 6 s store before playing and 10 s after a stall (more cushion against an uneven line or server).
-    val durations = if (live) intArrayOf(30_000, 60_000, 6_000, 10_000) else intArrayOf(reserve, reserve + 150_000, 3_000, 5_000)
+    // Films and episodes download faster than they play: they keep up to that much stored ahead
+    // (10 minutes; as the TV's memory allows), topped up as they play, so a weak or intermittent
+    // line, or minutes without internet, do not stop them.
+    // Live: a 6 s store before playing and 10 s after a stall, made bigger by Steadiness after stalls
+    // (up to 70 s, or 100 s with «أقصى ثبات»): the store may hold two minutes.
+    val durations = if (live) intArrayOf(30_000, 120_000, 6_000, Steadiness.AFTER_STALL_MS) else intArrayOf(reserve - 60_000, reserve, 3_000, 5_000)
     val memoryCap = (Runtime.getRuntime().maxMemory() * 0.45).toLong().coerceIn(32L shl 20, 220L shl 20).toInt()
     // Live TS channels reconnect at once when the connection breaks or gets stuck, as other IPTV
     // players do, instead of stalling once the store runs out (see LiveReconnectingDataSource).
@@ -333,6 +336,8 @@ fun createPlayer(
         // Keeps Wi-Fi at full power while playing: its power saving causes stalls now and then.
         .setWakeMode(C.WAKE_MODE_NETWORK)
         .build()
+    // The player's own events in the log (states, loads and their errors, dropped pictures), for the soak test.
+    if (com.ratv.app.data.debugProperty("debug.ratv.events") == "1") player.addAnalyticsListener(androidx.media3.exoplayer.util.EventLogger())
     if (bestQuality) {
         player.trackSelectionParameters = player.trackSelectionParameters.buildUpon()
             .setForceHighestSupportedBitrate(true)
