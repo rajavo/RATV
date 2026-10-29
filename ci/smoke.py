@@ -273,6 +273,8 @@ def s_launch():
     shell("setprop debug.ratv.kora http://10.0.2.2:8000/kora/fixtures.json")
     shell("setprop debug.ratv.espn http://10.0.2.2:8000/espn")
     shell("setprop debug.ratv.yk http://10.0.2.2:8000/yk")
+    # TheIntroDB's openings and recaps too.
+    shell("setprop debug.ratv.introdb http://10.0.2.2:8000/introdb")
     log("debug.ratv.subs=" + shell("getprop debug.ratv.subs").strip())
     log(shell("am start -W -n %s/.MainActivity" % PKG).strip())
     time.sleep(1.5)

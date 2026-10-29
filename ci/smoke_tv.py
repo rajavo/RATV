@@ -309,6 +309,93 @@ def t_match_link():
     key("BACK", pause=2)
 
 
+def intro_log():
+    out = S.shell("logcat -d -s RATVIntro:I RATVIntro:W")
+    return [l.strip() for l in out.splitlines() if "RATVIntro" in l]
+
+
+def wait_intro(pattern, timeout, tag):
+    """The first line of the intro log matching [pattern], waiting for it up to [timeout] s."""
+    end = time.time() + timeout
+    while time.time() < end:
+        for l in intro_log():
+            if re.search(pattern, l):
+                S.log("  " + l)
+                return l
+        time.sleep(1.5)
+    for l in intro_log()[-12:]:
+        S.log("  " + l)
+    S.shot(tag)
+    return None
+
+
+def t_intro():
+    """«تخطي المقدمة»: episodes 1-3 of Sands of Time share a 40 s opening (from 20 s, 15 s and 8 s). The
+    first is printed as it loads; in the second the opening is learnt before it comes and OK skips it;
+    in the third it is found again by itself, and TheIntroDB's recap of it is asked for; TheIntroDB was
+    asked about the first film too (tmdb 550, when the films' step played it)."""
+    S.shell("logcat -c")
+    try:
+        go_tab("مسلسلات")
+        _, n = S.wait_for(timeout=20, contains="Sands of Time")
+        expect(n is not None, "series missing")
+        for _ in range(6):
+            _, f = log_focus("intro-series")
+            if f is not None and "Sands of Time" in f:
+                break
+            time.sleep(1)
+        key("DPAD_CENTER", pause=4)
+        _, f = log_focus("intro-detail")
+        expect(f is not None and "الحلقة 1" in f, "episode 1 not focused (focus: %s)" % f)
+        key("DPAD_CENTER", pause=3)
+        # Episode 1: its sound is printed as the player loads it.
+        expect(wait_intro(r"printing its sound", 25, "intro-ep1") is not None, "the first episode's sound is not printed")
+        time.sleep(8)
+        S.shot("intro-ep1")
+        # To its end (the remote's right jumps 10 s): the next episode starts by itself.
+        key("DPAD_RIGHT", n=10, pause=0.4)
+        expect(wait_intro(r"kept \d+ s of prints", 40, "intro-ep1-kept") is not None, "the first episode's prints were not kept")
+        l = wait_intro(r"opening learnt at", 40, "intro-learnt")
+        expect(l is not None, "the opening was not learnt in the second episode")
+        m = re.search(r"learnt at ([\d.]+)-([\d.]+) s", l)
+        expect(m is not None and abs(float(m.group(1)) - 15) < 1.5 and abs(float(m.group(2)) - 55) < 1.5,
+               "the opening is not where it is (15-55 s): " + l)
+        _, b = S.wait_for(timeout=40, text="تخطي المقدمة", save="intro-button")
+        S.shot("intro-button")
+        expect(b is not None, "no «تخطي المقدمة» during the opening of the second episode")
+        key("DPAD_CENTER", pause=2)
+        l = wait_intro(r"skipped from \d+ to \d+ ms \(sound\)", 10, "intro-skip")
+        expect(l is not None, "OK did not skip the opening")
+        m = re.search(r"skipped from (\d+) to (\d+) ms", l)
+        expect(m is not None and 14000 <= int(m.group(1)) <= 54000 and abs(int(m.group(2)) - 55000) < 1500,
+               "the skip did not go to the end of the opening: " + l)
+        S.shot("intro-skipped")
+        # Episode 3: found again; TheIntroDB has its recap.
+        S.shell("logcat -c")
+        key("DPAD_RIGHT", n=5, pause=0.4)
+        expect(wait_intro(r"TheIntroDB: 1:1000-7000", 30, "intro-db") is not None, "TheIntroDB's recap of the third episode was not used")
+        l = wait_intro(r"opening found again at", 40, "intro-again")
+        expect(l is not None, "the opening was not found again in the third episode")
+        m = re.search(r"again at ([\d.]+)-([\d.]+) s", l)
+        expect(m is not None and abs(float(m.group(1)) - 8) < 1.5 and abs(float(m.group(2)) - 48) < 1.5,
+               "the opening is not where it is in the third episode (8-48 s): " + l)
+        _, b = S.wait_for(timeout=40, text="تخطي المقدمة", save="intro-button3")
+        S.shot("intro-button3")
+        expect(b is not None, "no «تخطي المقدمة» in the third episode")
+        key("DPAD_CENTER", pause=2)
+        expect(wait_intro(r"skipped from \d+ to \d+ ms \(sound\)", 10, "intro-skip3") is not None, "OK did not skip the third episode's opening")
+        asked = mock("/introdb/asked")
+        S.log("TheIntroDB asked: %s" % asked)
+        expect(any("tmdb_id=550" in q for q in asked), "TheIntroDB was not asked about the film (tmdb 550)")
+        expect(any("tmdb_id=1399" in q and "episode=3" in q for q in asked), "TheIntroDB was not asked about the episode")
+    finally:
+        for _ in range(4):
+            key("BACK", pause=1.5)
+            _, n = S.wait_for(timeout=4, text="الرئيسية")
+            if n is not None:
+                break
+
+
 def t_settings():
     go_tab("حسابي")
     time.sleep(1.5)
@@ -327,14 +414,14 @@ def deep_settings_and_back(nav, tag):
     go_tab(nav[-1], nav)
     time.sleep(2)
     found = False
-    for _ in range(36):
+    for _ in range(44):
         _, f = log_focus("deep-" + tag)
         if f and "Language" in f:
             found = True
             break
         key("DPAD_DOWN", pause=0.6)
     expect(found, "%s: no language row in the settings" % tag)
-    for i in range(30):
+    for i in range(40):
         _, f = log_focus("up-" + tag)
         if f in nav:
             break
@@ -555,6 +642,19 @@ def t_scoreboard():
         expect(g is not None, "the goal did not light up the board")
         n = wait_board("board-goal2", timeout=10, contains="3 - 1")
         expect(n is not None, "the board did not count the goal")
+        # On the channel's own score: the top left corner of the picture (a notice may hold it lower for a moment).
+        corner = None
+        for _ in range(8):
+            n = wait_board("board-corner", timeout=6)
+            corner = S.bounds(n) if n is not None else None
+            if corner and corner[1] < 1080 * 0.06:
+                break
+            time.sleep(1.5)
+        S.shot("board-corner")
+        S.log("board alone at %s" % (corner,))
+        expect(corner is not None and corner[0] < 1920 * 0.06 and corner[1] < 1080 * 0.06 and corner[2] < 1920 * 0.40,
+               "the board is not on the channel's score at the top left: %s" % (corner,))
+        top_alone = corner[1]
         # The controls up: the board moves down, under their top bar (they go by themselves after 4 s,
         # so OK again if they went while the screen was read).
         texts, root = "", None
@@ -567,7 +667,8 @@ def t_scoreboard():
                 break
         expect("لوحة النتيجة" in texts, "no scoreboard button in the controls: " + texts[:300])
         n = board_node(root)
-        expect(n is not None and S.bounds(n)[1] > top_alone + 40, "the board did not move down under the controls")
+        expect(n is not None and S.bounds(n)[1] > top_alone + 40 and S.bounds(n)[1] >= 140,
+               "the board did not move down under the controls: %s" % (S.bounds(n) if n is not None else None,))
         # Picked by hand: a Yallakora match.
         press_pill("لوحة النتيجة", "board-pill")
         _, p = S.wait_for(timeout=8, contains="بدون لوحة", save="board-pick")
@@ -733,6 +834,7 @@ if __name__ == "__main__":
         ("match-link", t_match_link),
         ("scoreboard", t_scoreboard),
         ("sports-guide", t_sports_guide),
+        ("intro", t_intro),
         ("settings", t_settings),
         ("settings-deep", t_settings_deep),
         ("enhance", t_enhance),

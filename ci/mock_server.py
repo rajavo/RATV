@@ -201,6 +201,7 @@ def vod_info(vod_id):
             "description": "وصف تجريبي.", "plot": "قصة تجريبية: رحلة عبر الصحراء في ليلة طويلة.",
             "country": "SA", "genre": "Drama, Adventure", "backdrop_path": [],
             "duration_secs": 120, "duration": "00:02:00", "rating": movie[3],
+            "tmdb_id": "550" if movie[0] == 5001 else "",
         },
         "movie_data": {
             "stream_id": movie[0], "name": movie[1], "added": str(NOW), "category_id": movie[2],
@@ -229,6 +230,7 @@ def series_info(series_id):
             "name": item[1], "cover": "", "plot": "قصة تجريبية للمسلسل " + item[1], "cast": "سارة, خالد, نورة",
             "director": "أحمد علي", "genre": "Drama", "releaseDate": item[4], "rating": item[3],
             "backdrop_path": [], "youtube_trailer": "", "episode_run_time": "2", "category_id": item[2],
+            "tmdb": "1399" if item[0] == 7001 else "",
         },
         "episodes": episodes,
     }
@@ -393,6 +395,19 @@ def yallakora_page():
 <div liveScoreMatchId="112999" class="item future liItem"><a href="#"><div class="matchStatus"> <span>لم تبدأ</span> </div>
 <div class="MResult"> <span class="score">-</span> <span>-</span> <span class="score">-</span> <span class="time">21:00</span> </div></a></div>
 </div></div></body></html>"""
+
+
+# Sands of Time S1E1-3 (ids "7001" season episode): their opening is found by its sound.
+INTRO_EPISODES = {"7001101": "intro1.mp4", "7001102": "intro2.mp4", "7001103": "intro3.mp4"}
+
+# TheIntroDB as RA TV asks it (tmdb, season, episode): Sands of Time is 1399, Desert Night 550.
+INTRODB = {
+    ("1399", "1", "3"): {"tvdb_id": 81189, "type": "tv", "season": 1, "episode": 3,
+                         "intro": [], "recap": [{"start_ms": 1000, "end_ms": 7000}], "credits": [], "preview": []},
+    ("550", None, None): {"tvdb_id": 550, "type": "movie",
+                          "intro": [{"start_ms": 60000, "end_ms": 90000}], "recap": [], "credits": [], "preview": []},
+}
+INTRODB_ASKED = []
 
 
 def release_notes():
@@ -688,6 +703,15 @@ class Handler(BaseHTTPRequestHandler):
         if p.startswith("/yk/match-center"):
             note("yallakora", date=q.get("date"))
             return self._send(yallakora_page().encode("utf-8"), "text/html; charset=utf-8")
+        if p == "/introdb/media":
+            INTRODB_ASKED.append(u.query)
+            note("introdb", query=u.query)
+            found = INTRODB.get((q.get("tmdb_id"), q.get("season"), q.get("episode")))
+            if found is None:
+                return self.send_error(404)
+            return self.send_json(found)
+        if p == "/introdb/asked":
+            return self.send_json(INTRODB_ASKED)
         if p == "/__stats":  # connections per test channel
             stats = {str(k): v for k, v in CONNECTIONS.items()}
             stats.update({"hls%d" % k: v for k, v in HLS_REQUESTS.items()})
@@ -774,6 +798,10 @@ class Handler(BaseHTTPRequestHandler):
             if os.path.basename(p).split(".")[0] in ("203", "301") and os.path.exists(os.path.join(MEDIA, "live_sd.ts")):
                 name = "live_sd.ts"
             return self.send_file(os.path.join(MEDIA, name), "video/mp2t")
+        if p.startswith("/series/") and os.path.basename(p).split(".")[0] in INTRO_EPISODES:
+            name = INTRO_EPISODES[os.path.basename(p).split(".")[0]]
+            if os.path.exists(os.path.join(MEDIA, name)):
+                return self.send_file(os.path.join(MEDIA, name), "video/mp4")
         if p.startswith("/movie/") or p.startswith("/series/"):
             return self.send_file(os.path.join(MEDIA, "movie.mp4"), "video/mp4")
         if p.startswith("/logo/"):
