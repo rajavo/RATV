@@ -8,6 +8,8 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import com.ratv.app.data.LowLatency
 import com.ratv.app.data.MatchLinks
 import com.ratv.app.data.SpeedTest
@@ -34,6 +36,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        // The subscription's server is kept a connection ready (LowLatency), from sign-in on.
+        lifecycleScope.launch {
+            repository.playlist.collect { LowLatency.note(SpeedTest.serverOf(it)) }
+        }
         // A match opened from the schedule app (not again when the activity is only recreated).
         if (savedInstanceState == null) takeMatchLink(intent)
     }
@@ -41,7 +47,6 @@ class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         LowLatency.onShown(this)
-        LowLatency.note(SpeedTest.serverOf((application as RatvApp).repository.playlist.value))
     }
 
     override fun onStop() {
