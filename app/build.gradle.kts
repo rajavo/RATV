@@ -100,6 +100,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    // The QR code on the TV's sign-in screen, for sending the playlist link from a phone.
+    implementation("com.google.zxing:core:3.5.3")
 
     // On-device translation of subtitles into the viewer's language.
     implementation("com.google.mlkit:translate:17.0.3")

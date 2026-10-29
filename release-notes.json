@@ -1,20 +1,11 @@
 {
   "ar": [
-    "ثبات أقوى بكثير ضد التقطيع في القنوات: إذا وقف البث، يجمع التطبيق احتياطياً أكبر قبل ما يكمل (لين دقيقة كاملة بدل 15 ثانية)، فيتحمّل النت المتذبذب والسيرفر الضعيف أضعاف ما كان، ويقول لك على الشاشة كم جمع.",
-    "الاتصال اللي يعلّق صار يتجدد أسرع (خلال 3 ثواني تقريباً بدل 8)، فما يضيع شي من الاحتياطي.",
-    "الوقفات الخفيفة من التلفزيون نفسه (مو من النت) ما عاد تخلي التطبيق يغيّر صيغة البث أو يبدأ القناة من جديد.",
-    "الأفلام والمسلسلات: الاحتياطي صار 10 أضعاف: تكمل لين 10 دقائق بدون إنترنت بدل دقيقة (على قد ذاكرة التلفزيون)."
+    "إضافة القائمة صارت أسهل: في شاشة إضافة الاشتراك على التلفزيون يطلع رمز QR. امسحه بكاميرا الجوال، والصق رابط M3U أو M3U8 في الصفحة اللي تفتح، ويوصل للتلفزيون ويضيف القائمة بدون ما تكتب بالريموت. (الجوال على نفس شبكة الواي فاي)"
   ],
   "en": [
-    "Much steadier channels: if the stream stops, the app builds a bigger buffer before it goes on (up to a full minute instead of 15 seconds), so it rides out an unsteady internet or a weak server many times better, and shows on screen how much it has gathered.",
-    "A connection that gets stuck is now renewed much sooner (in about 3 seconds instead of 8), so none of the buffer is lost.",
-    "Short hiccups of the TV itself (not of the internet) no longer make the app change the stream format or start the channel again.",
-    "Movies and series: the buffer is ten times bigger: they keep playing up to 10 minutes without internet instead of one (as the TV's memory allows)."
+    "Adding a playlist is easier: the TV's add-subscription screen shows a QR code. Scan it with your phone's camera, paste the M3U or M3U8 link on the page that opens, and it reaches the TV and adds the playlist, with no typing on the remote. (The phone must be on the same Wi-Fi.)"
   ],
   "es": [
-    "Canales mucho más estables: si la emisión se para, la app acumula más reserva antes de seguir (hasta un minuto entero en lugar de 15 segundos), así aguanta mucho mejor un internet inestable o un servidor débil, y muestra en pantalla cuánto lleva acumulado.",
-    "Una conexión que se atasca se renueva mucho antes (en unos 3 segundos en lugar de 8), así no se pierde nada de la reserva.",
-    "Los pequeños tirones del propio televisor (no de internet) ya no hacen que la app cambie el formato de la emisión ni empiece el canal de nuevo.",
-    "Películas y series: la reserva es diez veces mayor: siguen hasta 10 minutos sin internet en lugar de uno (según la memoria del televisor)."
+    "Añadir una lista es más fácil: la pantalla para añadir la suscripción en el televisor muestra un código QR. Escanéalo con la cámara del móvil, pega el enlace M3U o M3U8 en la página que se abre, y llega al televisor y añade la lista, sin escribir con el mando. (El móvil debe estar en la misma Wi-Fi.)"
   ]
 }

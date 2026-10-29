@@ -43,6 +43,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -80,12 +81,14 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ratv.app.data.Links
+import com.ratv.app.data.PhoneLink
 import com.ratv.app.data.Playlist
 import com.ratv.app.data.PlaylistType
 import com.ratv.app.data.XtreamClient
 import com.ratv.app.ui.LocalRepo
 import com.ratv.app.ui.components.CircleIconButton
 import com.ratv.app.ui.components.OutlineButton
+import com.ratv.app.ui.components.QrCode
 import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.components.RatvLogo
 import com.ratv.app.ui.components.TvInitialFocus
@@ -196,6 +199,75 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
     }
 
     TvInitialFocus(firstField, key = xtream)
+
+    // On TV, a QR code opens a page on the TV from a phone: the link pasted there fills the form.
+    var phoneUrl by remember { mutableStateOf<String?>(null) }
+    var fromPhone by remember { mutableStateOf<Pair<String, String>?>(null) }
+    var fromPhoneCount by remember { mutableStateOf(0) }
+    if (tv) {
+        DisposableEffect(Unit) {
+            val main = android.os.Handler(android.os.Looper.getMainLooper())
+            val link = PhoneLink { l, e ->
+                main.post {
+                    fromPhone = l to e
+                    fromPhoneCount++
+                }
+            }
+            val worker = Thread({
+                val url = link.start()
+                main.post { phoneUrl = url }
+            }, "RATVPhoneStart").apply { isDaemon = true }
+            worker.start()
+            onDispose {
+                link.stop()
+                main.removeCallbacksAndMessages(null)
+            }
+        }
+    }
+    LaunchedEffect(fromPhoneCount) {
+        val (link, guide) = fromPhone ?: return@LaunchedEffect
+        if (loading) return@LaunchedEffect
+        // A get.php link carries the user name and password: signed in as Xtream, with films and series.
+        val lower = link.lowercase()
+        if ("get.php" in lower && "username=" in lower && "password=" in lower) {
+            xtream = true
+            server = link
+            username = ""
+            password = ""
+        } else {
+            xtream = false
+            m3uUrl = link
+            epgUrl = guide
+        }
+        submit()
+    }
+
+    val phoneCard: @Composable () -> Unit = {
+        val url = phoneUrl
+        if (tv && url != null) {
+            Spacer(Modifier.height(20.dp))
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(RColors.Surface)
+                    .border(1.dp, RColors.Line, RoundedCornerShape(16.dp))
+                    .padding(14.dp),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                QrCode(url, tr("رمز QR لإرسال الرابط من الجوال"), Modifier.size(132.dp))
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(tr("أسهل: أرسل الرابط من جوالك"), style = T.body(16.sp, FontWeight.Bold))
+                    Text(
+                        tr("امسح الرمز بكاميرا الجوال، والصق رابط القائمة M3U في الصفحة اللي تفتح، ويوصل للتلفزيون على طول."),
+                        style = T.body(13.sp, color = RColors.Text2).copy(lineHeight = 20.sp)
+                    )
+                    Text(tr("الجوال لازم يكون على نفس شبكة الواي فاي."), style = T.body(12.sp, color = RColors.Text3))
+                }
+            }
+        }
+    }
 
     val intro: @Composable () -> Unit = {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -385,6 +457,7 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
                         intro()
                         Spacer(Modifier.height(24.dp))
                         modeSwitch()
+                        phoneCard()
                         Spacer(Modifier.height(24.dp))
                         disclaimer()
                     }
