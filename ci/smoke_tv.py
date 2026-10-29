@@ -900,6 +900,36 @@ def t_phone_link():
     expect("10.0.2.2:8000/playlist" not in log, "the link was written to the log")
 
 
+def t_guess_movie():
+    """A film the server has no opening for (The Long Road): «تخطي المقدمة» shows at its start, and OK takes it."""
+    go_tab("أفلام")
+    _, n = S.wait_for(timeout=20, contains="The Long Road")
+    expect(n is not None, "The Long Road missing")
+    for _ in range(12):
+        _, f = log_focus("guess-movie")
+        if f is not None and "The Long Road" in f:
+            break
+        key("DPAD_RIGHT", pause=0.8)
+    expect(f is not None and "The Long Road" in f, "The Long Road not focused (focus: %s)" % f)
+    key("DPAD_CENTER", pause=3)
+    _, f = log_focus("guess-detail")
+    expect(f is not None and ("تشغيل" in f or "متابعة" in f), "play button not focused (focus: %s)" % f)
+    key("DPAD_CENTER", pause=8)
+    _, g = S.wait_for(timeout=20, text="تخطي المقدمة", save="guess-movie")
+    S.shot("guess-movie")
+    expect(g is not None, "no «تخطي المقدمة» at the start of the film without a known opening")
+    S.shell("logcat -c")
+    key("DPAD_CENTER", pause=2)
+    out = S.shell("logcat -d -s RATVIntro:I")
+    expect("skipped the first 90 s" in out, "OK did not take the film's first skip")
+    S.shot("guess-movie-skipped")
+    for _ in range(3):
+        key("BACK", pause=1.5)
+        _, n = S.wait_for(timeout=4, text="الرئيسية")
+        if n is not None:
+            break
+
+
 if __name__ == "__main__":
     for name, fn in [
         ("launch", S.s_launch),
@@ -912,6 +942,7 @@ if __name__ == "__main__":
         ("player-numbers", t_player_numbers),
         ("update-notes", t_update_notes),
         ("movies", t_movies),
+        ("guess-movie", t_guess_movie),
         ("live", t_live),
         ("series", t_series),
         ("matches", t_matches),
