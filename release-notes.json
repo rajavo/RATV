@@ -1,11 +1,14 @@
 {
   "ar": [
-    "إضافة القائمة صارت أسهل: في شاشة إضافة الاشتراك على التلفزيون يطلع رمز QR. امسحه بكاميرا الجوال، والصق رابط M3U أو M3U8 في الصفحة اللي تفتح، ويوصل للتلفزيون ويضيف القائمة بدون ما تكتب بالريموت. (الجوال على نفس شبكة الواي فاي)"
+    "تخطي المقدمة صار أذكى: التطبيق يسمع الحلقة الجاية وأنت تتفرج، فيعرف مقدمة المسلسل من أول حلقة تشوفها (إذا اشتراكك يسمح باتصالين).",
+    "جديد: زر «الحلقة التالية» يطلع أول ما تبدأ أسماء الممثلين في آخر الحلقة. اضغط OK وتبدأ الحلقة اللي بعدها على طول. ومع «يتخطاها تلقائي» تبدأ بنفسها."
   ],
   "en": [
-    "Adding a playlist is easier: the TV's add-subscription screen shows a QR code. Scan it with your phone's camera, paste the M3U or M3U8 link on the page that opens, and it reaches the TV and adds the playlist, with no typing on the remote. (The phone must be on the same Wi-Fi.)"
+    "Skip intro is smarter: the app listens to the next episode while you watch, so it knows a series' opening from the first episode you watch (if your subscription allows two connections).",
+    "New: a “Next episode” button shows as soon as the end credits start. Press OK and the next episode starts at once. With “Skips it by itself” it starts on its own."
   ],
   "es": [
-    "Añadir una lista es más fácil: la pantalla para añadir la suscripción en el televisor muestra un código QR. Escanéalo con la cámara del móvil, pega el enlace M3U o M3U8 en la página que se abre, y llega al televisor y añade la lista, sin escribir con el mando. (El móvil debe estar en la misma Wi-Fi.)"
+    "Saltar intro es más inteligente: la app escucha el siguiente episodio mientras ves, así reconoce la entrada de una serie desde el primer episodio que veas (si tu suscripción permite dos conexiones).",
+    "Nuevo: un botón «Siguiente episodio» aparece en cuanto empiezan los créditos finales. Pulsa OK y empieza enseguida el siguiente. Con «La salta sola» empieza solo."
   ]
 }

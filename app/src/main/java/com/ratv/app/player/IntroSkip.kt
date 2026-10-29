@@ -48,11 +48,20 @@ import java.util.concurrent.atomic.AtomicLong
  * stretch of sound an episode shares with another episode of the series is its opening, and from
  * then on it is found again in every episode, before the picture gets there. The series and films
  * TheIntroDB knows (by their TMDB number) have theirs from the first episode.
+ *
+ * The end credits are found the same way: the last minutes of each episode are printed too (the player
+ * loads them ahead of the picture), and the stretch an episode's ending shares with another's, up to
+ * the end, is its credits: «الحلقة التالية» is offered from there.
+ *
+ * So the first episode watched has both too, the app listens ahead ([IntroProbe]): while it plays, the
+ * beginning and the end of the next episode are printed in the background, when the account allows a
+ * second connection.
  */
 data class IntroWindow(val startMs: Long, val endMs: Long, val kind: Int, val source: String) {
     companion object {
         const val INTRO = 0
         const val RECAP = 1
+        const val CREDITS = 2
     }
 }
 
@@ -65,6 +74,44 @@ private const val LIMIT_US = LIMIT_MS * 1000L
 /** A shared stretch is an opening from 20 s (shorter ones are recaps' clips or channels' logos) up to 5 minutes. */
 private const val LEARN_MIN = 20_000 / IntroPrint.FRAME_MS
 private const val MAX_FRAMES = 5 * 60_000 / IntroPrint.FRAME_MS
+
+/** The end of an episode printed for its credits: its last 5 minutes (at most 40 % of it). */
+private const val ENDING_MS = 5 * 60_000L
+
+/** Credits shared with another episode last from 15 s, and run to within a minute of the end. */
+private const val CREDITS_MIN = 15_000 / IntroPrint.FRAME_MS
+private const val CREDITS_TAIL = 60_000 / IntroPrint.FRAME_MS
+
+/** Where the ending window of an item of [durationUs] starts (µs), or -1. */
+internal fun endingFromUs(durationUs: Long): Long {
+    if (durationUs <= 0L || durationUs == C.TIME_UNSET) return -1L
+    return durationUs - minOf(ENDING_MS * 1000L, durationUs * 4 / 10)
+}
+
+/** [frames] of PCM ([float] or 16-bit, [ch] channels) in [b] as mono into [mono]. */
+internal fun toMono(b: ByteBuffer, offset: Int, size: Int, ch: Int, float: Boolean, mono: FloatArray): Int {
+    b.limit(offset + size)
+    b.position(offset)
+    val data = b.slice().order(ByteOrder.nativeOrder())
+    val frames = minOf(if (float) size / (4 * ch) else size / (2 * ch), mono.size)
+    if (frames <= 0) return 0
+    if (float) {
+        val fb = data.asFloatBuffer()
+        for (i in 0 until frames) {
+            var v = 0f
+            for (k in 0 until ch) v += fb.get(i * ch + k)
+            mono[i] = v / ch
+        }
+    } else {
+        val sb = data.asShortBuffer()
+        for (i in 0 until frames) {
+            var v = 0
+            for (k in 0 until ch) v += sb.get(i * ch + k)
+            mono[i] = v / (32768f * ch)
+        }
+    }
+    return frames
+}
 
 // ------------------------------------------------------------------------------------- the store
 
@@ -79,11 +126,15 @@ class IntroStore(private val file: File) {
     var hits = 0
         private set
     private val episodes = LinkedHashMap<String, Prints>()
+    private val endings = LinkedHashMap<String, Prints>()
     /** Goes up whenever the store changes (an episode playing now looks again at what came in). */
     @Volatile var version = 0
         private set
 
     @Synchronized fun others(episodeId: String): List<Prints> = episodes.filterKeys { it != episodeId }.values.reversed()
+
+    /** The endings of the other episodes kept (their last minutes, for the credits). */
+    @Synchronized fun endings(episodeId: String): List<Prints> = endings.filterKeys { it != episodeId }.values.reversed()
 
     @Synchronized fun snapshot(): Pair<Prints?, Int> = intro to hits
 
@@ -97,12 +148,18 @@ class IntroStore(private val file: File) {
         hits++
     }
 
-    /** Keeps [prints] of [episodeId] (the newest three episodes are kept), and writes the store. */
-    @Synchronized fun keep(episodeId: String, prints: Prints) {
-        if (prints.heardCount >= 60_000 / IntroPrint.FRAME_MS) {
+    /** Keeps [prints] of [episodeId] and its [ending] when whole (the newest three are kept), and writes the store. */
+    @Synchronized fun keep(episodeId: String, prints: Prints?, ending: Prints? = null) {
+        if (prints != null && prints.heardCount >= 60_000 / IntroPrint.FRAME_MS) {
             episodes.remove(episodeId)
             episodes[episodeId] = prints.slice(0, prints.end)
             while (episodes.size > 3) episodes.remove(episodes.keys.first())
+            version++
+        }
+        if (ending != null && ending.heardCount >= CREDITS_MIN) {
+            endings.remove(episodeId)
+            endings[episodeId] = ending.slice(0, ending.end)
+            while (endings.size > 3) endings.remove(endings.keys.first())
             version++
         }
         save()
@@ -120,11 +177,13 @@ class IntroStore(private val file: File) {
                     out.writeInt(hits)
                     writePrints(out, i)
                 }
-                out.writeInt(episodes.size)
-                for ((id, p) in episodes) {
-                    out.writeUTF(id)
-                    out.writeInt(p.end)
-                    writePrints(out, p)
+                for (map in listOf(episodes, endings)) {
+                    out.writeInt(map.size)
+                    for ((id, p) in map) {
+                        out.writeUTF(id)
+                        out.writeInt(p.end)
+                        writePrints(out, p)
+                    }
                 }
             }
             tmp.renameTo(file)
@@ -135,7 +194,8 @@ class IntroStore(private val file: File) {
         if (!file.exists()) return
         runCatching {
             DataInputStream(file.inputStream().buffered()).use { inp ->
-                if (inp.readInt() != MAGIC) return
+                val magic = inp.readInt()
+                if (magic != MAGIC && magic != MAGIC_1) return
                 val n = inp.readInt()
                 if (n > 0) {
                     hits = inp.readInt()
@@ -145,17 +205,25 @@ class IntroStore(private val file: File) {
                     val id = inp.readUTF()
                     episodes[id] = readPrints(inp, inp.readInt())
                 }
+                if (magic == MAGIC) {
+                    repeat(inp.readInt()) {
+                        val id = inp.readUTF()
+                        endings[id] = readPrints(inp, inp.readInt())
+                    }
+                }
             }
             file.setLastModified(System.currentTimeMillis())
         }.onFailure {
             Log.w(TAG, "the series' prints could not be read: starting again", it)
             intro = null
             episodes.clear()
+            endings.clear()
         }
     }
 
     companion object {
-        private const val MAGIC = 0x52414931 // "RAI1"
+        private const val MAGIC = 0x52414932 // "RAI2": with the episodes' endings
+        private const val MAGIC_1 = 0x52414931 // "RAI1": openings only
         private val open = HashMap<String, IntroStore>()
 
         /** The store of one series ([key]: the server and the series). */
@@ -205,10 +273,14 @@ class IntroSession(
     private val openStore: () -> IntroStore,
     private val episodeId: String,
     private val label: String,
-    private val onWindow: (IntroWindow?) -> Unit
+    private val onWindow: (IntroWindow?) -> Unit,
+    private val onCredits: (IntroWindow?) -> Unit = {}
 ) {
     @Volatile private var closed = false
     @Volatile private var lastTimeUs = 0L
+    /** Where the episode's ending (printed for the credits) starts, once its length is known (µs). */
+    @Volatile private var endFromUs = -1L
+    @Volatile private var durationUs = 0L
     private val queued = AtomicLong(0L)
     private val queue = LinkedBlockingQueue<Any>()
     private val prints = Prints(IntroPrint.frameAt(LIMIT_MS))
@@ -221,10 +293,28 @@ class IntroSession(
 
     private class Sample(val timeUs: Long, val data: ByteArray)
     private class Jump(val timeUs: Long)
+    private class Ending(val fromUs: Long, val durationUs: Long)
     private object Close
 
-    /** True while the sound is still worth reading (the session is open, and within the first minutes). */
-    val wants: Boolean get() = !closed && lastTimeUs < LIMIT_US
+    private fun inEnding(timeUs: Long): Boolean = endFromUs >= 0L && timeUs >= endFromUs
+
+    /** True while the sound is still worth reading (the session is open, in the first minutes or the last). */
+    val wants: Boolean get() = !closed && (lastTimeUs < LIMIT_US || (endFromUs >= 0L && lastTimeUs >= endFromUs - 2_000_000L))
+
+    /** The time of each piece of sound the player loads (read or not). */
+    fun noteTime(timeUs: Long) {
+        lastTimeUs = timeUs
+    }
+
+    /** The item's length, from its index: its last minutes are printed too, for the credits. */
+    fun onDuration(us: Long) {
+        if (closed || endFromUs >= 0L) return
+        val from = endingFromUs(us)
+        if (from < 0L) return
+        durationUs = us
+        endFromUs = from
+        queue.offer(Ending(from, us))
+    }
 
     fun onFormat(format: Format) {
         if (!closed) queue.offer(format)
@@ -232,7 +322,7 @@ class IntroSession(
 
     fun onSample(timeUs: Long, data: ByteArray, offset: Int, size: Int) {
         lastTimeUs = timeUs
-        if (closed || timeUs >= LIMIT_US || timeUs < 0) return
+        if (closed || timeUs < 0 || (timeUs >= LIMIT_US && !inEnding(timeUs))) return
         // A slow TV never holds more than 8 MB of sound waiting.
         if (queued.get() > 8L shl 20) return
         queued.addAndGet(size.toLong())
@@ -266,6 +356,17 @@ class IntroSession(
     private var confirmed = false
     private var store: IntroStore? = null
     private var seenVersion = -1
+    private var ending: Prints? = null
+    private var endPrinter: Printer? = null
+    private var endFromMs = 0L
+    private var endDurationMs = 0L
+    private var creditsTold = false
+
+    /** The ending is printed to within 2 s of the end (the window is whole). */
+    private fun endingWhole(): Boolean {
+        val e = ending ?: return false
+        return e.end >= IntroPrint.frameAt(endDurationMs - endFromMs - 2_000L)
+    }
 
     private fun work() {
         try {
@@ -281,6 +382,12 @@ class IntroSession(
                     is Close -> break
                     is Format -> configure(job)
                     is Jump -> jump()
+                    is Ending -> {
+                        val windowMs = (job.durationUs - job.fromUs) / 1000L
+                        ending = Prints(IntroPrint.frameAt(windowMs) + 20).also { endPrinter = Printer(it) }
+                        endFromMs = job.fromUs / 1000L
+                        endDurationMs = job.durationUs / 1000L
+                    }
                     is Sample -> {
                         queued.addAndGet(-job.data.size.toLong())
                         decode(job)
@@ -294,7 +401,7 @@ class IntroSession(
             release()
             store?.let { s ->
                 if (newFrames > 0 && !closedBeforeStart()) runCatching { look() }
-                s.keep(episodeId, prints)
+                s.keep(episodeId, prints, ending?.takeIf { endingWhole() })
                 Log.i(TAG, "$label: kept ${prints.heardCount * IntroPrint.FRAME_MS / 1000} s of prints")
             }
         }
@@ -340,6 +447,7 @@ class IntroSession(
     private fun jump() {
         runCatching { codec?.flush() }
         printer.reset()
+        endPrinter?.reset()
     }
 
     private val info = MediaCodec.BufferInfo()
@@ -395,28 +503,14 @@ class IntroSession(
 
     private fun print(b: ByteBuffer, offset: Int, size: Int, timeUs: Long) {
         val ch = outChannels.coerceAtLeast(1)
-        b.limit(offset + size)
-        b.position(offset)
-        val data = b.slice().order(ByteOrder.nativeOrder())
-        val frames = if (outFloat) size / (4 * ch) else size / (2 * ch)
+        val need = if (outFloat) size / (4 * ch) else size / (2 * ch)
+        if (mono.size < need) mono = FloatArray(need)
+        val frames = toMono(b, offset, size, ch, outFloat, mono)
         if (frames <= 0) return
-        if (mono.size < frames) mono = FloatArray(frames)
-        if (outFloat) {
-            val fb = data.asFloatBuffer()
-            for (i in 0 until frames) {
-                var s = 0f
-                for (k in 0 until ch) s += fb.get(i * ch + k)
-                mono[i] = s / ch
-            }
-        } else {
-            val sb = data.asShortBuffer()
-            for (i in 0 until frames) {
-                var s = 0
-                for (k in 0 until ch) s += sb.get(i * ch + k)
-                mono[i] = s / (32768f * ch)
-            }
-        }
-        newFrames += printer.feed(mono, frames, outRate, timeUs)
+        if (timeUs < LIMIT_US) newFrames += printer.feed(mono, frames, outRate, timeUs)
+        val ep = endPrinter
+        val fromUs = endFromMs * 1000L
+        if (ep != null && timeUs >= fromUs) newFrames += ep.feed(mono, frames, outRate, timeUs - fromUs)
     }
 
     private fun release() {
@@ -430,6 +524,7 @@ class IntroSession(
         newFrames = 0
         val store = store ?: return
         seenVersion = store.version
+        lookCredits(store)
         if (settled || prints.end == 0) return
         val (intro, hits) = store.snapshot()
         var window: IntroWindow? = null
@@ -469,6 +564,22 @@ class IntroSession(
         if (told != published) {
             published = told
             main.post { if (!closed) onWindow(told) }
+        }
+    }
+
+    /** The end credits: the stretch of this episode's ending shared with another's, running to its last minute. */
+    private fun lookCredits(store: IntroStore) {
+        if (creditsTold || !endingWhole()) return
+        val mine = ending ?: return
+        for (other in store.endings(episodeId)) {
+            val s = IntroMatch.shared(other, mine, CREDITS_MIN, mine.end) ?: continue
+            if (s.bTo < mine.end - CREDITS_TAIL) continue
+            val at = endFromMs + IntroPrint.msOf(s.bFrom)
+            val credits = IntroWindow(at, endDurationMs, IntroWindow.CREDITS, "sound")
+            creditsTold = true
+            Log.i(TAG, "$label: the end credits at ${sec(at)} s (shared with another episode)")
+            main.post { if (!closed) onCredits(credits) }
+            return
         }
     }
 
@@ -580,7 +691,10 @@ private class TapOutput(private val delegate: ExtractorOutput, private val sessi
 
     override fun endTracks() = delegate.endTracks()
 
-    override fun seekMap(seekMap: SeekMap) = delegate.seekMap(seekMap)
+    override fun seekMap(seekMap: SeekMap) {
+        delegate.seekMap(seekMap)
+        session.onDuration(seekMap.durationUs)
+    }
 }
 
 /** One sound track: its bytes go to the player's queue as before, and each whole sample to the session. */
@@ -636,6 +750,7 @@ private class TapTrack(private val delegate: TrackOutput, private val session: I
 
     override fun sampleMetadata(timeUs: Long, flags: Int, size: Int, offset: Int, cryptoData: TrackOutput.CryptoData?) {
         delegate.sampleMetadata(timeUs, flags, size, offset, cryptoData)
+        session.noteTime(timeUs)
         val end = pendingSize - offset
         val start = end - size
         if (start >= 0 && size > 0 && cryptoData == null) session.onSample(timeUs, pending, start, size)
@@ -691,13 +806,18 @@ object IntroDb {
     internal fun parse(json: String, durationMs: Long): List<IntroWindow> {
         val o = runCatching { JSONObject(json) }.getOrNull() ?: return emptyList()
         val out = ArrayList<IntroWindow>()
-        for ((name, kind) in listOf("recap" to IntroWindow.RECAP, "intro" to IntroWindow.INTRO)) {
+        for ((name, kind) in listOf("recap" to IntroWindow.RECAP, "intro" to IntroWindow.INTRO, "credits" to IntroWindow.CREDITS)) {
             val arr = o.optJSONArray(name) ?: continue
             for (i in 0 until arr.length()) {
                 val s = arr.optJSONObject(i) ?: continue
-                if (s.isNull("end_ms")) continue
                 val start = if (s.isNull("start_ms")) 0L else s.optLong("start_ms", 0L)
-                val end = s.optLong("end_ms", 0L)
+                // Credits may run to the end (no end given).
+                val end = if (s.isNull("end_ms")) {
+                    if (kind != IntroWindow.CREDITS || durationMs <= 0L) continue
+                    durationMs
+                } else {
+                    s.optLong("end_ms", 0L)
+                }
                 // A real stretch: over 3 s, under 10 minutes, inside the item.
                 if (end - start < 3_000L || end - start > 10 * 60_000L) continue
                 if (durationMs > 0 && end > durationMs) continue
@@ -705,5 +825,135 @@ object IntroDb {
             }
         }
         return out
+    }
+}
+
+// ------------------------------------------------------------------------------ listening ahead
+
+/**
+ * Prints the beginning and the end of another episode of the series in the background, so the
+ * episode playing now finds its opening and credits by comparing with it: from the first episode
+ * watched, not the second. Its own connection (MediaExtractor), only when the account allows two;
+ * once per series while nothing is known of it, at the lowest priority.
+ */
+object IntroProbe {
+    private const val START_MS = 6 * 60_000L
+    private val busy = ConcurrentHashMap.newKeySet<String>()
+    private val done = ConcurrentHashMap.newKeySet<String>()
+
+    /** Listens to [otherId] at [url] for the series of [store]; stops when [wanted] says so. */
+    fun listen(store: () -> IntroStore, seriesKey: String, currentId: String, otherId: String, url: String, label: String, wanted: () -> Boolean) {
+        if (done.contains("$seriesKey/$otherId") || !busy.add(seriesKey)) return
+        Thread({
+            try {
+                val s = store()
+                val needStart = s.snapshot().first == null && s.others(currentId).isEmpty()
+                val needEnd = s.endings(currentId).isEmpty()
+                if (needStart || needEnd) work(s, otherId, url, label, needStart, needEnd, wanted)
+                done.add("$seriesKey/$otherId")
+            } catch (e: Throwable) {
+                Log.w(TAG, "$label: listening ahead stopped: ${e.message}")
+            } finally {
+                busy.remove(seriesKey)
+            }
+        }, "RATVIntroAhead").apply {
+            priority = Thread.MIN_PRIORITY
+            isDaemon = true
+            start()
+        }
+    }
+
+    private fun work(store: IntroStore, otherId: String, url: String, label: String, needStart: Boolean, needEnd: Boolean, wanted: () -> Boolean) {
+        val ex = android.media.MediaExtractor()
+        var codec: MediaCodec? = null
+        try {
+            ex.setDataSource(url, mapOf("User-Agent" to Http.USER_AGENT))
+            val track = (0 until ex.trackCount).firstOrNull {
+                ex.getTrackFormat(it).getString(MediaFormat.KEY_MIME)?.startsWith("audio/") == true
+            } ?: return
+            ex.selectTrack(track)
+            val format = ex.getTrackFormat(track)
+            val mime = format.getString(MediaFormat.KEY_MIME) ?: return
+            val durationUs = if (format.containsKey(MediaFormat.KEY_DURATION)) format.getLong(MediaFormat.KEY_DURATION) else 0L
+            val name = IntroSession.decoderFor(mime) ?: return
+            val c = MediaCodec.createByCodecName(name)
+            codec = c
+            c.configure(format, null, null, 0)
+            c.start()
+            Log.i(TAG, "$label: listening ahead to the next episode")
+            var start: Prints? = null
+            if (needStart) {
+                val p = Prints(IntroPrint.frameAt(START_MS))
+                decodeUntil(ex, c, Printer(p), 0L, START_MS * 1000L, wanted)
+                start = p
+            }
+            var ending: Prints? = null
+            val fromUs = endingFromUs(durationUs)
+            if (needEnd && fromUs > 0L && wanted()) {
+                c.flush()
+                ex.seekTo(fromUs, android.media.MediaExtractor.SEEK_TO_PREVIOUS_SYNC)
+                val p = Prints(IntroPrint.frameAt((durationUs - fromUs) / 1000L) + 20)
+                decodeUntil(ex, c, Printer(p), fromUs, Long.MAX_VALUE, wanted)
+                if (p.end >= IntroPrint.frameAt((durationUs - fromUs) / 1000L - 2_000L)) ending = p
+            }
+            if (!wanted()) return
+            store.keep(otherId, start, ending)
+            Log.i(TAG, "$label: listened ahead: ${(start?.heardCount ?: 0) * IntroPrint.FRAME_MS / 1000} s of its start, " +
+                "${(ending?.heardCount ?: 0) * IntroPrint.FRAME_MS / 1000} s of its end")
+        } finally {
+            runCatching { codec?.stop() }
+            runCatching { codec?.release() }
+            runCatching { ex.release() }
+        }
+    }
+
+    /** Decodes from where [ex] is to [untilUs], printing what is at or after [fromUs] (on its own clock from there). */
+    private fun decodeUntil(ex: android.media.MediaExtractor, c: MediaCodec, printer: Printer, fromUs: Long, untilUs: Long, wanted: () -> Boolean) {
+        val info = MediaCodec.BufferInfo()
+        var inputDone = false
+        val known = runCatching { c.outputFormat }.getOrNull()
+        var rate = known?.takeIf { it.containsKey(MediaFormat.KEY_SAMPLE_RATE) }?.getInteger(MediaFormat.KEY_SAMPLE_RATE) ?: 48_000
+        var channels = known?.takeIf { it.containsKey(MediaFormat.KEY_CHANNEL_COUNT) }?.getInteger(MediaFormat.KEY_CHANNEL_COUNT) ?: 2
+        var float = false
+        var mono = FloatArray(8192)
+        while (wanted()) {
+            if (!inputDone) {
+                val i = c.dequeueInputBuffer(10_000L)
+                if (i >= 0) {
+                    val buf = c.getInputBuffer(i)
+                    val n = if (buf == null) -1 else ex.readSampleData(buf, 0)
+                    val t = ex.sampleTime
+                    if (n < 0 || t < 0 || t >= untilUs) {
+                        c.queueInputBuffer(i, 0, 0, 0L, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
+                        inputDone = true
+                    } else {
+                        c.queueInputBuffer(i, 0, n, t, 0)
+                        ex.advance()
+                    }
+                }
+            }
+            val o = c.dequeueOutputBuffer(info, 10_000L)
+            when {
+                o >= 0 -> {
+                    val b = c.getOutputBuffer(o)
+                    if (b != null && info.size > 0 && info.presentationTimeUs >= fromUs) {
+                        val ch = channels.coerceAtLeast(1)
+                        val need = if (float) info.size / (4 * ch) else info.size / (2 * ch)
+                        if (mono.size < need) mono = FloatArray(need)
+                        val frames = toMono(b, info.offset, info.size, ch, float, mono)
+                        if (frames > 0) printer.feed(mono, frames, rate, info.presentationTimeUs - fromUs)
+                    }
+                    c.releaseOutputBuffer(o, false)
+                    if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) return
+                }
+                o == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> {
+                    val of = c.outputFormat
+                    if (of.containsKey(MediaFormat.KEY_SAMPLE_RATE)) rate = of.getInteger(MediaFormat.KEY_SAMPLE_RATE)
+                    if (of.containsKey(MediaFormat.KEY_CHANNEL_COUNT)) channels = of.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
+                    float = of.containsKey(MediaFormat.KEY_PCM_ENCODING) &&
+                        of.getInteger(MediaFormat.KEY_PCM_ENCODING) == android.media.AudioFormat.ENCODING_PCM_FLOAT
+                }
+            }
+        }
     }
 }
