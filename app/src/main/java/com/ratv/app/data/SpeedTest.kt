@@ -94,16 +94,27 @@ object SpeedTest {
         Result(bytes * 8 / sec / 1_000_000.0, ping, serverPing)
     }
 
-    /** Best of three round trips, in milliseconds. */
+    /**
+     * The server's answer time (ms): the best of five on a connection already open, as the app's
+     * requests are (the first one, which also looks up the name and connects, is not counted).
+     */
     private fun ping(url: String): Long? {
+        runCatching { client.newCall(Request.Builder().url(url).build()).execute().use { it.body?.bytes() } }
         var best: Long? = null
-        repeat(3) {
+        repeat(5) {
             val t0 = SystemClock.elapsedRealtime()
-            val ok = runCatching { client.newCall(Request.Builder().url(url).build()).execute().close() }.isSuccess
+            val ok = runCatching { client.newCall(Request.Builder().url(url).build()).execute().use { it.body?.bytes() } }.isSuccess
             val dt = SystemClock.elapsedRealtime() - t0
             if (ok) best = minOf(best ?: dt, dt)
         }
         return best
+    }
+
+    /** Advice when answers are slow ([wifi]: the TV is on Wi-Fi), or null when they are fine. */
+    fun latencyAdvice(pingMs: Long?, wifi: Boolean): String? = when {
+        pingMs == null || pingMs <= 80L -> null
+        wifi -> tr("الاستجابة بطيئة. وصّل التلفزيون بكيبل إنترنت إذا تقدر، أو قرّب الراوتر منه: الكيبل أسرع استجابة من الواي فاي.")
+        else -> tr("الاستجابة بطيئة من جهة النت أو السيرفر. جرّب تطفي الراوتر وتشغله، وإذا استمرت كلّم مزوّد الاشتراك.")
     }
 
     /** What the speed is enough for. */
