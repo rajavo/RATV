@@ -274,6 +274,19 @@ class Prefs(context: Context) {
         get() = sp.getInt("scoreDelay", -1)
         set(value) = sp.edit().putInt("scoreDelay", value).apply()
 
+    /**
+     * Where the scoreboard sits: "corner" over the channel's own score at the top left of the picture
+     * (standing in for it), "right" at the top right, or "center", the wide board at the top centre.
+     */
+    var scorePlace: String
+        get() = sp.getString("scorePlace", "corner") ?: "corner"
+        set(value) = sp.edit().putString("scorePlace", value).apply()
+
+    /** The openings of episodes and films (IntroSkip.kt): "button" shows «تخطي المقدمة», "auto" skips them, "off". */
+    var introSkip: String
+        get() = sp.getString("introSkip", "button") ?: "button"
+        set(value) = sp.edit().putString("introSkip", value).apply()
+
     /** The device's graphics could not run the enhancement: it stays off until turned on again. */
     var enhanceBroken: Boolean
         get() = sp.getBoolean("enhanceBroken", false)

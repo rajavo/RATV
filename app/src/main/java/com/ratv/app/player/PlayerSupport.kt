@@ -279,7 +279,8 @@ fun createPlayer(
     tunneling: Boolean = false,
     enhance: Boolean = false,
     stretchAspect: Float? = null,
-    enhanceStrength: Int = ENHANCE_FULL
+    enhanceStrength: Int = ENHANCE_FULL,
+    introTap: Boolean = false
 ): ExoPlayer {
     val reserve = maxOf(cushionMs(bufferMode).toInt(), 15_000)
     // min buffer, max buffer, stored before starting, stored before resuming after a stall (ms)
@@ -309,7 +310,8 @@ fun createPlayer(
     // wait for the next IDR frame after joining or after a gap.
     val extractors = DefaultExtractorsFactory()
         .setTsExtractorFlags(DefaultTsPayloadReaderFactory.FLAG_ALLOW_NON_IDR_KEYFRAMES)
-    val mediaSourceFactory = DefaultMediaSourceFactory(dataSourceFactory, extractors)
+    // Episodes' sound is printed on its way to the player, to find their opening (IntroSkip.kt).
+    val mediaSourceFactory = DefaultMediaSourceFactory(dataSourceFactory, if (introTap) IntroTapExtractors(extractors) else extractors)
         .setLoadErrorHandlingPolicy(PatientLoadErrorPolicy())
     // Live streams always play at normal speed: no speeding up or slowing down, which shows as
     // judder on a TV, and two streams stay in step for commentary from another channel.

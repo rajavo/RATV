@@ -146,8 +146,16 @@ class XtreamClient(private val p: Playlist) {
             backdrop = firstUrl(info.opt("backdrop_path")),
             cover = info.str("movie_image") ?: info.str("cover_big"),
             trailer = info.str("youtube_trailer"),
-            originalName = info.str("o_name") ?: info.str("original_name")
+            originalName = info.str("o_name") ?: info.str("original_name"),
+            tmdb = tmdbOf(info.str("tmdb_id") ?: info.str("tmdb"))
         )
+    }
+
+    /** A TMDB number as servers give it ("1396", or a TMDB address). */
+    private fun tmdbOf(raw: String?): Int? {
+        val s = raw?.trim() ?: return null
+        val n = if (s.all { it.isDigit() }) s else Regex("""/(?:tv|movie)/(\d+)""").find(s)?.groupValues?.get(1)
+        return n?.takeIf { it.length in 1..9 }?.toIntOrNull()?.takeIf { it > 0 }
     }
 
     fun seriesInfo(id: String): SeriesInfo {
@@ -205,7 +213,8 @@ class XtreamClient(private val p: Playlist) {
             rating = cleanRating(info.str("rating")),
             backdrop = firstUrl(info.opt("backdrop_path")),
             cover = info.str("cover"),
-            episodes = sorted
+            episodes = sorted,
+            tmdb = tmdbOf(info.str("tmdb") ?: info.str("tmdb_id"))
         )
     }
 

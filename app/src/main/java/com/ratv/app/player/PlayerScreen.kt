@@ -16,6 +16,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -256,9 +257,15 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         createPlayer(
             context, repo.prefs.bufferMode, repo.prefs.bestQuality, live = kind == "live",
             tunneling = isTv && repo.prefs.tunneling,
-            enhance = enhanceWanted, stretchAspect = stretchFor(resizeIndex), enhanceStrength = enhanceStrength
+            enhance = enhanceWanted, stretchAspect = stretchFor(resizeIndex), enhanceStrength = enhanceStrength,
+            introTap = kind != "live"
         )
     }
+    // «تخطي المقدمة» (IntroSkip.kt): the opening of what plays, found by its sound or listed on TheIntroDB.
+    val introMode = remember { repo.prefs.introSkip }
+    var introHeard by remember { mutableStateOf<IntroWindow?>(null) }
+    var introListed by remember { mutableStateOf<List<IntroWindow>>(emptyList()) }
+    var introSkipped by remember { mutableStateOf<String?>(null) }
     val cushion = remember { cushionMs(repo.prefs.bufferMode) }
     val liveFormat = remember { repo.prefs.liveFormat }
     // Channel whose HLS version failed: it goes back to its own address.
@@ -376,6 +383,44 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             current = resolved.playable
             enhanceFor = if (wantsEnhance(resolved.playable)) enhanceKey(resolved.playable) else null
         }
+    }
+
+    // An episode's sound is printed as it loads (before setMediaItem below makes its extractors), to find
+    // its opening; its prints stay for the next episodes of the series when it is left.
+    DisposableEffect(current?.url) {
+        val item = current
+        val url = item?.url
+        introHeard = null
+        if (item != null && url != null && item.kind == Playable.KIND_EPISODE && item.seriesId != null && introMode != "off") {
+            val key = android.net.Uri.parse(url).let { "${it.host}:${it.port}" } + "/series/" + item.seriesId
+            val label = listOfNotNull(item.title, item.subtitle).joinToString(" ")
+            IntroSessions.open(url, IntroSession({ IntroStore.of(context, key) }, item.id, label) { w -> introHeard = w })
+        }
+        onDispose { if (url != null) IntroSessions.close(url) }
+    }
+
+    // TheIntroDB's openings and recaps of series and films it knows (by their TMDB number).
+    LaunchedEffect(current?.id) {
+        introListed = emptyList()
+        introSkipped = null
+        val item = current ?: return@LaunchedEffect
+        if (item.isLive || introMode == "off") return@LaunchedEffect
+        val listed = withContext(Dispatchers.IO) {
+            when (item.kind) {
+                Playable.KIND_EPISODE -> {
+                    val info = item.seriesId?.let { repo.seriesInfo(it) }
+                    val tmdb = info?.tmdb
+                    val ep = info?.episodes?.values?.flatten()?.firstOrNull { it.id == item.id }
+                    if (tmdb == null || ep == null) emptyList() else IntroDb.lookup(tmdb, ep.season, ep.num, ep.durationSecs * 1000L)
+                }
+                Playable.KIND_MOVIE -> repo.movieInfo(item.id)?.tmdb?.let { IntroDb.lookup(it, null, null, 0L) }.orEmpty()
+                else -> emptyList()
+            }
+        }
+        if (listed.isNotEmpty()) {
+            Log.i("RATVIntro", "TheIntroDB: " + listed.joinToString { "${it.kind}:${it.startMs}-${it.endMs}" })
+        }
+        introListed = listed
     }
 
     // ------------------------------------------------- start the stream
@@ -1044,6 +1089,31 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         }
     }
 
+    // The opening (or recap) being played right now, while there is more than a second and a half of it left.
+    val introNow: IntroWindow? = if (introMode == "off" || item == null || item.isLive) {
+        null
+    } else {
+        (listOfNotNull(introHeard) + introListed).firstOrNull { position >= it.startMs && position < it.endMs - 1_500L }
+    }
+
+    fun skipIntro(w: IntroWindow) {
+        touch()
+        Log.i("RATVIntro", "skipped from ${player.currentPosition} to ${w.endMs} ms (${w.source})")
+        introSkipped = "${w.kind}:${w.startMs}"
+        player.seekTo(w.endMs)
+    }
+
+    // «يتخطاها تلقائي»: once per opening (seeking back into it shows the button instead).
+    LaunchedEffect(introNow?.kind, introNow?.startMs) {
+        val w = introNow ?: return@LaunchedEffect
+        if (introMode != "auto" || introSkipped == "${w.kind}:${w.startMs}") return@LaunchedEffect
+        delay(800L)
+        if (player.isPlaying && player.currentPosition < w.endMs - 1_500L) {
+            skipIntro(w)
+            streamNotice = if (w.kind == IntroWindow.RECAP) tr("تخطّينا الملخص") else tr("تخطّينا المقدمة")
+        }
+    }
+
     fun playNextEpisode() {
         val ep = nextEpisode ?: return
         val currentItem = item ?: return
@@ -1089,6 +1159,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // The scoreboard of the match this channel shows, all the way through it (ScoreBoard.kt).
     val scoreBoardOn = remember { repo.prefs.scoreBoard }
     val scoreDelay = remember { repo.prefs.scoreDelay }
+    val scorePlace = remember { repo.prefs.scorePlace }
     val scoreBoard = rememberScoreBoard(
         enabled = scoreBoardOn && item?.isLive == true,
         channel = liveChannel,
@@ -1285,6 +1356,12 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             return true
         }
         if (panelOpen || sourcesOpen || showTracks || subsOpen || scorePickOpen || playerError != null || notFound) return false
+        // While «تخطي المقدمة» is up, OK skips.
+        val opening = introNow
+        if (!controlsVisible && opening != null && (event.key == Key.DirectionCenter || event.key == Key.Enter || event.key == Key.NumPadEnter)) {
+            skipIntro(opening)
+            return true
+        }
         if (controlsVisible) {
             touch()
             return false
@@ -1398,8 +1475,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             modifier = resizeModes[resizeIndex].ratio?.let { Modifier.align(Alignment.Center).aspectRatio(it) } ?: Modifier.fillMaxSize()
         )
 
-        // RA TV's mark in the corner of the picture, as channels show theirs (hidden with the controls up).
-        if (!controlsVisible && !inPip) {
+        // RA TV's mark in the corner of the picture, as channels show theirs (hidden with the controls up,
+        // and while the scoreboard has that corner).
+        if (!controlsVisible && !inPip && !(scorePlace == BoardPlace.RIGHT && scoreBoard.match != null)) {
             BrandLogo(
                 if (isTv) 44.dp else 30.dp,
                 Modifier
@@ -1493,13 +1571,20 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         }
 
         if (!inPip) {
+            // At a corner the board makes way only for what shares that corner: the zapping banner (at the
+            // start side) and the commentary label (at the end side); the notices along the top centre.
+            val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+            val centred = scorePlace == BoardPlace.CENTER
+            val atLeft = scorePlace == BoardPlace.CORNER
             val boardTop = when {
-                controlsVisible && !locked -> 112.dp
-                banner != null -> 96.dp
+                controlsVisible && !locked -> if (centred) 112.dp else 76.dp
+                banner != null && (centred || atLeft != rtl) -> 96.dp
                 resizeNotice != null || streamNotice != null || reconnecting || (reconnectAttempts > 0 && buffering) || netTrouble -> 70.dp
-                else -> if (isTv) 18.dp else 12.dp
+                !centred && mix.channel != null && atLeft == rtl -> 62.dp
+                centred -> if (isTv) 18.dp else 12.dp
+                else -> if (isTv) 14.dp else 10.dp
             }
-            ScoreBoardOverlay(scoreBoard, boardTop, isTv) { scoreDelayMs() }
+            ScoreBoardOverlay(scoreBoard, boardTop, isTv, scorePlace) { scoreDelayMs() }
         }
 
         // How much reserve there is; while the internet is down, how long the picture can still go on.
@@ -1546,6 +1631,25 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
 
         if (subs.isOn && !inPip) {
             SubtitleOverlay(subs.textAt(subPos), subs.size, raised = controlsVisible)
+        }
+
+        val opening = introNow
+        AnimatedVisibility(
+            visible = opening != null && !inPip && !panelOpen && !sourcesOpen && !subsOpen && !scorePickOpen && playerError == null,
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = if (isTv) 40.dp else 20.dp, bottom = if (controlsVisible) 150.dp else if (isTv) 56.dp else 32.dp)
+        ) {
+            val shown = remember { arrayOfNulls<IntroWindow>(1) }
+            if (opening != null) shown[0] = opening
+            shown[0]?.let { w ->
+                IntroSkipButton(
+                    if (w.kind == IntroWindow.RECAP) tr("تخطي الملخص") else tr("تخطي المقدمة"),
+                    okHint = isTv && !controlsVisible
+                ) { skipIntro(w) }
+            }
         }
 
         val mixing = mix.channel
@@ -2117,6 +2221,36 @@ private fun SeekButton(icon: ImageVector, description: String, enabled: Boolean,
         val tint = if (enabled) Color.White else Color(0x61FFFFFF)
         Icon(icon, contentDescription = description, tint = tint, modifier = Modifier.size(36.dp))
         Text("10", style = T.body(10.sp, FontWeight.Bold, tint).copy(lineHeight = 12.sp), modifier = Modifier.padding(top = 2.dp))
+    }
+}
+
+/** «تخطي المقدمة»: OK on the remote skips while it is up (on a TV the button says so). */
+@Composable
+private fun IntroSkipButton(label: String, okHint: Boolean, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(26.dp)
+    Row(
+        Modifier
+            .height(52.dp)
+            .clip(shape)
+            .background(Color(0xE60B0C10))
+            .border(1.5.dp, RColors.Saffron, shape)
+            .tvClickable(shape, onClick = onClick)
+            .padding(start = 18.dp, end = if (okHint) 8.dp else 20.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Icon(RIcons.SkipNext, contentDescription = null, tint = RColors.Saffron, modifier = Modifier.size(22.dp))
+        Text(label, style = T.body(16.sp, FontWeight.Bold))
+        if (okHint) {
+            Box(
+                Modifier
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(RColors.AccentBrush)
+                    .padding(horizontal = 10.dp, vertical = 5.dp)
+            ) {
+                Text("OK", style = T.body(13.sp, FontWeight.ExtraBold, RColors.OnSaffron))
+            }
+        }
     }
 }
 

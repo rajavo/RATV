@@ -45,9 +45,12 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.absolutePadding
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
@@ -417,12 +420,21 @@ fun formatGameClock(seconds: Int): String {
 
 // ------------------------------------------------------------ drawing
 
+/** Where the board sits: over the channel's own score at the top left (the usual), top right, or top centre. */
+object BoardPlace {
+    const val CORNER = "corner"
+    const val RIGHT = "right"
+    const val CENTER = "center"
+}
+
 /**
  * The board at the top of the picture, [top] from the edge (lower while the controls are up).
+ * At [BoardPlace.CORNER] it is the small board that sits on the channel's own score (top left in the
+ * picture, whatever the language) and stands in for it; at the centre it is the wide one.
  * [delayMs] is how late to show the match: as late as the picture runs behind the real game.
  */
 @Composable
-fun BoxScope.ScoreBoardOverlay(state: ScoreBoardState, top: Dp, tv: Boolean, delayMs: () -> Long) {
+fun BoxScope.ScoreBoardOverlay(state: ScoreBoardState, top: Dp, tv: Boolean, place: String, delayMs: () -> Long) {
     val match = state.match
     val schedule = state.schedule
     val tick by produceState(SystemClock.elapsedRealtime(), match?.id) {
@@ -436,20 +448,25 @@ fun BoxScope.ScoreBoardOverlay(state: ScoreBoardState, top: Dp, tv: Boolean, del
     // The last board stays drawn while it fades out.
     val last = remember { arrayOfNulls<BoardView>(1) }
     if (view != null) last[0] = view
+    // In from the side of the picture's corner like a channel's own graphics; down from the top at the centre.
+    val side = if (tv) 30.dp else 16.dp
+    val placed = when (place) {
+        BoardPlace.CENTER -> Modifier.align(Alignment.TopCenter).padding(top = topAnimated)
+        BoardPlace.RIGHT -> Modifier.align(AbsoluteAlignment.TopRight).absolutePadding(right = side, top = topAnimated)
+        else -> Modifier.align(AbsoluteAlignment.TopLeft).absolutePadding(left = side, top = topAnimated)
+    }
     AnimatedVisibility(
         visible = view != null,
         enter = fadeIn(tween(400)) + slideInVertically(tween(400)) { -it / 2 },
         exit = fadeOut(tween(300)),
-        modifier = Modifier
-            .align(Alignment.TopCenter)
-            .padding(top = topAnimated)
+        modifier = placed
     ) {
-        last[0]?.let { ScoreBoardCard(it, tv) }
+        last[0]?.let { ScoreBoardCard(it, tv, compact = place != BoardPlace.CENTER) }
     }
 }
 
 @Composable
-private fun ScoreBoardCard(b: BoardView, tv: Boolean) {
+private fun ScoreBoardCard(b: BoardView, tv: Boolean, compact: Boolean) {
     val arabic = I18n.lang == "ar"
     // A goal: the scorer's box lights up and the pill says so, for 8 seconds.
     val before = remember(b.match.id) { arrayOf(b.homeScore, b.awayScore) }
@@ -471,10 +488,20 @@ private fun ScoreBoardCard(b: BoardView, tv: Boolean) {
     }
     val goalNow = goalSide != 0
 
-    val crest = if (tv) 30.dp else 26.dp
-    val nameWidth = if (tv) 128.dp else 96.dp
-    val barHeight = if (tv) 46.dp else 40.dp
-    val shape = RoundedCornerShape(14.dp)
+    // The small board (over the channel's own score) is about as big as a channel's: a third of the width.
+    val crest = when {
+        compact -> if (tv) 26.dp else 22.dp
+        else -> if (tv) 30.dp else 26.dp
+    }
+    val nameWidth = when {
+        compact -> if (tv) 80.dp else 66.dp
+        else -> if (tv) 128.dp else 96.dp
+    }
+    val barHeight = when {
+        compact -> if (tv) 42.dp else 36.dp
+        else -> if (tv) 46.dp else 40.dp
+    }
+    val shape = RoundedCornerShape(if (compact) 12.dp else 14.dp)
     Column(
         Modifier.semantics { contentDescription = b.describe(arabic) },
         horizontalAlignment = Alignment.CenterHorizontally
@@ -486,15 +513,15 @@ private fun ScoreBoardCard(b: BoardView, tv: Boolean) {
                 .background(Brush.verticalGradient(listOf(Color(0xF51D2029), Color(0xF50B0C10))))
                 .border(1.dp, Color(0x2EFFFFFF), shape)
                 .height(barHeight)
-                .padding(horizontal = 10.dp),
+                .padding(horizontal = if (compact) 8.dp else 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Crest(b.home, crest)
-            TeamName(b.home.name(arabic), nameWidth, tv)
-            ScoreBox(b.homeScore, goalNow && goalSide == 1, tv)
-            Spacer(Modifier.width(4.dp))
-            ScoreBox(b.awayScore, goalNow && goalSide == 2, tv)
-            TeamName(b.away.name(arabic), nameWidth, tv)
+            TeamName(b.home.name(arabic), nameWidth, tv, compact)
+            ScoreBox(b.homeScore, goalNow && goalSide == 1, tv, compact)
+            Spacer(Modifier.width(if (compact) 3.dp else 4.dp))
+            ScoreBox(b.awayScore, goalNow && goalSide == 2, tv, compact)
+            TeamName(b.away.name(arabic), nameWidth, tv, compact)
             Crest(b.away, crest)
         }
         val pillShape = RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp)
@@ -503,7 +530,7 @@ private fun ScoreBoardCard(b: BoardView, tv: Boolean) {
                 .offset(y = (-1).dp)
                 .clip(pillShape)
                 .background(if (goalNow) RColors.AccentBrush else SolidColor(Color(0xF50B0C10)))
-                .padding(horizontal = 14.dp, vertical = 3.dp),
+                .padding(horizontal = if (compact) 12.dp else 14.dp, vertical = 3.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(7.dp)
         ) {
@@ -516,7 +543,7 @@ private fun ScoreBoardCard(b: BoardView, tv: Boolean) {
             }
             Text(
                 if (goalNow) tr("هدف!") else b.pill + pens,
-                style = T.display(if (tv) 13.sp else 12.sp, FontWeight.Bold, if (goalNow) RColors.OnSaffron else RColors.Text)
+                style = T.display(if (tv) (if (compact) 12.5.sp else 13.sp) else 12.sp, FontWeight.Bold, if (goalNow) RColors.OnSaffron else RColors.Text)
                     .copy(lineHeight = 18.sp, textDirection = if (b.clock && !goalNow) TextDirection.Ltr else TextDirection.Content),
                 maxLines = 1
             )
@@ -552,33 +579,47 @@ private fun Crest(team: ScoreTeam, size: Dp) {
 }
 
 @Composable
-private fun TeamName(name: String, width: Dp, tv: Boolean) {
-    val size = when {
+private fun TeamName(name: String, width: Dp, tv: Boolean, compact: Boolean) {
+    val start = when {
+        compact -> if (tv) 13.5.sp else 12.sp
         name.length > 16 -> if (tv) 11.5.sp else 10.5.sp
         name.length > 11 -> if (tv) 12.5.sp else 11.5.sp
         else -> if (tv) 14.sp else 12.5.sp
     }
+    // On the small board a long name gets smaller until it fits ("مانشستر سيتي"), and is cut only past that.
+    val smallest = if (tv) 9.5.sp else 8.5.sp
+    var size by remember(name, compact) { mutableStateOf(start) }
+    var fits by remember(name, compact) { mutableStateOf(!compact) }
     Text(
         name,
         style = T.display(size, FontWeight.Bold, RColors.Text).copy(lineHeight = size * 1.2f),
         maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
+        softWrap = false,
+        overflow = if (fits) TextOverflow.Ellipsis else TextOverflow.Clip,
         textAlign = TextAlign.Center,
+        onTextLayout = { r ->
+            if (!fits) {
+                if (r.didOverflowWidth && size.value > smallest.value) size = (size.value - 0.5f).sp else fits = true
+            }
+        },
         modifier = Modifier
             .width(width)
-            .padding(horizontal = 6.dp)
+            .padding(horizontal = if (compact) 3.dp else 6.dp)
+            .drawWithContent { if (fits) drawContent() }
     )
 }
 
 @Composable
-private fun ScoreBox(score: Int?, goal: Boolean, tv: Boolean) {
-    val shape = RoundedCornerShape(8.dp)
+private fun ScoreBox(score: Int?, goal: Boolean, tv: Boolean, compact: Boolean) {
+    val shape = RoundedCornerShape(if (compact) 7.dp else 8.dp)
     val pulse by animateFloatAsState(if (goal) 1.12f else 1f, tween(300), label = "pulse")
     val textColor by animateColorAsState(if (goal) RColors.SaffronDeep else RColors.OnSaffron, label = "scoreText")
+    val w = if (compact) (if (tv) 29.dp else 25.dp) else if (tv) 32.dp else 28.dp
+    val h = if (compact) (if (tv) 31.dp else 27.dp) else if (tv) 34.dp else 30.dp
     Box(
         Modifier
             .scale(pulse)
-            .size(width = if (tv) 32.dp else 28.dp, height = if (tv) 34.dp else 30.dp)
+            .size(width = w, height = h)
             .clip(shape)
             .background(if (goal) SolidColor(Color.White) else RColors.AccentBrush),
         contentAlignment = Alignment.Center
@@ -593,7 +634,8 @@ private fun ScoreBox(score: Int?, goal: Boolean, tv: Boolean) {
         ) { value ->
             Text(
                 value?.toString() ?: "–",
-                style = T.display(if (tv) 20.sp else 17.sp, FontWeight.ExtraBold, textColor).copy(lineHeight = 22.sp),
+                style = T.display(if (compact) (if (tv) 18.5.sp else 15.5.sp) else if (tv) 20.sp else 17.sp, FontWeight.ExtraBold, textColor)
+                    .copy(lineHeight = 22.sp),
                 maxLines = 1
             )
         }

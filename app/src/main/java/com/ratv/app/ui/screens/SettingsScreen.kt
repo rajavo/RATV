@@ -115,6 +115,18 @@ private val scoreDelayLabels get() = linkedMapOf(
     90 to tr("دقيقة ونص")
 )
 
+private val scorePlaceLabels get() = linkedMapOf(
+    "corner" to tr("فوق يسار: مكان نتيجة القناة (موصى به)"),
+    "right" to tr("فوق يمين"),
+    "center" to tr("فوق بالنص (لوحة كبيرة)")
+)
+
+private val introSkipLabels get() = linkedMapOf(
+    "button" to tr("يطلع زر «تخطي المقدمة» (موصى به)"),
+    "auto" to tr("يتخطاها تلقائي"),
+    "off" to tr("مقفل")
+)
+
 private val liveFormatLabels get() = linkedMapOf(
     "ts" to tr("TS (موصى به)"),
     "hls" to "HLS",
@@ -151,6 +163,10 @@ fun SettingsScreen(nav: Navigator) {
     var scoreBoard by remember { mutableStateOf(repo.prefs.scoreBoard) }
     var scoreDelay by remember { mutableIntStateOf(repo.prefs.scoreDelay) }
     var showScoreDelay by remember { mutableStateOf(false) }
+    var scorePlace by remember { mutableStateOf(repo.prefs.scorePlace) }
+    var showScorePlace by remember { mutableStateOf(false) }
+    var introSkip by remember { mutableStateOf(repo.prefs.introSkip) }
+    var showIntroSkip by remember { mutableStateOf(false) }
     var showPalette by remember { mutableStateOf(false) }
     var showLanguage by remember { mutableStateOf(false) }
     val hostContext = androidx.compose.ui.platform.LocalContext.current
@@ -385,8 +401,15 @@ fun SettingsScreen(nav: Navigator) {
             }
             if (scoreBoard) {
                 Divider()
+                ValueRow(tr("مكان لوحة النتيجة"), scorePlaceLabels[scorePlace] ?: scorePlaceLabels.values.first()) { showScorePlace = true }
+                Divider()
                 ValueRow(tr("تأخير النتيجة"), scoreDelayLabels[scoreDelay] ?: tr("تلقائي")) { showScoreDelay = true }
             }
+        }
+
+        GroupTitle(tr("المسلسلات والأفلام"))
+        Group {
+            ValueRow(tr("تخطي المقدمة"), introSkipLabels[introSkip] ?: introSkipLabels.values.first()) { showIntroSkip = true }
         }
 
         GroupTitle(tr("الترجمة"))
@@ -645,6 +668,34 @@ fun SettingsScreen(nav: Navigator) {
         )
     }
 
+    if (showScorePlace) {
+        ChoiceDialog(
+            title = tr("مكان لوحة النتيجة"),
+            labels = scorePlaceLabels,
+            selected = scorePlace,
+            note = tr("«فوق يسار» تجي فوق نتيجة القناة نفسها وتغطيها، فتشوف النتيجة بالعربي مع شعارات الفرق بدال نتيجة القناة."),
+            onPick = {
+                scorePlace = it
+                repo.prefs.scorePlace = it
+            },
+            onDismiss = { showScorePlace = false }
+        )
+    }
+
+    if (showIntroSkip) {
+        ChoiceDialog(
+            title = tr("تخطي المقدمة"),
+            labels = introSkipLabels,
+            selected = introSkip,
+            note = tr("يعرف التطبيق مقدمة المسلسل من صوتها: من ثاني حلقة تشوفها يطلع زر «تخطي المقدمة» أول ما تبدأ، واضغط OK يتخطاها. والمسلسلات والأفلام المعروفة يعرف مقدمتها من أول حلقة."),
+            onPick = {
+                introSkip = it
+                repo.prefs.introSkip = it
+            },
+            onDismiss = { showIntroSkip = false }
+        )
+    }
+
     if (showScoreDelay) {
         AlertDialog(
             onDismissRequest = { showScoreDelay = false },
@@ -883,6 +934,47 @@ private fun Stat(label: String, value: String, modifier: Modifier = Modifier) {
         Text(label, style = T.body(11.5.sp, color = RColors.Text3), maxLines = 1)
         Text(value, style = T.body(14.sp, FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
+}
+
+/** A choice of one of [labels] (key to label), with a [note] under it. */
+@Composable
+private fun ChoiceDialog(
+    title: String,
+    labels: Map<String, String>,
+    selected: String,
+    note: String?,
+    onPick: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = { TextButton(onClick = onDismiss) { Text(tr("تم"), color = RColors.Saffron) } },
+        title = { Text(title, style = T.h2) },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                labels.forEach { (key, label) ->
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 48.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .tvClickable(RoundedCornerShape(10.dp), role = Role.RadioButton) { onPick(key) },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = selected == key,
+                            onClick = null,
+                            colors = RadioButtonDefaults.colors(selectedColor = RColors.Saffron)
+                        )
+                        Spacer(Modifier.size(8.dp))
+                        Text(label, style = T.body(15.sp))
+                    }
+                }
+                if (note != null) Text(note, style = T.caption)
+            }
+        },
+        containerColor = RColors.Surface
+    )
 }
 
 @Composable
