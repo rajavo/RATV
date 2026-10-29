@@ -266,6 +266,9 @@ def s_accessibility():
     r = probe_after(mark, 11)
     log("accessibility, probe in background: %s" % r)
     expect(len(r) >= 3 and r[-3:] == ["fail"] * 3, "accessibility only: the background app still has internet: %s" % r)
+    # uiautomator dumps unbind accessibility services while they run, so later steps need usage access back.
+    sh("appops set %s GET_USAGE_STATS allow" % PKG)
+    time.sleep(2)
 
 
 def s_turn_off():
@@ -306,14 +309,18 @@ def s_lite():
     """The «خفّف الشاشة» page: it opens, lists the factory apps, and its button answers without a crash."""
     open_ranet()
     f = None
-    for _ in range(12):
-        f = focused(dump())
+    for i in range(12):
+        f = focused(dump("lite-focus-%d" % i if i < 3 else None))
+        log("lite focus %d: %s" % (i, f))
         if f and "خفّف الشاشة" in f:
             break
-        key("DPAD_DOWN", 0.5)
-    log("focus on the lite card: %s" % f)
-    expect(f is not None and "خفّف الشاشة" in f, "the «خفّف الشاشة» card is not reachable with the remote")
-    key("DPAD_CENTER", 2)
+        key("DPAD_DOWN", 0.8)
+    shot("lite-card")
+    if f and "خفّف الشاشة" in f:
+        key("DPAD_CENTER", 2)
+    else:
+        log("the remote did not reach the lite card; opening it by touch to check the page")
+        tap_text(dump(), "^خفّف الشاشة$")
     root = wait_text("احذف تطبيقات المصنع", save="lite")
     shot("lite")
     expect(root is not None, "the lite page did not open")
@@ -344,6 +351,7 @@ def s_lite():
            "settings put global animator_duration_scale 1.0")
     key("BACK", 2)
     expect(wait_text("التركيز", timeout=10) is not None, "back did not return to the main page")
+    expect(f and "خفّف الشاشة" in f, "the «خفّف الشاشة» card is not reachable with the remote")
 
 
 def finish():
