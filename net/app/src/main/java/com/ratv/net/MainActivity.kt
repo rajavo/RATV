@@ -301,11 +301,11 @@ private fun MainScreen(prefs: Prefs, onToggle: () -> Unit, onUsage: () -> Unit, 
                 contentPadding = PaddingValues(horizontal = 24.dp, vertical = 22.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                item { Header() }
-                message?.let { m -> item { Notice(m) } }
-                item { ToggleCard(running, onScreen, Modifier.focusRequester(toggleFocus), onToggle) }
-                if (!ready) item { SetupCard(onUsage, onAccessibility) }
-                item { LiteCard(onLite) }
+                item(key = "header") { Header() }
+                message?.let { m -> item(key = "notice") { Notice(m) } }
+                item(key = "toggle") { ToggleCard(running, onScreen, Modifier.focusRequester(toggleFocus), onToggle) }
+                if (!ready) item(key = "setup") { SetupCard(onUsage, onAccessibility) }
+                item(key = "lite") { LiteCard(onLite) }
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         SectionTitle("استهلاك النت الحين")

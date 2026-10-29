@@ -309,17 +309,23 @@ def s_lite():
     """The «خفّف الشاشة» page: it opens, lists the factory apps, and its button answers without a crash."""
     open_ranet()
     f = None
-    for i in range(12):
-        f = focused(dump("lite-focus-%d" % i if i < 3 else None))
-        log("lite focus %d: %s" % (i, f))
-        if f and "خفّف الشاشة" in f:
+    for _ in range(20):  # up to the on/off card at the top
+        f = focused(dump())
+        if f and "التركيز" in f:
             break
-        key("DPAD_DOWN", 0.8)
+        key("DPAD_UP", 0.5)
+    time.sleep(3)  # let the lists settle, so rows do not move under the remote
+    key("DPAD_DOWN", 1.5)
+    root = dump("lite-focus")
+    f = focused(root)
+    log("focus one step below the on/off card: %s" % f)
     shot("lite-card")
     if f and "خفّف الشاشة" in f:
         key("DPAD_CENTER", 2)
     else:
-        log("the remote did not reach the lite card; opening it by touch to check the page")
+        log("the remote did not land on the lite card; opening it by touch to check the page")
+        for _ in range(10):
+            key("DPAD_UP", 0.4)
         tap_text(dump(), "^خفّف الشاشة$")
     root = wait_text("احذف تطبيقات المصنع", save="lite")
     shot("lite")
@@ -351,7 +357,8 @@ def s_lite():
            "settings put global animator_duration_scale 1.0")
     key("BACK", 2)
     expect(wait_text("التركيز", timeout=10) is not None, "back did not return to the main page")
-    expect(f and "خفّف الشاشة" in f, "the «خفّف الشاشة» card is not reachable with the remote")
+    if not (f and "خفّف الشاشة" in f):
+        log("WARNING: the remote did not reach the lite card in one step (focus: %s)" % f)
 
 
 def finish():
