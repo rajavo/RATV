@@ -6,6 +6,7 @@ on:
     # RA Net (net/), RA Home (home/), جدول RA كورة (kora/) and the free channels list have their own workflows:
     # changing them must not publish a new RATV for the customers. Edits of this file alone do not
     # publish either; run it by hand (workflow_dispatch) if needed.
+    # README.md is only text: a change to it does not publish either.
     paths-ignore:
       - 'net/**'
       - 'kora/**'
@@ -16,6 +17,7 @@ on:
       - '.github/workflows/kora-data.yml'
       - '.github/workflows/free-channels.yml'
       - '.github/workflows/build.yml'
+      - 'README.md'
   workflow_dispatch:
 
 permissions:
