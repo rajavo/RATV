@@ -12463,3 +12463,453 @@ Se desactivó en este dispositivo porque no podía seguir el ritmo. Desactívala
 12:53:50 screenshot 73-phone-settings-2-qr.png 1920x1080
 12:53:50 phone page on port 8686
 12:53:54 screenshot 74-phone-home-subscription.png 1920x1080
+15:18:15 == launch
+15:19:02 debug.ratv.subs=http://10.0.2.2:8000
+15:19:03 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 905
+WaitTime: 907
+Complete
+15:19:05 screenshot 01-splash.png 1920x1080
+15:19:06 == login-screen
+15:19:12 focus[login-initial]: http://server.example:8080
+15:19:12 screenshot 02-login.png 1920x1080
+15:19:12 == keyboard-on-ok
+15:19:16 screenshot 03-login-keyboard.png 1920x1080
+15:19:19 == fill-with-remote
+15:19:29 focus[login-user]: username
+15:19:45 focus[login-name]: مثال: اشتراك المنزل
+15:19:49 focus[login-submit]: دخول
+15:19:49 screenshot 04-login-filled.png 1920x1080
+15:20:01 screenshot 05-home.png 1920x1080
+15:20:01 == home-focus
+15:20:02 focus[home-focus]: مباشر | RATV News HD | وثائقي الطبيعة | بدأ 15:15 · متبقي 25د | شاهد الآن
+15:20:03 screenshot 06-home-focus.png 1920x1080
+15:20:03 == tv-menu
+15:20:04 screenshot 07-tv-menu.png 1920x1080
+15:20:04 == low-latency
+15:20:04   10-30 15:19:01.887  4407  4407 I RATVNet : Wi-Fi low latency on (low latency)
+15:20:04   10-30 15:19:48.506  4407  4407 I RATVNet : keeping a connection ready to 10.0.2.2
+15:20:05 wifi locks: WifiLock{RATV:low-latency type=4 uid=1000 workSource=WorkSource{10076}}
+15:20:05 == player-remote
+15:20:16 screenshot 08-player.png 1920x1080
+15:20:20 screenshot 09-player-zap.png 1920x1080
+15:20:24 screenshot 10-player-controls.png 1920x1080
+15:20:26 screenshot 11-player-controls-moved.png 1920x1080
+15:20:30 screenshot 12-player-controls-hidden.png 1920x1080
+15:20:37 screenshot 13-home-after-player.png 1920x1080
+15:20:37 == player-numbers
+15:20:39 focus[nav-search]: مباشر | Gulf 24 FHD | Cartoon Hour | بدأ 14:45 · متبقي 24د | شاهد الآن
+15:20:42 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+15:20:45 focus[nav-search]: أفلام
+15:20:46 focus[nav-start]: أفلام
+15:20:52 focus[nav-target]: الرئيسية
+15:20:58 focus[numbers-hero]: الرئيسية
+15:21:01 focus[numbers-hero]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+15:21:04 focus[numbers-hero]: مسلسلات | 4 مسلسل
+15:21:07 focus[numbers-hero]: حسابي | الاشتراك والمستخدمون
+15:21:10 focus[numbers-hero]: Sky Sports Main
+15:21:13 focus[numbers-hero]: AR| beIN SPORTS 3 HD
+15:21:16 focus[numbers-hero]: ثمانية 3 HD
+15:21:19 focus[numbers-hero]: Desert Night (2023) | Desert Night (2023) | 2023
+15:21:22 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:21:24 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:21:27 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:21:30 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:21:33 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:21:36 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:21:39 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:21:42 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:21:45 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:21:47 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:21:50 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:21:53 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:21:56 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:21:59 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:22:02 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:22:05 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:22:08 focus[numbers-hero]: Sands of Time | Sands of Time | 2022
+15:22:09 !! RuntimeError('watch-now not focused (focus: Sands of Time | Sands of Time | 2022)')
+15:22:09 screenshot 14-fail-player-numbers.png 1920x1080
+15:22:09 == update-notes
+15:22:11 focus[nav-search]: Sands of Time | Sands of Time | 2022
+15:22:14 focus[nav-search]: Desert Night (2023) | Desert Night (2023) | 2023
+15:22:17 focus[nav-search]: ثمانية 3 HD
+15:22:20 focus[nav-search]: AR| beIN SPORTS 3 HD
+15:22:23 focus[nav-search]: Sport 1 4K
+15:22:26 focus[nav-search]: الجدول
+15:22:29 focus[nav-search]: مباشر | Gulf 24 FHD | Cartoon Hour | بدأ 14:45 · متبقي 22د | شاهد الآن
+15:22:32 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+15:22:36 focus[nav-search]: أفلام
+15:22:37 focus[nav-start]: أفلام
+15:22:43 focus[nav-target]: الرئيسية
+15:22:49 focus[update-banner]: الرئيسية
+15:22:52 focus[update-banner]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+15:22:57 screenshot 15-update-notes.png 1920x1080
+15:23:03 screenshot 16-update-notes-scrolled.png 1920x1080
+15:23:04 focus[update-notes-scrolled]: لاحقاً
+15:23:06 == movies
+15:23:08 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+15:23:11 focus[nav-search]: أفلام
+15:23:12 focus[nav-start]: أفلام
+15:23:14 focus[nav-target]: أفلام
+15:23:21 focus[movies]: Desert Night (2023) | 7.4 | Desert Night (2023)
+15:23:21 screenshot 17-movies.png 1920x1080
+15:23:27 focus[movie-detail]: تشغيل
+15:23:27 screenshot 18-movie-detail.png 1920x1080
+15:23:41 screenshot 19-player-movie-seek.png 1920x1080
+15:23:45 screenshot 20-movie-detail-after.png 1920x1080
+15:23:48 == guess-movie
+15:23:49 focus[nav-search]: Desert Night (2023) | 7.4 | Desert Night (2023)
+15:23:52 focus[nav-search]: بحث
+15:23:55 focus[nav-search]: مباشر
+15:23:57 focus[nav-start]: مباشر
+15:24:02 focus[nav-target]: أفلام
+15:24:07 focus[guess-grid]: أفلام
+15:24:10 focus[guess-grid]: الترتيب: الأحدث إضافة
+15:24:13 focus[guess-grid]: Silent Sea (2019) | 7.0 | Silent Sea (2019)
+15:24:16 focus[guess-grid]: Fast Track 4K | 4K | 5.9 | Fast Track 4K
+15:24:19 focus[guess-grid]: ليالي الصحراء | 8.2 | ليالي الصحراء
+15:24:22 focus[guess-grid]: The Long Road 2021 | 6.8 | The Long Road 2021
+15:24:27 focus[guess-detail]: تشغيل
+15:24:39 screenshot 21-guess-movie.png 1920x1080
+15:24:42 screenshot 22-guess-movie-skipped.png 1920x1080
+15:24:54 == live
+15:24:56 focus[nav-search]: Desert Night (2023) | 7.4 | Desert Night (2023)
+15:24:59 focus[nav-search]: بحث
+15:25:02 focus[nav-search]: مباشر
+15:25:04 focus[nav-start]: مباشر
+15:25:05 focus[nav-target]: مباشر
+15:25:13 focus[live]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+15:25:13 screenshot 23-live.png 1920x1080
+15:25:19 focus[live-moved]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+15:25:19 screenshot 24-live-moved.png 1920x1080
+15:25:20 == series
+15:25:21 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+15:25:25 focus[nav-search]: 3 | قناة الأخبار | Weekly Review
+15:25:29 focus[nav-search]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+15:25:32 focus[nav-search]: 1 | RATV News HD | وثائقي الطبيعة | HD
+15:25:36 focus[nav-search]: تعديل القوائم
+15:25:39 focus[nav-search]: أفلام
+15:25:41 focus[nav-start]: أفلام
+15:25:44 focus[nav-target]: مسلسلات
+15:25:50 focus[series]: Sands of Time | 8.1 | Sands of Time
+15:25:56 focus[series-detail]: تشغيل الحلقة 1
+15:25:56 screenshot 25-series-detail.png 1920x1080
+15:25:59 == matches
+15:26:00 focus[nav-search]: Sands of Time | 8.1 | Sands of Time
+15:26:03 focus[nav-search]: بحث
+15:26:06 focus[nav-search]: مباشر
+15:26:08 focus[nav-start]: مباشر
+15:26:11 focus[nav-target]: المباريات
+15:26:17 screenshot 26-matches.png 1920x1080
+15:26:19 == match-link
+15:26:19 Starting: Intent { act=android.intent.action.VIEW dat=ratv://match?home=Real Madrid&away=Barcelona&homeAr=ريال مدريد&awayAr=برشلونة&start=1793373079086&league=الدوري الإسباني pkg=com.ratv.app }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+Status: o
+15:26:22 screenshot 27-match-link.png 1920x1080
+15:26:24 focus[match-link]: Sport 1 4K | الحين: الدوري الإسباني: ريال مدريد × برشلونة
+15:26:32 screenshot 28-match-link-play.png 1920x1080
+15:26:39 == scoreboard
+15:26:41 focus[nav-search]: الآن
+15:26:44 focus[nav-search]: جدول 30 يوم
+15:26:47 focus[nav-search]: ابحث | ابحث
+15:26:50 focus[nav-search]: حسابي
+15:26:52 focus[nav-start]: حسابي
+15:27:01 focus[nav-target]: الرئيسية
+15:27:07 focus[board-hero]: مباشر | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة | بدأ 14:30 · متبقي 1س 2د | شاهد الآن
+15:27:19 screenshot 29-board.png 1920x1080
+15:27:19   --------- beginning of main
+15:27:19   --------- beginning of system
+15:27:19   10-30 15:27:06.871  4407  4407 I RATVScore: board on Sport 1 4K: 900001 (link)
+15:27:19 board: لوحة النتيجة: ريال مدريد 2 - 1 برشلونة، 23:50
+15:28:12 screenshot 30-board-goal.png 1920x1080
+15:28:20 screenshot 31-board-corner.png 1920x1080
+15:28:20 board alone at (60, 28, 638, 154)
+15:28:23 screenshot 32-board-controls.png 1920x1080
+15:28:36 focus[board-pill]: تحسين الصورة
+15:28:39 focus[board-pill]: لوحة النتيجة
+15:28:46 screenshot 33-board-pick.png 1920x1080
+15:28:50 focus[board-pick-yk]: ريال مدريد × برشلونة | الدوري الإسباني · بدأت 14:53 · من دليل البرامج | المختار
+15:28:53 focus[board-pick-yk]: ن | الشمال × نادي قطر | دوري نجوم قطر · بدأت 15:01
+15:29:00 screenshot 34-board-yk.png 1920x1080
+15:29:00 board: لوحة النتيجة: الشمال 1 - 0 نادي قطر، مباشر
+15:29:10 focus[board-pill2]: تحسين الصورة
+15:29:13 focus[board-pill2]: لوحة النتيجة
+15:29:19 focus[board-hide]: ن | الشمال × نادي قطر | دوري نجوم قطر · بدأت 15:01 | المختار
+15:29:23 focus[board-hide]: ا | ا | الهلال × النصر | دوري روشن السعودي · بدأت 15:06
+15:29:26 focus[board-hide]: ا | ا | الاتحاد × الدرعية | دوري روشن السعودي · بدأت 14:56
+15:29:29 focus[board-hide]: بدون لوحة | تختفي من هذي القناة لين تخلص المباراة
+15:29:34 screenshot 35-board-hidden.png 1920x1080
+15:29:38 == sports-guide
+15:29:40 focus[nav-search]: مباشر | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | بدأ 14:30 · متبقي 1س 0د | شاهد الآن
+15:29:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+15:29:46 focus[nav-search]: أفلام
+15:29:47 focus[nav-start]: أفلام
+15:29:54 focus[nav-target]: الرئيسية
+15:30:00 focus[guide-hero]: الرئيسية
+15:30:03 focus[guide-hero]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+15:30:05 focus[guide-hero]: مسلسلات | 4 مسلسل
+15:30:08 focus[guide-hero]: حسابي | الاشتراك والمستخدمون
+15:30:11 focus[guide-hero]: Desert Night (2023) | متبقي 1 د
+15:30:14 focus[guide-hero]: المباريات | مباريات اليوم: 5
+15:30:17 focus[guide-hero]: Desert Night (2023) | متبقي 1 د
+15:30:20 focus[guide-hero]: المباريات | مباريات اليوم: 5
+15:30:23 focus[guide-hero]: Desert Night (2023) | متبقي 1 د
+15:30:26 focus[guide-hero]: المباريات | مباريات اليوم: 5
+15:30:29 focus[guide-hero]: Desert Night (2023) | متبقي 1 د
+15:30:31 focus[guide-hero]: المباريات | مباريات اليوم: 5
+15:30:34 focus[guide-hero]: Desert Night (2023) | متبقي 1 د
+15:30:37 focus[guide-hero]: المباريات | مباريات اليوم: 5
+15:30:40 focus[guide-hero]: Desert Night (2023) | متبقي 1 د
+15:30:43 focus[guide-hero]: المباريات | مباريات اليوم: 5
+15:30:46 focus[guide-hero]: Desert Night (2023) | متبقي 1 د
+15:30:49 focus[guide-hero]: المباريات | مباريات اليوم: 5
+15:30:52 focus[guide-hero]: Desert Night (2023) | متبقي 1 د
+15:30:55 focus[guide-hero]: المباريات | مباريات اليوم: 5
+15:30:58 focus[guide-hero]: Desert Night (2023) | متبقي 1 د
+15:31:01 focus[guide-hero]: المباريات | مباريات اليوم: 5
+15:31:03 focus[guide-hero]: Desert Night (2023) | متبقي 1 د
+15:31:06 focus[guide-hero]: المباريات | مباريات اليوم: 5
+15:31:09 focus[guide-hero]: Desert Night (2023) | متبقي 1 د
+15:31:48 !! RuntimeError('watch-now not focused (focus: Desert Night (2023) | متبقي 1 د)')
+15:31:50 screenshot 36-fail-sports-guide.png 1920x1080
+15:31:50 == intro
+15:31:53 focus[nav-search]: Add app to favorites | Add app to favorites
+15:31:56 focus[nav-search]: AMC+ | Yaga | A private investigator and a cop search for a missing heir in a coastal town tangled in ancient magic | NEW HORROR MYSTERY SERIES | Watch on AMC+
+15:32:01 focus[nav-search]: Select to speak your search query
+15:32:04 focus[nav-search]: Select to speak your search query
+15:32:09 focus[nav-search]: Select to speak your search query
+15:32:13 focus[nav-search]: Select to speak your search query
+15:32:17 focus[nav-search]: Select to speak your search query
+15:32:21 focus[nav-search]: Select to speak your search query
+15:32:25 focus[nav-search]: Select to speak your search query
+15:32:29 focus[nav-search]: Select to speak your search query
+15:32:33 focus[nav-search]: Select to speak your search query
+15:32:37 focus[nav-search]: Select to speak your search query
+15:32:41 focus[nav-search]: Select to speak your search query
+15:32:45 focus[nav-search]: Select to speak your search query
+15:32:49 focus[nav-search]: Select to speak your search query
+15:32:53 focus[nav-search]: Select to speak your search query
+15:32:57 focus[nav-search]: Select to speak your search query
+15:33:02 focus[nav-search]: Select to speak your search query
+15:33:06 focus[nav-search]: Select to speak your search query
+15:33:10 focus[nav-search]: Select to speak your search query
+15:33:14 focus[nav-search]: Select to speak your search query
+15:33:18 focus[nav-search]: Select to speak your search query
+15:33:22 focus[nav-search]: Select to speak your search query
+15:33:26 focus[nav-search]: Select to speak your search query
+15:33:30 focus[nav-search]: Select to speak your search query
+15:33:34 focus[nav-search]: Select to speak your search query
+15:33:40 focus[nav-search]: Select to speak your search query
+15:33:44 focus[nav-search]: Select to speak your search query
+15:33:47 focus[nav-search]: Select to speak your search query
+15:33:52 focus[nav-search]: Select to speak your search query
+15:33:55 focus[nav-start]: Select to speak your search query
+15:33:57 screenshot 37-stuck-before-مسلسلات.png 1920x1080
+15:34:36 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
+15:34:39 screenshot 38-fail-intro.png 1920x1080
+15:34:39 == settings
+15:34:41 focus[nav-search]: Add app to favorites | Add app to favorites
+15:34:45 focus[nav-search]: AMC+ | Yaga | A private investigator and a cop search for a missing heir in a coastal town tangled in ancient magic | NEW HORROR MYSTERY SERIES | Watch on AMC+
+15:34:49 focus[nav-search]: Select to speak your search query
+15:34:53 focus[nav-search]: Select to speak your search query
+15:34:58 focus[nav-search]: Select to speak your search query
+15:35:02 focus[nav-search]: Select to speak your search query
+15:35:08 focus[nav-search]: Select to speak your search query
+15:35:11 focus[nav-search]: Select to speak your search query
+15:35:15 focus[nav-search]: Select to speak your search query
+15:35:19 focus[nav-search]: Select to speak your search query
+15:35:23 focus[nav-search]: Select to speak your search query
+15:35:28 focus[nav-search]: Select to speak your search query
+15:35:32 focus[nav-search]: Select to speak your search query
+15:35:36 focus[nav-search]: Select to speak your search query
+15:35:40 focus[nav-search]: Select to speak your search query
+15:35:44 focus[nav-search]: Select to speak your search query
+15:35:48 focus[nav-search]: Select to speak your search query
+15:35:52 focus[nav-search]: Select to speak your search query
+15:35:57 focus[nav-search]: Select to speak your search query
+15:36:01 focus[nav-search]: Select to speak your search query
+15:36:05 focus[nav-search]: Select to speak your search query
+15:36:09 focus[nav-search]: Select to speak your search query
+15:36:13 focus[nav-search]: Select to speak your search query
+15:36:18 focus[nav-search]: Select to speak your search query
+15:36:22 focus[nav-search]: Select to speak your search query
+15:36:26 focus[nav-search]: Select to speak your search query
+15:36:30 focus[nav-search]: Select to speak your search query
+15:36:34 focus[nav-search]: Select to speak your search query
+15:36:38 focus[nav-search]: Select to speak your search query
+15:36:42 focus[nav-search]: Select to speak your search query
+15:36:46 focus[nav-start]: Select to speak your search query
+15:36:48 screenshot 39-stuck-before-حسابي.png 1920x1080
+15:36:48 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
+15:36:49 screenshot 40-fail-settings.png 1920x1080
+15:36:49 == settings-deep
+15:36:52 focus[nav-search]: Select to speak your search query
+15:36:55 focus[nav-search]: Select to speak your search query
+15:37:00 focus[nav-search]: Select to speak your search query
+15:37:04 focus[nav-search]: Select to speak your search query
+15:37:08 focus[nav-search]: Select to speak your search query
+15:37:12 focus[nav-search]: Select to speak your search query
+15:37:16 focus[nav-search]: Select to speak your search query
+15:37:20 focus[nav-search]: Select to speak your search query
+15:37:24 focus[nav-search]: Select to speak your search query
+15:37:28 focus[nav-search]: Select to speak your search query
+15:37:32 focus[nav-search]: Select to speak your search query
+15:37:36 focus[nav-search]: Select to speak your search query
+15:37:40 focus[nav-search]: Select to speak your search query
+15:37:44 focus[nav-search]: Select to speak your search query
+15:37:48 focus[nav-search]: Select to speak your search query
+15:37:52 focus[nav-search]: Select to speak your search query
+15:37:56 focus[nav-search]: Select to speak your search query
+15:38:00 focus[nav-search]: Select to speak your search query
+15:38:04 focus[nav-search]: Select to speak your search query
+15:38:08 focus[nav-search]: Select to speak your search query
+15:38:12 focus[nav-search]: Select to speak your search query
+15:38:16 focus[nav-search]: Select to speak your search query
+15:38:20 focus[nav-search]: Select to speak your search query
+15:38:24 focus[nav-search]: Select to speak your search query
+15:38:28 focus[nav-search]: Select to speak your search query
+15:38:32 focus[nav-search]: Select to speak your search query
+15:38:36 focus[nav-search]: Select to speak your search query
+15:38:40 focus[nav-search]: Select to speak your search query
+15:38:44 focus[nav-search]: Select to speak your search query
+15:38:48 focus[nav-search]: Select to speak your search query
+15:38:52 focus[nav-start]: Select to speak your search query
+15:38:54 screenshot 41-stuck-before-حسابي.png 1920x1080
+15:38:54 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
+15:38:56 screenshot 42-fail-settings-deep.png 1920x1080
+15:38:56 == enhance
+15:38:58 focus[nav-search]: Select to speak your search query
+15:39:02 focus[nav-search]: Select to speak your search query
+15:39:06 focus[nav-search]: Select to speak your search query
+15:39:10 focus[nav-search]: Select to speak your search query
+15:39:14 focus[nav-search]: Select to speak your search query
+15:39:18 focus[nav-search]: Select to speak your search query
+15:39:22 focus[nav-search]: Select to speak your search query
+15:39:26 focus[nav-search]: Select to speak your search query
+15:39:30 focus[nav-search]: Select to speak your search query
+15:39:34 focus[nav-search]: Select to speak your search query
+15:39:38 focus[nav-search]: Select to speak your search query
+15:39:42 focus[nav-search]: Select to speak your search query
+15:39:47 focus[nav-search]: Select to speak your search query
+15:39:51 focus[nav-search]: Select to speak your search query
+15:39:55 focus[nav-search]: Select to speak your search query
+15:39:59 focus[nav-search]: Select to speak your search query
+15:40:02 focus[nav-search]: Select to speak your search query
+15:40:07 focus[nav-search]: Select to speak your search query
+15:40:10 focus[nav-search]: Select to speak your search query
+15:40:14 focus[nav-search]: Select to speak your search query
+15:40:18 focus[nav-search]: Select to speak your search query
+15:40:22 focus[nav-search]: Select to speak your search query
+15:40:26 focus[nav-search]: Select to speak your search query
+15:40:30 focus[nav-search]: Select to speak your search query
+15:40:34 focus[nav-search]: Select to speak your search query
+15:40:39 focus[nav-search]: Select to speak your search query
+15:40:43 focus[nav-search]: Select to speak your search query
+15:40:47 focus[nav-search]: Select to speak your search query
+15:40:50 focus[nav-search]: Select to speak your search query
+15:40:54 focus[nav-search]: Select to speak your search query
+15:40:59 focus[nav-start]: Select to speak your search query
+15:41:01 screenshot 43-stuck-before-حسابي.png 1920x1080
+15:41:39 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
+15:41:41 screenshot 44-fail-enhance.png 1920x1080
+15:41:41 == languages
+15:41:49 screenshot 45-home-en.png 1920x1080
+15:41:51 focus[nav-search]: Live | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | Started 14:30 · 48m left | Watch now
+15:41:54 focus[nav-search]: New update available (9.9.9) — press to update
+15:41:57 focus[nav-search]: Matches
+15:41:59 focus[nav-start]: Matches
+15:42:05 focus[nav-target]: My account
+15:42:10 screenshot 46-settings-en.png 1920x1080
+15:42:11 focus[settings-en]: Add user
+15:42:14 focus[settings-en]: Delete اشتراكي
+15:42:17 focus[settings-en]: اشتراكي | test · 10.0.2.2:8000
+15:42:19 focus[settings-en]: Internet speed test
+15:42:22 focus[settings-en]: Live stream steadiness | Automatic (recommended)
+15:42:25 focus[settings-en]: Play the picture with the TV's hardware (experimental) | Off
+15:42:27 focus[settings-en]: Open the last channel on start | Off
+15:42:30 focus[settings-en]: Scoreboard during matches | On
+15:42:33 focus[settings-en]: Skip intro | Show a “Skip intro” button (recommended)
+15:42:36 focus[settings-en]: Subtitle language | Arabic
+15:42:38 focus[settings-en]: Update the guide automatically | On
+15:42:41 focus[settings-en]: Block adult content | Off
+15:42:44 focus[settings-en]: Language | English
+15:42:48 screenshot 47-language-en.png 1920x1080
+15:42:52 focus[nav-search]: Language | English
+15:42:55 focus[nav-search]: Block adult content | Off
+15:42:58 focus[nav-search]: Update the guide automatically | On
+15:43:01 focus[nav-search]: Subtitle language | Arabic
+15:43:04 focus[nav-search]: Skip intro | Show a “Skip intro” button (recommended)
+15:43:07 focus[nav-search]: Scoreboard during matches | On
+15:43:10 focus[nav-search]: Open the last channel on start | Off
+15:43:13 focus[nav-search]: Play the picture with the TV's hardware (experimental) | Off
+15:43:16 focus[nav-search]: Live stream steadiness | Automatic (recommended)
+15:43:19 focus[nav-search]: Internet speed test
+15:43:22 focus[nav-search]: اشتراكي | test · 10.0.2.2:8000
+15:43:25 focus[nav-search]: Delete اشتراكي
+15:43:28 focus[nav-search]: Add user
+15:43:32 focus[nav-search]: Home
+15:43:33 focus[nav-start]: Home
+15:43:36 focus[nav-target]: Live
+15:43:42 screenshot 48-live-en.png 1920x1080
+15:43:51 screenshot 49-home-es.png 1920x1080
+15:43:52 focus[nav-search]: En vivo | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | Empezó 14:30 · quedan 46 min | Ver ahora
+15:43:55 focus[nav-search]: Nueva actualización disponible (9.9.9) — pulsa para actualizar
+15:43:58 focus[nav-search]: Series
+15:44:00 focus[nav-start]: Series
+15:44:03 focus[nav-target]: Mi cuenta
+15:44:08 screenshot 50-settings-es.png 1920x1080
+15:44:09 focus[settings-es]: Añadir usuario
+15:44:12 focus[settings-es]: Eliminar اشتراكي
+15:44:15 focus[settings-es]: اشتراكي | test · 10.0.2.2:8000
+15:44:17 focus[settings-es]: Test de velocidad
+15:44:20 focus[settings-es]: Estabilidad en vivo | Automático (recomendado)
+15:44:23 focus[settings-es]: Reproducir la imagen con el hardware de la TV (experimental) | Desactivado
+15:44:25 focus[settings-es]: Abrir el último canal al iniciar | Desactivado
+15:44:28 focus[settings-es]: Marcador durante los partidos | Activado
+15:44:31 focus[settings-es]: Saltar intro | Mostrar un botón «Saltar intro» (recomendado)
+15:44:33 focus[settings-es]: Idioma de subtítulos | Árabe
+15:44:36 focus[settings-es]: Actualizar la guía automáticamente | Activado
+15:44:39 focus[settings-es]: Bloquear contenido para adultos | Desactivado
+15:44:41 focus[settings-es]: Idioma de la app · Language | Español
+15:44:46 screenshot 51-language-es.png 1920x1080
+15:44:49 focus[nav-search]: Idioma de la app · Language | Español
+15:44:52 focus[nav-search]: Bloquear contenido para adultos | Desactivado
+15:44:55 focus[nav-search]: Actualizar la guía automáticamente | Activado
+15:44:59 focus[nav-search]: Idioma de subtítulos | Árabe
+15:45:02 focus[nav-search]: Saltar intro | Mostrar un botón «Saltar intro» (recomendado)
+15:45:05 focus[nav-search]: Marcador durante los partidos | Activado
+15:45:08 focus[nav-search]: Abrir el último canal al iniciar | Desactivado
+15:45:11 focus[nav-search]: Reproducir la imagen con el hardware de la TV (experimental) | Desactivado
+15:45:14 focus[nav-search]: Estabilidad en vivo | Automático (recomendado)
+15:45:17 focus[nav-search]: Test de velocidad
+15:45:20 focus[nav-search]: اشتراكي | test · 10.0.2.2:8000
+15:45:23 focus[nav-search]: Eliminar اشتراكي
+15:45:26 focus[nav-search]: Añadir usuario
+15:45:29 focus[nav-search]: Partidos
+15:45:31 focus[nav-start]: Partidos
+15:45:34 focus[nav-target]: En vivo
+15:45:40 screenshot 52-live-es.png 1920x1080
+15:45:45 == phone-link
+15:45:46 focus[nav-search]: مباشر | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | بدأ 14:30 · متبقي 44د | شاهد الآن
+15:45:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+15:45:52 focus[nav-search]: أفلام
+15:45:54 focus[nav-start]: أفلام
+15:45:59 focus[nav-target]: حسابي
+15:46:04 focus[phone-settings]: إضافة مستخدم
+15:46:15 screenshot 53-phone-settings-qr.png 1920x1080
+15:46:15 phone page on port 8686
+15:46:19 screenshot 54-phone-home.png 1920x1080
+15:46:19 == phone-subscription
+15:46:20 focus[nav-search]: مباشر | RATV News HD | Cartoon Hour | بدأ 15:45 · متبقي 58د | شاهد الآن
+15:46:23 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+15:46:26 focus[nav-search]: أفلام
+15:46:28 focus[nav-start]: أفلام
+15:46:32 focus[nav-target]: حسابي
+15:46:38 focus[phone-settings-2]: إضافة مستخدم
+15:46:49 screenshot 55-phone-settings-2-qr.png 1920x1080
+15:46:49 phone page on port 8686
+15:46:53 screenshot 56-phone-home-subscription.png 1920x1080
