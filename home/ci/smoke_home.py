@@ -116,6 +116,15 @@ def s_open():
         expect(s in t, "missing prayer: " + s)
     expect(re.search(r"\d{1,2}:\d\d [صم]", t), "no prayer time on the screen")
     expect("هـ" in t, "no hijri date")
+    expect("قال رسول الله ﷺ" in t, "no hadith")
+    first = re.search(r"«([^»]+)»", t)
+    sh("input keyevent KEYCODE_HOME")  # away and back: a new hadith
+    time.sleep(2)
+    sh("am start -W -n %s/.MainActivity" % PKG)
+    root = wait_text("قال رسول الله")
+    second = re.search(r"«([^»]+)»", texts(root))
+    log("hadiths: %s / %s" % (first and first.group(1), second and second.group(1)))
+    expect(first and second and first.group(1) != second.group(1), "the hadith did not change")
 
 
 def s_remote():
@@ -156,6 +165,49 @@ def s_city():
     log("after picking: " + texts(root)[:300])
 
 
+def tile_x(root, label):
+    """The middle of the app tile's name on the screen (x), or None."""
+    if root is None:
+        return None
+    for n in root.iter("node"):
+        if (n.get("text") or "") == label and n.get("class") == "android.widget.TextView":
+            m = re.findall(r"\d+", n.get("bounds") or "")
+            if len(m) == 4:
+                return (int(m[0]) + int(m[2])) // 2
+    return None
+
+
+def s_move():
+    """Long OK picks an app up, the arrows move it, OK puts it down, and the order stays after a restart."""
+    sh("am force-stop %s" % PKG)
+    sh("am start -W -n %s/.MainActivity" % PKG)
+    time.sleep(3)
+    root = dump()
+    label = focused(root)
+    x0 = tile_x(root, label)
+    log("first app: %s at x=%s" % (label, x0))
+    expect(label and x0, "no first app selected")
+    sh("input keyevent --longpress KEYCODE_DPAD_CENTER")
+    time.sleep(1.5)
+    shot("picked-up")
+    expect("حرّك" in texts(dump()), "a long OK did not pick the app up")
+    key("DPAD_LEFT", 1)
+    key("DPAD_CENTER", 1.5)
+    root = dump()
+    shot("moved-app")
+    x1 = tile_x(root, label)
+    log("after moving: x=%s" % x1)
+    expect(x1 is not None and x1 < x0, "the app did not move one place to the left")
+    expect(sh("dumpsys activity activities | grep -E 'mResumedActivity|topResumedActivity'").find(PKG) >= 0,
+           "putting the app down opened it instead")
+    sh("am force-stop %s" % PKG)
+    sh("am start -W -n %s/.MainActivity" % PKG)
+    time.sleep(3)
+    x2 = tile_x(dump(), label)
+    log("after a restart: x=%s" % x2)
+    expect(x2 is not None and abs(x2 - x1) < 20, "the new order was not kept")
+
+
 def finish():
     crash = adb("logcat", "-d", "-b", "crash", timeout=30)
     with open(os.path.join(OUT, "crash.txt"), "w", encoding="utf-8") as f:
@@ -169,6 +221,6 @@ def finish():
 
 
 if __name__ == "__main__":
-    for name, fn in [("open", s_open), ("remote", s_remote), ("city", s_city)]:
+    for name, fn in [("open", s_open), ("remote", s_remote), ("city", s_city), ("move", s_move)]:
         step(name, fn)
     finish()

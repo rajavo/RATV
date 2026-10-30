@@ -30,7 +30,28 @@ object Apps {
                 seen[pkg] = Tile(pkg, ri.loadLabel(pm).toString(), banner, icon)
             }
         }
-        return seen.values.sortedWith(compareBy({ FIRST.indexOf(it.pkg).let { i -> if (i < 0) FIRST.size else i } }, { it.label.lowercase() }))
+        val byName = seen.values.sortedWith(compareBy({ FIRST.indexOf(it.pkg).let { i -> if (i < 0) FIRST.size else i } }, { it.label.lowercase() }))
+        // The viewer's own order first; apps installed since then go at the end.
+        val order = savedOrder(context)
+        if (order.isEmpty()) return byName
+        val rank = order.withIndex().associate { it.value to it.index }
+        return byName.sortedBy { rank[it.pkg] ?: Int.MAX_VALUE }
+    }
+
+    private fun savedOrder(context: Context): List<String> =
+        context.getSharedPreferences("rahome", Context.MODE_PRIVATE).getString("order", null)
+            ?.split('\n')?.filter { it.isNotBlank() }.orEmpty()
+
+    fun saveOrder(context: Context, pkgs: List<String>) {
+        context.getSharedPreferences("rahome", Context.MODE_PRIVATE).edit().putString("order", pkgs.joinToString("\n")).apply()
+    }
+
+    /** [list] with the item at [from] moved to [to] (kept inside the list). */
+    fun <T> moved(list: List<T>, from: Int, to: Int): List<T> {
+        if (from !in list.indices) return list
+        val target = to.coerceIn(0, list.size - 1)
+        if (target == from) return list
+        return list.toMutableList().apply { add(target, removeAt(from)) }
     }
 
     fun open(context: Context, pkg: String): Boolean {

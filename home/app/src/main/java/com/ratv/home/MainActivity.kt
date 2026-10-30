@@ -1,6 +1,7 @@
 package com.ratv.home
 
 import android.content.Intent
+import android.view.KeyEvent
 import android.icu.util.IslamicCalendar
 import android.icu.util.ULocale
 import android.os.Bundle
@@ -8,7 +9,11 @@ import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
@@ -58,6 +63,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -223,6 +231,17 @@ private fun HomeScreen(resumed: Int) {
     val apps by produceState<List<Tile>?>(null, resumed) {
         value = withContext(Dispatchers.IO) { Apps.load(context) }
     }
+    val hadith by produceState<Hadith?>(null, resumed) {
+        while (true) {
+            value = Hadiths.next(context)
+            delay(5 * 60_000)
+        }
+    }
+    // The viewer's order while moving an app; saved when the move ends.
+    var order by remember { mutableStateOf<List<Tile>?>(null) }
+    LaunchedEffect(apps) { order = apps }
+    var moving by remember { mutableStateOf<String?>(null) }
+    val swallowUp = remember { booleanArrayOf(false) }
     val firstTile = remember { FocusRequester() }
     val grid = rememberLazyGridState()
     val scope = rememberCoroutineScope()
@@ -255,14 +274,57 @@ private fun HomeScreen(resumed: Int) {
                     horizontalArrangement = Arrangement.spacedBy(28.dp),
                     verticalArrangement = Arrangement.spacedBy(34.dp)
                 ) {
-                    item(span = { GridItemSpan(maxLineSpan) }, key = "shelf") { PrayerShelf(day) }
-                    val list = apps
+                    item(span = { GridItemSpan(maxLineSpan) }, key = "shelf") { PrayerShelf(day, hadith) }
+                    val list = order
                     if (list == null) {
                         item(span = { GridItemSpan(maxLineSpan) }) { Text("جارٍ تحميل التطبيقات…", style = t(18, color = C.Text2)) }
                     } else {
+                        item(span = { GridItemSpan(maxLineSpan) }, key = "hint") {
+                            val m = moving?.let { pkg -> list.firstOrNull { it.pkg == pkg }?.label }
+                            Text(
+                                if (m != null) "حرّك «$m» بالأسهم، واضغط OK لما تخلص"
+                                else "تطبيقاتك · اضغط مطوّلاً على OK فوق أي تطبيق عشان تغيّر مكانه",
+                                style = t(16, m != null, if (m != null) C.Gold else C.Text3)
+                            )
+                        }
                         itemsIndexed(list, key = { _, it -> it.pkg }) { i, tile ->
-                            val m = if (i == 0) Modifier.focusRequester(firstTile) else Modifier
-                            AppTile(tile, if (i < 5) m.then(toTop) else m) { Apps.open(context, tile.pkg) }
+                            // Long OK (or the menu key) picks the app up; the arrows move it; OK puts it down.
+                            val keys = Modifier.onPreviewKeyEvent { e ->
+                                val code = e.nativeKeyEvent.keyCode
+                                val ok = code == KeyEvent.KEYCODE_DPAD_CENTER || code == KeyEvent.KEYCODE_ENTER
+                                if (moving == tile.pkg) {
+                                    if (e.type == KeyEventType.KeyDown) {
+                                        val step = when (code) {
+                                            KeyEvent.KEYCODE_DPAD_LEFT -> 1 // right to left: the next app is on the left
+                                            KeyEvent.KEYCODE_DPAD_RIGHT -> -1
+                                            KeyEvent.KEYCODE_DPAD_DOWN -> 5
+                                            KeyEvent.KEYCODE_DPAD_UP -> -5
+                                            else -> 0
+                                        }
+                                        if (step != 0) {
+                                            order = Apps.moved(list, i, i + step)
+                                        } else if (ok || code == KeyEvent.KEYCODE_BACK || code == KeyEvent.KEYCODE_MENU) {
+                                            moving = null
+                                            swallowUp[0] = true
+                                            Apps.saveOrder(context, (order ?: list).map { it.pkg })
+                                        }
+                                    }
+                                    true
+                                } else if (e.type == KeyEventType.KeyDown && ((ok && e.nativeKeyEvent.repeatCount > 0) || code == KeyEvent.KEYCODE_MENU)) {
+                                    moving = tile.pkg
+                                    swallowUp[0] = true
+                                    true
+                                } else if (e.type == KeyEventType.KeyUp && swallowUp[0] && (ok || code == KeyEvent.KEYCODE_BACK || code == KeyEvent.KEYCODE_MENU)) {
+                                    swallowUp[0] = false
+                                    true
+                                } else {
+                                    false
+                                }
+                            }
+                            val m = if (i == 0) keys.focusRequester(firstTile) else keys
+                            AppTile(tile, moving == tile.pkg, if (i < 5) m.then(toTop) else m) {
+                                if (moving == null) Apps.open(context, tile.pkg)
+                            }
                         }
                         item(key = "city") {
                             ActionTile("المدينة", city.name) { picking = true }
@@ -323,7 +385,7 @@ private fun TopBar(day: Today, city: String) {
 }
 
 @Composable
-private fun PrayerShelf(day: Today) {
+private fun PrayerShelf(day: Today, hadith: Hadith?) {
     val shape = RoundedCornerShape(30.dp)
     Column(
         Modifier
@@ -360,18 +422,34 @@ private fun PrayerShelf(day: Today) {
                 }
             }
         }
+        if (hadith != null) {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text("قال رسول الله ﷺ: «${hadith.text}»", style = t(22, true), maxLines = 3, overflow = TextOverflow.Ellipsis)
+                Text("عن ${hadith.narrator} · ${hadith.source}", style = t(15, color = C.Text3))
+            }
+        }
     }
 }
 
 @Composable
-private fun AppTile(tile: Tile, modifier: Modifier, onClick: () -> Unit) {
+private fun AppTile(tile: Tile, moving: Boolean, modifier: Modifier, onClick: () -> Unit) {
     val shape = RoundedCornerShape(16.dp)
+    // Picked up to be moved: it wiggles with a gold edge, like Apple TV.
+    val angle = if (moving) {
+        val wiggle by rememberInfiniteTransition(label = "wiggle")
+            .animateFloat(-1.5f, 1.5f, infiniteRepeatable(tween(140), RepeatMode.Reverse), label = "angle")
+        wiggle
+    } else {
+        0f
+    }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier
+                .graphicsLayer { rotationZ = angle }
                 .fillMaxWidth()
                 .aspectRatio(16f / 9f)
                 .lift(shape, onClick = onClick)
+                .border(BorderStroke(if (moving) 3.dp else 0.dp, if (moving) C.Gold else Color.Transparent), shape)
                 .background(Color(0xFF1E2440)),
             contentAlignment = Alignment.Center
         ) {
