@@ -190,7 +190,7 @@ def t_fill_with_remote():
     S.shot("login-filled")
     expect(f is not None and "دخول" in f, "submit button not reached with the down arrow (focus: %s)" % f)
     key("DPAD_CENTER", pause=2.0)
-    _, n = S.wait_for(timeout=90, text="الرئيسية", save="home")
+    _, n = wait_home(90, save="home")
     expect(n is not None, "home not reached")
     time.sleep(6)
     S.shot("home")
@@ -199,15 +199,15 @@ def t_fill_with_remote():
 def t_home_focus():
     _, f = log_focus("home-focus")
     S.shot("home-focus")
-    expect(f is not None and "RATV News HD" in f, "hero not focused (focus: %s)" % f)
+    expect(f is not None and "بث مباشر" in f, "the live tile not focused (focus: %s)" % f)
 
 
 def t_tv_menu():
-    """The start screen on TV: the live channel on the left; beside it the four tiles and the three buttons."""
+    """The start screen on TV: the live tile on the left, the four tiles in the middle, the three buttons on the right."""
     root = S.dump("tv-menu")
     S.shot("tv-menu")
     texts = S.all_texts(root)
-    for word in ("أفلام", "مسلسلات", "المباريات", "الاشتراك والمستخدمون", "الإعدادات", "تحديث المحتوى", "بحث"):
+    for word in ("بث مباشر", "أفلام", "مسلسلات", "المباريات", "حسابي", "الإعدادات", "تحديث المحتوى", "خروج"):
         expect(word in texts, "the start screen has no «%s»" % word)
 
 
@@ -224,7 +224,7 @@ def t_low_latency():
 
 
 def t_player_remote():
-    key("DPAD_CENTER", pause=10)
+    play_from_home("player-hero", pause=10)
     S.shot("player")
     key("DPAD_DOWN", pause=2)
     S.shot("player-zap")
@@ -238,25 +238,63 @@ def t_player_remote():
     key("BACK", pause=1.5)
     S.shot("player-controls-hidden")
     key("BACK", pause=2.5)
-    _, n = S.wait_for(timeout=15, text="الرئيسية", save="home-after-player")
+    _, n = wait_home(15, save="home-after-player")
     S.shot("home-after-player")
     expect(n is not None, "Back did not return from the player")
 
 
+def at_home():
+    """The home screen is the one with the live tile and the refresh button; the other screens have a top bar."""
+    texts = S.all_texts(S.dump())
+    return "بث مباشر" in texts and "تحديث المحتوى" in texts
+
+
+def wait_home(timeout, save=None):
+    """Waits for the home screen (see at_home); returns (found, root) like S.wait_for."""
+    end = time.time() + timeout
+    while True:
+        root = S.dump(save) if save else S.dump()
+        texts = S.all_texts(root)
+        if "بث مباشر" in texts and "تحديث المحتوى" in texts:
+            return True, root
+        if time.time() > end:
+            return False, None
+        time.sleep(1)
+
+
 def focus_home_item(word, tag, presses=5):
-    """From the top bar, to the home screen's item that holds [word] (the menu's tiles are not one column)."""
-    go_tab("الرئيسية")
-    time.sleep(2)
+    """To the home screen's item that holds [word]; from another screen, the top bar goes home first."""
+    if not at_home():
+        go_tab("الرئيسية")
+        time.sleep(2)
     return focus_towards(word, tag, tries=10 + 3 * presses)
+
+
+def play_from_home(tag, pause=9):
+    """From the home screen: the live tile opens the channels, and OK on the channel with the focus plays it."""
+    f = focus_home_item("بث مباشر", tag)
+    expect(f and "بث مباشر" in f, "the live tile not focused (focus: %s)" % f)
+    key("DPAD_CENTER", pause=3)
+    _, f = log_focus(tag + "-channels")
+    expect(f is not None, "no channel focused on the live screen")
+    key("DPAD_CENTER", pause=pause)
+
+
+def open_from_home_or_bar(label):
+    """A section: from its tile when the home screen is shown, else from the top bar."""
+    if at_home():
+        f = focus_home_item(label, "tile-" + label)
+        expect(f and label in f, "the %s tile not focused (focus: %s)" % (label, f))
+        key("DPAD_CENTER", pause=1)
+    else:
+        go_tab(label)
 
 
 def t_player_numbers():
     """Number keys open a channel by its number; the previous-channel key goes back to the one before.
     Changing channel is no stall of the line: it must not raise the steadiness wait."""
     S.shell("logcat -c")
-    f = focus_home_item("شاهد الآن", "numbers-hero")
-    expect(f and "شاهد الآن" in f, "watch-now not focused (focus: %s)" % f)
-    key("DPAD_CENTER", pause=9)
+    play_from_home("numbers-hero", pause=9)
     try:
         S.shell("input keyevent KEYCODE_5")
         time.sleep(0.6)
@@ -280,7 +318,7 @@ def t_player_numbers():
         # Out of the player whatever happened, so the next steps start from the home screen.
         for _ in range(3):
             key("BACK", pause=2)
-            _, n = S.wait_for(timeout=4, text="الرئيسية")
+            _, n = wait_home(4)
             if n is not None:
                 break
 
@@ -307,7 +345,7 @@ def t_update_notes():
 
 
 def t_movies():
-    go_tab("أفلام")
+    open_from_home_or_bar("أفلام")
     _, n = S.wait_for(timeout=20, contains="Desert Night")
     time.sleep(1.5)
     _, f = log_focus("movies")
@@ -485,7 +523,7 @@ def t_intro():
     finally:
         for _ in range(4):
             key("BACK", pause=1.5)
-            _, n = S.wait_for(timeout=4, text="الرئيسية")
+            _, n = wait_home(4)
             if n is not None:
                 break
 
@@ -573,9 +611,7 @@ def t_enhance():
         key("DPAD_CENTER", pause=1.5)
         S.shot("enhance-setting")
         go_tab("الرئيسية", tries=40)
-        f = focus_home_item("شاهد الآن", "enhance-hero")
-        expect(f and "شاهد الآن" in f, "watch-now not focused (focus: %s)" % f)
-        key("DPAD_CENTER", pause=8)
+        play_from_home("enhance-hero", pause=8)
         # Kids Fun (7): its name says nothing; its 720x576 picture is seen and enhanced before it shows.
         # (The digits reach the player with or without its controls up.)
         S.shell("input keyevent KEYCODE_7")
@@ -637,7 +673,7 @@ def t_enhance():
         S.shell("setprop debug.ratv.enhancegpu ''")
         for _ in range(4):
             key("BACK", pause=1.5)
-            _, n = S.wait_for(timeout=4, text="الرئيسية")
+            _, n = wait_home(4)
             if n is not None:
                 break
 
@@ -702,9 +738,7 @@ def t_scoreboard():
     (a Yallakora one); and the board hidden on the channel."""
     S.shell("logcat -c")
     try:
-        f = focus_home_item("شاهد الآن", "board-hero")
-        expect(f and "شاهد الآن" in f, "watch-now not focused (focus: %s)" % f)
-        key("DPAD_CENTER", pause=6)
+        play_from_home("board-hero", pause=6)
         S.shell("input keyevent KEYCODE_4")  # Sport 1 HD: its guide says الدوري الإسباني: ريال مدريد × برشلونة
         n = wait_board("board", timeout=60)
         S.shot("board")
@@ -781,7 +815,7 @@ def t_scoreboard():
     finally:
         for _ in range(4):
             key("BACK", pause=1.5)
-            _, n = S.wait_for(timeout=4, text="الرئيسية")
+            _, n = wait_home(4)
             if n is not None:
                 break
 
@@ -800,9 +834,7 @@ def t_sports_guide():
     "beIN Sports Mena 3"/"Mena 1"), in the controls and on the scoreboard; a match of another
     competition on beIN 2 is in the guide too, without a board."""
     try:
-        f = focus_home_item("شاهد الآن", "guide-hero")
-        expect(f and "شاهد الآن" in f, "watch-now not focused (focus: %s)" % f)
-        key("DPAD_CENTER", pause=6)
+        play_from_home("guide-hero", pause=6)
         # 24: AR| beIN SPORTS 3 HD, no guide of its own.
         open_number(24)
         n = wait_board("guide-bein3", timeout=45, contains="ليفربول")
@@ -859,7 +891,7 @@ def t_sports_guide():
     finally:
         for _ in range(4):
             key("BACK", pause=1.5)
-            _, n = S.wait_for(timeout=4, text="الرئيسية")
+            _, n = wait_home(4)
             if n is not None:
                 break
 
@@ -893,7 +925,7 @@ def t_languages():
     finally:
         S.shell("setprop debug.ratv.lang ''")
         restart_app()
-        S.wait_for(timeout=45, text="الرئيسية")
+        wait_home(45)
 
 
 def open_phone_page(tag, local_port):
@@ -961,7 +993,7 @@ def t_phone_link():
     expect("أكمل رابط الخادم واسم المستخدم وكلمة المرور." in half, "a subscription without its password was not refused")
     ok = phone_post(base, token, {"link": "http://10.0.2.2:8000/playlist.m3u", "epg": ""})
     expect("وصل الرابط للتلفزيون" in ok, "the link was not taken")
-    _, n = S.wait_for(timeout=90, text="الرئيسية", save="phone-home")
+    _, n = wait_home(90, save="phone-home")
     S.shot("phone-home")
     expect(n is not None, "the TV did not add the playlist sent from the phone")
     log = S.shell("logcat -d -s RATVPhone:I")
@@ -976,7 +1008,7 @@ def t_phone_subscription():
     expect_phone_form(phone_get(base, token))
     done = phone_post(base, token, {"server": "http://10.0.2.2:8000", "username": "test", "password": "test"})
     expect("وصلت بيانات الاشتراك للتلفزيون" in done, "the subscription details were not taken")
-    _, n = S.wait_for(timeout=90, text="الرئيسية", save="phone-home-subscription")
+    _, n = wait_home(90, save="phone-home-subscription")
     S.shot("phone-home-subscription")
     expect(n is not None, "the TV did not sign in with the details sent from the phone")
     log = S.shell("logcat -d -s RATVPhone:I")
@@ -1007,7 +1039,7 @@ def t_guess_movie():
     S.shot("guess-movie-skipped")
     for _ in range(3):
         key("BACK", pause=1.5)
-        _, n = S.wait_for(timeout=4, text="الرئيسية")
+        _, n = wait_home(4)
         if n is not None:
             break
 
