@@ -884,6 +884,35 @@ def arabic_places(match_list, previous_places):
              "sample": dict(list(sorted(names.items()))[:12] + [kv for kv in sorted(names.items()) if kv[0].startswith("v:")][:25])}
     return {"v": PLACES_VERSION, "names": names, "miss": miss}, state
 
+COMMENTATOR_SITES = [
+    "https://www.yalla-shoot.io/", "https://yalla-shoot.com/", "https://www.yallashoot.io/", "https://yallashoot.cc/",
+    "https://www.yalla-shoot-tv.live/", "https://yalla-live.io/", "https://www.kooralive.tv/", "https://koora-live.io/",
+    "https://www.kora-live.tv/", "https://livekoora.online/", "https://www.yalla-kora.tv/", "https://kooragoal.com/",
+    "https://www.koraonline.io/", "https://yalla-shoot-new.com/", "https://www.yallashoot.today/", "https://yallashootv.com/",
+]
+
+
+def commentator_probe():
+    """Which match-table sites answer and write «المعلق» next to each match."""
+    out = {}
+
+    def one(url):
+        try:
+            code, headers, body = get(url, tries=1, ua=BROWSER)
+            html = body.decode("utf-8", "replace")
+            spots = [m.start() for m in re.finditer("المعلق|معلق", html)]
+            snippets = [re.sub(r"\s+", " ", html[max(0, i - 700):i + 300]) for i in spots[:2]]
+            return url, {"code": code, "size": len(html), "commentators": len(spots),
+                         "title": (re.search(r"<title>([^<]*)", html) or [None, ""])[1][:80], "snippets": snippets}
+        except Exception as e:
+            return url, {"error": str(e)[:120]}
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:
+        for url, r in ex.map(one, COMMENTATOR_SITES):
+            out[url] = r
+    return out
+
+
 def main():
     out_dir = sys.argv[1]
     os.makedirs(out_dir, exist_ok=True)
@@ -1137,6 +1166,7 @@ def main():
         "absences": absent_state,
         "players_ar": players_state,
         "places_ar": places_state,
+        "commentator_probe": commentator_probe(),
         "teams": sorted(({"id": tid, "en": t["en"], "ar": t.get("ar"), "leagues": sorted(t["leagues"])}
                          for tid, t in teams.items()), key=lambda x: (x["leagues"], x["en"])),
     }
