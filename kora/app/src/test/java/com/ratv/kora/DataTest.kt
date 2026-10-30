@@ -186,4 +186,13 @@ class DataTest {
         assertTrue(m.absentHome[1].doubtful)
         assertTrue(m.absentAway.isEmpty())
     }
+
+    @Test
+    fun playersInArabicWhereKnown() {
+        val names = LineupParser.names("""{"v":1,"names":{"Bento":"بينتو","Abdullah Al-Khaibari":"عبدالله الخيبري"},"miss":{"Guga":"2026-10-30"}}""")
+        val l = LineupParser.parse(java.io.File("../ci/espn_summary.json").readText(), names)
+        assertEquals("بينتو", l.home!!.starters.first().name)
+        assertEquals("عبدالله الخيبري", l.home!!.bench.first().replaced)
+        assertEquals("Guga", l.away!!.starters.last().name)
+    }
 }
