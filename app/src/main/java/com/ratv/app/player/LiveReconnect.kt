@@ -428,7 +428,9 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
     companion object {
         private const val TAG = "RATVLive"
         private const val LOST = Int.MIN_VALUE
-        private const val MAX_RECONNECTS = 25
+        // About eight minutes of tries (2 s apart once past the first ones) before the load
+        // is given up: an outage of the internet or of the server is ridden out on the same load.
+        private const val MAX_RECONNECTS = 250
         private const val STALL_MIN_MS = 3_000L
         private const val STALL_MAX_MS = 8_000L
         private const val STALL_EXTEND_MS = 4_500L
