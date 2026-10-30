@@ -960,6 +960,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         val reconnectBase = LiveReconnectingDataSource.reconnects.get()
         liveReconnects = 0
         var bufferingSince = 0L
+        // The store of a live channel over the last seconds of playing: a server that sends, but slower
+        // than the channel plays, shows as a store shrinking steadily.
+        val reserveTrend = ArrayDeque<Pair<Long, Long>>()
+        var lastRefresh = 0L
         while (true) {
             liveReconnects = LiveReconnectingDataSource.reconnects.get() - reconnectBase
             if (player.isPlaying || player.playbackState == Player.STATE_BUFFERING) Playback.markActive()
@@ -993,6 +997,22 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             lastPosAt = posAt
             reserveMs = player.totalBufferedDuration
             Steadiness.reserveMs = reserveMs
+            // Lost 4 s or more of store in 10 s of playing (the server gives 60% of the picture or less),
+            // with under 12 s left: a new connection, whose burst refills it before it runs out. Once
+            // in 30 s at most.
+            if (current?.isLive == true && player.isPlaying && playingUri != null) {
+                reserveTrend.addLast(tick to reserveMs)
+                while (reserveTrend.size > 1 && tick - reserveTrend.first().first > 10_500L) reserveTrend.removeFirst()
+                val (since, then) = reserveTrend.first()
+                if (tick - since >= 9_500L && then - reserveMs >= 4_000L && reserveMs in 1_000L..12_000L &&
+                    tick - lastRefresh >= 30_000L && LiveReconnectingDataSource.refresh(playingUri)
+                ) {
+                    lastRefresh = tick
+                    reserveTrend.clear()
+                }
+            } else {
+                reserveTrend.clear()
+            }
             val grew = player.bufferedPosition > lastBuffered + 200L
             lastBuffered = player.bufferedPosition
             if (grew) netTrouble = false

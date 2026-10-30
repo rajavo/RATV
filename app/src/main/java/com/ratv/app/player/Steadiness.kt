@@ -18,8 +18,8 @@ import androidx.media3.exoplayer.upstream.DefaultAllocator
  * it before playing. Waiting costs time when a channel opens, so it is done only where it pays:
  * after a channel stalled (a shaky line at home, or a server that sends unevenly), the next
  * recovery waits 15 s longer, up to a minute more (a store of 70 s, which rides out what made it
- * stall many times over), and channels open a little later (up to 10 s); after 20 minutes without
- * a stall it steps back down. "fast" never waits longer, "max" always stores a minute and a half more.
+ * stall many times over), and channels open a little later (up to 10 s); after 44 minutes without
+ * a stall it steps back down (an unsteady server often is so for the evening, not for minutes). "fast" never waits longer, "max" always stores a minute and a half more.
  *
  * What the device learned about its line is kept across restarts (still stepping down with the
  * calm time that passed), so a TV on a fluctuating line starts with the bigger store at once.
@@ -44,7 +44,7 @@ object Steadiness {
     private const val STEP_MS = 15_000L
     private const val MAX_AUTO_LEVEL = 4
     private const val MAX_LEVEL = 6
-    private const val CALM_MS = 20L * 60L * 1000L
+    private const val CALM_MS = 44L * 60L * 1000L
 
     /** At most this much longer before a channel opens (the bigger store is gathered after a stall). */
     const val START_EXTRA_MAX_MS = 10_000L

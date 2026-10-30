@@ -67,6 +67,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
     )
     private val listeners = ArrayList<TransferListener>()
     private var current: DataSource? = null
+    @Volatile
     private var spec: DataSpec? = null
 
     @Volatile
@@ -457,6 +458,25 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
 
         // The pauses of each live address, learned across its connections.
         private val PAUSES = ConcurrentHashMap<String, Pauses>()
+
+        /**
+         * Cuts the connection of the live channel at [uri] so a new one opens at once, joined where this
+         * one ended: for a server that still sends, but slower than the channel plays (the store keeps
+         * shrinking). A new connection starts with the seconds the server holds, which refill it.
+         * True when there was such a connection.
+         */
+        fun refresh(uri: String): Boolean {
+            var cut = false
+            WATCHED.forEach { s ->
+                if (s.live && !s.closed && s.receiving && s.spec?.uri?.toString() == uri) {
+                    s.receiving = false
+                    s.call?.cancel()
+                    cut = true
+                }
+            }
+            if (cut) Log.i(TAG, "the server sends slower than the channel plays: a new connection")
+            return cut
+        }
 
         /** When the load of [uri] was ended to start the channel again and no new load has begun (0: none). */
         fun loadEndedAt(uri: String): Long = ENDED[uri] ?: 0L
