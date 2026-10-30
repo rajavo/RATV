@@ -121,6 +121,9 @@ jobs:
             gh release create net-latest RANet.apk --title "RA Net" --latest=false \
               --notes "تطبيق RA Net للتلفزيون: النت كله للتطبيق اللي على الشاشة. نزّل RANet.apk وثبّته."
           fi
+          # The version, for RA Store to tell when an update is out.
+          printf '{"versionCode": %s, "versionName": "1.0.%s", "apk": "RANet.apk", "package": "com.ratv.net"}\n' "${{ github.run_number }}" "${{ github.run_number }}" > version.json
+          gh release upload net-latest version.json --clobber
           gh release edit net-latest --draft=false --prerelease=false --title "RA Net" --latest=false
       - name: Check the public download link
         env:

@@ -11,7 +11,7 @@ class Tile(val pkg: String, val label: String, val banner: ImageBitmap?, val ico
 /** The apps on the TV, as tiles: their wide TV banner when they have one, else their icon. */
 object Apps {
     /** The RA apps come first, then the rest by name. */
-    private val FIRST = listOf("com.ratv.app", "com.ratv.kora", "com.ratv.net")
+    private val FIRST = listOf("com.ratv.app", "com.ratv.kora", "com.ratv.net", "com.ratv.store")
 
     fun load(context: Context): List<Tile> {
         val pm = context.packageManager

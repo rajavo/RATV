@@ -1,0 +1,129 @@
+name: RA Store
+
+# Builds RA Store (store/), checks it on an Android TV emulator, then publishes RAStore.apk.
+# Results of the check go to the ci-store-results branch.
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'store/**'
+      - '.github/workflows/store.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# A newer push replaces a run still in progress, so only the latest version is published.
+concurrency:
+  group: rastore-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Unit tests and APK
+        run: |
+          chmod +x gradlew
+          set -o pipefail
+          ./gradlew --no-daemon -p store :app:testReleaseUnitTest :app:assembleRelease 2>&1 | tee build.log
+      - name: Save the build error
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p store-results
+          { grep -E "^e: |error:|FAILED|AssertionError" build.log | head -60; echo ----; tail -80 build.log; } > store-results/build-error.txt || true
+          for f in $(find store/app/build/test-results -name "*.xml" 2>/dev/null); do grep -q "<failure" "$f" && cat "$f" >> store-results/build-error.txt; done; true
+          cd store-results && git init -q && git checkout -q -b results && git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qm "RA Store build error (run ${{ github.run_number }})"
+          git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" results:ci-store-results
+      - uses: actions/upload-artifact@v4
+        with:
+          name: store-apk
+          path: store/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+
+  emulator:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: store-apk
+          path: apks
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Check RA Store on the TV emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: android-tv
+          arch: x86
+          profile: tv_1080p
+          cores: 3
+          ram-size: 3072M
+          disable-animations: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: |
+            adb install -r "$(find apks -name app-release.apk | head -1)"
+            python3 store/ci/smoke_store.py
+      - name: Save results to the ci-store-results branch
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p store-results
+          cd store-results && git init -q && git checkout -q -b results && git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qm "RA Store test results (run ${{ github.run_number }})"
+          git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" results:ci-store-results
+
+  publish:
+    needs: emulator
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: store-apk
+          path: apks
+      - name: Publish to the store-latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp "$(find apks -name app-release.apk | head -1)" RAStore.apk
+          # One release named "store-latest" whose file is swapped, so the download link never changes.
+          git push -f origin HEAD:refs/tags/store-latest
+          if gh release view store-latest >/dev/null 2>&1; then
+            gh release upload store-latest RAStore.apk --clobber
+          else
+            gh release create store-latest RAStore.apk --title "RA Store" --latest=false \
+              --notes "RA Store: كل تطبيقات RA في مكان واحد، تثبّت وتحدّث منه. نزّل RAStore.apk وثبّته."
+          fi
+          # The version, for RA Store to tell when an update is out.
+          printf '{"versionCode": %s, "versionName": "1.0.%s", "apk": "RAStore.apk", "package": "com.ratv.store"}\n' "${{ github.run_number }}" "${{ github.run_number }}" > version.json
+          gh release upload store-latest version.json --clobber
+          gh release edit store-latest --draft=false --prerelease=false --title "RA Store" --latest=false
+      - name: Check the public download link
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          url="https://github.com/${{ github.repository }}/releases/download/store-latest/RAStore.apk"
+          for i in 1 2 3 4 5 6; do
+            if curl -fsIL -o /dev/null "$url"; then echo "Download link works: $url"; exit 0; fi
+            gh release edit store-latest --draft=false --prerelease=false || true
+            sleep 20
+          done
+          echo "Download link still not public: $url"
+          exit 1

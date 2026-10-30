@@ -3,7 +3,7 @@ name: Build APK
 on:
   push:
     branches: [ main, master ]
-    # RA Net (net/), RA Home (home/), جدول RA كورة (kora/) and the free channels list have their own workflows:
+    # RA Net (net/), RA Home (home/), RA Store (store/), جدول RA كورة (kora/) and the free channels list have their own workflows:
     # changing them must not publish a new RATV for the customers. Edits of this file alone do not
     # publish either; run it by hand (workflow_dispatch) if needed.
     # README.md is only text: a change to it does not publish either.
@@ -11,7 +11,10 @@ on:
       - 'net/**'
       - 'kora/**'
       - 'home/**'
+      - 'store/**'
+      - 'README.md'
       - '.github/workflows/home.yml'
+      - '.github/workflows/store.yml'
       - '.github/workflows/net.yml'
       - '.github/workflows/kora.yml'
       - '.github/workflows/kora-data.yml'

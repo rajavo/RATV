@@ -111,6 +111,9 @@ jobs:
             gh release create home-latest RAHome.apk --title "RA Home" --latest=false \
               --notes "RA Home: واجهة للتلفزيون بشكل Apple TV، فيها مواقيت الصلاة لمدينتك. نزّل RAHome.apk وثبّته."
           fi
+          # The version, for RA Store to tell when an update is out.
+          printf '{"versionCode": %s, "versionName": "1.0.%s", "apk": "RAHome.apk", "package": "com.ratv.home"}\n' "${{ github.run_number }}" "${{ github.run_number }}" > version.json
+          gh release upload home-latest version.json --clobber
           gh release edit home-latest --draft=false --prerelease=false --title "RA Home" --latest=false
       - name: Check the public download link
         env:
