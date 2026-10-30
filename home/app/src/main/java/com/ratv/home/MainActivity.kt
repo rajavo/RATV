@@ -233,29 +233,32 @@ private fun HomeScreen(resumed: Int) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Box(Modifier.fillMaxSize().background(C.Ink)) {
             Wallpaper()
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(5),
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 64.dp, vertical = 36.dp),
-                horizontalArrangement = Arrangement.spacedBy(28.dp),
-                verticalArrangement = Arrangement.spacedBy(34.dp)
-            ) {
-                item(span = { GridItemSpan(maxLineSpan) }, key = "top") { TopBar(day, city.name) }
-                item(span = { GridItemSpan(maxLineSpan) }, key = "shelf") { PrayerShelf(day) }
-                val list = apps
-                if (list == null) {
-                    item(span = { GridItemSpan(maxLineSpan) }) { Text("جارٍ تحميل التطبيقات…", style = t(18, color = C.Text2)) }
-                } else {
-                    items(list, key = { it.pkg }) { tile ->
-                        val first = tile == list.firstOrNull()
-                        AppTile(tile, if (first) Modifier.focusRequester(firstTile) else Modifier) { Apps.open(context, tile.pkg) }
-                    }
-                    item(key = "city") {
-                        ActionTile("المدينة", city.name) { picking = true }
-                    }
-                    item(key = "settings") {
-                        ActionTile("الإعدادات", "إعدادات الشاشة") {
-                            runCatching { context.startActivity(Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
+            Column(Modifier.fillMaxSize()) {
+                // The clock and the dates stay in sight while the remote goes down the apps.
+                Box(Modifier.padding(start = 64.dp, end = 64.dp, top = 32.dp, bottom = 4.dp)) { TopBar(day, city.name) }
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(5),
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(start = 64.dp, end = 64.dp, top = 20.dp, bottom = 36.dp),
+                    horizontalArrangement = Arrangement.spacedBy(28.dp),
+                    verticalArrangement = Arrangement.spacedBy(34.dp)
+                ) {
+                    item(span = { GridItemSpan(maxLineSpan) }, key = "shelf") { PrayerShelf(day) }
+                    val list = apps
+                    if (list == null) {
+                        item(span = { GridItemSpan(maxLineSpan) }) { Text("جارٍ تحميل التطبيقات…", style = t(18, color = C.Text2)) }
+                    } else {
+                        items(list, key = { it.pkg }) { tile ->
+                            val first = tile == list.firstOrNull()
+                            AppTile(tile, if (first) Modifier.focusRequester(firstTile) else Modifier) { Apps.open(context, tile.pkg) }
+                        }
+                        item(key = "city") {
+                            ActionTile("المدينة", city.name) { picking = true }
+                        }
+                        item(key = "settings") {
+                            ActionTile("الإعدادات", "إعدادات الشاشة") {
+                                runCatching { context.startActivity(Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
+                            }
                         }
                     }
                 }
