@@ -499,6 +499,61 @@ def probe_logo(sample):
 
 # ------------------------------------------------------------------ main
 
+# ------------------------------------------------------------------ lineups (probe)
+
+SUMMARY = "https://site.api.espn.com/apis/site/v2/sports/soccer/%s/summary?event=%s"
+
+
+def summary_probe(match_list):
+    """What ESPN's match summary holds for lineups and absent players, in report.json, to read the app's parser against."""
+    def trim(x, depth=0):
+        if isinstance(x, dict):
+            return {k: ("…" if k in ("stats", "links", "plays", "headshot", "logos", "flag") else trim(v, depth + 1)) for k, v in x.items()}
+        if isinstance(x, list):
+            return [trim(v, depth + 1) for v in x[:2]] + (["… %d more" % (len(x) - 2)] if len(x) > 2 else [])
+        return x
+
+    def hunt(x, path, found):
+        if isinstance(x, dict):
+            for k, v in x.items():
+                if re.search(r"injur|suspen|absen|missing|unavailable|sidelined", k, re.I) and len(found) < 12:
+                    found.append({"path": path + "." + k, "sample": trim(v)})
+                hunt(v, path + "." + k, found)
+        elif isinstance(x, list):
+            for v in x[:40]:
+                hunt(v, path + "[]", found)
+
+    now = time.time()
+    big = ("eng.1", "esp.1", "ita.1", "ger.1", "fra.1", "ksa.1", "uefa.champions")
+    espn = [m for m in match_list if not str(m["id"]).startswith("y") and m["lg"] in big]
+    done = [m for m in espn if m.get("st") == "post"][-2:]
+    soon = sorted((m for m in espn if m.get("st") == "pre" and m["t"] > now), key=lambda m: m["t"])[:2]
+    later = sorted((m for m in espn if m.get("st") == "pre" and m["t"] > now + 3 * 86400), key=lambda m: m["t"])[:1]
+    out = []
+    for m in done + soon + later:
+        item = {"id": m["id"], "lg": m["lg"], "st": m.get("st"), "hours_to_kickoff": round((m["t"] - now) / 3600, 1)}
+        try:
+            d = get_json(SUMMARY % (m["lg"], m["id"]))
+            item["keys"] = sorted(d.keys())
+            rosters = d.get("rosters") or []
+            item["rosters"] = [{
+                "keys": sorted(r.keys()),
+                "homeAway": r.get("homeAway"),
+                "formation": r.get("formation"),
+                "players": len(r.get("roster") or []),
+                "starters": sum(1 for p in r.get("roster") or [] if p.get("starter")),
+                "entry_keys": sorted({k for p in r.get("roster") or [] for k in p.keys()}),
+                "sample": [trim(p) for p in (r.get("roster") or [])[:1] + [p for p in r.get("roster") or [] if p.get("subbedIn")][:1]],
+            } for r in rosters]
+            found = []
+            hunt(d, "", found)
+            item["absence_keys"] = found
+        except Exception as e:
+            item["error"] = str(e)
+        out.append(item)
+    return out
+
+
 def main():
     out_dir = sys.argv[1]
     os.makedirs(out_dir, exist_ok=True)
@@ -715,6 +770,7 @@ def main():
                "unmatched": ["%s %s × %s (%s) %s" % (dt.datetime.fromtimestamp(k["t"], dt.timezone.utc).strftime("%H:%M"), k["a"], k["b"],
                                                     k["comp"], ", ".join(k["tv"][:3])) for k in tv_unmatched[:80]]},
         "espn_leagues": discover_leagues(),
+        "summary_probe": summary_probe(match_list),
         "teams": sorted(({"id": tid, "en": t["en"], "ar": t.get("ar"), "leagues": sorted(t["leagues"])}
                          for tid, t in teams.items()), key=lambda x: (x["leagues"], x["en"])),
     }
