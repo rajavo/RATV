@@ -115,7 +115,8 @@ fun CatalogWide(
     onSort: (String) -> Unit,
     emptyTitle: String,
     badgeOf: (CatalogItem) -> String?,
-    onOpen: (String) -> Unit
+    onOpen: (String) -> Unit,
+    onSearch: () -> Unit
 ) {
     val repo = LocalRepo.current
     val tv = rememberIsTv()
@@ -183,27 +184,7 @@ fun CatalogWide(
             .padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        SectionColumn(
-            entries = sideEntries,
-            selected = selected,
-            onSelect = { key ->
-                if (key != selected) {
-                    selected = key
-                    scope.launch { gridState.scrollToItem(0) }
-                }
-            },
-            onEnter = {
-                scope.launch {
-                    gridState.scrollToItem(0)
-                    delay(120L)
-                    runCatching { firstFocus.requestFocus() }
-                }
-            },
-            modifier = Modifier
-                .width(270.dp)
-                .fillMaxHeight()
-        )
-
+        // The posters come first: in Arabic (right to left) they sit on the right, and the sections on the left.
         Column(
             Modifier
                 .weight(1f)
@@ -213,14 +194,24 @@ fun CatalogWide(
                 Modifier
                     .fillMaxWidth()
                     .padding(start = 4.dp, bottom = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(sectionName, style = T.h2, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
-                Text(formatCount(visible.size) + tr(" عنوان"), style = T.caption)
-                if (sorting) CircularProgressIndicator(color = RColors.Saffron, strokeWidth = 2.dp, modifier = Modifier.size(16.dp))
-                Spacer(Modifier.weight(1f))
-                if (selected != C_CONTINUE && selected != C_NEW) SortMenu(sortKey, onSort)
+                // Start (on the right in Arabic): the section and how many titles it holds.
+                Row(
+                    Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(sectionName, style = T.h2, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
+                    Text(formatCount(visible.size) + tr(" عنوان"), style = T.caption)
+                    if (sorting) CircularProgressIndicator(color = RColors.Saffron, strokeWidth = 2.dp, modifier = Modifier.size(16.dp))
+                }
+                // The middle: the search, the same in every section.
+                CatalogSearchPill(onSearch)
+                // End (on the left in Arabic): the sort order.
+                Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
+                    if (selected != C_CONTINUE && selected != C_NEW) SortMenu(sortKey, onSort)
+                }
             }
 
             if (visible.isEmpty()) {
@@ -241,7 +232,7 @@ fun CatalogWide(
             } else {
                 val firstId = visible.first().id
                 LazyVerticalGrid(
-                    columns = GridCells.Adaptive(148.dp),
+                    columns = GridCells.Fixed(5),
                     state = gridState,
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(start = 6.dp, end = 6.dp, top = 6.dp, bottom = 20.dp),
@@ -260,6 +251,47 @@ fun CatalogWide(
                 }
             }
         }
+
+        SectionColumn(
+            entries = sideEntries,
+            selected = selected,
+            onSelect = { key ->
+                if (key != selected) {
+                    selected = key
+                    scope.launch { gridState.scrollToItem(0) }
+                }
+            },
+            onEnter = {
+                scope.launch {
+                    gridState.scrollToItem(0)
+                    delay(120L)
+                    runCatching { firstFocus.requestFocus() }
+                }
+            },
+            modifier = Modifier
+                .width(270.dp)
+                .fillMaxHeight()
+        )
+    }
+}
+
+/** The search, in the middle of the header on TV: it works the same in every section. */
+@Composable
+private fun CatalogSearchPill(onSearch: () -> Unit) {
+    val shape = RoundedCornerShape(21.dp)
+    Row(
+        Modifier
+            .height(42.dp)
+            .clip(shape)
+            .background(RColors.Surface)
+            .border(1.dp, RColors.LineStrong, shape)
+            .tvClickable(shape, onClickLabel = tr("بحث"), onClick = onSearch)
+            .padding(horizontal = 18.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Icon(RIcons.Search, contentDescription = null, tint = RColors.Text2, modifier = Modifier.size(16.dp))
+        Text(tr("بحث"), style = T.body(13.sp, FontWeight.Medium), maxLines = 1)
     }
 }
 
