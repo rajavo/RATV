@@ -31,7 +31,9 @@ jobs:
       - name: Last published schedule
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release download kora-data -p fixtures.json -D previous 2>/dev/null || echo "no earlier schedule"
+        run: |
+          gh release download kora-data -p fixtures.json -D previous 2>/dev/null || echo "no earlier schedule"
+          gh release download kora-data -p players_ar.json -D previous 2>/dev/null || echo "no earlier players' names"
       - name: Build the schedule
         run: python3 kora/data/fetch.py out previous/fixtures.json
       - name: Publish to the kora-data release
@@ -39,9 +41,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           if gh release view kora-data >/dev/null 2>&1; then
-            gh release upload kora-data out/fixtures.json out/report.json --clobber
+            gh release upload kora-data out/fixtures.json out/players_ar.json out/report.json --clobber
           else
-            gh release create kora-data out/fixtures.json out/report.json --target "$GITHUB_SHA" \
+            gh release create kora-data out/fixtures.json out/players_ar.json out/report.json --target "$GITHUB_SHA" \
               --title "جدول RA كورة: البيانات" --latest=false \
               --notes "جدول المباريات لتطبيق «جدول RA كورة»، يتحدث تلقائياً كل 3 ساعات."
           fi

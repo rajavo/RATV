@@ -7,7 +7,8 @@ teams that still have no Arabic name are listed in report.json, to be added ther
 
     fetch.py OUT_DIR [PREVIOUS_FIXTURES_JSON]
 
-Writes OUT_DIR/fixtures.json (read by the app) and OUT_DIR/report.json. When some requests of a
+Writes OUT_DIR/fixtures.json (read by the app), OUT_DIR/players_ar.json (players' names in Arabic,
+grown run after run from the previous one beside PREVIOUS_FIXTURES_JSON) and OUT_DIR/report.json. When some requests of a
 league fail, its matches from the previous fixtures.json are kept, so a bad hour at ESPN never
 empties the schedule.
 """
@@ -612,6 +613,110 @@ def absences(match_list, teams, previous):
     state["sample"] = [{"id": m["id"], "abs": m["abs"]} for m in due if m.get("abs")][:2]
     return state
 
+# ------------------------------------------------------------------ players' names in Arabic
+
+ROSTER = "https://site.api.espn.com/apis/site/v2/sports/soccer/%s/teams/%s/roster"
+WD_SEARCH = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=%s&language=en&uselang=en&type=item&limit=6&format=json"
+WD_GET = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=%s&props=labels%%7Cclaims&languages=ar%%7Carz&format=json"
+WD_UA = "RA-Kora-schedule/1.0 (https://github.com/rajavo/RATV)"
+FOOTBALLER = "Q937857"
+NEW_NAMES_MAX = 2500
+NEW_NAMES_SECONDS = 480
+RETRY_DAYS = 14
+
+
+def wikidata_arabic(name):
+    """The Arabic name of the footballer called [name] in English, from Wikidata; None when it has none."""
+    q = urllib.request.quote(name)
+    found = json.loads(get(WD_SEARCH % q, tries=2, ua=WD_UA)[2].decode("utf-8")).get("search") or []
+    ids = [x["id"] for x in found if x.get("id")]
+    if not ids:
+        return None
+    ents = json.loads(get(WD_GET % "%7C".join(ids), tries=2, ua=WD_UA)[2].decode("utf-8")).get("entities") or {}
+    for qid in ids:  # in the search's order: the best known first
+        e = ents.get(qid) or {}
+        jobs = [((c.get("mainsnak") or {}).get("datavalue") or {}).get("value") or {} for c in (e.get("claims") or {}).get("P106") or []]
+        if not any(isinstance(j, dict) and j.get("id") == FOOTBALLER for j in jobs):
+            continue
+        labels = e.get("labels") or {}
+        for lang in ("ar", "arz"):
+            v = (labels.get(lang) or {}).get("value")
+            if v and re.search("[\u0600-\u06FF]", v):
+                return v.strip()
+        return None
+    return None
+
+
+def player_names(match_list, previous_players):
+    """Arabic names of the players of the coming matches (squads from ESPN, absent players from FotMob).
+
+    Names found before are kept; names Wikidata has no Arabic for are tried again after RETRY_DAYS."""
+    started = time.time()
+    names = dict((previous_players or {}).get("names") or {})
+    miss = dict((previous_players or {}).get("miss") or {})
+    now = int(time.time())
+    due = [m for m in match_list if m.get("st") != "post" and now - 3 * 3600 <= m["t"] <= now + ABSENT_DAYS * 86400]
+    squads = sorted({(m["lg"], tid) for m in due if not str(m["id"]).startswith("y") for tid in (m["h"], m["a"])})
+    wanted = set()
+    state = {"squads": len(squads), "squad_errors": 0}
+
+    def squad(key):
+        d = get_json(ROSTER % key)
+        return [a.get("displayName") for a in d.get("athletes") or [] if a.get("displayName")]
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=WORKERS) as ex:
+        for f in concurrent.futures.as_completed([ex.submit(squad, k) for k in squads]):
+            try:
+                wanted.update(f.result())
+            except Exception:
+                state["squad_errors"] += 1
+    for m in due:
+        for side in (m.get("abs") or {}).values():
+            wanted.update(a["n"] for a in side if a.get("n"))
+    today = dt.date.today()
+
+    def stale(n):
+        try:
+            return (today - dt.date.fromisoformat(miss[n])).days >= RETRY_DAYS
+        except Exception:
+            return True
+
+    new = sorted(n for n in wanted if n not in names and (n not in miss or stale(n)))
+    state.update({"players": len(wanted), "known": sum(1 for n in wanted if n in names), "to_look_up": len(new)})
+    looked, found, errors = 0, 0, []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex:
+        futures = {}
+        for n in new[:NEW_NAMES_MAX]:
+            futures[ex.submit(lambda n=n: None if time.time() - started > NEW_NAMES_SECONDS else (n, wikidata_arabic(n)))] = n
+        for f in concurrent.futures.as_completed(futures):
+            try:
+                r = f.result()
+            except Exception as e:
+                if len(errors) < 10:
+                    errors.append("%s: %s" % (futures[f], str(e)[:100]))
+                continue
+            if r is None:
+                continue  # out of time: next run
+            looked += 1
+            n, ar = r
+            if ar:
+                names[n] = ar
+                miss.pop(n, None)
+                found += 1
+            else:
+                miss[n] = today.isoformat()
+    # The absent players in Arabic right in the schedule.
+    for m in match_list:
+        for side in (m.get("abs") or {}).values():
+            for a in side:
+                if a.get("n") in names:
+                    a["n"] = names[a["n"]]
+    state.update({"looked_up": looked, "found": found, "errors": errors, "names_total": len(names),
+                  "coming_in_arabic": sum(1 for n in wanted if n in names),
+                  "sample": dict(sorted((n, names[n]) for n in wanted if n in names)[:15]),
+                  "seconds": round(time.time() - started, 1)})
+    return {"v": 1, "names": names, "miss": miss}, state
+
 def main():
     out_dir = sys.argv[1]
     os.makedirs(out_dir, exist_ok=True)
@@ -741,6 +846,21 @@ def main():
         absent_state = absences(match_list, teams, previous)
     except Exception as e:  # never lose the schedule over the absences
         absent_state = {"error": repr(e)[:300]}
+    previous_players = None
+    if len(sys.argv) > 2:
+        pp = os.path.join(os.path.dirname(sys.argv[2]), "players_ar.json")
+        if os.path.exists(pp):
+            try:
+                with open(pp, encoding="utf-8") as f:
+                    previous_players = json.load(f)
+            except Exception as e:
+                print("previous players unreadable: %s" % e)
+    try:
+        players, players_state = player_names(match_list, previous_players)
+    except Exception as e:
+        players, players_state = previous_players or {"v": 1, "names": {}, "miss": {}}, {"error": repr(e)[:300]}
+    with open(os.path.join(out_dir, "players_ar.json"), "w", encoding="utf-8") as f:
+        json.dump(players, f, ensure_ascii=False, separators=(",", ":"))
     used = {m["lg"] for m in match_list}
     league_out = []
     for lg in all_leagues:
@@ -833,6 +953,7 @@ def main():
                                                     k["comp"], ", ".join(k["tv"][:3])) for k in tv_unmatched[:80]]},
         "espn_leagues": discover_leagues(),
         "absences": absent_state,
+        "players_ar": players_state,
         "teams": sorted(({"id": tid, "en": t["en"], "ar": t.get("ar"), "leagues": sorted(t["leagues"])}
                          for tid, t in teams.items()), key=lambda x: (x["leagues"], x["en"])),
     }
