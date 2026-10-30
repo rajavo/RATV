@@ -499,6 +499,119 @@ def probe_logo(sample):
 
 # ------------------------------------------------------------------ main
 
+# ------------------------------------------------------------------ absences
+
+FM_DAY = "https://www.fotmob.com/api/data/matches?date=%s&timezone=UTC"
+FM_MATCH = "https://www.fotmob.com/api/data/matchDetails?matchId=%s"
+ABSENT_DAYS = 4
+ABSENT_MAX = 320
+REASONS = {"injury": "إصابة", "suspension": "إيقاف", "international": "مع المنتخب", "national": "مع المنتخب"}
+
+
+def fm_reason(u):
+    """FotMob's unavailability in Arabic, and whether the player may still play."""
+    kind = (u.get("type") or "").lower()
+    back = (u.get("expectedReturn") or "").lower()
+    reason = next((ar for en, ar in REASONS.items() if en in kind), "غياب")
+    return reason, "doubt" in kind or "doubt" in back
+
+
+def absences(match_list, teams, previous):
+    """Injured and suspended players of the coming matches, from FotMob (ESPN has none): m["abs"] = {"h": [...], "a": [...]}.
+
+    FotMob's matches are found by kick-off (10 minutes) and both teams' English names; a match whose
+    answer fails keeps what the last schedule had."""
+    now = int(time.time())
+    due = [m for m in match_list if m.get("st") != "post" and now - 3 * 3600 <= m["t"] <= now + ABSENT_DAYS * 86400]
+    state = {"due": len(due), "days_ok": 0, "fotmob_matches": 0, "matched": 0, "fetched": 0, "with_absences": 0, "errors": []}
+    fm = []
+    today = dt.datetime.now(dt.timezone.utc).date()
+    for d in range(-1, ABSENT_DAYS + 1):
+        day = (today + dt.timedelta(days=d)).strftime("%Y%m%d")
+        try:
+            data = json.loads(get(FM_DAY % day, tries=2, ua=BROWSER)[2].decode("utf-8"))
+            state["days_ok"] += 1
+        except Exception as e:
+            state["errors"].append("day %s: %s" % (day, str(e)[:120]))
+            continue
+        for lg in data.get("leagues") or []:
+            for x in lg.get("matches") or []:
+                if x.get("timeTS") and x.get("id"):
+                    fm.append({"id": x["id"], "t": int(x["timeTS"]) // 1000,
+                               "h": [(x.get("home") or {}).get(k) or "" for k in ("longName", "name")],
+                               "a": [(x.get("away") or {}).get(k) or "" for k in ("longName", "name")]})
+    state["fotmob_matches"] = len(fm)
+    by_minute = {}
+    for x in fm:
+        by_minute.setdefault(x["t"] // 60, []).append(x)
+
+    def names(tid):
+        t = teams.get(tid) or {}
+        return [n for n in (t.get("en"), t.get("s"), core(t.get("en") or "")) if n]
+
+    pairs = []
+    for m in due:
+        hn, an = names(m["h"]), names(m["a"])
+        if not hn or not an:
+            continue
+        best, score = None, 0.0
+        for d in range(-10, 11):
+            for x in by_minute.get(m["t"] // 60 + d, []):
+                h = max(name_sim(core(a), core(b)) for a in hn for b in x["h"] if b)
+                a = max(name_sim(core(p), core(q)) for p in an for q in x["a"] if q)
+                if max(h, a) < 0.85 or min(h, a) < 0.45:
+                    continue
+                sc = h + a - abs(d) * 0.01
+                if sc > score:
+                    best, score = x, sc
+        if best is not None:
+            pairs.append((m, best["id"]))
+    state["matched"] = len(pairs)
+
+    def one(pair):
+        m, fid = pair
+        d = json.loads(get(FM_MATCH % fid, tries=2, ua=BROWSER)[2].decode("utf-8"))
+        lu = (d.get("content") or {}).get("lineup") or {}
+        out = {}
+        for side, key in (("h", "homeTeam"), ("a", "awayTeam")):
+            lst = []
+            for p in (lu.get(key) or {}).get("unavailable") or []:
+                name = p.get("name") or " ".join(x for x in (p.get("firstName"), p.get("lastName")) if x)
+                if not name:
+                    continue
+                reason, doubtful = fm_reason(p.get("unavailability") or {})
+                e = {"n": name, "r": reason}
+                if doubtful:
+                    e["d"] = 1
+                lst.append(e)
+            if lst:
+                out[side] = lst
+        return m, out
+
+    old = {str(m.get("id")): m.get("abs") for m in (previous or {}).get("matches") or [] if m.get("abs")}
+    done = set()
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:
+        for f in concurrent.futures.as_completed([ex.submit(one, p) for p in pairs[:ABSENT_MAX]]):
+            try:
+                m, out = f.result()
+            except Exception as e:
+                if len(state["errors"]) < 15:
+                    state["errors"].append(str(e)[:120])
+                continue
+            done.add(m["id"])
+            state["fetched"] += 1
+            if out:
+                m["abs"] = out
+                state["with_absences"] += 1
+    kept = 0
+    for m in due:
+        if m["id"] not in done and not m.get("abs") and m["id"] in old:
+            m["abs"] = old[m["id"]]
+            kept += 1
+    state["kept_from_previous"] = kept
+    state["sample"] = [{"id": m["id"], "abs": m["abs"]} for m in due if m.get("abs")][:2]
+    return state
+
 def main():
     out_dir = sys.argv[1]
     os.makedirs(out_dir, exist_ok=True)
@@ -624,6 +737,10 @@ def main():
                                       "logo": o.get("logo", ""), "leagues": {m["lg"]}, "kept": True}
 
     match_list = sorted(matches.values(), key=lambda m: (m["t"], order.get(m["lg"], 99), m["id"]))
+    try:
+        absent_state = absences(match_list, teams, previous)
+    except Exception as e:  # never lose the schedule over the absences
+        absent_state = {"error": repr(e)[:300]}
     used = {m["lg"] for m in match_list}
     league_out = []
     for lg in all_leagues:
@@ -715,6 +832,7 @@ def main():
                "unmatched": ["%s %s × %s (%s) %s" % (dt.datetime.fromtimestamp(k["t"], dt.timezone.utc).strftime("%H:%M"), k["a"], k["b"],
                                                     k["comp"], ", ".join(k["tv"][:3])) for k in tv_unmatched[:80]]},
         "espn_leagues": discover_leagues(),
+        "absences": absent_state,
         "teams": sorted(({"id": tid, "en": t["en"], "ar": t.get("ar"), "leagues": sorted(t["leagues"])}
                          for tid, t in teams.items()), key=lambda x: (x["leagues"], x["en"])),
     }

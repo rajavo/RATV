@@ -1,6 +1,7 @@
 package com.ratv.kora
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -139,5 +140,50 @@ class DataTest {
             )
         )
         assertTrue(ScheduleParser.parse(sample).matches.first { it.id == "701" }.tv.isEmpty())
+    }
+
+    @Test
+    fun readsTheLineupsFromEspn() {
+        val text = java.io.File("../ci/espn_summary.json").readText()
+        val l = LineupParser.parse(text)
+        val home = l.home!!
+        assertEquals("4-4-1-1", home.formation)
+        assertEquals(listOf("Bento", "Sultan Al-Ghannam", "Abdullah Al-Khaibari", "Joao Felix", "Cristiano Ronaldo"), home.starters.map { it.name })
+        assertEquals(listOf(0, 1, 1, 2, 3), home.starters.map { it.line })
+        assertTrue(home.starters.first { it.number == "17" }.subbedOut)
+        // The one who came on comes first on the bench, with the player he replaced.
+        val sub = home.bench.first()
+        assertEquals("Rakan Al Ghamdi", sub.name)
+        assertTrue(sub.subbedIn)
+        assertEquals("Abdullah Al-Khaibari", sub.replaced)
+        assertEquals(listOf("Hamed Al-Shanqiti", "Guga"), l.away!!.starters.map { it.name })
+    }
+
+    @Test
+    fun noLineupsBeforeTheyAreOut() {
+        val l = LineupParser.parse("""{"rosters":[{"homeAway":"home","team":{}},{"homeAway":"away","team":{}}]}""")
+        assertFalse(l.announced)
+        assertFalse(LineupParser.parse("{}").announced)
+    }
+
+    @Test
+    fun positionsGoToTheirLines() {
+        for (p in listOf("G", "GK")) assertEquals(p, 0, LineupParser.line(p))
+        for (p in listOf("D", "CD-L", "CD-R", "LB", "RB", "CB", "SW")) assertEquals(p, 1, LineupParser.line(p))
+        for (p in listOf("M", "DM", "CM-L", "AM", "LM", "RM")) assertEquals(p, 2, LineupParser.line(p))
+        for (p in listOf("F", "CF", "LF", "RF", "LW", "RW", "ST", "CF-L")) assertEquals(p, 3, LineupParser.line(p))
+    }
+
+    @Test
+    fun readsTheAbsences() {
+        val text = sample.replace(
+            "\"tv\":[\"Thmanyah\"",
+            "\"abs\":{\"h\":[{\"n\":\"Neymar\",\"r\":\"إصابة\"},{\"n\":\"Kanno\",\"r\":\"إيقاف\",\"d\":1}]},\"tv\":[\"Thmanyah\""
+        )
+        val m = ScheduleParser.parse(text).matches.first { it.id == "700" }
+        assertEquals(listOf("Neymar", "Kanno"), m.absentHome.map { it.name })
+        assertEquals("إصابة", m.absentHome[0].reason)
+        assertTrue(m.absentHome[1].doubtful)
+        assertTrue(m.absentAway.isEmpty())
     }
 }

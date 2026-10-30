@@ -34,7 +34,10 @@ data class Match(
     val city: String?,
     val note: String?,
     /** The channels that show it, as the schedule names them (Channels.arab keeps the Arab world's). */
-    val tv: List<String> = emptyList()
+    val tv: List<String> = emptyList(),
+    /** Injured and suspended players of each team, when known. */
+    val absentHome: List<Absent> = emptyList(),
+    val absentAway: List<Absent> = emptyList()
 ) {
     /** Matches from ESPN get live scores; the Arab leagues ESPN lacks come from another source. */
     val fromEspn: Boolean get() = !id.startsWith("y")
@@ -105,7 +108,9 @@ object ScheduleParser {
                     venue = m.optStringOrNull("v"),
                     city = m.optStringOrNull("c"),
                     note = m.optStringOrNull("n"),
-                    tv = m.optJSONArray("tv")?.let { a -> (0 until a.length()).mapNotNull { i -> a.optString(i).trim().takeIf { it.isNotEmpty() } } }.orEmpty()
+                    tv = m.optJSONArray("tv")?.let { a -> (0 until a.length()).mapNotNull { i -> a.optString(i).trim().takeIf { it.isNotEmpty() } } }.orEmpty(),
+                    absentHome = LineupParser.absents(m.optJSONObject("abs")?.optJSONArray("h")),
+                    absentAway = LineupParser.absents(m.optJSONObject("abs")?.optJSONArray("a"))
                 )
             )
         }

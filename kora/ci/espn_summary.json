@@ -1,0 +1,157 @@
+{
+ "rosters": [
+  {
+   "homeAway": "home",
+   "formation": "4-4-1-1",
+   "team": {
+    "id": "929"
+   },
+   "roster": [
+    {
+     "active": true,
+     "starter": true,
+     "jersey": "24",
+     "athlete": {
+      "displayName": "Bento",
+      "shortName": "Bento"
+     },
+     "position": {
+      "abbreviation": "G"
+     },
+     "subbedIn": false,
+     "subbedOut": false,
+     "formationPlace": "1"
+    },
+    {
+     "active": true,
+     "starter": true,
+     "jersey": "17",
+     "athlete": {
+      "displayName": "Abdullah Al-Khaibari"
+     },
+     "position": {
+      "abbreviation": "CD-L"
+     },
+     "subbedIn": false,
+     "subbedOut": true,
+     "formationPlace": "5"
+    },
+    {
+     "active": true,
+     "starter": true,
+     "jersey": "2",
+     "athlete": {
+      "displayName": "Sultan Al-Ghannam"
+     },
+     "position": {
+      "abbreviation": "RB"
+     },
+     "subbedIn": false,
+     "subbedOut": false,
+     "formationPlace": "2"
+    },
+    {
+     "active": true,
+     "starter": true,
+     "jersey": "10",
+     "athlete": {
+      "displayName": "Joao Felix"
+     },
+     "position": {
+      "abbreviation": "AM"
+     },
+     "subbedIn": false,
+     "subbedOut": false,
+     "formationPlace": "10"
+    },
+    {
+     "active": true,
+     "starter": true,
+     "jersey": "7",
+     "athlete": {
+      "displayName": "Cristiano Ronaldo"
+     },
+     "position": {
+      "abbreviation": "F"
+     },
+     "subbedIn": false,
+     "subbedOut": false,
+     "formationPlace": "11"
+    },
+    {
+     "active": true,
+     "starter": false,
+     "jersey": "99",
+     "athlete": {
+      "displayName": "Nawaf Al-Aqidi"
+     },
+     "position": {
+      "abbreviation": "SUB"
+     },
+     "subbedIn": false,
+     "subbedOut": false,
+     "formationPlace": "0"
+    },
+    {
+     "active": true,
+     "starter": false,
+     "jersey": "56",
+     "athlete": {
+      "displayName": "Rakan Al Ghamdi",
+      "shortName": "R. Al Ghamdi"
+     },
+     "position": {
+      "abbreviation": "SUB"
+     },
+     "subbedIn": true,
+     "subbedOut": false,
+     "formationPlace": "0",
+     "subbedInFor": {
+      "jersey": "17",
+      "athlete": {
+       "id": "271461",
+       "displayName": "Abdullah Al-Khaibari"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "homeAway": "away",
+   "formation": "4-2-3-1",
+   "team": {
+    "id": "817"
+   },
+   "roster": [
+    {
+     "active": true,
+     "starter": true,
+     "jersey": "1",
+     "athlete": {
+      "displayName": "Hamed Al-Shanqiti"
+     },
+     "position": {
+      "abbreviation": "G"
+     },
+     "subbedIn": false,
+     "subbedOut": false,
+     "formationPlace": "1"
+    },
+    {
+     "active": true,
+     "starter": true,
+     "jersey": "9",
+     "athlete": {
+      "displayName": "Guga"
+     },
+     "position": {
+      "abbreviation": "CF"
+     },
+     "subbedIn": false,
+     "subbedOut": false,
+     "formationPlace": "9"
+    }
+   ]
+  }
+ ]
+}

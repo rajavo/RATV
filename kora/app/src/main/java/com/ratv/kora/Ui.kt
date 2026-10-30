@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusGroup
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -165,6 +166,7 @@ fun KoraApp() {
     LaunchedEffect(days) { if (day !in days) day = today }
     var filter by rememberSaveable { mutableStateOf<String?>(null) }
     var openId by rememberSaveable { mutableStateOf<String?>(null) }
+    var lineupsOpen by remember(openId) { mutableStateOf(false) }
     var askInstall by remember { mutableStateOf(false) }
     var message by remember { mutableStateOf<String?>(null) }
     LaunchedEffect(message) {
@@ -267,7 +269,7 @@ fun KoraApp() {
 
     val open = openId?.let { id -> s?.matches?.firstOrNull { it.id == id }?.withLive(live[id]) }
     if (open != null && s != null) {
-        MatchDialog(open, s, now, tv, onWatch = {
+        MatchDialog(open, s, now, tv, onLineups = { lineupsOpen = true }, onWatch = {
             when (RaTv.watch(context, open, s)) {
                 RaTv.Result.OPENED -> openId = null
                 RaTv.Result.OLD_VERSION -> {
@@ -277,6 +279,7 @@ fun KoraApp() {
                 RaTv.Result.NOT_INSTALLED -> askInstall = true
             }
         }, onClose = { openId = null })
+        if (lineupsOpen) LineupDialog(open, s, tv) { lineupsOpen = false }
     }
     if (askInstall) {
         InstallDialog(progress, onInstall = {
@@ -686,7 +689,7 @@ private fun initial(name: String): String {
 // ------------------------------------------------------------------ dialogs
 
 @Composable
-private fun MatchDialog(m: Match, s: Schedule, now: Long, tv: Boolean, onWatch: () -> Unit, onClose: () -> Unit) {
+private fun MatchDialog(m: Match, s: Schedule, now: Long, tv: Boolean, onLineups: () -> Unit, onWatch: () -> Unit, onClose: () -> Unit) {
     val home = s.team(m.home)
     val away = s.team(m.away)
     val league = s.league(m.league)
@@ -748,10 +751,13 @@ private fun MatchDialog(m: Match, s: Schedule, now: Long, tv: Boolean, onWatch: 
                 }
                 Spacer(Modifier.height(2.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                    val sheets = m.fromEspn || m.absentHome.isNotEmpty() || m.absentAway.isNotEmpty()
                     if (canWatch) {
                         Pill("شاهد على RA TV", primary = true, tv = tv, modifier = Modifier.focusRequester(first), onClick = onWatch)
+                        if (sheets) Pill("التشكيلة والغيابات", primary = false, tv = tv, onClick = onLineups)
                         Pill("رجوع", primary = false, tv = tv, onClick = onClose)
                     } else {
+                        if (sheets) Pill("التشكيلة", primary = false, tv = tv, onClick = onLineups)
                         Pill("رجوع", primary = true, tv = tv, modifier = Modifier.focusRequester(first), onClick = onClose)
                     }
                 }
@@ -765,6 +771,191 @@ private fun MatchDialog(m: Match, s: Schedule, now: Long, tv: Boolean, onWatch: 
         LaunchedEffect(Unit) {
             delay(60)
             runCatching { first.requestFocus() }
+        }
+    }
+}
+
+// ------------------------------------------------------------------ lineups
+
+private val LINES = listOf("حارس المرمى", "الدفاع", "الوسط", "الهجوم")
+
+@Composable
+private fun LineupDialog(m: Match, s: Schedule, tv: Boolean, onClose: () -> Unit) {
+    val home = s.team(m.home)
+    val away = s.team(m.away)
+    var lineups by remember(m.id) { mutableStateOf<Lineups?>(null) }
+    var failed by remember(m.id) { mutableStateOf(false) }
+    val first = remember { FocusRequester() }
+    LaunchedEffect(m.id) {
+        if (!m.fromEspn) return@LaunchedEffect
+        while (isActive) {
+            try {
+                lineups = LineupSource.load(m)
+                failed = false
+            } catch (e: Exception) {
+                if (lineups == null) failed = true
+            }
+            // Sheets come out about an hour before kick-off and change with substitutions: look again while it matters.
+            val soon = m.state == "in" || (m.state == "pre" && m.time - System.currentTimeMillis() < 90 * 60_000L)
+            if (!soon) break
+            delay(120_000L)
+        }
+    }
+    Dialog(onDismissRequest = onClose, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+            Column(
+                Modifier
+                    .padding(16.dp)
+                    .widthIn(max = 820.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(26.dp))
+                    .background(C.Surface)
+                    .padding(horizontal = 20.dp, vertical = 18.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    SheetTeam(home, tv, Modifier.weight(1f))
+                    Pill("رجوع", primary = true, tv = tv, modifier = Modifier.focusRequester(first), onClick = onClose)
+                    SheetTeam(away, tv, Modifier.weight(1f))
+                }
+                val l = lineups
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    when {
+                        !m.fromEspn -> Unit
+                        l == null && failed -> item { SheetNote("ما قدرنا نجيب التشكيلة. تأكد إن النت شغّال.") }
+                        l == null -> item { SheetNote("جاري تحميل التشكيلة…") }
+                        !l.announced -> item {
+                            SheetNote(
+                                if (m.state == "pre") "التشكيلة الرسمية تنعلن قبل المباراة بساعة تقريباً، ارجع لها وقتها."
+                                else "ما نزلت تشكيلة لهذي المباراة."
+                            )
+                        }
+                        else -> {
+                            item { SheetRow(l.home?.formation?.let { Fmt.ltr(it) } ?: "", l.away?.formation?.let { Fmt.ltr(it) } ?: "", "الخطة") }
+                            for (line in 0..3) {
+                                val h = l.home?.starters.orEmpty().filter { it.line == line }
+                                val a = l.away?.starters.orEmpty().filter { it.line == line }
+                                if (h.isEmpty() && a.isEmpty()) continue
+                                item(key = "line$line") { PlayersRow(LINES[line], h, a, tv) }
+                            }
+                            item(key = "bench") { PlayersRow("الاحتياط", l.home?.bench.orEmpty(), l.away?.bench.orEmpty(), tv) }
+                        }
+                    }
+                    item(key = "absent") { AbsentRow(m, tv) }
+                }
+            }
+        }
+        LaunchedEffect(Unit) {
+            delay(60)
+            runCatching { first.requestFocus() }
+        }
+    }
+}
+
+@Composable
+private fun SheetTeam(team: Team, tv: Boolean, modifier: Modifier) {
+    Row(modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+        Logo(team.logo, team.name, if (tv) 40.dp else 32.dp)
+        Spacer(Modifier.width(8.dp))
+        Text(team.name, style = t(if (tv) 18f else 15f, true), maxLines = 1, overflow = TextOverflow.Ellipsis)
+    }
+}
+
+@Composable
+private fun SheetNote(text: String) {
+    Text(text, style = t(16f, color = C.Text2, align = TextAlign.Center), modifier = Modifier.fillMaxWidth().padding(vertical = 18.dp))
+}
+
+/** A row the remote can select, so the list scrolls with it; pressing does nothing. */
+@Composable
+private fun Modifier.sheetRow(): Modifier {
+    val source = remember { MutableInteractionSource() }
+    val focused by source.collectIsFocusedAsState()
+    val shape = RoundedCornerShape(16.dp)
+    return this
+        .fillMaxWidth()
+        .clip(shape)
+        .border(BorderStroke(3.dp, if (focused) C.Saffron else Color.Transparent), shape)
+        .focusable(interactionSource = source)
+        .background(C.Surface2)
+        .padding(horizontal = 14.dp, vertical = 10.dp)
+}
+
+@Composable
+private fun SheetRow(home: String, away: String, title: String) {
+    Row(Modifier.sheetRow(), verticalAlignment = Alignment.CenterVertically) {
+        Text(home, style = t(17f, true), modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+        Text(title, style = t(13f, true, C.Saffron), textAlign = TextAlign.Center)
+        Text(away, style = t(17f, true), modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+    }
+}
+
+@Composable
+private fun PlayersRow(title: String, home: List<Player>, away: List<Player>, tv: Boolean) {
+    Column(Modifier.sheetRow(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(title, style = t(13f, true, C.Saffron))
+        Spacer(Modifier.height(4.dp))
+        Row(Modifier.fillMaxWidth()) {
+            PlayerColumn(home, tv, Modifier.weight(1f))
+            Spacer(Modifier.width(12.dp))
+            PlayerColumn(away, tv, Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
+private fun PlayerColumn(players: List<Player>, tv: Boolean, modifier: Modifier) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(3.dp)) {
+        for (p in players) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    p.number ?: "",
+                    style = t(if (tv) 14f else 12.5f, true, C.Text3, TextAlign.Center),
+                    modifier = Modifier.width(28.dp)
+                )
+                Text(
+                    Fmt.ltr(p.name),
+                    style = t(if (tv) 15.5f else 14f, color = if (p.starter || p.subbedIn) C.Text else C.Text2),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
+                )
+                if (p.subbedOut) Text("  ↓ خرج", style = t(12f, color = C.Live))
+                if (p.subbedIn) Text("  ↑ دخل", style = t(12f, color = C.Saffron))
+            }
+        }
+    }
+}
+
+@Composable
+private fun AbsentRow(m: Match, tv: Boolean) {
+    Column(Modifier.sheetRow(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("الغيابات", style = t(13f, true, C.Saffron))
+        Spacer(Modifier.height(4.dp))
+        if (m.absentHome.isEmpty() && m.absentAway.isEmpty()) {
+            Text("ما في غيابات معروفة لهذي المباراة.", style = t(14f, color = C.Text2))
+            return@Column
+        }
+        Row(Modifier.fillMaxWidth()) {
+            AbsentColumn(m.absentHome, tv, Modifier.weight(1f))
+            Spacer(Modifier.width(12.dp))
+            AbsentColumn(m.absentAway, tv, Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
+private fun AbsentColumn(list: List<Absent>, tv: Boolean, modifier: Modifier) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        if (list.isEmpty()) Text("بدون غيابات", style = t(14f, color = C.Text3))
+        for (a in list) {
+            Column {
+                Text(Fmt.ltr(a.name), style = t(if (tv) 15.5f else 14f), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(
+                    a.reason + if (a.doubtful) " · مشكوك في مشاركته" else "",
+                    style = t(12f, color = if (a.doubtful) C.Saffron else C.Live)
+                )
+            }
         }
     }
 }
