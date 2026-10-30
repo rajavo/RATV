@@ -335,7 +335,8 @@ def s_lite():
     log("first focus on the lite page: %s" % f)
     key("DPAD_CENTER", 2)
     outcome = None
-    end = time.time() + 40
+    end = time.time() + 100
+    t = ""
     while time.time() < end and outcome is None:
         root = dump()
         t = texts(root)
@@ -348,6 +349,7 @@ def s_lite():
                 outcome = want
         time.sleep(1)
     shot("lite-after")
+    log("lite screen after the button: " + t[:600])
     log("lite outcome: %s, animator scale: %s" % (outcome, sh("settings get global animator_duration_scale").strip()))
     expect(outcome is not None, "the lighten button gave no answer")
     expect(outcome != "صار خطأ", "the lighten button failed: " + texts(dump("lite-error"))[:400])

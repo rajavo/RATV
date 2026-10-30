@@ -96,7 +96,7 @@ fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
                 Modifier
                     .widthIn(max = 780.dp)
                     .fillMaxWidth(),
-                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 22.dp),
+                contentPadding = PaddingValues(start = 24.dp, end = 24.dp, top = 22.dp, bottom = if (message != null) 120.dp else 22.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item {
@@ -109,7 +109,6 @@ fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
                         Pill("رجوع", false, onBack)
                     }
                 }
-                message?.let { m -> item { Notice(if (busy) "لحظة… $m" else m) } }
                 item { StepCard { Lite.openDeveloperOptions(context) } }
                 item {
                     Card {
@@ -174,6 +173,18 @@ fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
                         )
                     }
                 }
+            }
+            // Always in sight, whatever part of the page the remote is on.
+            message?.let { m ->
+                Box(
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .widthIn(max = 780.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 16.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(C.Ink)
+                ) { Notice(if (busy) "لحظة… $m" else m) }
             }
         }
     }
