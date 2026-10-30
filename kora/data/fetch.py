@@ -884,12 +884,8 @@ def arabic_places(match_list, previous_places):
              "sample": dict(list(sorted(names.items()))[:12] + [kv for kv in sorted(names.items()) if kv[0].startswith("v:")][:25])}
     return {"v": PLACES_VERSION, "names": names, "miss": miss}, state
 
-COMMENTATOR_SITES = [
-    "https://www.yalla-shoot.io/", "https://yalla-shoot.com/", "https://www.yallashoot.io/", "https://yallashoot.cc/",
-    "https://www.yalla-shoot-tv.live/", "https://yalla-live.io/", "https://www.kooralive.tv/", "https://koora-live.io/",
-    "https://www.kora-live.tv/", "https://livekoora.online/", "https://www.yalla-kora.tv/", "https://kooragoal.com/",
-    "https://www.koraonline.io/", "https://yalla-shoot-new.com/", "https://www.yallashoot.today/", "https://yallashootv.com/",
-]
+COMMENTATOR_SITES = ["https://www.koraonline.io/", "https://yalla-shoot-new.com/", "https://www.yallashoot.today/",
+                     "https://yallashootv.com/"]
 
 
 def commentator_probe():
@@ -900,10 +896,20 @@ def commentator_probe():
         try:
             code, headers, body = get(url, tries=1, ua=BROWSER)
             html = body.decode("utf-8", "replace")
-            spots = [m.start() for m in re.finditer("المعلق|معلق", html)]
-            snippets = [re.sub(r"\s+", " ", html[max(0, i - 700):i + 300]) for i in spots[:2]]
-            return url, {"code": code, "size": len(html), "commentators": len(spots),
-                         "title": (re.search(r"<title>([^<]*)", html) or [None, ""])[1][:80], "snippets": snippets}
+            host = re.match(r"https?://[^/]+", url).group(0)
+            links = [l for l in dict.fromkeys(re.findall(r'href="([^"#]+)"', html))
+                     if (l.startswith(host) or l.startswith("/")) and re.search(r"match|mubara|%D9%85%D8%A8|مباراة|\d{4,}", l)][:3]
+            pages = {}
+            for l in links:
+                u = urllib.parse.quote(l if l.startswith("http") else host + l, safe=":/?=&%#")
+                try:
+                    p = get(u, tries=1, ua=BROWSER)[2].decode("utf-8", "replace")
+                    spots = [m.start() for m in re.finditer("المعلق|معلق", p)]
+                    pages[u[:160]] = {"size": len(p), "commentators": len(spots),
+                                      "snippets": [re.sub(r"<[^>]+>", " | ", re.sub(r"\s+", " ", p[max(0, i - 300):i + 300])) for i in spots[-3:]]}
+                except Exception as e:
+                    pages[u[:160]] = {"error": str(e)[:100]}
+            return url, {"code": code, "size": len(html), "links": links, "pages": pages}
         except Exception as e:
             return url, {"error": str(e)[:120]}
 
