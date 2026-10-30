@@ -15,7 +15,9 @@ class Player(
     val subbedIn: Boolean,
     val subbedOut: Boolean,
     /** For a substitute who came on: the player he replaced. */
-    val replaced: String?
+    val replaced: String?,
+    /** ESPN's position code (G, CD-L, RB, DM, AM, CF…), for the place on the pitch. */
+    val pos: String? = null
 )
 
 class Side(val formation: String?, val players: List<Player>) {
@@ -66,7 +68,8 @@ object LineupParser {
                     starter = starter,
                     subbedIn = p.optBoolean("subbedIn"),
                     subbedOut = p.optBoolean("subbedOut"),
-                    replaced = p.optJSONObject("subbedInFor")?.optJSONObject("athlete")?.str("displayName")?.let { names[it] ?: it }
+                    replaced = p.optJSONObject("subbedInFor")?.optJSONObject("athlete")?.str("displayName")?.let { names[it] ?: it },
+                    pos = pos
                 )
             )
         }
@@ -87,6 +90,52 @@ object LineupParser {
             p == "F" || p == "CF" || p == "ST" || p.endsWith("F") || p.endsWith("W") || p == "S" -> 3
             else -> 2
         }
+    }
+
+    /** How far up the pitch a position plays: 0 the goalkeeper … 4 the centre-forward. */
+    fun depth(pos: String?): Double {
+        val p = pos?.uppercase()?.substringBefore('-') ?: return 2.5
+        return when (p) {
+            "G", "GK" -> 0.0
+            "D", "CD", "CB", "SW", "LB", "RB" -> 1.0
+            "LWB", "RWB", "WB" -> 1.5
+            "DM", "CDM" -> 2.0
+            "AM", "CAM" -> 3.0
+            "LW", "RW", "W" -> 3.5
+            "LF", "RF" -> 3.6
+            "F", "CF", "ST", "S" -> 4.0
+            else -> 2.5
+        }
+    }
+
+    /** Where across the pitch, facing the other goal: -2 the left wing, -1 left of centre, 0 centre, 1, 2 the right wing. */
+    fun side(pos: String?): Int {
+        val p = pos?.uppercase() ?: return 0
+        val base = p.substringBefore('-')
+        return when {
+            base.length > 1 && base.startsWith("L") -> -2
+            base.length > 1 && base.startsWith("R") -> 2
+            p.endsWith("-L") -> -1
+            p.endsWith("-R") -> 1
+            else -> 0
+        }
+    }
+
+    /**
+     * The starters in the formation's rows, from the goalkeeper up ("4-2-3-1" → 1, 4, 2, 3, 1), each row
+     * from left to right. When the formation does not fit the sheet, the rows are the lines.
+     */
+    fun rows(side: Side): List<List<Player>> {
+        val sorted = side.starters.sortedBy { depth(it.pos) }
+        if (sorted.isEmpty()) return emptyList()
+        val digits = side.formation?.split('-')?.map { it.trim().toIntOrNull() ?: 0 }.orEmpty()
+        val sizes = if (digits.isNotEmpty() && digits.all { it > 0 } && digits.sum() == sorted.size - 1 && depth(sorted[0].pos) == 0.0) {
+            listOf(1) + digits
+        } else {
+            sorted.groupBy { if (depth(it.pos) == 0.0) 0 else it.line.coerceAtLeast(1) }.toSortedMap().values.map { it.size }
+        }
+        var i = 0
+        return sizes.map { n -> sorted.subList(i, i + n).also { i += n }.sortedBy { side(it.pos) } }
     }
 
     private fun JSONObject.str(key: String): String? =
