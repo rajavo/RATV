@@ -1,0 +1,699 @@
+<title>استوديو RA للصور المصغرة</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@900&family=Changa:wght@800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Lalezar&family=Rakkas&family=Reem+Kufi:wght@500;700&display=swap">
+<style>
+/* Layout: same edit-suite frame as the RA montage studio. Control rack on the reading side, the 1280×720 artboard beside it, and under it the thumbnail as it will sit in the YouTube feed. Single dark look on purpose. */
+:root {
+  --ink: #111318;
+  --rack: #181b22;
+  --well: #0b0c10;
+  --line: #2a2e39;
+  --fg: #ecebe6;
+  --muted: #959aa6;
+  --tally: #f2b33d;
+  --tally-ink: #1a1405;
+  --cut: #e2604f;
+  --display: "Reem Kufi", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --body: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --r: 10px;
+  color-scheme: dark;
+}
+html, body { background: var(--ink); color: var(--fg); }
+body { font-family: var(--body); font-size: 15px; line-height: 1.55; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--tally); outline-offset: 2px; }
+
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 40px; max-width: 1440px; margin: 0 auto; }
+header.bar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-block: 16px; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
+.mark { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 9px; background: var(--tally); color: var(--tally-ink); font-family: var(--display); font-weight: 700; font-size: 18px; }
+.brand h1 { margin: 0; font-family: var(--display); font-weight: 700; font-size: 22px; line-height: 1.2; text-wrap: balance; }
+.brand p { margin: 0; color: var(--muted); font-size: 13px; }
+.spec { margin-inline-start: auto; font-family: var(--mono); font-size: 13px; color: var(--muted); background: var(--well); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; direction: ltr; font-variant-numeric: tabular-nums; }
+.spec b { color: var(--tally); font-weight: 500; }
+
+.studio { display: grid; grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); grid-template-areas: "rack stage"; gap: 24px; align-items: start; }
+.rack { grid-area: rack; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.stage { grid-area: stage; position: sticky; top: 16px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+@media (max-width: 880px) { .studio { grid-template-columns: minmax(0, 1fr); grid-template-areas: "stage" "rack"; } .stage { position: static; } }
+
+.unit { background: var(--rack); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.unit h2 { margin: 0; display: flex; align-items: baseline; gap: 10px; font-family: var(--display); font-weight: 500; font-size: 18px; }
+.unit h2 .n { font-family: var(--mono); font-size: 12px; color: var(--tally); border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; }
+.hint { margin: 0; color: var(--muted); font-size: 13px; }
+.hint code { font-family: var(--mono); color: var(--tally); }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field > span, .lbl { font-size: 13px; color: var(--muted); }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.row > .field { flex: 1 1 140px; min-width: 0; }
+input[type=text], select, textarea { background: var(--well); border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; width: 100%; }
+textarea { resize: vertical; min-height: 74px; font-size: 16px; line-height: 1.5; }
+input[type=range] { width: 100%; accent-color: var(--tally); }
+input[type=file] { font-size: 12px; max-width: 100%; }
+.val { font-family: var(--mono); font-size: 12px; font-variant-numeric: tabular-nums; }
+.split { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.sliders { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+@media (max-width: 420px) { .sliders { grid-template-columns: 1fr; } }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.chip span { display: inline-block; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--well); font-size: 13px; cursor: pointer; }
+.chip input:checked + span { background: var(--tally); border-color: var(--tally); color: var(--tally-ink); font-weight: 600; }
+.chip input:focus-visible + span { outline: 2px solid var(--tally); outline-offset: 2px; }
+.chip.font span { font-size: 17px; padding: 4px 14px; }
+.swatches { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.sw { width: 30px; height: 30px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; }
+.sw.grad { width: 46px; border-radius: 8px; }
+.sw[aria-pressed=true] { border-color: var(--fg); box-shadow: 0 0 0 2px var(--ink) inset; }
+input[type=color] { width: 34px; height: 30px; border: 1px solid var(--line); border-radius: 8px; background: var(--well); padding: 2px; }
+
+.toggle { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 14px; cursor: pointer; }
+.toggle input { appearance: none; width: 40px; height: 22px; border-radius: 999px; background: #3a3e48; position: relative; cursor: pointer; flex: none; transition: background .15s; }
+.toggle input::after { content: ""; position: absolute; top: 3px; inset-inline-start: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--fg); transition: inset-inline-start .15s; }
+.toggle input:checked { background: var(--tally); }
+.toggle input:checked::after { inset-inline-start: 21px; background: var(--tally-ink); }
+
+.btn { border: 1px solid var(--line); background: var(--well); border-radius: 8px; padding: 9px 14px; cursor: pointer; font-weight: 600; font-size: 14px; }
+.btn:hover:not(:disabled) { border-color: var(--muted); }
+.btn.go { background: var(--tally); border-color: var(--tally); color: var(--tally-ink); }
+.btn.danger { color: var(--cut); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.wide { width: 100%; padding: 12px; font-size: 15px; }
+.stickers { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.stickers button { aspect-ratio: 1; border: 1px solid var(--line); background: var(--well); border-radius: 8px; cursor: pointer; font-size: 22px; display: grid; place-items: center; padding: 0; }
+.stickers button:hover { border-color: var(--tally); }
+.stickers svg { width: 26px; height: 26px; }
+.selbox { border: 1px dashed var(--tally); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+
+.board { position: relative; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); background: #000; }
+.board canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: grab; }
+.board canvas:active { cursor: grabbing; }
+.board .tag { position: absolute; top: 10px; inset-inline-end: 10px; font-family: var(--mono); font-size: 11px; background: rgba(0,0,0,.6); padding: 3px 8px; border-radius: 5px; direction: ltr; pointer-events: none; }
+.stagebar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; color: var(--muted); font-size: 13px; }
+.stagebar .grow { flex: 1; }
+
+/* YouTube feed preview */
+.feed { background: #0f0f0f; border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-start; }
+.feed h3 { margin: 0 0 4px; font-size: 12px; font-weight: 500; color: var(--muted); width: 100%; }
+.card { width: 340px; max-width: 100%; display: flex; flex-direction: column; gap: 10px; }
+.card .th, .side .th { position: relative; border-radius: 12px; overflow: hidden; background: #222; }
+.card .th canvas, .side .th canvas { display: block; width: 100%; height: auto; }
+.dur { position: absolute; bottom: 6px; left: 6px; background: rgba(0,0,0,.8); color: #fff; font-size: 12px; font-weight: 600; padding: 1px 5px; border-radius: 4px; font-family: Roboto, Arial, sans-serif; direction: ltr; }
+.card .info { display: flex; gap: 10px; }
+.av { width: 36px; height: 36px; border-radius: 50%; flex: none; display: grid; place-items: center; font-family: var(--display); font-weight: 700; font-size: 12px; }
+.vt { font-size: 15px; font-weight: 600; color: #f1f1f1; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.vm { font-size: 13px; color: #aaa; }
+.side { display: flex; gap: 8px; width: 400px; max-width: 100%; }
+.side .th { width: 168px; flex: none; border-radius: 8px; }
+.side .vt { font-size: 14px; }
+.side > div:last-child { min-width: 0; }
+.toast { position: fixed; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--fg); color: var(--ink); padding: 10px 16px; border-radius: 8px; font-weight: 600; z-index: 20; max-width: calc(100% - 32px); }
+.hidden-media { position: fixed; width: 2px; height: 2px; opacity: 0; pointer-events: none; bottom: 0; left: 0; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap" dir="rtl">
+  <header class="bar">
+    <div class="mark" aria-hidden="true">RA</div>
+    <div class="brand">
+      <h1>استوديو RA للصور المصغرة</h1>
+      <p>صمّم صورة الفيديو اللي تخلي الناس يضغطون، وشوفها كيف تطلع في يوتيوب قبل ما ترفعها</p>
+    </div>
+    <span class="spec"><b>1280×720</b> · 16:9 · &lt; 2 MB</span>
+  </header>
+
+  <div class="studio">
+    <section class="stage" aria-label="لوحة التصميم">
+      <div class="board">
+        <canvas id="cv" width="1280" height="720" aria-label="الصورة المصغرة: اسحب العناصر لتحريكها"></canvas>
+        <span class="tag">THUMB · 1280×720</span>
+      </div>
+      <div class="stagebar">
+        <span>اسحب النص أو الصورة أو الملصق لتحريكه · اسحب الخلفية لتحريكها</span>
+        <span class="grow"></span>
+        <button class="btn" type="button" id="btnReset">ابدأ من جديد</button>
+      </div>
+      <div class="feed" aria-label="كيف تطلع في يوتيوب">
+        <h3>كذا تطلع في الصفحة الرئيسية وفي الاقتراحات</h3>
+        <div class="card">
+          <div class="th"><canvas id="pv1" width="680" height="383"></canvas><span class="dur">12:34</span></div>
+          <div class="info">
+            <div class="av" id="av1">RA</div>
+            <div><div class="vt" id="vt1"></div><div class="vm"><span class="chName"></span><br>١٢ ألف مشاهدة · قبل ساعتين</div></div>
+          </div>
+        </div>
+        <div class="side">
+          <div class="th"><canvas id="pv2" width="336" height="189"></canvas><span class="dur">12:34</span></div>
+          <div><div class="vt" id="vt2"></div><div class="vm"><span class="chName"></span><br>١٢ ألف مشاهدة</div></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="rack">
+      <section class="unit" aria-labelledby="hBg">
+        <h2 id="hBg"><span class="n">1</span>الخلفية</h2>
+        <div class="row">
+          <label class="field"><span>صورة</span><input type="file" id="fileBg" accept="image/*"></label>
+          <label class="field"><span>أو لقطة من فيديو</span><input type="file" id="fileVid" accept="video/*"></label>
+        </div>
+        <div class="field" id="frameBox" hidden>
+          <div class="split"><span class="lbl">اختر اللقطة</span><span class="val" id="frameV">0:00</span></div>
+          <input type="range" id="frame" min="0" max="1" step="0.04" value="0" dir="ltr">
+        </div>
+        <div class="field">
+          <span class="lbl">أو خلفية ملوّنة</span>
+          <div class="swatches" id="grads"></div>
+        </div>
+        <div class="sliders">
+          <label class="field"><div class="split"><span class="lbl">سطوع</span><span class="val" id="brV"></span></div><input type="range" id="br" min="50" max="150" value="100" dir="ltr"></label>
+          <label class="field"><div class="split"><span class="lbl">ألوان</span><span class="val" id="saV"></span></div><input type="range" id="sa" min="0" max="200" value="125" dir="ltr"></label>
+          <label class="field"><div class="split"><span class="lbl">تباين</span><span class="val" id="coV"></span></div><input type="range" id="co" min="50" max="160" value="110" dir="ltr"></label>
+          <label class="field"><div class="split"><span class="lbl">تغبيش</span><span class="val" id="blV"></span></div><input type="range" id="bl" min="0" max="20" value="0" dir="ltr"></label>
+          <label class="field"><div class="split"><span class="lbl">تقريب</span><span class="val" id="zmV"></span></div><input type="range" id="zm" min="100" max="250" value="100" dir="ltr"></label>
+        </div>
+        <label class="toggle" for="shadeOn">تظليل خلف النص عشان يوضح<input type="checkbox" id="shadeOn" checked></label>
+        <label class="toggle" for="raysOn">أشعة من الوسط<input type="checkbox" id="raysOn"></label>
+        <label class="toggle" for="vigOn">أطراف داكنة<input type="checkbox" id="vigOn" checked></label>
+      </section>
+
+      <section class="unit" aria-labelledby="hTx">
+        <h2 id="hTx"><span class="n">2</span>العنوان</h2>
+        <label class="field"><span>النص (مثال، غيّره)</span><textarea id="txt" rows="3">جربت *أسرع* جوال
+في 2026</textarea></label>
+        <p class="hint">حط الكلمة بين نجمتين مثل <code>*أسرع*</code> عشان تبرز. كل سطر جديد يطلع سطر في الصورة. أفضل عنوان: ٣ إلى ٥ كلمات.</p>
+        <div class="field">
+          <span class="lbl">الخط</span>
+          <div class="chips" id="fonts"></div>
+        </div>
+        <div class="field">
+          <span class="lbl">مكان النص</span>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="layout" value="right" checked><span>يمين</span></label>
+            <label class="chip"><input type="radio" name="layout" value="left"><span>يسار</span></label>
+            <label class="chip"><input type="radio" name="layout" value="center"><span>وسط</span></label>
+            <label class="chip"><input type="radio" name="layout" value="bottom"><span>تحت</span></label>
+          </div>
+        </div>
+        <div class="sliders">
+          <label class="field"><div class="split"><span class="lbl">حجم الخط</span><span class="val" id="fsV"></span></div><input type="range" id="fs" min="60" max="220" value="130" dir="ltr"></label>
+          <label class="field"><div class="split"><span class="lbl">الحد الأسود</span><span class="val" id="skV"></span></div><input type="range" id="sk" min="0" max="30" value="14" dir="ltr"></label>
+        </div>
+        <div class="field">
+          <span class="lbl">لون النص</span>
+          <div class="swatches" id="textColors"></div>
+        </div>
+        <div class="field">
+          <span class="lbl">لون الكلمة البارزة</span>
+          <div class="swatches" id="hiColors"></div>
+        </div>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="hiStyle" value="box" checked><span>داخل مربع</span></label>
+          <label class="chip"><input type="radio" name="hiStyle" value="color"><span>لون بس</span></label>
+        </div>
+        <label class="toggle" for="tilt">ميلان خفيف للنص<input type="checkbox" id="tilt"></label>
+      </section>
+
+      <section class="unit" aria-labelledby="hCo">
+        <h2 id="hCo"><span class="n">3</span>صورتك أو المنتج</h2>
+        <label class="field"><span>صورة مقصوصة (PNG بخلفية شفافة)</span><input type="file" id="fileCut" accept="image/*"></label>
+        <p class="hint">صورة وجهك وأنت متفاجئ أو المنتج اللي تتكلم عنه. تقدر تشيل الخلفية من أي موقع حذف خلفيات وترفعها هنا.</p>
+        <label class="toggle" for="outlineOn">إطار أبيض حول الصورة<input type="checkbox" id="outlineOn" checked></label>
+      </section>
+
+      <section class="unit" aria-labelledby="hSt">
+        <h2 id="hSt"><span class="n">4</span>ملصقات</h2>
+        <div class="stickers" id="stickers">
+          <button type="button" data-k="arrow" aria-label="سهم"><svg viewBox="0 0 26 26"><path d="M21 4 C20 14 14 19 6 20" fill="none" stroke="#e5463b" stroke-width="3.5" stroke-linecap="round"/><path d="M4 20 L10 15 L10 24 Z" fill="#e5463b"/></svg></button>
+          <button type="button" data-k="circle" aria-label="دائرة"><svg viewBox="0 0 26 26"><ellipse cx="13" cy="13" rx="10" ry="8" fill="none" stroke="#e5463b" stroke-width="3"/></svg></button>
+          <button type="button" data-k="x" aria-label="علامة خطأ"><svg viewBox="0 0 26 26"><path d="M6 6 L20 20 M20 6 L6 20" stroke="#e5463b" stroke-width="4" stroke-linecap="round"/></svg></button>
+          <button type="button" data-k="check" aria-label="علامة صح"><svg viewBox="0 0 26 26"><path d="M5 14 L11 20 L21 6" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" data-k="emoji:😱" aria-label="وجه مصدوم">😱</button>
+          <button type="button" data-k="emoji:🔥" aria-label="نار">🔥</button>
+          <button type="button" data-k="emoji:😂" aria-label="ضحك">😂</button>
+          <button type="button" data-k="emoji:👀" aria-label="عيون">👀</button>
+          <button type="button" data-k="emoji:💯" aria-label="مية بالمية">💯</button>
+          <button type="button" data-k="emoji:❓" aria-label="علامة استفهام">❓</button>
+        </div>
+        <div class="selbox" id="selBox" hidden>
+          <div class="split"><span class="lbl" id="selName">العنصر المحدد</span></div>
+          <label class="field"><div class="split"><span class="lbl">الحجم</span><span class="val" id="selSV"></span></div><input type="range" id="selS" min="20" max="300" value="100" dir="ltr"></label>
+          <label class="field"><div class="split"><span class="lbl">الدوران</span><span class="val" id="selRV"></span></div><input type="range" id="selR" min="-45" max="45" value="0" dir="ltr"></label>
+          <div class="row">
+            <button class="btn" type="button" id="selFront">قدّمه للأمام</button>
+            <button class="btn" type="button" id="selFlip">اقلبه</button>
+            <button class="btn danger" type="button" id="selDel">احذفه</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="unit" aria-labelledby="hBd">
+        <h2 id="hBd"><span class="n">5</span>الشارة والقناة</h2>
+        <label class="toggle" for="badgeOn">شارة في الزاوية<input type="checkbox" id="badgeOn" checked></label>
+        <div class="row">
+          <label class="field"><span>كلمة الشارة</span><input type="text" id="badgeTxt" value="جديد" maxlength="14"></label>
+          <label class="field"><span>اسم القناة (للمعاينة)</span><input type="text" id="chName" value="RA TV" maxlength="28"></label>
+        </div>
+        <div class="field"><span class="lbl">لون الشارة</span><div class="swatches" id="badgeColors"></div></div>
+      </section>
+
+      <section class="unit" aria-labelledby="hEx">
+        <h2 id="hEx"><span class="n">6</span>الحفظ</h2>
+        <p class="hint">يوتيوب يطلب 1280×720 وحجم أقل من 2 ميقا. JPG أصغر، و PNG أنقى.</p>
+        <div class="row">
+          <button class="btn go" type="button" id="btnJpg" style="flex:1">احفظ JPG</button>
+          <button class="btn" type="button" id="btnPng" style="flex:1">احفظ PNG</button>
+        </div>
+        <div class="hint" id="sizeInfo"></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<video id="vid" class="hidden-media" muted playsinline preload="auto"></video>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const cv = $('#cv'), ctx = cv.getContext('2d');
+const W = 1280, H = 720;
+const FONTS = [
+  { id: 'Lalezar', css: '"Lalezar"', w: 400, label: 'لاله‌زار' },
+  { id: 'Cairo', css: '"Cairo"', w: 900, label: 'القاهرة' },
+  { id: 'Changa', css: '"Changa"', w: 800, label: 'تشانجا' },
+  { id: 'Reem Kufi', css: '"Reem Kufi"', w: 700, label: 'ريم كوفي' },
+  { id: 'Rakkas', css: '"Rakkas"', w: 400, label: 'رقّاص' },
+];
+const GRADS = [['#1b1f3a', '#e5463b'], ['#000000', '#f2b33d'], ['#3a1c71', '#ff8a5c'], ['#0f2027', '#2c9ad8'], ['#0b3d2e', '#38ef7d'], ['#232526', '#5a5f69']];
+const TEXT_COLORS = ['#ffffff', '#ffe14d', '#f2b33d', '#000000'];
+const HI_COLORS = ['#ffe14d', '#e5463b', '#22c55e', '#2ec4b6', '#f472b6', '#ffffff'];
+const BADGE_COLORS = ['#e5463b', '#f2b33d', '#22c55e', '#2563eb', '#111111'];
+
+const DEF = {
+  text: 'جربت *أسرع* جوال\nفي 2026', font: 'Lalezar', layout: 'right', fs: 130, sk: 14,
+  color: '#ffffff', hi: '#ffe14d', hiStyle: 'box', tilt: false,
+  grad: 0, br: 100, sa: 125, co: 110, bl: 0, zm: 100, shade: true, rays: true, vig: true,
+  outline: true, badge: true, badgeTxt: 'جديد', badgeColor: '#e5463b', chName: 'RA TV',
+};
+const S = Object.assign({}, DEF);
+try { Object.assign(S, JSON.parse(localStorage.getItem('ra-thumb') || '{}')); } catch (e) {}
+const persist = () => { try { localStorage.setItem('ra-thumb', JSON.stringify(Object.fromEntries(Object.keys(DEF).map(k => [k, S[k]])))); } catch (e) {} };
+
+let bgImg = null, pan = { x: 0, y: 0 };
+// layers above the background; the title is one of them so it can be dragged and reordered
+let els = [];
+let sel = null;
+const textEl = () => els.find(e => e.type === 'text');
+
+/* ---------- helpers ---------- */
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+let toastT;
+function toast(m) { const t = $('#toast'); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 3000); }
+const fontOf = id => FONTS.find(f => f.id === id) || FONTS[0];
+const inkOn = h => { const n = parseInt(h.slice(1), 16), r = n >> 16 & 255, g = n >> 8 & 255, b = n & 255; return (.2126 * r + .7152 * g + .0722 * b) > 150 ? '#111111' : '#ffffff'; };
+
+/* ---------- layout presets ---------- */
+function placeText() {
+  const t = textEl(); if (!t) return;
+  const L = { right: [W - 60, H * .5, 'right'], left: [W * .56, H * .5, 'right'], center: [W / 2, H * .5, 'center'], bottom: [W / 2, H * .78, 'center'] }[S.layout];
+  t.x = L[0]; t.y = L[1]; t.align = L[2];
+  const cut = els.find(e => e.type === 'cutout');
+  if (cut) { cut.x = { right: W * .24, left: W * .78, center: W * .5, bottom: W * .5 }[S.layout]; cut.y = S.layout === 'bottom' ? H * .42 : H * .56; }
+}
+
+/* ---------- drawing ---------- */
+function drawBg(c) {
+  if (bgImg) {
+    const iw = bgImg.width, ih = bgImg.height, s = Math.max(W / iw, H / ih) * S.zm / 100;
+    const dw = iw * s, dh = ih * s;
+    pan.x = clamp(pan.x, (W - dw) / 2, (dw - W) / 2); pan.y = clamp(pan.y, (H - dh) / 2, (dh - H) / 2);
+    c.filter = `brightness(${S.br / 100}) saturate(${S.sa / 100}) contrast(${S.co / 100})${S.bl ? ` blur(${S.bl}px)` : ''}`;
+    const bleed = S.bl * 2;
+    c.drawImage(bgImg, (W - dw) / 2 + pan.x - bleed, (H - dh) / 2 + pan.y - bleed, dw + bleed * 2, dh + bleed * 2);
+    c.filter = 'none';
+  } else {
+    const [a, b] = GRADS[S.grad] || GRADS[0];
+    const g = c.createRadialGradient(W * .3, H * .5, 40, W * .5, H * .5, W * .8);
+    g.addColorStop(0, b); g.addColorStop(1, a);
+    c.fillStyle = g; c.fillRect(0, 0, W, H);
+  }
+  if (S.rays) {
+    c.save(); c.translate(W * (S.layout === 'left' ? .75 : S.layout === 'right' ? .25 : .5), H * .5);
+    c.fillStyle = 'rgba(255,255,255,.07)';
+    for (let i = 0; i < 18; i++) { c.rotate(Math.PI * 2 / 18); c.beginPath(); c.moveTo(0, 0); c.lineTo(W, -70); c.lineTo(W, 70); c.closePath(); c.fill(); }
+    c.restore();
+  }
+  if (S.shade) {
+    let g;
+    if (S.layout === 'right') { g = c.createLinearGradient(W, 0, W * .3, 0); }
+    else if (S.layout === 'left') { g = c.createLinearGradient(0, 0, W * .7, 0); }
+    else if (S.layout === 'bottom') { g = c.createLinearGradient(0, H, 0, H * .35); }
+    else { g = c.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, W * .5); }
+    g.addColorStop(0, 'rgba(0,0,0,.62)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+    c.fillStyle = g; c.fillRect(0, 0, W, H);
+  }
+  if (S.vig) {
+    const v = c.createRadialGradient(W / 2, H / 2, H * .45, W / 2, H / 2, W * .72);
+    v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,.55)');
+    c.fillStyle = v; c.fillRect(0, 0, W, H);
+  }
+}
+
+function parseLines(text) {
+  return text.split('\n').map(l => l.trim()).filter(Boolean).map(line => {
+    const words = []; let hi = false;
+    for (const part of line.split(/(\*)/)) {
+      if (part === '*') { hi = !hi; continue; }
+      for (const w of part.split(/\s+/).filter(Boolean)) words.push({ w, hi });
+    }
+    return words;
+  });
+}
+
+function drawText(c, el) {
+  const f = fontOf(S.font), lines = parseLines(S.text);
+  if (!lines.length) { el.bounds = null; return; }
+  const maxW = S.layout === 'center' || S.layout === 'bottom' ? W * .9 : W * .58;
+  let fs = S.fs * el.scale;
+  c.font = `${f.w} ${fs}px ${f.css}, "IBM Plex Sans Arabic", sans-serif`;
+  c.direction = 'rtl';
+  const space = () => c.measureText(' ').width * 1.1;
+  const widthOf = ws => ws.reduce((s, x) => s + c.measureText(x.w).width, 0) + space() * (ws.length - 1) + ws.filter(x => x.hi && S.hiStyle === 'box').length * fs * .3;
+  let widest = Math.max(...lines.map(widthOf));
+  if (widest > maxW) { fs *= maxW / widest; c.font = `${f.w} ${fs}px ${f.css}, "IBM Plex Sans Arabic", sans-serif`; widest = Math.max(...lines.map(widthOf)); }
+  const lh = fs * 1.12, blockH = lh * lines.length;
+  c.save();
+  c.translate(el.x, el.y);
+  c.rotate((el.rot + (S.tilt ? -4 : 0)) * Math.PI / 180);
+  c.textBaseline = 'middle'; c.textAlign = 'right'; c.lineJoin = 'round'; c.miterLimit = 2;
+  let minX = Infinity, maxX = -Infinity;
+  lines.forEach((ws, li) => {
+    const lw = widthOf(ws), y = -blockH / 2 + lh * (li + .5);
+    let x = el.align === 'center' ? lw / 2 : 0;
+    minX = Math.min(minX, x - lw); maxX = Math.max(maxX, x);
+    for (const { w, hi } of ws) {
+      const ww = c.measureText(w).width, boxed = hi && S.hiStyle === 'box', padX = boxed ? fs * .15 : 0;
+      if (boxed) {
+        c.save(); c.translate(x - ww / 2 - padX, y); c.rotate(-2 * Math.PI / 180);
+        c.shadowColor = 'rgba(0,0,0,.45)'; c.shadowBlur = 18; c.shadowOffsetY = 8;
+        c.fillStyle = S.hi; c.fillRect(-ww / 2 - padX, -fs * .58, ww + padX * 2, fs * 1.12); c.restore();
+      }
+      x -= padX;
+      if (S.sk > 0 && !boxed) {
+        c.shadowColor = 'rgba(0,0,0,.55)'; c.shadowBlur = 20; c.shadowOffsetY = 10;
+        c.lineWidth = S.sk * 2 * (fs / 130); c.strokeStyle = '#000'; c.strokeText(w, x, y);
+        c.shadowColor = 'transparent';
+      } else if (!boxed) { c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 18; c.shadowOffsetY = 8; }
+      c.fillStyle = boxed ? inkOn(S.hi) : hi ? S.hi : S.color;
+      c.fillText(w, x, y);
+      c.shadowColor = 'transparent';
+      x -= ww + padX + space();
+    }
+  });
+  c.restore();
+  const pad = S.sk + 10;
+  el.bounds = { x0: el.x + minX - pad, x1: el.x + maxX + pad, y0: el.y - blockH / 2 - pad, y1: el.y + blockH / 2 + pad };
+}
+
+const silhouettes = new WeakMap();
+function silhouette(img) {
+  let s = silhouettes.get(img);
+  if (!s) { s = document.createElement('canvas'); s.width = img.width; s.height = img.height; const x = s.getContext('2d'); x.drawImage(img, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = '#fff'; x.fillRect(0, 0, s.width, s.height); silhouettes.set(img, s); }
+  return s;
+}
+function drawCutout(c, el) {
+  const img = el.img, h = H * .9 * el.scale, w = img.width * h / img.height;
+  c.save(); c.translate(el.x, el.y); c.rotate(el.rot * Math.PI / 180); if (el.flip) c.scale(-1, 1);
+  c.shadowColor = 'rgba(0,0,0,.5)'; c.shadowBlur = 30; c.shadowOffsetY = 12;
+  if (S.outline) {
+    const sil = silhouette(img), r = 9 * el.scale + 3;
+    for (let a = 0; a < 16; a++) { const t = a / 16 * Math.PI * 2; c.drawImage(sil, -w / 2 + Math.cos(t) * r, -h / 2 + Math.sin(t) * r, w, h); if (a === 0) c.shadowColor = 'transparent'; }
+  }
+  c.drawImage(img, -w / 2, -h / 2, w, h);
+  c.restore();
+  el.bounds = { x0: el.x - w / 2, x1: el.x + w / 2, y0: el.y - h / 2, y1: el.y + h / 2 };
+}
+function drawSticker(c, el) {
+  const s = 170 * el.scale;
+  c.save(); c.translate(el.x, el.y); c.rotate(el.rot * Math.PI / 180); if (el.flip) c.scale(-1, 1);
+  c.lineCap = 'round'; c.lineJoin = 'round';
+  c.shadowColor = 'rgba(0,0,0,.45)'; c.shadowBlur = 16; c.shadowOffsetY = 6;
+  const twice = (path, col, lw) => { c.strokeStyle = '#fff'; c.lineWidth = lw + 14 * el.scale; path(); c.stroke(); c.shadowColor = 'transparent'; c.strokeStyle = col; c.lineWidth = lw; path(); c.stroke(); };
+  const k = el.kind;
+  if (k === 'arrow') {
+    const sx = s * .45, sy = -s * .45, ex = -s * .3, ey = s * .32, cx = s * .4, cy = s * .3, lw = 22 * el.scale;
+    twice(() => { c.beginPath(); c.moveTo(sx, sy); c.quadraticCurveTo(cx, cy, ex, ey); }, '#e5463b', lw);
+    const ang = Math.atan2(ey - cy, ex - cx), hl = s * .28;
+    const head = () => { c.beginPath(); c.moveTo(ex + Math.cos(ang) * hl * .5, ey + Math.sin(ang) * hl * .5); c.lineTo(ex + Math.cos(ang + 2.5) * hl, ey + Math.sin(ang + 2.5) * hl); c.lineTo(ex + Math.cos(ang - 2.5) * hl, ey + Math.sin(ang - 2.5) * hl); c.closePath(); };
+    c.fillStyle = '#fff'; c.lineWidth = 14 * el.scale; c.strokeStyle = '#fff'; head(); c.stroke(); c.fill();
+    c.fillStyle = '#e5463b'; head(); c.fill();
+  } else if (k === 'circle') {
+    twice(() => { c.beginPath(); c.ellipse(0, 0, s * .6, s * .45, -.1, 0, Math.PI * 2); }, '#e5463b', 16 * el.scale);
+  } else if (k === 'x') {
+    twice(() => { c.beginPath(); c.moveTo(-s * .38, -s * .38); c.lineTo(s * .38, s * .38); c.moveTo(s * .38, -s * .38); c.lineTo(-s * .38, s * .38); }, '#e5463b', 30 * el.scale);
+  } else if (k === 'check') {
+    twice(() => { c.beginPath(); c.moveTo(-s * .4, s * .02); c.lineTo(-s * .1, s * .32); c.lineTo(s * .42, -s * .36); }, '#22c55e', 30 * el.scale);
+  } else if (k.startsWith('emoji:')) {
+    c.font = `${s * .85}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
+    c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(k.slice(6), 0, s * .04);
+  }
+  c.restore();
+  const r = s * .62;
+  el.bounds = { x0: el.x - r, x1: el.x + r, y0: el.y - r, y1: el.y + r };
+}
+function drawBadge(c) {
+  if (!S.badge || !S.badgeTxt.trim()) return;
+  const t = S.badgeTxt.trim();
+  c.save(); c.direction = 'rtl';
+  c.font = `${fontOf('Cairo').w} 46px "Cairo", "IBM Plex Sans Arabic", sans-serif`;
+  const tw = c.measureText(t).width, bw = tw + 52, bh = 74;
+  const onLeft = S.layout !== 'left', x = onLeft ? 34 : W - 34 - bw, y = 30;
+  c.translate(x + bw / 2, y + bh / 2); c.rotate((onLeft ? -4 : 4) * Math.PI / 180);
+  c.shadowColor = 'rgba(0,0,0,.45)'; c.shadowBlur = 16; c.shadowOffsetY = 6;
+  c.fillStyle = S.badgeColor; c.beginPath(); c.roundRect ? c.roundRect(-bw / 2, -bh / 2, bw, bh, 14) : c.rect(-bw / 2, -bh / 2, bw, bh); c.fill();
+  c.shadowColor = 'transparent'; c.strokeStyle = '#fff'; c.lineWidth = 5; c.stroke();
+  c.fillStyle = inkOn(S.badgeColor); c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(t, 0, 4);
+  c.restore();
+}
+
+function render(c, withSel) {
+  c.save(); c.clearRect(0, 0, W, H);
+  drawBg(c);
+  for (const el of els) {
+    if (el.type === 'text') drawText(c, el);
+    else if (el.type === 'cutout') drawCutout(c, el);
+    else drawSticker(c, el);
+  }
+  drawBadge(c);
+  if (withSel && sel && sel.bounds) {
+    const b = sel.bounds;
+    c.setLineDash([12, 8]); c.lineWidth = 3; c.strokeStyle = '#f2b33d';
+    c.strokeRect(b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0); c.setLineDash([]);
+  }
+  c.restore();
+}
+
+let queued = false;
+function draw() {
+  if (queued) return; queued = true;
+  requestAnimationFrame(() => {
+    queued = false;
+    render(ctx, true);
+    previews();
+  });
+}
+const clean = document.createElement('canvas'); clean.width = W; clean.height = H;
+function previews() {
+  render(clean.getContext('2d'), false);
+  for (const id of ['pv1', 'pv2']) { const p = $('#' + id), x = p.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(clean, 0, 0, p.width, p.height); }
+  const plain = S.text.replace(/\*/g, '').replace(/\s*\n\s*/g, ' ').trim();
+  $('#vt1').textContent = $('#vt2').textContent = plain || 'عنوان الفيديو';
+  document.querySelectorAll('.chName').forEach(e => e.textContent = S.chName || 'قناتك');
+  const av = $('#av1'); av.textContent = (S.chName || 'RA').replace(/\s+/g, '').slice(0, 2); av.style.background = '#f2b33d'; av.style.color = '#1a1405';
+}
+
+/* ---------- selection + dragging ---------- */
+function toCanvas(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H }; }
+function hit(p) { for (let i = els.length - 1; i >= 0; i--) { const b = els[i].bounds; if (b && p.x >= b.x0 && p.x <= b.x1 && p.y >= b.y0 && p.y <= b.y1) return els[i]; } return null; }
+let drag = null;
+cv.addEventListener('pointerdown', e => {
+  const p = toCanvas(e), h = hit(p);
+  select(h);
+  drag = h ? { el: h, dx: p.x - h.x, dy: p.y - h.y } : bgImg ? { bg: true, sx: p.x - pan.x, sy: p.y - pan.y } : null;
+  if (drag) cv.setPointerCapture(e.pointerId);
+});
+cv.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const p = toCanvas(e);
+  if (drag.bg) { pan.x = p.x - drag.sx; pan.y = p.y - drag.sy; }
+  else { drag.el.x = clamp(p.x - drag.dx, 0, W); drag.el.y = clamp(p.y - drag.dy, 0, H); }
+  draw();
+});
+['pointerup', 'pointercancel'].forEach(ev => cv.addEventListener(ev, () => drag = null));
+
+const NAMES = { text: 'العنوان', cutout: 'صورتك', sticker: 'الملصق' };
+function select(el) {
+  sel = el;
+  $('#selBox').hidden = !el;
+  if (el) {
+    $('#selName').textContent = 'محدد: ' + NAMES[el.type];
+    $('#selS').value = Math.round(el.scale * 100); $('#selSV').textContent = Math.round(el.scale * 100) + '%';
+    $('#selR').value = el.rot; $('#selRV').textContent = el.rot + '°';
+    $('#selFlip').hidden = el.type === 'text';
+  }
+  draw();
+}
+$('#selS').addEventListener('input', e => { if (!sel) return; sel.scale = +e.target.value / 100; $('#selSV').textContent = e.target.value + '%'; draw(); });
+$('#selR').addEventListener('input', e => { if (!sel) return; sel.rot = +e.target.value; $('#selRV').textContent = e.target.value + '°'; draw(); });
+$('#selFront').onclick = () => { if (!sel) return; els = els.filter(x => x !== sel).concat(sel); draw(); };
+$('#selFlip').onclick = () => { if (!sel) return; sel.flip = !sel.flip; draw(); };
+$('#selDel').onclick = () => {
+  if (!sel) return;
+  if (sel.type === 'text') { S.text = ''; $('#txt').value = ''; persist(); }
+  else els = els.filter(x => x !== sel);
+  select(null);
+};
+document.addEventListener('keydown', e => {
+  if (!sel || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+  if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); $('#selDel').click(); }
+  const step = e.shiftKey ? 20 : 4, mv = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[e.key];
+  if (mv) { e.preventDefault(); sel.x += mv[0]; sel.y += mv[1]; draw(); }
+});
+
+/* ---------- controls ---------- */
+function swatchRow(box, colors, key, cls) {
+  const el = $(box); el.innerHTML = '';
+  colors.forEach((c, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'sw' + (cls ? ' ' + cls : '');
+    const isGrad = Array.isArray(c);
+    b.style.background = isGrad ? `linear-gradient(135deg, ${c[0]}, ${c[1]})` : c;
+    b.setAttribute('aria-label', isGrad ? 'خلفية متدرجة ' + (i + 1) : 'لون ' + c);
+    const on = isGrad ? (!bgImg && S[key] === i) : S[key] === c;
+    b.setAttribute('aria-pressed', String(on));
+    b.onclick = () => { if (isGrad) { S[key] = i; bgImg = null; } else S[key] = c; persist(); swatchRow(box, colors, key, cls); draw(); };
+    el.appendChild(b);
+  });
+  if (!colors.some(Array.isArray)) {
+    const ci = document.createElement('input'); ci.type = 'color'; ci.value = S[key]; ci.id = 'c-' + key; ci.setAttribute('aria-label', 'لون مخصص');
+    ci.oninput = () => { S[key] = ci.value; persist(); el.querySelectorAll('.sw').forEach(b => b.setAttribute('aria-pressed', 'false')); draw(); };
+    el.appendChild(ci);
+  }
+}
+const allSwatches = () => { swatchRow('#grads', GRADS, 'grad', 'grad'); swatchRow('#textColors', TEXT_COLORS, 'color'); swatchRow('#hiColors', HI_COLORS, 'hi'); swatchRow('#badgeColors', BADGE_COLORS, 'badgeColor'); };
+
+const fontBox = $('#fonts');
+FONTS.forEach(f => {
+  const l = document.createElement('label'); l.className = 'chip font';
+  l.innerHTML = `<input type="radio" name="font" value="${f.id}"><span style="font-family:${f.css}, var(--body);font-weight:${f.w}">${f.label}</span>`;
+  fontBox.appendChild(l);
+});
+function setRadio(name, v) { const r = document.querySelector(`input[name="${name}"][value="${v}"]`); if (r) r.checked = true; }
+function bindRadio(name, key, then) { setRadio(name, S[key]); document.querySelectorAll(`input[name="${name}"]`).forEach(r => r.addEventListener('change', () => { S[key] = r.value; persist(); then && then(); draw(); })); }
+bindRadio('font', 'font');
+bindRadio('layout', 'layout', placeText);
+bindRadio('hiStyle', 'hiStyle');
+function bindRange(id, key, fmt) { const el = $('#' + id), v = $('#' + id + 'V'); const upd = () => v.textContent = fmt(S[key]); el.value = S[key]; upd(); el.addEventListener('input', () => { S[key] = +el.value; upd(); persist(); draw(); }); }
+const pct = v => v + '%';
+bindRange('br', 'br', pct); bindRange('sa', 'sa', pct); bindRange('co', 'co', pct); bindRange('bl', 'bl', v => v + 'px'); bindRange('zm', 'zm', pct);
+bindRange('fs', 'fs', v => v + 'px'); bindRange('sk', 'sk', v => v + 'px');
+function bindCheck(id, key) { const el = $('#' + id); el.checked = !!S[key]; el.addEventListener('change', () => { S[key] = el.checked; persist(); draw(); }); }
+bindCheck('shadeOn', 'shade'); bindCheck('raysOn', 'rays'); bindCheck('vigOn', 'vig'); bindCheck('tilt', 'tilt'); bindCheck('outlineOn', 'outline'); bindCheck('badgeOn', 'badge');
+function bindText(id, key) { const el = $('#' + id); el.value = S[key]; el.addEventListener('input', () => { S[key] = el.value; persist(); draw(); }); }
+bindText('txt', 'text'); bindText('badgeTxt', 'badgeTxt'); bindText('chName', 'chName');
+
+function loadImage(file) {
+  return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = URL.createObjectURL(file); });
+}
+$('#fileBg').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try { bgImg = await loadImage(f); pan = { x: 0, y: 0 }; $('#frameBox').hidden = true; allSwatches(); draw(); } catch (er) { toast('ما قدرت أفتح الصورة'); }
+});
+const vid = $('#vid');
+async function grabFrame() {
+  const t = +$('#frame').value;
+  vid.currentTime = Math.min(t, (vid.duration || t) - .05);
+  await new Promise(r => vid.addEventListener('seeked', r, { once: true }));
+  const c = document.createElement('canvas'); c.width = vid.videoWidth; c.height = vid.videoHeight;
+  c.getContext('2d').drawImage(vid, 0, 0);
+  bgImg = c; allSwatches(); draw();
+  const s = Math.floor(t); $('#frameV').textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+$('#fileVid').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return;
+  if (vid.src) URL.revokeObjectURL(vid.src);
+  vid.src = URL.createObjectURL(f);
+  await new Promise(r => vid.addEventListener('loadedmetadata', r, { once: true }));
+  if (!vid.videoWidth) { toast('ما قدرت أفتح الفيديو، جرّب MP4'); return; }
+  const fr = $('#frame'); fr.max = vid.duration.toFixed(2); fr.value = Math.min(vid.duration * .3, vid.duration).toFixed(2);
+  $('#frameBox').hidden = false; pan = { x: 0, y: 0 };
+  await grabFrame();
+  toast('حرّك شريط اللقطة لين تلقى أحلى لقطة');
+});
+let grabbing = false, grabAgain = false;
+$('#frame').addEventListener('input', async () => { if (grabbing) { grabAgain = true; return; } grabbing = true; do { grabAgain = false; await grabFrame(); } while (grabAgain); grabbing = false; });
+
+$('#fileCut').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try {
+    const img = await loadImage(f);
+    els = els.filter(x => x.type !== 'cutout');
+    const el = { type: 'cutout', img, x: 0, y: 0, scale: 1, rot: 0, flip: false };
+    els.unshift(el); placeText(); select(el);
+  } catch (er) { toast('ما قدرت أفتح الصورة'); }
+});
+$('#stickers').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const t = textEl(), nearX = S.layout === 'right' ? W * .3 : S.layout === 'left' ? W * .7 : W * .8;
+  const el = { type: 'sticker', kind: b.dataset.k, x: nearX + (Math.random() - .5) * 120, y: H * .45 + (Math.random() - .5) * 140, scale: 1, rot: 0, flip: false };
+  els.push(el); select(el);
+});
+$('#btnReset').onclick = () => {
+  Object.assign(S, DEF); bgImg = null; pan = { x: 0, y: 0 }; persist();
+  els = [{ type: 'text', x: 0, y: 0, scale: 1, rot: 0 }, { type: 'sticker', kind: 'arrow', x: W * .3, y: H * .5, scale: 1, rot: 0, flip: false }];
+  placeText(); syncInputs(); select(null);
+};
+function syncInputs() {
+  for (const [id, k] of [['br', 'br'], ['sa', 'sa'], ['co', 'co'], ['bl', 'bl'], ['zm', 'zm'], ['fs', 'fs'], ['sk', 'sk']]) { $('#' + id).value = S[k]; $('#' + id).dispatchEvent(new Event('input')); }
+  for (const [id, k] of [['shadeOn', 'shade'], ['raysOn', 'rays'], ['vigOn', 'vig'], ['tilt', 'tilt'], ['outlineOn', 'outline'], ['badgeOn', 'badge']]) $('#' + id).checked = S[k];
+  for (const [id, k] of [['txt', 'text'], ['badgeTxt', 'badgeTxt'], ['chName', 'chName']]) $('#' + id).value = S[k];
+  setRadio('font', S.font); setRadio('layout', S.layout); setRadio('hiStyle', S.hiStyle);
+  $('#frameBox').hidden = true; allSwatches();
+}
+
+/* ---------- export ---------- */
+let downloads = null;
+if (window.claude && window.claude.use) window.claude.use('downloads').then(d => downloads = d).catch(() => {});
+const toBlob = (type, q) => new Promise(r => clean.toBlob(r, type, q));
+async function exportAs(kind) {
+  render(clean.getContext('2d'), false);
+  let blob;
+  if (kind === 'png') blob = await toBlob('image/png');
+  else { for (const q of [.92, .85, .78, .7, .6]) { blob = await toBlob('image/jpeg', q); if (blob.size < 2e6) break; } }
+  const mb = (blob.size / 1048576).toFixed(2);
+  $('#sizeInfo').textContent = `آخر ملف: ${kind.toUpperCase()} · ${mb} MB${blob.size >= 2e6 ? ' · أكبر من 2 ميقا، احفظه JPG' : ' · مناسب ليوتيوب'}`;
+  const base = (S.text.replace(/\*/g, '').split('\n')[0] || 'thumbnail').replace(/[^\p{L}\p{N} _-]/gu, '').trim().replace(/\s+/g, '-').slice(0, 40) || 'thumbnail';
+  const name = `${base}.${kind === 'png' ? 'png' : 'jpg'}`;
+  if (downloads) {
+    try { await downloads.save({ filename: name, data: blob }); toast('انحفظت الصورة'); }
+    catch (e) { toast({ declined: 'ما انحفظت الصورة', rate_limited: 'فيه نافذة حفظ مفتوحة، كمّلها أول' }[e && e.code] || 'الحفظ مو متاح هنا'); }
+  } else if (!window.claude) {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  } else toast('الحفظ مو متاح في هذا العرض');
+}
+$('#btnJpg').onclick = () => exportAs('jpg');
+$('#btnPng').onclick = () => exportAs('png');
+
+/* ---------- boot: an example thumbnail, ready to edit ---------- */
+els = [{ type: 'text', x: 0, y: 0, scale: 1, rot: 0 }, { type: 'sticker', kind: 'arrow', x: W * .3, y: H * .5, scale: 1, rot: 0, flip: false }];
+placeText(); allSwatches(); draw();
+if (document.fonts) {
+  Promise.all(FONTS.map(f => document.fonts.load(`${f.w} 60px ${f.css}`, 'أبجد')).concat(document.fonts.load('900 40px "Cairo"', 'جديد'))).then(draw, draw);
+  document.fonts.ready.then(draw);
+}
+})();
+</script>
