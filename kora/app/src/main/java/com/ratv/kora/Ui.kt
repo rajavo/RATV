@@ -49,6 +49,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -889,7 +890,8 @@ private fun Pitch(l: Lineups, home: Team, away: Team, tv: Boolean) {
         BoxWithConstraints(
             Modifier
                 .fillMaxWidth()
-                .aspectRatio(1.85f)
+                // Flatter on a TV, so the whole pitch fits the screen with the teams' names above it.
+                .aspectRatio(if (tv) 2.3f else 1.7f)
                 .clip(RoundedCornerShape(12.dp))
         ) {
             val w = maxWidth
@@ -925,6 +927,12 @@ private fun Pitch(l: Lineups, home: Team, away: Team, tv: Boolean) {
 @Composable
 private fun PitchTeam(rows: List<List<Player>>, home: Boolean, w: Dp, h: Dp, tv: Boolean) {
     if (rows.isEmpty()) return
+    // Positions measured from the left edge, whatever the layout direction (the page is right to left).
+    Box(Modifier.fillMaxSize(), contentAlignment = AbsoluteAlignment.TopLeft) { PitchPlayers(rows, home, w, h, tv) }
+}
+
+@Composable
+private fun PitchPlayers(rows: List<List<Player>>, home: Boolean, w: Dp, h: Dp, tv: Boolean) {
     val span = 0.40f
     val step = if (rows.size > 1) span / (rows.size - 1) else 0f
     val boxW = if (tv) 92.dp else 76.dp
