@@ -1,0 +1,25 @@
+{
+ "results": [
+  {
+   "step": "open",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "remote",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "city",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "move",
+   "ok": true,
+   "error": ""
+  }
+ ],
+ "rahome_crashed": false
+}
