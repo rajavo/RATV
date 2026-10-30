@@ -896,20 +896,12 @@ def commentator_probe():
         try:
             code, headers, body = get(url, tries=1, ua=BROWSER)
             html = body.decode("utf-8", "replace")
-            host = re.match(r"https?://[^/]+", url).group(0)
-            links = [l for l in dict.fromkeys(re.findall(r'href="([^"#]+)"', html))
-                     if (l.startswith(host) or l.startswith("/")) and re.search(r"match|mubara|%D9%85%D8%A8|مباراة|\d{4,}", l)][:3]
-            pages = {}
-            for l in links:
-                u = urllib.parse.quote(l if l.startswith("http") else host + l, safe=":/?=&%#")
-                try:
-                    p = get(u, tries=1, ua=BROWSER)[2].decode("utf-8", "replace")
-                    spots = [m.start() for m in re.finditer("المعلق|معلق", p)]
-                    pages[u[:160]] = {"size": len(p), "commentators": len(spots),
-                                      "snippets": [re.sub(r"<[^>]+>", " | ", re.sub(r"\s+", " ", p[max(0, i - 300):i + 300])) for i in spots[-3:]]}
-                except Exception as e:
-                    pages[u[:160]] = {"error": str(e)[:100]}
-            return url, {"code": code, "size": len(html), "links": links, "pages": pages}
+            scripts = re.findall(r'<script[^>]+src="([^"]+)"', html)
+            frames = re.findall(r'<iframe[^>]+src="([^"]+)"', html)
+            data = sorted(set(re.findall(r'["\'](https?://[^"\'\s]*(?:api|ajax|json|matches|widget)[^"\'\s]*)["\']', html)))[:25]
+            inline = [re.sub(r"\s+", " ", x)[:600] for x in re.findall(r"<script(?![^>]*src)[^>]*>(.*?)</script>", html, re.S)
+                      if re.search(r"fetch\(|ajax|XMLHttpRequest|\.json|api", x)][:4]
+            return url, {"code": code, "scripts": scripts[:15], "iframes": frames[:8], "data_urls": data, "inline": inline}
         except Exception as e:
             return url, {"error": str(e)[:120]}
 
