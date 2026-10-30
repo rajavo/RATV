@@ -884,32 +884,24 @@ def arabic_places(match_list, previous_places):
              "sample": dict(list(sorted(names.items()))[:12] + [kv for kv in sorted(names.items()) if kv[0].startswith("v:")][:25])}
     return {"v": PLACES_VERSION, "names": names, "miss": miss}, state
 
-COMMENTATOR_SITES = ["https://www.koraonline.io/", "https://yalla-shoot-new.com/", "https://www.yallashoot.today/",
-                     "https://yallashootv.com/"]
-
-
 def commentator_probe():
-    """Which match-table sites answer and write «المعلق» next to each match."""
+    """What the match feeds behind two match-table sites say about commentators."""
     out = {}
-
-    def one(url):
+    day = dt.datetime.now(dt.timezone.utc).date().isoformat()
+    for url in ("https://sofasoccer.net/wp-content/uploads/ysp-live/live-%s.json.js" % day,
+                "https://sofasoccer.net/wp-json/matches/v1/live",
+                "https://sofasoccer.net/today-matches/",
+                "https://royalla.net/matches-today/"):
         try:
             code, headers, body = get(url, tries=1, ua=BROWSER)
-            html = body.decode("utf-8", "replace")
-            scripts = re.findall(r'<script[^>]+src="([^"]+)"', html)
-            frames = re.findall(r'<iframe[^>]+src="([^"]+)"', html)
-            data = sorted(set(re.findall(r'["\'](https?://[^"\'\s]*(?:api|ajax|json|matches|widget)[^"\'\s]*)["\']', html)))[:25]
-            inline = [re.sub(r"\s+", " ", x)[:600] for x in re.findall(r"<script(?![^>]*src)[^>]*>(.*?)</script>", html, re.S)
-                      if re.search(r"fetch\(|ajax|XMLHttpRequest|\.json|api", x)][:4]
-            return url, {"code": code, "scripts": scripts[:15], "iframes": frames[:8], "data_urls": data, "inline": inline}
+            text = body.decode("utf-8", "replace")
+            spots = [m.start() for m in re.finditer(r"المعلق|معلق|commentator|comment", text)]
+            out[url] = {"code": code, "type": headers.get("Content-Type"), "size": len(text), "hits": len(spots),
+                        "head": re.sub(r"\s+", " ", text[:1500]),
+                        "around": [re.sub(r"<[^>]+>", " | ", re.sub(r"\s+", " ", text[max(0, i - 500):i + 250])) for i in spots[:3]]}
         except Exception as e:
-            return url, {"error": str(e)[:120]}
-
-    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:
-        for url, r in ex.map(one, COMMENTATOR_SITES):
-            out[url] = r
+            out[url] = {"error": str(e)[:150]}
     return out
-
 
 def main():
     out_dir = sys.argv[1]
