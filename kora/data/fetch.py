@@ -617,12 +617,14 @@ def absences(match_list, teams, previous):
 
 ROSTER = "https://site.api.espn.com/apis/site/v2/sports/soccer/%s/teams/%s/roster"
 WD_SEARCH = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=%s&language=en&uselang=en&type=item&limit=6&format=json"
-WD_GET = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=%s&props=labels%%7Cclaims&languages=ar%%7Carz&format=json"
+WD_GET = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=%s&props=labels%%7Caliases%%7Cclaims&languages=ar%%7Carz%%7Cen&format=json"
 WD_UA = "RA-Kora-schedule/1.0 (https://github.com/rajavo/RATV)"
 FOOTBALLER = "Q937857"
 NEW_NAMES_MAX = 2500
-NEW_NAMES_SECONDS = 480
+NEW_NAMES_SECONDS = 600
 RETRY_DAYS = 14
+# Bumped when the way names are matched changes, so the names found before are looked up again.
+NAMES_VERSION = 2
 
 
 def wikidata_arabic(name):
@@ -633,16 +635,21 @@ def wikidata_arabic(name):
     if not ids:
         return None
     ents = json.loads(get(WD_GET % "%7C".join(ids), tries=2, ua=WD_UA)[2].decode("utf-8")).get("entities") or {}
+    want = norm(name)
     for qid in ids:  # in the search's order: the best known first
         e = ents.get(qid) or {}
         jobs = [((c.get("mainsnak") or {}).get("datavalue") or {}).get("value") or {} for c in (e.get("claims") or {}).get("P106") or []]
         if not any(isinstance(j, dict) and j.get("id") == FOOTBALLER for j in jobs):
             continue
+        # The same name in English (or a spelling of it), not only a nickname that happens to match.
+        english = [(e.get("labels") or {}).get("en", {}).get("value") or ""] + [a.get("value") or "" for a in (e.get("aliases") or {}).get("en") or []]
+        if max(difflib.SequenceMatcher(None, want, norm(x)).ratio() for x in english) < 0.85:
+            continue
         labels = e.get("labels") or {}
         for lang in ("ar", "arz"):
-            v = (labels.get(lang) or {}).get("value")
+            v = re.sub(r"\s*\([^)]*\)", "", (labels.get(lang) or {}).get("value") or "").strip()
             if v and re.search("[\u0600-\u06FF]", v):
-                return v.strip()
+                return v
         return None
     return None
 
@@ -652,12 +659,20 @@ def player_names(match_list, previous_players):
 
     Names found before are kept; names Wikidata has no Arabic for are tried again after RETRY_DAYS."""
     started = time.time()
+    if (previous_players or {}).get("v") != NAMES_VERSION:
+        previous_players = None  # found by an older rule: look them up again
     names = dict((previous_players or {}).get("names") or {})
     miss = dict((previous_players or {}).get("miss") or {})
     now = int(time.time())
     due = [m for m in match_list if m.get("st") != "post" and now - 3 * 3600 <= m["t"] <= now + ABSENT_DAYS * 86400]
-    squads = sorted({(m["lg"], tid) for m in due if not str(m["id"]).startswith("y") for tid in (m["h"], m["a"])})
+    first_at = {}
+    for m in due:
+        if not str(m["id"]).startswith("y"):
+            for tid in (m["h"], m["a"]):
+                first_at[(m["lg"], tid)] = min(first_at.get((m["lg"], tid), m["t"]), m["t"])
+    squads = sorted(first_at)
     wanted = set()
+    order = {}  # name → when that player plays first: the nearest matches are looked up first
     state = {"squads": len(squads), "squad_errors": 0}
 
     def squad(key):
@@ -665,14 +680,20 @@ def player_names(match_list, previous_players):
         return [a.get("displayName") for a in d.get("athletes") or [] if a.get("displayName")]
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=WORKERS) as ex:
-        for f in concurrent.futures.as_completed([ex.submit(squad, k) for k in squads]):
+        jobs = {ex.submit(squad, k): k for k in squads}
+        for f in concurrent.futures.as_completed(jobs):
             try:
-                wanted.update(f.result())
+                for n in f.result():
+                    wanted.add(n)
+                    order[n] = min(order.get(n, first_at[jobs[f]]), first_at[jobs[f]])
             except Exception:
                 state["squad_errors"] += 1
     for m in due:
         for side in (m.get("abs") or {}).values():
-            wanted.update(a["n"] for a in side if a.get("n"))
+            for a in side:
+                if a.get("n"):
+                    wanted.add(a["n"])
+                    order[a["n"]] = 0  # absent players are few: first
     today = dt.date.today()
 
     def stale(n):
@@ -681,10 +702,11 @@ def player_names(match_list, previous_players):
         except Exception:
             return True
 
-    new = sorted(n for n in wanted if n not in names and (n not in miss or stale(n)))
+    new = sorted((n for n in wanted if n not in names and (n not in miss or stale(n))), key=lambda n: (order.get(n, 0), n))
     state.update({"players": len(wanted), "known": sum(1 for n in wanted if n in names), "to_look_up": len(new)})
     looked, found, errors = 0, 0, []
-    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex:
+    # Wikidata asks bots to go gently: few at a time (it answers 429 to more).
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as ex:
         futures = {}
         for n in new[:NEW_NAMES_MAX]:
             futures[ex.submit(lambda n=n: None if time.time() - started > NEW_NAMES_SECONDS else (n, wikidata_arabic(n)))] = n
@@ -715,7 +737,7 @@ def player_names(match_list, previous_players):
                   "coming_in_arabic": sum(1 for n in wanted if n in names),
                   "sample": dict(sorted((n, names[n]) for n in wanted if n in names)[:15]),
                   "seconds": round(time.time() - started, 1)})
-    return {"v": 1, "names": names, "miss": miss}, state
+    return {"v": NAMES_VERSION, "names": names, "miss": miss}, state
 
 def main():
     out_dir = sys.argv[1]

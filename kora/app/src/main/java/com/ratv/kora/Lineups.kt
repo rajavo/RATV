@@ -32,14 +32,14 @@ class Lineups(val home: Side?, val away: Side?) {
 class Absent(val name: String, val reason: String, val doubtful: Boolean)
 
 object LineupParser {
-    /** Reads the "rosters" of ESPN's match summary. */
-    fun parse(text: String): Lineups {
+    /** Reads the "rosters" of ESPN's match summary; [names] puts the players' names in Arabic where known. */
+    fun parse(text: String, names: Map<String, String> = emptyMap()): Lineups {
         var home: Side? = null
         var away: Side? = null
         JSONObject(text).optJSONArray("rosters")?.let { rosters ->
             for (i in 0 until rosters.length()) {
                 val r = rosters.optJSONObject(i) ?: continue
-                val side = side(r) ?: continue
+                val side = side(r, names) ?: continue
                 when (r.optString("homeAway")) {
                     "home" -> home = side
                     "away" -> away = side
@@ -49,7 +49,7 @@ object LineupParser {
         return Lineups(home, away)
     }
 
-    private fun side(r: JSONObject): Side? {
+    private fun side(r: JSONObject, names: Map<String, String>): Side? {
         val roster = r.optJSONArray("roster") ?: return null
         val players = ArrayList<Pair<Int, Player>>()
         for (i in 0 until roster.length()) {
@@ -60,13 +60,13 @@ object LineupParser {
             val pos = p.optJSONObject("position")?.str("abbreviation")
             players.add(
                 (p.str("formationPlace")?.toIntOrNull() ?: 99) to Player(
-                    name = name,
+                    name = names[name] ?: name,
                     number = p.str("jersey"),
                     line = if (starter) line(pos) else BENCH,
                     starter = starter,
                     subbedIn = p.optBoolean("subbedIn"),
                     subbedOut = p.optBoolean("subbedOut"),
-                    replaced = p.optJSONObject("subbedInFor")?.optJSONObject("athlete")?.str("displayName")
+                    replaced = p.optJSONObject("subbedInFor")?.optJSONObject("athlete")?.str("displayName")?.let { names[it] ?: it }
                 )
             )
         }
@@ -92,6 +92,14 @@ object LineupParser {
     private fun JSONObject.str(key: String): String? =
         if (has(key) && !isNull(key)) optString(key).trim().takeIf { it.isNotEmpty() } else null
 
+    /** players_ar.json: {"names": {"English name": "الاسم بالعربي"}}. */
+    fun names(text: String): Map<String, String> {
+        val o = JSONObject(text).optJSONObject("names") ?: return emptyMap()
+        val out = HashMap<String, String>(o.length() * 2)
+        for (k in o.keys()) o.str(k)?.let { out[k] = it }
+        return out
+    }
+
     /** Absent players from fixtures.json: [{"n": name, "r": reason, "d": 1 when doubtful}]. */
     fun absents(a: JSONArray?): List<Absent> {
         if (a == null) return emptyList()
@@ -113,7 +121,7 @@ object LineupSource {
         val now = System.currentTimeMillis()
         synchronized(kept) { kept[m.id] }?.takeIf { now - it.at < 60_000L }?.let { return@withContext it.lineups }
         val url = "${Kora.espnBase()}/apis/site/v2/sports/soccer/${m.league}/summary?event=${m.id}"
-        val l = LineupParser.parse(Kora.get(url))
+        val l = LineupParser.parse(Kora.get(url), Kora.playerNames)
         Log.i("RAKora", "lineups ${m.id}: home ${l.home?.players?.size ?: 0}, away ${l.away?.players?.size ?: 0}")
         synchronized(kept) { kept[m.id] = Kept(now, l) }
         l

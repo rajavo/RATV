@@ -3,6 +3,7 @@
 
 Serves, from the folder given as first argument:
   /fixtures.json                                   the schedule written by smoke_kora.py
+  /players_ar.json                                 players' names in Arabic written there
   /apis/site/v2/sports/soccer/<league>/scoreboard  espn_<league>.json there (live scores), else no events
   /apis/site/v2/sports/soccer/<league>/summary     espn_summary.json there (the lineups), else none out yet
   /update/version.json                             an old version, so no update is offered
@@ -44,8 +45,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = urlparse(self.path).path
-        if path == "/fixtures.json":
-            f = os.path.join(ROOT, "fixtures.json")
+        if path in ("/fixtures.json", "/players_ar.json"):
+            f = os.path.join(ROOT, path[1:])
             if not os.path.exists(f):
                 return self.send(404, '{"error":"no schedule yet"}')
             with open(f, "rb") as fh:

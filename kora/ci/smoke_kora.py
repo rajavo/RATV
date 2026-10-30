@@ -203,6 +203,8 @@ def write_schedule(offset_min):
     with open(os.path.join(WWW, "espn_ksa.1.json"), "w", encoding="utf-8") as f:
         json.dump(live, f)
     shutil.copy(os.path.join(os.path.dirname(os.path.abspath(__file__)), "espn_summary.json"), os.path.join(WWW, "espn_summary.json"))
+    with open(os.path.join(WWW, "players_ar.json"), "w", encoding="utf-8") as f:
+        json.dump({"v": 1, "names": {"Bento": "بينتو", "Cristiano Ronaldo": "كريستيانو رونالدو"}}, f, ensure_ascii=False)
     log("schedule written: local midnight %s UTC" % dt.datetime.fromtimestamp(today0, dt.timezone.utc))
 
 
@@ -348,7 +350,8 @@ def s_lineups():
     expect(root is not None, "the lineups did not open")
     t = texts(root)
     log("lineups: " + t[:600])
-    for want in ("4-4-1-1", "Bento", "Hamed Al-Shanqiti", "الدفاع", "الهجوم"):
+    # Names in Arabic where players_ar.json has them, else as ESPN writes them.
+    for want in ("4-4-1-1", "بينتو", "كريستيانو رونالدو", "Hamed Al-Shanqiti", "الدفاع", "الهجوم"):
         expect(want in t, "'%s' is missing from the lineups" % want)
     for _ in range(8):
         key("DPAD_DOWN", 0.6)
