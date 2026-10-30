@@ -258,15 +258,16 @@ private fun HomeScreen(resumed: Int) {
             Column(Modifier.fillMaxSize()) {
                 // The clock and the dates stay in sight while the remote goes down the apps.
                 Box(Modifier.padding(start = 64.dp, end = 64.dp, top = 32.dp, bottom = 4.dp)) { TopBar(day, city.name) }
+                // The prayer card stays too; only the apps scroll under it.
+                Box(Modifier.padding(start = 64.dp, end = 64.dp, top = 12.dp)) { PrayerShelf(day, hadith) }
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(5),
                     state = grid,
                     modifier = Modifier.weight(1f),
-                    contentPadding = PaddingValues(start = 64.dp, end = 64.dp, top = 16.dp, bottom = 36.dp),
+                    contentPadding = PaddingValues(start = 64.dp, end = 64.dp, top = 24.dp, bottom = 36.dp),
                     horizontalArrangement = Arrangement.spacedBy(28.dp),
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
-                    item(span = { GridItemSpan(maxLineSpan) }, key = "shelf") { PrayerShelf(day, hadith) }
                     val list = order
                     if (list == null) {
                         item(span = { GridItemSpan(maxLineSpan) }) { Text("جارٍ تحميل التطبيقات…", style = t(18, color = C.Text2)) }
