@@ -180,6 +180,8 @@ fun SettingsScreen(nav: Navigator) {
     var showAbout by remember { mutableStateOf(false) }
     var confirmDelete by remember { mutableStateOf<Playlist?>(null) }
     var confirmClearHistory by remember { mutableStateOf(false) }
+    val hiddenChannels by repo.hiddenChannels.collectAsStateWithLifecycle()
+    var confirmRestore by remember { mutableStateOf(false) }
     var showSpeed by remember { mutableStateOf(false) }
     val update by Updater.available.collectAsStateWithLifecycle()
     var showUpdate by remember { mutableStateOf(false) }
@@ -451,6 +453,15 @@ fun SettingsScreen(nav: Navigator) {
             }
             Divider()
             ValueRow(tr("حذف سجل المشاهدة"), "") { confirmClearHistory = true }
+            Divider()
+            // Channels deleted from the lists («تعديل القوائم» in البث المباشر), all brought back at once.
+            ValueRow(tr("القنوات المحذوفة من القوائم"), if (hiddenChannels.isEmpty()) tr("لا يوجد") else formatCount(hiddenChannels.size)) {
+                if (hiddenChannels.isEmpty()) {
+                    Toast.makeText(context, tr("تحذف القنوات من «تعديل القوائم» في البث المباشر"), Toast.LENGTH_LONG).show()
+                } else {
+                    confirmRestore = true
+                }
+            }
         }
 
         GroupTitle(tr("التطبيق"))
@@ -851,6 +862,28 @@ fun SettingsScreen(nav: Navigator) {
             text = {
                 Text(
                     tr("يُحذف «تابع المشاهدة» والقنوات التي شوهدت مؤخراً وعلامات المشاهدة لهذا المستخدم. المفضلة تبقى."),
+                    style = T.body(14.sp, color = RColors.Text2)
+                )
+            },
+            containerColor = RColors.Surface
+        )
+    }
+
+    if (confirmRestore) {
+        AlertDialog(
+            onDismissRequest = { confirmRestore = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmRestore = false
+                    repo.restoreAllChannels()
+                    Toast.makeText(context, tr("رجعت كل القنوات للقوائم"), Toast.LENGTH_SHORT).show()
+                }) { Text(tr("إرجاع الكل"), color = RColors.Saffron) }
+            },
+            dismissButton = { TextButton(onClick = { confirmRestore = false }) { Text(tr("إلغاء"), color = RColors.Text2) } },
+            title = { Text(tr("إرجاع القنوات المحذوفة؟"), style = T.h2) },
+            text = {
+                Text(
+                    tr("ترجع {0} قناة للقوائم والدليل. وتقدر ترجع قناة وحدة من «تعديل القوائم» في البث المباشر.", hiddenChannels.size),
                     style = T.body(14.sp, color = RColors.Text2)
                 )
             },

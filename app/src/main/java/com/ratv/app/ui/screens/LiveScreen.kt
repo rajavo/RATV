@@ -1,6 +1,7 @@
 package com.ratv.app.ui.screens
 
 import com.ratv.app.i18n.tr
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +32,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -38,6 +40,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -84,12 +87,20 @@ fun LiveScreen(nav: Navigator) {
 @Composable
 private fun LivePhoneScreen(nav: Navigator) {
     val repo = LocalRepo.current
-    val channels by repo.channels.collectAsStateWithLifecycle()
-    val categories by repo.liveCategories.collectAsStateWithLifecycle()
+    val shownChannels by repo.channels.collectAsStateWithLifecycle()
+    val shownCategories by repo.liveCategories.collectAsStateWithLifecycle()
+    val allChannels by repo.allChannels.collectAsStateWithLifecycle()
+    val allCategories by repo.allLiveCategories.collectAsStateWithLifecycle()
+    val hidden by repo.hiddenChannels.collectAsStateWithLifecycle()
     val favorites by repo.favorites.collectAsStateWithLifecycle()
     val recentIds by repo.recentChannels.collectAsStateWithLifecycle()
     val epg by repo.epg.collectAsStateWithLifecycle()
     val now = rememberNow()
+    // Editing the lists, as on a receiver: every channel is listed, and its button deletes it or brings it back.
+    var editing by rememberSaveable { mutableStateOf(false) }
+    BackHandler(enabled = editing) { editing = false }
+    val channels = if (editing) allChannels else shownChannels
+    val categories = if (editing) allCategories else shownCategories
     var selected by rememberSaveable { mutableStateOf(ALL) }
 
     val visible = remember(channels, favorites, selected, recentIds) {
@@ -103,9 +114,9 @@ private fun LivePhoneScreen(nav: Navigator) {
             else -> channels.filter { it.categoryId == selected }
         }
     }
-    val featured = remember(channels) {
+    val featured = remember(shownChannels) {
         val last = repo.prefs.lastChannelId
-        channels.firstOrNull { it.id == last } ?: channels.firstOrNull()
+        shownChannels.firstOrNull { it.id == last } ?: shownChannels.firstOrNull()
     }
     val focusTarget = remember(visible, featured) {
         visible.firstOrNull { it.id == featured?.id }?.id ?: visible.firstOrNull()?.id
@@ -121,6 +132,14 @@ private fun LivePhoneScreen(nav: Navigator) {
     ) {
         item {
             ScreenHeader(tr("البث المباشر"), Modifier.statusBarsPadding()) {
+                CircleIconButton(
+                    if (editing) RIcons.Check else RIcons.ListIcon,
+                    if (editing) tr("تم") else tr("تعديل القوائم"),
+                    { editing = !editing },
+                    background = if (editing) RColors.Saffron else RColors.Surface,
+                    tint = if (editing) RColors.OnSaffron else RColors.Text
+                )
+                Spacer(Modifier.width(8.dp))
                 CircleIconButton(RIcons.Search, tr("بحث في القنوات"), { nav.search() })
                 CircleIconButton(RIcons.Trophy, tr("جدول المباريات"), { nav.matches() })
                 Spacer(Modifier.width(8.dp))
@@ -128,7 +147,25 @@ private fun LivePhoneScreen(nav: Navigator) {
             }
         }
 
-        if (featured != null) {
+        if (editing) {
+            item {
+                val sectionIds = if (selected == ALL || selected == FAV || selected == RECENT) emptyList() else visible.map { it.id }
+                val sectionDeleted = sectionIds.isNotEmpty() && sectionIds.all { it in hidden }
+                Column(Modifier.padding(start = 20.dp, end = 20.dp, top = 12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        tr("✕ يحذف القناة من القوائم و↺ يرجعها · المحذوفة ما تطلع في القوائم ولا الدليل ولا التنقّل · {0} محذوفة", hidden.size),
+                        style = T.small
+                    )
+                    if (sectionIds.isNotEmpty()) {
+                        EditPill(if (sectionDeleted) tr("إرجاع القسم") else tr("حذف القسم كله"), RIcons.Close, danger = !sectionDeleted) {
+                            repo.setChannelsHidden(sectionIds, !sectionDeleted)
+                        }
+                    }
+                }
+            }
+        }
+
+        if (featured != null && !editing) {
             item {
                 val programme = epg.forChannel(featured).current(now)
                 PreviewCard(
@@ -175,8 +212,11 @@ private fun LivePhoneScreen(nav: Navigator) {
                 now = now,
                 favorite = Keys.live(ch.id) in favorites,
                 active = ch.id == featured?.id,
-                onOpen = { nav.playLive(ch.id) },
+                onOpen = { if (editing) repo.setChannelsHidden(listOf(ch.id), ch.id !in hidden) else nav.playLive(ch.id) },
                 onToggleFavorite = { repo.toggleFavorite(Keys.live(ch.id)) },
+                editing = editing,
+                deleted = ch.id in hidden,
+                onToggleDeleted = { repo.setChannelsHidden(listOf(ch.id), ch.id !in hidden) },
                 focusRequester = if (ch.id == focusTarget) rowFocus else null
             )
         }
@@ -193,7 +233,10 @@ fun ChannelRow(
     active: Boolean,
     onOpen: () -> Unit,
     onToggleFavorite: () -> Unit,
-    focusRequester: FocusRequester? = null
+    focusRequester: FocusRequester? = null,
+    editing: Boolean = false,
+    deleted: Boolean = false,
+    onToggleDeleted: () -> Unit = {}
 ) {
     Row(
         Modifier
@@ -210,6 +253,7 @@ fun ChannelRow(
                 .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier)
                 .clip(RoundedCornerShape(12.dp))
                 .tvClickable(RoundedCornerShape(12.dp), onClick = onOpen)
+                .alpha(if (editing && deleted) 0.45f else 1f)
                 .padding(horizontal = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -225,7 +269,8 @@ fun ChannelRow(
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
                         channel.name,
-                        style = T.body(15.sp, FontWeight.Bold),
+                        style = T.body(15.sp, FontWeight.Bold)
+                            .copy(textDecoration = if (editing && deleted) TextDecoration.LineThrough else null),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f, fill = false)
@@ -245,6 +290,24 @@ fun ChannelRow(
                     }
                 }
             }
+        }
+        if (editing) {
+            Box(
+                Modifier
+                    .size(44.dp)
+                    .clip(CircleShape)
+                    .background(if (deleted) RColors.Surface2 else RColors.DangerBg)
+                    .tvClickable(CircleShape, onClick = onToggleDeleted),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    if (deleted) RIcons.Refresh else RIcons.Close,
+                    contentDescription = if (deleted) tr("إرجاع القناة") else tr("حذف القناة من القوائم"),
+                    tint = if (deleted) RColors.Text else RColors.Danger,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            return@Row
         }
         Box(
             Modifier

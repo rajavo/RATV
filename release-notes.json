@@ -1,14 +1,11 @@
 {
   "ar": [
-    "واجهة القنوات صارت مثل الريسيفر: شريط معلومات تحت فيه رقم القناة وشعارها، الساعة والتاريخ، البرنامج الحالي بوقته والباقي منه، والتالي، ومؤشرا «الإشارة» و«الجودة». يطلع مع كل تغيير قناة، وزر INFO يطلّعه ويخفيه. والأرقام تنكتب في خانات (12-) مع اسم القناة اللي بتفتح.",
-    "ثبات أقوى: القناة المباشرة تكمل محاولات رجوع الاتصال قرابة 8 دقايق (بدل أقل من دقيقة) قبل ما تستسلم، والأفلام والمسلسلات تحاول 50 مرة بدل 5، وأول ما يرجع النت تكمل من مكانها على طول."
+    "حذف القنوات مثل الريسيفر: من «البث المباشر» اضغط «تعديل القوائم»، وOK على أي قناة يحذفها أو يرجعها، و«حذف القسم كله» يشيل قسم كامل. المحذوفة تختفي من القوائم والدليل والبحث والتنقّل بالأسهم والأرقام، وترجعها من نفس المكان أو كلها مرة وحدة من الإعدادات."
   ],
   "en": [
-    "Channels now look like a TV receiver: an info bar along the bottom with the channel number and logo, the clock and date, the programme on now with its times and what is left, what is next, and “Signal” and “Quality” meters. It shows on every channel change, and INFO shows or hides it. Typed numbers fill slots (12-) with the channel that will open.",
-    "Steadier: a live channel keeps trying to reconnect for about eight minutes (instead of under one) before it gives up on the connection, films and series try 50 times instead of 5, and as soon as the internet is back they carry on where they were."
+    "Delete channels as on a receiver: in Live TV press “Edit lists”, then OK on a channel deletes it or brings it back, and “Delete whole section” removes a section. Deleted channels leave the lists, the guide, search and zapping by arrows and numbers; bring them back from the same place, or all at once from the settings."
   ],
   "es": [
-    "Los canales ahora parecen un receptor de TV: una barra de información abajo con el número y el logo del canal, la hora y la fecha, el programa actual con su horario y lo que queda, el siguiente, y los medidores «Señal» y «Calidad». Aparece en cada cambio de canal, e INFO la muestra u oculta. Los números se escriben en casillas (12-) con el canal que se abrirá.",
-    "Más estable: un canal en directo sigue intentando reconectar unos ocho minutos (en lugar de menos de uno) antes de rendirse, películas y series lo intentan 50 veces en lugar de 5, y en cuanto vuelve internet siguen donde estaban."
+    "Borra canales como en un receptor: en TV en directo pulsa «Editar listas», y OK sobre un canal lo borra o lo recupera; «Borrar toda la sección» quita una sección. Los borrados salen de las listas, la guía, la búsqueda y el zapping con flechas y números; recupéralos desde el mismo lugar, o todos a la vez desde los ajustes."
   ]
 }
