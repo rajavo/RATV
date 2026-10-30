@@ -29,12 +29,20 @@ import kotlin.math.roundToInt
  * 16-bit numbers (older Mali 400 series) never turn it into a black picture; and the effect checks
  * now and then that what it draws is not black while the channel is not, and stops if it is.
  *
- * Only pictures under [ENHANCE_BELOW_HEIGHT] lines take this path: HD and 4K channels go straight
- * to the screen as before, where the TV's own picture processing works on them.
+ * Pictures up to 1080 lines take this path: weak ones are enlarged and sharpened, 720p ones are
+ * enlarged to 1080 on strong chips, and 1080p ones are sharpened at their own size. After the
+ * sharpening the colours are livened a little (saturation and a gentle contrast curve). 4K
+ * channels go straight to the screen, where the TV's own picture processing works on them.
  */
 
-/** Pictures with fewer lines than this are enhanced. */
-const val ENHANCE_BELOW_HEIGHT = 720
+/** Pictures with fewer lines than this are enhanced (everything up to 1080p). */
+const val ENHANCE_BELOW_HEIGHT = 1440
+
+/** Pictures with this many lines or more are HD: sharpened at their own size, and given up first if the TV falls behind. */
+const val ENHANCE_HD_LINES = 720
+
+/** Pictures under this many lines may be enlarged (full strength); 1080p is only sharpened. */
+private const val ENLARGE_BELOW_HEIGHT = 1080
 
 /** Enhancement strengths: off, light (sharpen only), full (enlarge and sharpen). */
 const val ENHANCE_OFF = 0
@@ -43,6 +51,35 @@ const val ENHANCE_FULL = 2
 
 /** The height a picture of [height] lines is enlarged to by the full enhancement: twice, at most 1080. */
 fun enhancedHeight(height: Int): Int = (height * minOf(2f, 1080f / height)).roundToInt() and 1.inv()
+
+/**
+ * The brightest point (0-255) of the picture the screen shows in [view] right now, read back from the
+ * screen itself; -1 when it cannot be read. A black screen while the enhancement runs is caught this
+ * way whatever broke (the effect, the device's video pipeline or the screen surface), where the
+ * effect's own check only sees what it drew.
+ */
+suspend fun shownBrightness(view: android.view.View?): Int {
+    val surface = view as? android.view.SurfaceView ?: return -1
+    if (android.os.Build.VERSION.SDK_INT < 24 || !surface.holder.surface.isValid || surface.width <= 0) return -1
+    val bitmap = android.graphics.Bitmap.createBitmap(64, 36, android.graphics.Bitmap.Config.ARGB_8888)
+    return kotlinx.coroutines.suspendCancellableCoroutine { cont ->
+        try {
+            android.view.PixelCopy.request(surface, bitmap, { result ->
+                var brightest = -1
+                if (result == android.view.PixelCopy.SUCCESS) {
+                    val pixels = IntArray(64 * 36)
+                    bitmap.getPixels(pixels, 0, 64, 0, 0, 64, 36)
+                    brightest = pixels.maxOf { p -> (((p shr 16) and 0xFF) * 299 + ((p shr 8) and 0xFF) * 587 + (p and 0xFF) * 114) / 1000 }
+                }
+                bitmap.recycle()
+                if (cont.isActive) cont.resumeWith(Result.success(brightest))
+            }, android.os.Handler(android.os.Looper.getMainLooper()))
+        } catch (e: RuntimeException) {
+            bitmap.recycle()
+            if (cont.isActive) cont.resumeWith(Result.success(-1))
+        }
+    }
+}
 
 /** What the picture size of an item is remembered under. */
 fun enhanceKey(item: Playable): String = "${item.kind}:${item.id}"
@@ -157,7 +194,11 @@ private class TvEnhanceProgram(
         probeChip()
         inW = inputWidth
         inH = inputHeight
-        strength = if (hdr || inputHeight !in 1 until ENHANCE_BELOW_HEIGHT) ENHANCE_OFF else minOf(maxStrength, EnhanceStatus.chipStrength())
+        strength = when {
+            hdr || inputHeight !in 1 until ENHANCE_BELOW_HEIGHT -> ENHANCE_OFF
+            inputHeight >= ENLARGE_BELOW_HEIGHT -> minOf(maxStrength, ENHANCE_LIGHT) // 1080p: sharpened at its own size
+            else -> minOf(maxStrength, EnhanceStatus.chipStrength())
+        }
         EnhanceStatus.strength = strength
         outH = if (strength == ENHANCE_FULL) enhancedHeight(inputHeight) else inputHeight
         outW = when {
@@ -237,6 +278,7 @@ private class TvEnhanceProgram(
         r.setSamplerTexIdUniform("uTexSampler", texId, /* texUnitIndex= */ 0)
         r.setFloatsUniform("uTexel", floatArrayOf(1f / texW, 1f / texH))
         r.setFloatUniform("uSharpness", SHARPNESS)
+        r.setFloatUniform("uVivid", VIVID)
         r.bindAttributesAndUniforms()
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, /* first= */ 0, /* count= */ 4)
     }
@@ -296,8 +338,14 @@ private class TvEnhanceProgram(
     }
 
     private companion object {
-        /** Sharpening strength: 2^-0.25 of the full strength (AMD's suggested range is 0 to 0.5 stops). */
-        val SHARPNESS = Math.pow(2.0, -0.25).toFloat()
+        /**
+         * Sharpening strength: 120% of the 2^-0.25 used before (about RCAS's full strength). The lobe
+         * stays far from -0.25, where the sharpening's division would break down.
+         */
+        val SHARPNESS = (1.2 * Math.pow(2.0, -0.25)).toFloat()
+
+        /** How much the colours are livened after the sharpening: saturation +12%, a 10% contrast curve. */
+        const val VIVID = 0.2f
 
         const val VERTEX = """
 attribute vec4 aFramePosition;
@@ -470,6 +518,7 @@ void main() {
         const val RCAS_FRAGMENT = PRECISION + """
 uniform sampler2D uTexSampler;
 uniform float uSharpness;
+uniform float uVivid;
 varying vec2 vC;
 varying vec2 vB;
 varying vec2 vD;
@@ -503,8 +552,12 @@ void main() {
   vec3 lobeC = max(-hitMin, hitMax);
   float lobe = max(-0.1875, min(max(lobeC.r, max(lobeC.g, lobeC.b)), 0.0)) * uSharpness;
   lobe *= nz;
-  vec3 col = (lobe * (b + d + h + f) + e) / (4.0 * lobe + 1.0);
-  gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
+  vec3 col = clamp((lobe * (b + d + h + f) + e) / (4.0 * lobe + 1.0), 0.0, 1.0);
+  // Livelier colours: more saturation, and a gentle S curve for depth (blacks and whites kept).
+  float y = dot(col, vec3(0.299, 0.587, 0.114));
+  col = clamp(mix(vec3(y), col, 1.0 + 0.6 * uVivid), 0.0, 1.0);
+  col = mix(col, col * col * (3.0 - 2.0 * col), 0.5 * uVivid);
+  gl_FragColor = vec4(col, 1.0);
 }
 """
     }

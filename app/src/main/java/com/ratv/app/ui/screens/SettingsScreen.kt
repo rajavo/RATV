@@ -359,11 +359,12 @@ fun SettingsScreen(nav: Navigator) {
                 repo.prefs.enhanceStrength <= com.ratv.app.player.ENHANCE_OFF ->
                     "\n" + tr("أوقفناه على هذا الجهاز لأنه ما لحق عليه. أطفئه وشغّله من جديد عشان نجرّب مرة ثانية.")
                 repo.prefs.enhanceStrength == com.ratv.app.player.ENHANCE_LIGHT -> "\n" + tr("يشتغل على هذا الجهاز بالتحسين الخفيف.")
+                !repo.prefs.enhanceHd -> "\n" + tr("على هذا الجهاز يحسّن القنوات الضعيفة بس، لأنه ما لحق على صورة HD.")
                 else -> ""
             }
             ToggleRow(
                 tr("تحسين الصورة الذكي"),
-                tr("يرفع وضوح القنوات الضعيفة (أقل من 720) داخل التلفزيون نفسه، بدون أي استهلاك إضافي للنت. ينطفي لحاله إذا ما لحق عليه الجهاز.") + enhanceNote,
+                tr("يرفع وضوح الصورة وحدّتها ويحيي ألوانها للقنوات والأفلام لحد 1080، والضعيفة يكبّرها بعد، داخل التلفزيون نفسه بدون أي استهلاك إضافي للنت. يخفّ أو ينطفي لحاله إذا ما لحق عليه الجهاز.") + enhanceNote,
                 enhance
             ) {
                 enhance = it
@@ -372,6 +373,7 @@ fun SettingsScreen(nav: Navigator) {
                     // Turned on by hand: try again even where it was stopped before.
                     repo.prefs.enhanceBroken = false
                     repo.prefs.enhanceStrength = com.ratv.app.player.ENHANCE_FULL
+                    repo.prefs.enhanceHd = true
                 }
             }
             Divider()

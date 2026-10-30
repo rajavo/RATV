@@ -242,6 +242,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // the item playing is known (or seen) to be under 720 lines. HD goes straight to the screen.
     var enhanceSetting by remember { mutableStateOf(repo.prefs.enhance) }
     var enhanceBroken by remember { mutableStateOf(repo.prefs.enhanceBroken) }
+    var enhanceHd by remember { mutableStateOf(repo.prefs.enhanceHd) }
+    // Android's own video decoder for the enhancement, where the device's showed a black screen.
+    var enhanceSoftware by remember { mutableStateOf(repo.prefs.enhanceSoftware) }
     // The strongest enhancement this device is given (full, light, none): it steps down by itself.
     var enhanceStrength by remember { mutableIntStateOf(repo.prefs.enhanceStrength) }
     var enhanceFor by remember { mutableStateOf<String?>(null) }
@@ -252,11 +255,12 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val enhanceWanted = current?.let { enhanceFor == enhanceKey(it) } == true
     val playerViewRef = remember { arrayOfNulls<PlayerView>(1) }
 
-    /** True when [item] should be enhanced: a weak picture, on a device that can still enhance. */
+    /** True when [item] should be enhanced: a picture up to 1080p (HD while the TV keeps up with it), on a device that can still enhance. */
     fun wantsEnhance(item: Playable, seenHeight: Int? = null): Boolean {
         if (!enhanceSetting || enhanceBroken || enhanceStrength <= ENHANCE_OFF) return false
         val known = EnhanceMemory.get(context, enhanceKey(item))
         val h = seenHeight ?: known?.height ?: nameHintHeight(item.channel?.name ?: item.title) ?: return false
+        if (h >= ENHANCE_HD_LINES && !enhanceHd) return false
         return h in 1 until ENHANCE_BELOW_HEIGHT
     }
 
@@ -267,14 +271,15 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         return mode.ratio ?: if (view.width > 0 && view.height > 0) view.width.toFloat() / view.height else 16f / 9f
     }
 
-    val player = remember(enhanceWanted, if (enhanceWanted) enhanceStrength else ENHANCE_OFF) {
+    val player = remember(enhanceWanted, if (enhanceWanted) enhanceStrength else ENHANCE_OFF, enhanceWanted && enhanceSoftware) {
         Steadiness.mode = repo.prefs.liveSteady
         Steadiness.attach(context)
         createPlayer(
             context, repo.prefs.bufferMode, repo.prefs.bestQuality, live = kind == "live",
             tunneling = isTv && repo.prefs.tunneling,
             enhance = enhanceWanted, stretchAspect = stretchFor(resizeIndex), enhanceStrength = enhanceStrength,
-            introTap = kind != "live"
+            introTap = kind != "live",
+            softwareVideo = enhanceWanted && enhanceSoftware
         )
     }
     // «تخطي المقدمة» (IntroSkip.kt): the opening of what plays, found by its sound or listed on TheIntroDB.
@@ -615,14 +620,24 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
 
     /**
      * The enhancement does not work out on this device ([failed]: its graphics broke; otherwise it
-     * falls behind): the full strength steps down to the light one, the light one to none.
+     * falls behind): the full strength steps down to the light one, the light one to none. [toOff]
+     * goes straight to none (a black screen, which the light strength would show too).
      */
-    fun enhanceStepDown(why: String, failed: Boolean) {
+    fun enhanceStepDown(why: String, failed: Boolean, toOff: Boolean = false) {
         val item = current ?: return
         if (enhanceFor == null) return
         val used = EnhanceStatus.strength.coerceAtMost(enhanceStrength)
         if (!item.isLive) resumeAt = item.id to player.currentPosition
-        if (used >= ENHANCE_FULL) {
+        if (!failed && !toOff && videoHeight >= ENHANCE_HD_LINES && used <= ENHANCE_LIGHT) {
+            // Too heavy on an HD picture: HD goes straight to the screen from now on, weak channels keep it.
+            Log.i("RATVEnhance", "HD enhancement does not work out ($why): only weak pictures from now on")
+            repo.prefs.enhanceHd = false
+            enhanceHd = false
+            streamNotice = tr("التلفزيون ما لحق على تحسين صورة HD، فخليناه للقنوات الضعيفة بس")
+            enhanceFor = null
+            return
+        }
+        if (used >= ENHANCE_FULL && !toOff) {
             Log.i("RATVEnhance", "full enhancement does not work out ($why): light enhancement from now on")
             repo.prefs.enhanceStrength = ENHANCE_LIGHT
             enhanceStrength = ENHANCE_LIGHT // a new player with the light strength
@@ -631,12 +646,56 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             Log.i("RATVEnhance", "the enhancement does not work out ($why): off on this device")
             repo.prefs.enhanceStrength = ENHANCE_OFF
             enhanceStrength = ENHANCE_OFF
-            streamNotice = if (failed) tr("تحسين الصورة ما اشتغل على هذا الجهاز، فأوقفناه") else tr("التلفزيون ما لحق على تحسين الصورة، فأوقفناه")
+            streamNotice = when {
+                toOff -> tr("تحسين الصورة طلّع شاشة سوداء على هذا الجهاز، فأوقفناه ورجعت الصورة")
+                failed -> tr("تحسين الصورة ما اشتغل على هذا الجهاز، فأوقفناه")
+                else -> tr("التلفزيون ما لحق على تحسين الصورة، فأوقفناه")
+            }
             enhanceFor = null
         }
     }
 
     fun enhanceTooSlow(why: String) = enhanceStepDown(why, failed = false)
+
+    // With the enhancement on, the screen is looked at for its first 20 s of picture: black at every
+    // point for 4 s in a row means the enhancement does not show on this device, and it is turned off
+    // there (the picture comes back at once). Once the enhanced picture is seen, it is left alone.
+    LaunchedEffect(player, pictureShown, enhanceWanted) {
+        if (!enhanceWanted || !pictureShown) return@LaunchedEffect
+        delay(1_500L)
+        var black = 0
+        var seen = 0
+        repeat(20) {
+            if (player.isPlaying) {
+                val level = shownBrightness(playerViewRef[0]?.videoSurfaceView)
+                if (level < 0) return@LaunchedEffect // the screen cannot be read here
+                if (level < 10) {
+                    black++
+                    if (black >= 4) {
+                        if (!enhanceSoftware) {
+                            // The device's decoder (MediaTek's on TCL TVs) gives pictures the graphics chip
+                            // reads as black: a new player with Android's own decoder, remembered for this device.
+                            Log.w("RATVEnhance", "the screen stays black with the enhancement on: trying Android's video decoder")
+                            current?.let { if (!it.isLive) resumeAt = it.id to player.currentPosition }
+                            repo.prefs.enhanceSoftware = true
+                            enhanceSoftware = true
+                            streamNotice = tr("الشاشة كانت سوداء مع تحسين الصورة، فجربنا طريقة ثانية")
+                        } else {
+                            Log.w("RATVEnhance", "the screen stays black with the enhancement on, Android's decoder too")
+                            repo.prefs.enhanceSoftware = false
+                            enhanceSoftware = false
+                            enhanceStepDown("the screen stays black", failed = true, toOff = true)
+                        }
+                        return@LaunchedEffect
+                    }
+                } else {
+                    black = 0
+                    if (++seen >= 3) return@LaunchedEffect // the enhanced picture shows
+                }
+            }
+            delay(1_000L)
+        }
+    }
 
     DisposableEffect(player) {
         // Whether this player enhances the picture (it is made again to change that).
@@ -1358,6 +1417,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             enhanceBroken = false
             repo.prefs.enhanceStrength = ENHANCE_FULL
             enhanceStrength = ENHANCE_FULL
+            repo.prefs.enhanceHd = true
+            enhanceHd = true
         } else {
             repo.prefs.enhance = false
             enhanceSetting = false

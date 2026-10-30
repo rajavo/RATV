@@ -1,11 +1,14 @@
 {
   "ar": [
-    "حذف القنوات مثل الريسيفر: من «البث المباشر» اضغط «تعديل القوائم»، وOK على أي قناة يحذفها أو يرجعها، و«حذف القسم كله» يشيل قسم كامل. المحذوفة تختفي من القوائم والدليل والبحث والتنقّل بالأسهم والأرقام، وترجعها من نفس المكان أو كلها مرة وحدة من الإعدادات."
+    "«تحسين الصورة الذكي» صار يشتغل على القنوات والأفلام HD لحد 1080 (قبل كان للضعيفة تحت 720 بس، فما كان يبان على أغلب القنوات)، وصار أقوى بـ120٪: حدّة أكثر وألوان أحيى وعمق أوضح. الـ720 يتكبّر لـ1080 على الأجهزة القوية. ولو ما لحق الجهاز على HD، يكمل التحسين للقنوات الضعيفة بدل ما ينطفي كله. شغّله من الإعدادات أو من زر «تحسين الصورة» في المشغّل.",
+    "إصلاح الشاشة السوداء مع «تحسين الصورة» (مثل شاشات TCL): التطبيق يشيّك على الشاشة نفسها، وإذا بقيت سوداء يجرب التحسين بطريقة فك ترميز ثانية تناسب الجهاز ويحفظها، وإذا ما نفعت يوقف التحسين وترجع الصورة على طول."
   ],
   "en": [
-    "Delete channels as on a receiver: in Live TV press “Edit lists”, then OK on a channel deletes it or brings it back, and “Delete whole section” removes a section. Deleted channels leave the lists, the guide, search and zapping by arrows and numbers; bring them back from the same place, or all at once from the settings."
+    "“Smart picture enhancement” now works on HD channels and films up to 1080 (before, only on weak ones under 720, so most channels showed nothing), and it is 120% stronger: sharper, livelier colours and more depth. 720p is enlarged to 1080 on strong devices. If a device cannot keep up with HD, weak channels keep the enhancement instead of it turning off completely. Turn it on in the settings or with “Enhance picture” in the player.",
+    "Fix for the black screen with “Enhance picture” (as on TCL TVs): the app checks the screen itself, and if it stays black it tries the enhancement with another video decoder that suits the device and keeps it; if that does not help either, it turns the enhancement off and the picture comes back at once."
   ],
   "es": [
-    "Borra canales como en un receptor: en TV en directo pulsa «Editar listas», y OK sobre un canal lo borra o lo recupera; «Borrar toda la sección» quita una sección. Los borrados salen de las listas, la guía, la búsqueda y el zapping con flechas y números; recupéralos desde el mismo lugar, o todos a la vez desde los ajustes."
+    "La «Mejora inteligente de imagen» ahora funciona en canales y películas HD hasta 1080 (antes solo en los débiles bajo 720, así que en la mayoría no se notaba), y es un 120% más fuerte: más nitidez, colores más vivos y más profundidad. El 720p se amplía a 1080 en equipos potentes. Si un equipo no puede con el HD, los canales débiles conservan la mejora en lugar de apagarse del todo. Actívala en los ajustes o con «Mejorar imagen» en el reproductor.",
+    "Arreglo de la pantalla negra con «Mejorar imagen» (como en las TV TCL): la app comprueba la propia pantalla y, si sigue negra, prueba la mejora con otro decodificador de vídeo que va con el equipo y lo guarda; si tampoco sirve, apaga la mejora y la imagen vuelve enseguida."
   ]
 }

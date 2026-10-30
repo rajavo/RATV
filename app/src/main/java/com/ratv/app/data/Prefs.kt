@@ -264,7 +264,7 @@ class Prefs(context: Context) {
         sp.edit().putInt("hlsFail:$host", sp.getInt("hlsFail:$host", 0) + 1).apply()
     }
 
-    /** Smart picture enhancement of weak channels (under 720 lines), done by the TV itself. */
+    /** Smart picture enhancement of channels and films up to 1080 lines, done by the TV itself. */
     var enhance: Boolean
         get() = sp.getBoolean("enhance", false)
         set(value) = sp.edit().putBoolean("enhance", value).apply()
@@ -291,6 +291,16 @@ class Prefs(context: Context) {
     var introSkip: String
         get() = sp.getString("introSkip", "button") ?: "button"
         set(value) = sp.edit().putString("introSkip", value).apply()
+
+    /** The enhancement of HD pictures (720p and 1080p): off once the TV fell behind on them; weak channels keep theirs. */
+    var enhanceHd: Boolean
+        get() = sp.getBoolean("enhanceHd", true)
+        set(value) = sp.edit().putBoolean("enhanceHd", value).apply()
+
+    /** The enhancement shows a black screen with this device's own video decoder: it uses Android's instead. */
+    var enhanceSoftware: Boolean
+        get() = sp.getBoolean("enhanceSoftware", false)
+        set(value) = sp.edit().putBoolean("enhanceSoftware", value).apply()
 
     /** The device's graphics could not run the enhancement: it stays off until turned on again. */
     var enhanceBroken: Boolean

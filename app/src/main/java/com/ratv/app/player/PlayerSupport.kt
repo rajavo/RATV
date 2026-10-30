@@ -280,7 +280,8 @@ fun createPlayer(
     enhance: Boolean = false,
     stretchAspect: Float? = null,
     enhanceStrength: Int = ENHANCE_FULL,
-    introTap: Boolean = false
+    introTap: Boolean = false,
+    softwareVideo: Boolean = false
 ): ExoPlayer {
     // Films and episodes store ten times the reserve chosen in the settings (10 minutes for its "1 minute").
     val reserve = maxOf(cushionMs(bufferMode).toInt(), 15_000) * 10
@@ -324,6 +325,14 @@ fun createPlayer(
         .build()
     // If the device's first video decoder fails on a stream, try the next one instead of stopping.
     val renderers = DefaultRenderersFactory(context).setEnableDecoderFallback(true)
+    // [softwareVideo]: Android's own video decoder first (the device's next if it fails). Some TV chips'
+    // decoders (MediaTek's) give pictures the graphics chip reads as black, which the enhancement needs.
+    if (softwareVideo) {
+        renderers.setMediaCodecSelector { mime, secure, tunnel ->
+            val all = androidx.media3.exoplayer.mediacodec.MediaCodecUtil.getDecoderInfos(mime, secure, tunnel)
+            if (MimeTypes.isVideo(mime)) all.sortedBy { if (it.softwareOnly) 0 else 1 } else all
+        }
+    }
     // Start at a high quality and step down only when the connection really cannot carry it.
     val bandwidth = DefaultBandwidthMeter.Builder(context).setInitialBitrateEstimate(12_000_000L).build()
     val player = ExoPlayer.Builder(context, renderers)
