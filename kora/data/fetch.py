@@ -22,6 +22,7 @@ import sys
 import time
 import unicodedata
 import urllib.error
+import urllib.parse
 import urllib.request
 from zoneinfo import ZoneInfo
 
@@ -376,6 +377,9 @@ def learn_names(matches, teams, cards):
 KOOORA_URL = "https://www.kooora.com/%D9%83%D8%B1%D8%A9-%D8%A7%D9%84%D9%82%D8%AF%D9%85/%D9%85%D8%A8%D8%A7%D8%B1%D9%8A%D8%A7%D8%AA-%D8%A7%D9%84%D9%8A%D9%88%D9%85"
 
 
+KOOORA_SAMPLES = []  # raw matches, in report.json, to see what Kooora gives
+
+
 def kooora_day():
     try:
         html = get(KOOORA_URL, ua=BROWSER)[2].decode("utf-8", "replace")
@@ -396,6 +400,8 @@ def kooora_day():
             t = ts(mt.get("startDate"))
             a = ((mt.get("teamA") or {}).get("name") or "").strip()
             b = ((mt.get("teamB") or {}).get("name") or "").strip()
+            if tv and t and a and b and len(KOOORA_SAMPLES) < 3:
+                KOOORA_SAMPLES.append(mt)
             if tv and t and a and b:
                 out.append({"t": t, "a": a, "b": b, "comp": comp, "tv": tv,
                             "la": ((mt.get("teamA") or {}).get("image") or {}).get("url") or "",
@@ -627,14 +633,50 @@ RETRY_DAYS = 14
 NAMES_VERSION = 2
 
 
+WD_SPARQL = "https://query.wikidata.org/sparql"
+
+
+def wd_get(url, data=None):
+    """A Wikidata request that waits when asked to slow down (429) instead of failing."""
+    for i in range(5):
+        try:
+            req = urllib.request.Request(url, data=data, headers={"User-Agent": WD_UA, "Accept": "application/json"})
+            with urllib.request.urlopen(req, timeout=70) as r:
+                return json.loads(r.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            if e.code != 429 and e.code < 500:
+                raise
+            wait = e.headers.get("Retry-After") if e.headers else None
+            time.sleep(min(30, int(wait)) if wait and wait.isdigit() else 3 * (i + 1))
+    raise IOError("Wikidata kept answering 429")
+
+
+def wikidata_bulk(names):
+    """Arabic names of footballers whose English name or alias is exactly one of [names]: 200 names a request."""
+    out = {}
+    names = list(names)
+    for i in range(0, len(names), 200):
+        part = names[i:i + 200]
+        values = " ".join('"%s"@en' % n.replace("\\", "\\\\").replace('"', '\\"') for n in part)
+        q = ('SELECT ?name ?ar WHERE { VALUES ?name { %s } ?item rdfs:label|skos:altLabel ?name ; wdt:P106 wd:%s . '
+             '?item rdfs:label ?ar . FILTER(LANG(?ar) = "ar") }' % (values, FOOTBALLER))
+        d = wd_get(WD_SPARQL, urllib.parse.urlencode({"query": q, "format": "json"}).encode())
+        for b in (d.get("results") or {}).get("bindings") or []:
+            n = (b.get("name") or {}).get("value")
+            ar = re.sub(r"\s*\([^)]*\)", "", (b.get("ar") or {}).get("value") or "").strip()
+            if n and ar and n not in out and re.search("[\u0600-\u06FF]", ar):
+                out[n] = ar
+    return out
+
+
 def wikidata_arabic(name):
     """The Arabic name of the footballer called [name] in English, from Wikidata; None when it has none."""
     q = urllib.request.quote(name)
-    found = json.loads(get(WD_SEARCH % q, tries=2, ua=WD_UA)[2].decode("utf-8")).get("search") or []
+    found = wd_get(WD_SEARCH % q).get("search") or []
     ids = [x["id"] for x in found if x.get("id")]
     if not ids:
         return None
-    ents = json.loads(get(WD_GET % "%7C".join(ids), tries=2, ua=WD_UA)[2].decode("utf-8")).get("entities") or {}
+    ents = wd_get(WD_GET % "%7C".join(ids)).get("entities") or {}
     want = norm(name)
     for qid in ids:  # in the search's order: the best known first
         e = ents.get(qid) or {}
@@ -704,11 +746,22 @@ def player_names(match_list, previous_players):
 
     new = sorted((n for n in wanted if n not in names and (n not in miss or stale(n))), key=lambda n: (order.get(n, 0), n))
     state.update({"players": len(wanted), "known": sum(1 for n in wanted if n in names), "to_look_up": len(new)})
+    # Exact names in bulk first; the others one by one with Wikidata's search (spellings, aliases).
+    try:
+        bulk = wikidata_bulk(new)
+    except Exception as e:
+        bulk = {}
+        state["bulk_error"] = str(e)[:200]
+    names.update(bulk)
+    for n in bulk:
+        miss.pop(n, None)
+    state["found_in_bulk"] = len(bulk)
+    new = [n for n in new if n not in bulk]
     looked, found, errors = 0, 0, []
     # Wikidata asks bots to go gently: few at a time (it answers 429 to more).
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as ex:
         futures = {}
-        for n in new[:NEW_NAMES_MAX]:
+        for n in new[:NEW_NAMES_MAX]:  # names the bulk did not find
             futures[ex.submit(lambda n=n: None if time.time() - started > NEW_NAMES_SECONDS else (n, wikidata_arabic(n)))] = n
         for f in concurrent.futures.as_completed(futures):
             try:
@@ -738,6 +791,91 @@ def player_names(match_list, previous_players):
                   "sample": dict(sorted((n, names[n]) for n in wanted if n in names)[:15]),
                   "seconds": round(time.time() - started, 1)})
     return {"v": NAMES_VERSION, "names": names, "miss": miss}, state
+
+# ------------------------------------------------------------------ stadiums and cities in Arabic
+
+WD_SEARCH_AR = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=%s&language=en&uselang=en&type=item&limit=5&format=json"
+WD_GET_PLACE = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=%s&props=labels%%7Caliases%%7Cdescriptions&languages=ar%%7Cen&format=json"
+PLACES_VERSION = 1
+VENUE_WORDS = re.compile(r"stadium|arena|ground|park|field|venue|stade|estadio|stadio|bowl|dome|sports", re.I)
+CITY_WORDS = re.compile(r"city|town|capital|municipality|commune|village|metropolis|county|borough|district|port|human settlement", re.I)
+
+
+def wikidata_place(name, kind):
+    """The Arabic name of a stadium ([kind] "v") or a city ("c") called [name] in English; None when Wikidata has none."""
+    found = wd_get(WD_SEARCH_AR % urllib.request.quote(name)).get("search") or []
+    ids = [x["id"] for x in found if x.get("id")]
+    if not ids:
+        return None
+    ents = wd_get(WD_GET_PLACE % "%7C".join(ids)).get("entities") or {}
+    want = norm(name)
+    for qid in ids:
+        e = ents.get(qid) or {}
+        desc = ((e.get("descriptions") or {}).get("en") or {}).get("value") or ""
+        if not (VENUE_WORDS if kind == "v" else CITY_WORDS).search(desc):
+            continue
+        english = [((e.get("labels") or {}).get("en") or {}).get("value") or ""] + [a.get("value") or "" for a in (e.get("aliases") or {}).get("en") or []]
+        if max(difflib.SequenceMatcher(None, want, norm(x)).ratio() for x in english) < 0.85:
+            continue
+        v = re.sub(r"\s*\([^)]*\)", "", ((e.get("labels") or {}).get("ar") or {}).get("value") or "").strip()
+        return v if re.search("[\u0600-\u06FF]", v) else None
+    return None
+
+
+def arabic_places(match_list, previous_places):
+    """Stadiums and cities of the schedule in Arabic (m["v"], m["c"]), from Wikidata; kept run after run in places_ar.json."""
+    started = time.time()
+    if (previous_places or {}).get("v") != PLACES_VERSION:
+        previous_places = None
+    names = dict((previous_places or {}).get("names") or {})
+    miss = dict((previous_places or {}).get("miss") or {})
+    today = dt.date.today()
+
+    def stale(k):
+        try:
+            return (today - dt.date.fromisoformat(miss[k])).days >= RETRY_DAYS
+        except Exception:
+            return True
+
+    wanted = []
+    for m in sorted(match_list, key=lambda m: m["t"]):
+        for kind in ("v", "c"):
+            n = m.get(kind)
+            if n and not re.search("[\u0600-\u06FF]", n):
+                k = kind + ":" + n
+                if k not in names and (k not in miss or stale(k)) and k not in wanted:
+                    wanted.append(k)
+    looked, found, errors = 0, 0, []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as ex:
+        futures = {ex.submit(lambda k=k: None if time.time() - started > 240 else (k, wikidata_place(k[2:], k[0]))): k for k in wanted[:800]}
+        for f in concurrent.futures.as_completed(futures):
+            try:
+                r = f.result()
+            except Exception as e:
+                if len(errors) < 8:
+                    errors.append("%s: %s" % (futures[f], str(e)[:100]))
+                continue
+            if r is None:
+                continue
+            looked += 1
+            k, ar = r
+            if ar:
+                names[k] = ar
+                miss.pop(k, None)
+                found += 1
+            else:
+                miss[k] = today.isoformat()
+    shown = 0
+    for m in match_list:
+        for kind in ("v", "c"):
+            ar = names.get(kind + ":" + (m.get(kind) or ""))
+            if ar:
+                m[kind] = ar
+                shown += 1
+    state = {"to_look_up": len(wanted), "looked_up": looked, "found": found, "errors": errors, "known": len(names),
+             "places_in_arabic": shown, "seconds": round(time.time() - started, 1),
+             "sample": dict(sorted(names.items())[:20])}
+    return {"v": PLACES_VERSION, "names": names, "miss": miss}, state
 
 def main():
     out_dir = sys.argv[1]
@@ -883,6 +1021,21 @@ def main():
         players, players_state = previous_players or {"v": 1, "names": {}, "miss": {}}, {"error": repr(e)[:300]}
     with open(os.path.join(out_dir, "players_ar.json"), "w", encoding="utf-8") as f:
         json.dump(players, f, ensure_ascii=False, separators=(",", ":"))
+    previous_places = None
+    if len(sys.argv) > 2:
+        pp = os.path.join(os.path.dirname(sys.argv[2]), "places_ar.json")
+        if os.path.exists(pp):
+            try:
+                with open(pp, encoding="utf-8") as f:
+                    previous_places = json.load(f)
+            except Exception as e:
+                print("previous places unreadable: %s" % e)
+    try:
+        places, places_state = arabic_places(match_list, previous_places)
+    except Exception as e:
+        places, places_state = previous_places or {"v": PLACES_VERSION, "names": {}, "miss": {}}, {"error": repr(e)[:300]}
+    with open(os.path.join(out_dir, "places_ar.json"), "w", encoding="utf-8") as f:
+        json.dump(places, f, ensure_ascii=False, separators=(",", ":"))
     used = {m["lg"] for m in match_list}
     league_out = []
     for lg in all_leagues:
@@ -976,6 +1129,8 @@ def main():
         "espn_leagues": discover_leagues(),
         "absences": absent_state,
         "players_ar": players_state,
+        "places_ar": places_state,
+        "kooora_samples": KOOORA_SAMPLES,
         "teams": sorted(({"id": tid, "en": t["en"], "ar": t.get("ar"), "leagues": sorted(t["leagues"])}
                          for tid, t in teams.items()), key=lambda x: (x["leagues"], x["en"])),
     }
