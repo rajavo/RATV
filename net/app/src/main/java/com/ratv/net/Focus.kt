@@ -76,6 +76,11 @@ class Prefs(context: Context) {
         get() = sp.getStringSet("home_disabled", null)?.toSet() ?: emptySet()
         set(value) = sp.edit().putStringSet("home_disabled", HashSet(value)).apply()
 
+    /** «راحة العين»: 0 off, 1 to 3 from light to strong. */
+    var comfort: Int
+        get() = sp.getInt("comfort", 0)
+        set(value) = sp.edit().putInt("comfort", value).apply()
+
     companion object {
         /**
          * Google Play services (sign-in, casting), the Chromecast receiver and voice search (the Google app),

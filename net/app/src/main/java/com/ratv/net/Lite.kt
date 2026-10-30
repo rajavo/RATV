@@ -1,9 +1,12 @@
 package com.ratv.net
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.provider.Settings
 import androidx.compose.ui.graphics.ImageBitmap
@@ -14,6 +17,7 @@ import dadb.Dadb
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.File
 import java.net.ConnectException
+import java.net.InetAddress
 import java.net.SocketTimeoutException
 
 class ExtraApp(val pkg: String, val label: String, val icon: ImageBitmap?, val suggested: Boolean)
@@ -162,11 +166,99 @@ object Lite {
     fun animationsFast(context: Context): Boolean =
         Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) < 1f
 
-    /** Quicker animations, background apps closed and caches emptied. */
-    fun lighten(context: Context) = onTv(context, "خفّت الشاشة: الحركة أسرع، والتطبيقات اللي بالخلفية انقفلت، والملفات المؤقتة انمسحت.") { tv ->
+    /** Quicker animations, background apps closed, caches emptied and the always-on network scans stopped. */
+    fun lighten(context: Context) = onTv(
+        context,
+        "خفّت الشاشة: الحركة أسرع، والتطبيقات اللي بالخلفية انقفلت، والملفات المؤقتة انمسحت، والبحث الدائم عن الشبكات والبلوتوث وقف."
+    ) { tv ->
         scale(tv, "0.5")
         tv.shell("am kill-all")
         tv.shell("pm trim-caches 999G")
+        // Scans the TV keeps doing in the background even with Wi-Fi or Bluetooth not in use.
+        tv.shell("settings put global wifi_scan_always_enabled 0")
+        tv.shell("settings put global ble_scan_always_enabled 0")
+    }
+
+    // ------------------------------------------------------------- ads and trackers
+
+    /**
+     * Name lookups for the whole TV go to AdGuard DNS (Android's «DNS خاص»), which answers nothing for
+     * ad and tracking addresses: every app loses its ads and trackers, and the rest of the internet is untouched.
+     */
+    const val AD_DNS = "dns.adguard-dns.com"
+
+    fun adsSupported() = Build.VERSION.SDK_INT >= 28
+
+    fun adsBlocked(context: Context): Boolean {
+        if (!adsSupported()) return false
+        val cm = context.getSystemService(ConnectivityManager::class.java) ?: return false
+        return runCatching { cm.getLinkProperties(cm.activeNetwork)?.privateDnsServerName == AD_DNS }.getOrDefault(false)
+    }
+
+    fun blockAds(context: Context) = onTv(context, null) { tv ->
+        if (!adsSupported()) {
+            message.value = "حجب الإعلانات يحتاج أندرويد ٩ أو أحدث."
+            return@onTv
+        }
+        tv.shell("settings put global private_dns_specifier $AD_DNS")
+        tv.shell("settings put global private_dns_mode hostname")
+        message.value = "أتأكد إن النت شغّال مع الحاجب…"
+        message.value = if (dnsWorks(context)) {
+            "انحجبت الإعلانات والتتبّع في كل التطبيقات. لو موقع أو تطبيق ما اشتغل، طفّ الحاجب من هنا."
+        } else {
+            // A network that does not let it through would leave the TV with no internet at all: undo.
+            allowAdsOn(tv)
+            "شبكتك ما تسمح بالحاجب، فرجّعت النت مثل ما كان. ما تغيّر شي."
+        }
+    }
+
+    fun allowAds(context: Context) = onTv(context, "انطفى حاجب الإعلانات، ورجع النت مثل ما كان.") { tv -> allowAdsOn(tv) }
+
+    private fun allowAdsOn(tv: Dadb) {
+        tv.shell("settings put global private_dns_mode opportunistic")
+        tv.shell("settings delete global private_dns_specifier")
+    }
+
+    /** Waits for the network to take the blocker and to still reach the internet through it. */
+    private fun dnsWorks(context: Context): Boolean {
+        val cm = context.getSystemService(ConnectivityManager::class.java) ?: return false
+        repeat(20) {
+            Thread.sleep(1000)
+            val net = cm.activeNetwork ?: return@repeat
+            val lp = cm.getLinkProperties(net) ?: return@repeat
+            val caps = cm.getNetworkCapabilities(net) ?: return@repeat
+            if (lp.privateDnsServerName == AD_DNS && lp.isPrivateDnsActive &&
+                caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) &&
+                runCatching { InetAddress.getByName("connectivitycheck.gstatic.com") }.isSuccess
+            ) return true
+        }
+        return false
+    }
+
+    // ------------------------------------------------------------- eye comfort
+
+    /** Turns on RA Net's accessibility service (which draws «راحة العين»), keeping the ones already on. */
+    fun turnOnComfort(context: Context, level: Int) = onTv(
+        context,
+        "اشتغلت راحة العين: ألوان الشاشة صارت أدفى وأهدى. غيّر القوة أو طفّها من هنا."
+    ) { tv ->
+        val me = ComponentName(context, FocusAccessibilityService::class.java).flattenToString()
+        val now = tv.shell("settings get secure enabled_accessibility_services").output.trim()
+        Comfort.set(context, level)
+        tv.shell("settings put secure enabled_accessibility_services '" + withService(now, me) + "'")
+        tv.shell("settings put secure accessibility_enabled 1")
+    }
+
+    /** The list of accessibility services with [me] in it once. */
+    fun withService(list: String, me: String): String {
+        val items = list.split(':').map { it.trim() }.filter { it.isNotEmpty() && it != "null" }
+        return (if (me in items) items else items + me).joinToString(":")
+    }
+
+    fun openAccessibility(context: Context) {
+        for (action in listOf(Settings.ACTION_ACCESSIBILITY_SETTINGS, Settings.ACTION_SETTINGS)) {
+            if (runCatching { context.startActivity(Intent(action).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }.isSuccess) return
+        }
     }
 
     fun normalAnimations(context: Context) = onTv(context, "رجعت الحركة لسرعتها الأصلية.") { tv -> scale(tv, "1.0") }
