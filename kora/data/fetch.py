@@ -557,51 +557,31 @@ def summary_probe(match_list):
 def absence_probe(match_list):
     """Which sources answer for injured and suspended players (ESPN has none in its match summary)."""
     out = {}
-
-    def try_url(name, url, ua=BROWSER, show=None):
-        try:
-            code, _, body = get(url, tries=1, ua=ua)
-            d = json.loads(body.decode("utf-8"))
-            out[name] = {"code": code, "keys": sorted(d.keys())[:30] if isinstance(d, dict) else type(d).__name__}
-            if show:
-                out[name]["show"] = show(d)
-            return d
-        except Exception as e:
-            out[name] = {"error": str(e)[:200]}
-            return None
-
-    today = dt.datetime.now(dt.timezone.utc).date()
-    for host in ("https://api.sofascore.com", "https://www.sofascore.com"):
-        day = None
-        for d_off in (0, 1):
-            day = try_url("sofascore %s day+%d" % (host, d_off),
-                          host + "/api/v1/sport/football/scheduled-events/%s" % (today + dt.timedelta(days=d_off)).isoformat(),
-                          show=lambda d: [{"id": e.get("id"), "t": e.get("startTimestamp"), "h": (e.get("homeTeam") or {}).get("name"),
-                                           "a": (e.get("awayTeam") or {}).get("name"),
-                                           "lg": ((e.get("tournament") or {}).get("uniqueTournament") or {}).get("name")}
-                                          for e in (d.get("events") or [])[:3]] + [len(d.get("events") or [])])
-            if day:
-                break
-        if not day:
-            continue
-        evs = [e for e in day.get("events") or [] if ((e.get("tournament") or {}).get("uniqueTournament") or {}).get("name")
-               in ("Premier League", "LaLiga", "Serie A", "Bundesliga", "Saudi Pro League", "Ligue 1")][:3]
-        for e in evs:
-            try_url("sofascore lineups %s" % e.get("id"), host + "/api/v1/event/%s/lineups" % e.get("id"),
-                    show=lambda d: {side: {"confirmed": d.get("confirmed"), "formation": (d.get(side) or {}).get("formation"),
-                                           "players": len((d.get(side) or {}).get("players") or []),
-                                           "missing": (d.get(side) or {}).get("missingPlayers", "NO KEY")[:3]
-                                           if isinstance((d.get(side) or {}).get("missingPlayers"), list) else "NO KEY"}
-                                    for side in ("home", "away")})
-        break
     espn = [m for m in match_list if not str(m["id"]).startswith("y") and m["lg"] == "eng.1"][:1]
     for m in espn:
-        try_url("espn core injuries", "https://sports.core.api.espn.com/v2/sports/soccer/leagues/eng.1/teams/%s/injuries" % m["h"], ua=UA,
-                show=lambda d: {k: d[k] for k in list(d)[:6]})
-        try_url("espn site team", "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/teams/%s?enable=injuries" % m["h"], ua=UA,
-                show=lambda d: sorted((d.get("team") or {}).keys()))
+        try:
+            d = get_json("https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/teams/%s/roster" % m["h"])
+            ath = d.get("athletes") or []
+            out["espn roster"] = {"keys": sorted(d.keys()), "players": len(ath),
+                                  "athlete_keys": sorted({k for a in ath for k in a.keys()}),
+                                  "with_injuries": [{"n": a.get("displayName"), "inj": a.get("injuries"), "status": a.get("status")}
+                                                    for a in ath if a.get("injuries")][:4],
+                                  "statuses": sorted({json.dumps(a.get("status"), ensure_ascii=False)[:80] for a in ath})[:8]}
+        except Exception as e:
+            out["espn roster"] = {"error": str(e)[:200]}
+    for name, url in (("tm injuries", "https://www.transfermarkt.com/premier-league/verletztespieler/wettbewerb/GB1"),
+                      ("tm suspensions", "https://www.transfermarkt.com/premier-league/sperrenausfaelle/wettbewerb/GB1"),
+                      ("tm injuries de", "https://www.transfermarkt.de/premier-league/verletztespieler/wettbewerb/GB1")):
+        try:
+            code, _, body = get(url, tries=1, ua=BROWSER)
+            html = body.decode("utf-8", "replace")
+            i = html.find('class="items"')
+            out[name] = {"code": code, "size": len(html), "table_at": i,
+                         "rows": html.count('class="odd"') + html.count('class="even"'),
+                         "snippet": re.sub(r"\s+", " ", html[i:i + 6000]) if i >= 0 else html[:600]}
+        except Exception as e:
+            out[name] = {"error": str(e)[:200]}
     return out
-
 
 def main():
     out_dir = sys.argv[1]
