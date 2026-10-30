@@ -12,7 +12,6 @@ on:
       - 'kora/**'
       - 'home/**'
       - 'store/**'
-      - 'README.md'
       - '.github/workflows/home.yml'
       - '.github/workflows/store.yml'
       - '.github/workflows/net.yml'
