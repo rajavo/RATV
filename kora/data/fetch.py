@@ -909,7 +909,7 @@ def commentator_probe():
             links = list(dict.fromkeys(re.findall(link_re, html)))[:3]
             out[site] = {"code": code, "size": len(html), "around": around(html, 3), "links": links}
             for l in links[:2]:
-                url = l if l.startswith("http") else base + l
+                url = urllib.parse.quote(l if l.startswith("http") else base + l, safe=":/?=&%#")
                 try:
                     page = get(url, tries=1, ua=BROWSER)[2].decode("utf-8", "replace")
                     out[url] = {"size": len(page), "around": around(page)}
