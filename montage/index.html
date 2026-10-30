@@ -1,0 +1,1005 @@
+<title>استوديو RA للمونتاج</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;700&display=swap">
+<style>
+/* Layout: an edit suite. Control rack on the reading side, program monitor + waveform timeline beside it; stacks with the monitor first on phones. Single dark look on purpose: footage is judged on dark. */
+:root {
+  --ink: #111318;
+  --rack: #181b22;
+  --well: #0b0c10;
+  --line: #2a2e39;
+  --fg: #ecebe6;
+  --muted: #959aa6;
+  --tally: #f2b33d;
+  --tally-ink: #1a1405;
+  --cut: #e2604f;
+  --keep: #f2b33d;
+  --display: "Reem Kufi", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --body: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --r: 10px;
+  color-scheme: dark;
+}
+html, body { background: var(--ink); color: var(--fg); }
+body { font-family: var(--body); font-size: 15px; line-height: 1.55; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--tally); outline-offset: 2px; }
+
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 40px; max-width: 1440px; margin: 0 auto; }
+
+header.bar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-block: 16px; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
+.mark { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 9px; background: var(--tally); color: var(--tally-ink); font-family: var(--display); font-weight: 700; font-size: 18px; letter-spacing: .02em; }
+.brand h1 { margin: 0; font-family: var(--display); font-weight: 700; font-size: 22px; line-height: 1.2; text-wrap: balance; }
+.brand p { margin: 0; color: var(--muted); font-size: 13px; }
+.readout { margin-inline-start: auto; display: flex; gap: 10px; align-items: center; font-family: var(--mono); font-variant-numeric: tabular-nums; direction: ltr; }
+.readout .tc { background: var(--well); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 15px; }
+.readout .tc b { color: var(--tally); font-weight: 500; }
+.tally { width: 10px; height: 10px; border-radius: 50%; background: #3a3e48; }
+.tally.on { background: var(--cut); box-shadow: 0 0 10px var(--cut); }
+.tally.prev { background: var(--tally); box-shadow: 0 0 10px var(--tally); }
+
+.studio { display: grid; grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); grid-template-areas: "rack stage"; gap: 24px; align-items: start; }
+.rack { grid-area: rack; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.stage { grid-area: stage; position: sticky; top: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+@media (max-width: 880px) {
+  .studio { grid-template-columns: minmax(0, 1fr); grid-template-areas: "stage" "rack"; }
+  .stage { position: static; }
+}
+
+/* control rack */
+.unit { background: var(--rack); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.unit h2 { margin: 0; display: flex; align-items: baseline; gap: 10px; font-family: var(--display); font-weight: 500; font-size: 18px; }
+.unit h2 .n { font-family: var(--mono); font-size: 12px; color: var(--tally); border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; }
+.unit .hint { margin: 0; color: var(--muted); font-size: 13px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field > span, .lbl { font-size: 13px; color: var(--muted); }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.row > .field { flex: 1 1 140px; min-width: 0; }
+input[type=text], select { background: var(--well); border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; width: 100%; }
+input[type=range] { width: 100%; accent-color: var(--tally); }
+.val { font-family: var(--mono); font-size: 12px; color: var(--fg); font-variant-numeric: tabular-nums; }
+.split { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.chip span { display: inline-block; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--well); font-size: 13px; cursor: pointer; }
+.chip input:checked + span { background: var(--tally); border-color: var(--tally); color: var(--tally-ink); font-weight: 600; }
+.chip input:focus-visible + span { outline: 2px solid var(--tally); outline-offset: 2px; }
+.swatches { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.sw { width: 30px; height: 30px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; }
+.sw[aria-pressed=true] { border-color: var(--fg); box-shadow: 0 0 0 2px var(--ink) inset; }
+input[type=color] { width: 34px; height: 30px; border: 1px solid var(--line); border-radius: 8px; background: var(--well); padding: 2px; }
+
+.toggle { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 14px; cursor: pointer; }
+.toggle input { appearance: none; width: 40px; height: 22px; border-radius: 999px; background: #3a3e48; position: relative; cursor: pointer; flex: none; transition: background .15s; }
+.toggle input::after { content: ""; position: absolute; top: 3px; inset-inline-start: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--fg); transition: inset-inline-start .15s; }
+.toggle input:checked { background: var(--tally); }
+.toggle input:checked::after { inset-inline-start: 21px; background: var(--tally-ink); }
+
+.drop { border: 1.5px dashed var(--line); border-radius: var(--r); padding: 18px; text-align: center; background: var(--well); cursor: pointer; display: block; }
+.drop:hover, .drop.over { border-color: var(--tally); }
+.drop b { display: block; font-size: 15px; }
+.drop small { color: var(--muted); }
+.drop input { display: none; }
+.meta { font-family: var(--mono); font-size: 12px; color: var(--muted); direction: ltr; text-align: right; overflow-wrap: anywhere; }
+
+.btn { border: 1px solid var(--line); background: var(--well); border-radius: 8px; padding: 9px 14px; cursor: pointer; font-weight: 600; font-size: 14px; }
+.btn:hover:not(:disabled) { border-color: var(--muted); }
+.btn.go { background: var(--tally); border-color: var(--tally); color: var(--tally-ink); }
+.btn.go:hover:not(:disabled) { filter: brightness(1.08); }
+.btn.stop { background: var(--cut); border-color: var(--cut); color: #fff; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.wide { width: 100%; padding: 12px; font-size: 15px; }
+
+.stats { display: flex; gap: 8px; flex-wrap: wrap; }
+.stat { flex: 1 1 90px; background: var(--well); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+.stat b { display: block; font-family: var(--mono); font-weight: 500; font-size: 17px; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 12px; color: var(--muted); }
+
+/* program monitor */
+.monitor { position: relative; background: #000; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); display: grid; place-items: center; }
+.monitor canvas { display: block; width: 100%; height: auto; max-height: 70vh; object-fit: contain; }
+.monitor.portrait canvas { width: auto; height: min(70vh, 640px); max-width: 100%; }
+.monitor .tag { position: absolute; top: 10px; inset-inline-end: 10px; font-family: var(--mono); font-size: 11px; letter-spacing: .08em; background: rgba(0,0,0,.6); padding: 3px 8px; border-radius: 5px; direction: ltr; }
+.transport { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.transport .grow { flex: 1; }
+
+.program { display: flex; height: 28px; border-radius: 6px; overflow: hidden; background: var(--well); border: 1px solid var(--line); position: relative; direction: ltr; }
+.program div { height: 100%; display: grid; place-items: center; font-size: 11px; white-space: nowrap; overflow: hidden; border-inline-end: 1px solid var(--ink); }
+.program .p-intro, .program .p-outro { background: var(--tally); color: var(--tally-ink); font-weight: 600; }
+.program .p-clip { background: #3b4252; }
+.program .p-clip.alt { background: #4a5266; }
+.program .head { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--fg); left: 0; border: 0; pointer-events: none; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-inline-end: 5px; vertical-align: -1px; }
+.wavebox { background: var(--well); border: 1px solid var(--line); border-radius: 8px; position: relative; }
+#wave { display: block; width: 100%; height: 96px; cursor: crosshair; }
+.wavebox .empty { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: 13px; pointer-events: none; text-align: center; padding-inline: 16px; }
+
+.progress { height: 8px; background: var(--well); border-radius: 999px; overflow: hidden; border: 1px solid var(--line); }
+.progress i { display: block; height: 100%; width: 0; background: var(--cut); transition: width .2s linear; }
+.result video { width: 100%; border-radius: 8px; background: #000; max-height: 50vh; }
+.toast { position: fixed; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--fg); color: var(--ink); padding: 10px 16px; border-radius: 8px; font-weight: 600; z-index: 20; max-width: calc(100% - 32px); }
+.hidden-media { position: fixed; width: 2px; height: 2px; opacity: 0; pointer-events: none; bottom: 0; left: 0; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap" dir="rtl">
+  <header class="bar">
+    <div class="mark" aria-hidden="true">RA</div>
+    <div class="brand">
+      <h1>استوديو RA للمونتاج</h1>
+      <p>ارفع مقطعك، يقص السكوت، يركّب الإنترو والخاتمة، ويطلع لك فيديو جاهز لليوتيوب</p>
+    </div>
+    <div class="readout" aria-live="off">
+      <span class="tally" id="tally" title="حالة التشغيل"></span>
+      <span class="tc"><b id="tcNow">00:00:00:00</b> / <span id="tcTotal">00:00:04:00</span></span>
+    </div>
+  </header>
+
+  <div class="studio">
+    <section class="stage" aria-label="شاشة البرنامج">
+      <div class="monitor" id="monitor">
+        <canvas id="stage" width="1280" height="720"></canvas>
+        <span class="tag" id="monTag">PGM · 1280×720 · 30fps</span>
+      </div>
+      <div class="transport">
+        <button class="btn go" id="btnPlay" type="button">▶ معاينة الفيديو كامل</button>
+        <button class="btn" id="btnIntro" type="button">شغّل الإنترو</button>
+        <button class="btn stop" id="btnStop" type="button" hidden>■ وقف</button>
+        <span class="grow"></span>
+        <span class="lbl" id="phase">الإنترو يشتغل كمعاينة</span>
+      </div>
+      <div class="program" id="program" aria-label="ترتيب الفيديو النهائي"></div>
+      <div class="wavebox">
+        <canvas id="wave" aria-label="موجة الصوت: اضغط لمعاينة لقطة"></canvas>
+        <div class="empty" id="waveEmpty">موجة صوت المقطع تطلع هنا بعد ما ترفعه، والأجزاء الساكتة تنعلّم بالأحمر</div>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--keep)"></i>يبقى</span>
+        <span><i style="background:var(--cut)"></i>سكوت ينقص</span>
+        <span><i style="background:#3a3e48"></i>خارج القص</span>
+        <span>اضغط على الموجة تشوف اللقطة</span>
+      </div>
+    </section>
+
+    <div class="rack">
+      <section class="unit" aria-labelledby="h1s">
+        <h2 id="h1s"><span class="n">1</span>المقطع</h2>
+        <label class="drop" id="drop">
+          <input type="file" id="fileVideo" accept="video/*">
+          <b>اختر مقطعك أو اسحبه هنا</b>
+          <small>MP4 أو MOV أو WebM من جوالك أو الكمبيوتر. الملف ما يطلع من جهازك</small>
+        </label>
+        <div class="meta" id="vidMeta" hidden></div>
+      </section>
+
+      <section class="unit" aria-labelledby="h2s">
+        <h2 id="h2s"><span class="n">2</span>القص التلقائي</h2>
+        <label class="toggle" for="silOn">قص السكوت والوقفات تلقائياً<input type="checkbox" id="silOn" checked></label>
+        <div class="field">
+          <div class="split"><span class="lbl">حد الصوت اللي يُعتبر سكوت</span><span class="val" id="thrV">-38 dB</span></div>
+          <input type="range" id="thr" min="-60" max="-20" step="1" value="-38" dir="ltr">
+        </div>
+        <div class="field">
+          <div class="split"><span class="lbl">أقل وقفة تنقص</span><span class="val" id="gapV">0.6 ث</span></div>
+          <input type="range" id="gap" min="0.3" max="2" step="0.1" value="0.6" dir="ltr">
+        </div>
+        <div class="field">
+          <div class="split"><span class="lbl">بداية المقطع</span><span class="val" id="tsV">00:00</span></div>
+          <input type="range" id="ts" min="0" max="1" step="0.1" value="0" dir="ltr" disabled>
+        </div>
+        <div class="field">
+          <div class="split"><span class="lbl">نهاية المقطع</span><span class="val" id="teV">00:00</span></div>
+          <input type="range" id="te" min="0" max="1" step="0.1" value="1" dir="ltr" disabled>
+        </div>
+        <div class="stats">
+          <div class="stat"><b id="stCuts">0</b><span>قصّة</span></div>
+          <div class="stat"><b id="stSaved">0.0ث</b><span>سكوت انشال</span></div>
+          <div class="stat"><b id="stFinal">0:04</b><span>طول الفيديو</span></div>
+        </div>
+      </section>
+
+      <section class="unit" aria-labelledby="h3s">
+        <h2 id="h3s"><span class="n">3</span>الإنترو</h2>
+        <div class="row">
+          <label class="field"><span>اسم القناة</span><input type="text" id="chName" value="RA TV" maxlength="28"></label>
+          <label class="field"><span>السطر الثاني</span><input type="text" id="chTag" value="كل جديد أول بأول" maxlength="40"></label>
+        </div>
+        <div class="field">
+          <span class="lbl">ستايل الحركة</span>
+          <div class="chips" role="radiogroup" aria-label="ستايل الإنترو">
+            <label class="chip"><input type="radio" name="style" value="signal" checked><span>إشارة بث</span></label>
+            <label class="chip"><input type="radio" name="style" value="flare"><span>وهج</span></label>
+            <label class="chip"><input type="radio" name="style" value="slices"><span>شرائح</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="lbl">لون القناة</span>
+          <div class="swatches" id="swatches"></div>
+        </div>
+        <div class="row">
+          <label class="field"><span>المدة</span>
+            <select id="introDur"><option value="3">3 ثواني</option><option value="4" selected>4 ثواني</option><option value="5">5 ثواني</option></select>
+          </label>
+          <label class="field"><span>شعار (اختياري)</span><input type="file" id="fileLogo" accept="image/*" style="font-size:12px;max-width:100%"></label>
+        </div>
+        <label class="toggle" for="sfxOn">مؤثر صوتي للإنترو<input type="checkbox" id="sfxOn" checked></label>
+      </section>
+
+      <section class="unit" aria-labelledby="h4s">
+        <h2 id="h4s"><span class="n">4</span>شكل الفيديو</h2>
+        <div class="field">
+          <span class="lbl">المقاس</span>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="aspect" value="16:9" checked><span>يوتيوب 16:9</span></label>
+            <label class="chip"><input type="radio" name="aspect" value="9:16"><span>شورتس 9:16</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="lbl">الألوان</span>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="look" value="natural"><span>طبيعي</span></label>
+            <label class="chip"><input type="radio" name="look" value="vivid" checked><span>حيوي</span></label>
+            <label class="chip"><input type="radio" name="look" value="cinema"><span>سينمائي</span></label>
+            <label class="chip"><input type="radio" name="look" value="warm"><span>دافئ</span></label>
+            <label class="chip"><input type="radio" name="look" value="cool"><span>بارد</span></label>
+            <label class="chip"><input type="radio" name="look" value="mono"><span>أبيض وأسود</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="lbl">السرعة</span>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="speed" value="1" checked><span>1×</span></label>
+            <label class="chip"><input type="radio" name="speed" value="1.1"><span>1.1×</span></label>
+            <label class="chip"><input type="radio" name="speed" value="1.25"><span>1.25×</span></label>
+            <label class="chip"><input type="radio" name="speed" value="1.5"><span>1.5×</span></label>
+          </div>
+        </div>
+        <label class="field"><span>عنوان يطلع أول الفيديو (اختياري)</span><input type="text" id="title" placeholder="مثال: جربت أسرع جوال في 2026" maxlength="60"></label>
+        <label class="toggle" for="zoomOn">زووم خفيف بين القصّات (ستايل يوتيوبرز)<input type="checkbox" id="zoomOn" checked></label>
+        <label class="toggle" for="wmOn">اسم القناة في الزاوية<input type="checkbox" id="wmOn" checked></label>
+        <label class="toggle" for="outroOn">خاتمة «اشترك وفعّل الجرس»<input type="checkbox" id="outroOn" checked></label>
+        <div class="field">
+          <span class="lbl">موسيقى خلفية (اختياري)</span>
+          <input type="file" id="fileMusic" accept="audio/*" style="font-size:12px;max-width:100%">
+          <div class="split"><span class="lbl">صوت الموسيقى</span><span class="val" id="mvV">12%</span></div>
+          <input type="range" id="mv" min="0" max="0.6" step="0.01" value="0.12" dir="ltr">
+        </div>
+      </section>
+
+      <section class="unit" aria-labelledby="h5s">
+        <h2 id="h5s"><span class="n">5</span>التصدير</h2>
+        <p class="hint">المونتاج يصير داخل المتصفح وبالوقت الحقيقي: فيديو طوله 5 دقايق ياخذ 5 دقايق. خلّ الصفحة مفتوحة وقدّامك لين يخلص.</p>
+        <button class="btn go wide" id="btnExport" type="button">منتج الفيديو وصدّره</button>
+        <button class="btn wide" id="btnExportIntro" type="button">صدّر الإنترو لحاله</button>
+        <div id="expBox" hidden>
+          <div class="split"><span class="lbl" id="expLbl">جاري المونتاج…</span><span class="val" id="expPct">0%</span></div>
+          <div class="progress"><i id="expBar"></i></div>
+        </div>
+        <div class="result" id="result" hidden>
+          <video id="outVid" controls playsinline></video>
+          <div class="meta" id="outMeta"></div>
+          <button class="btn go wide" id="btnSave" type="button">احفظ الفيديو</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<video id="src" class="hidden-media" playsinline preload="auto"></video>
+<audio id="music" class="hidden-media" loop preload="auto"></audio>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const cv = $('#stage'), ctx = cv.getContext('2d');
+const video = $('#src'), musicEl = $('#music');
+const wave = $('#wave'), wctx = wave.getContext('2d');
+const FPS = 30, OUTRO = 4;
+const COLORS = ['#f2b33d', '#e5463b', '#2ec4b6', '#8b7cf6', '#4ade80', '#f472b6', '#f5f5f0'];
+
+const S = {
+  name: 'RA TV', tag: 'كل جديد أول بأول', style: 'signal', color: COLORS[0], dur: 4, sfx: true, logo: null,
+  aspect: '16:9', look: 'vivid', speed: 1, title: '', zoom: true, wm: true, outro: true, musicVol: .12, music: false,
+  sil: true, thr: -38, gap: .6,
+  file: null, dur0: 0, vw: 0, vh: 0, win: .05, db: null, amp: null, ts: 0, te: 0, segs: [],
+};
+try { Object.assign(S, JSON.parse(localStorage.getItem('ra-montage') || '{}')); } catch (e) {}
+S.logo = null; S.file = null; S.music = false;
+function persist() {
+  const keep = ['name','tag','style','color','dur','sfx','aspect','look','speed','zoom','wm','outro','musicVol','sil','thr','gap'];
+  try { localStorage.setItem('ra-montage', JSON.stringify(Object.fromEntries(keep.map(k => [k, S[k]])))); } catch (e) {}
+}
+
+/* ---------- helpers ---------- */
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const seg = (t, a, b) => clamp((t - a) / (b - a), 0, 1);
+const E = {
+  out: t => 1 - Math.pow(1 - t, 3),
+  io: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  back: t => { const c1 = 1.70158, c3 = c1 + 1; return t <= 0 ? 0 : 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); },
+};
+const rnd = i => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+const rgb = h => { h = h.replace('#', ''); if (h.length === 3) h = [...h].map(c => c + c).join(''); const n = parseInt(h, 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+const rgba = (h, a) => { const [r, g, b] = rgb(h); return `rgba(${r},${g},${b},${a})`; };
+const shade = (h, k) => { const [r, g, b] = rgb(h).map(v => clamp(Math.round(v * (1 + k)), 0, 255)); return `rgb(${r},${g},${b})`; };
+const inkOn = h => { const [r, g, b] = rgb(h); return (.2126 * r + .7152 * g + .0722 * b) > 150 ? '#0b0c10' : '#ffffff'; };
+const pad = n => String(n).padStart(2, '0');
+const tc = s => { s = Math.max(0, s); const f = Math.floor((s % 1) * FPS); s = Math.floor(s); return `${pad(Math.floor(s / 3600))}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}:${pad(f)}`; };
+const mmss = s => { s = Math.max(0, Math.round(s)); return `${Math.floor(s / 60)}:${pad(s % 60)}`; };
+const DISPLAY = '"Reem Kufi", "IBM Plex Sans Arabic", sans-serif', BODY = '"IBM Plex Sans Arabic", sans-serif';
+function fit(c, text, maxW, size, weight, fam) {
+  let s = size;
+  for (; s > 14; s -= 4) { c.font = `${weight} ${s}px ${fam}`; if (c.measureText(text).width <= maxW) break; }
+  return s;
+}
+let toastT;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 3200); }
+
+/* ---------- drawing: intro ---------- */
+function drawLogo(c, img, x, y, r, A) {
+  if (r <= 0) return;
+  c.save(); c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.closePath(); c.clip();
+  const s = Math.max(2 * r / img.width, 2 * r / img.height);
+  c.drawImage(img, x - img.width * s / 2, y - img.height * s / 2, img.width * s, img.height * s);
+  c.restore();
+  c.strokeStyle = A; c.lineWidth = Math.max(2, r * .07); c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.stroke();
+}
+
+function drawIntro(c, W, H, tReal, o) {
+  const t = tReal * 4 / o.dur; // all timings authored for a 4 s intro
+  const U = Math.min(W, H) / 720, cx = W / 2, cy = H / 2, A = o.color;
+  c.save();
+  c.setTransform(1, 0, 0, 1, 0, 0); c.filter = 'none'; c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
+  c.direction = 'rtl'; c.textAlign = 'center'; c.textBaseline = 'middle';
+  const size = fit(c, o.name || ' ', W * .82, 150 * U, 700, DISPLAY);
+  ({ signal: introSignal, flare: introFlare, slices: introSlices }[o.style] || introSignal)(c, W, H, t, o, U, cx, cy, A, size);
+  const f = seg(t, 3.6, 4);
+  if (f > 0) { c.globalAlpha = f; c.fillStyle = '#000'; c.fillRect(0, 0, W, H); }
+  c.restore();
+}
+
+function introSignal(c, W, H, t, o, U, cx, cy, A, size) {
+  c.fillStyle = '#07080b'; c.fillRect(0, 0, W, H);
+  const g = c.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * .6);
+  g.addColorStop(0, rgba(A, .14 * seg(t, .3, 1))); g.addColorStop(1, 'rgba(0,0,0,0)');
+  c.fillStyle = g; c.fillRect(0, 0, W, H);
+  const st = 1 - seg(t, 0, .75);
+  if (st > 0) {
+    const fr = Math.floor(t * 30), n = Math.floor(70 * st);
+    for (let i = 0; i < n; i++) {
+      c.fillStyle = `rgba(255,255,255,${(.04 + .3 * rnd(i * 13 + fr)) * st})`;
+      c.fillRect(0, rnd(fr * 97 + i) * H, W, (2 + rnd(fr * 31 + i * 7) * 22) * U);
+    }
+  }
+  const lt = seg(t, .3, .7), topY = cy - size * .5 - 70 * U;
+  if (o.logo) drawLogo(c, o.logo, cx, topY - 20 * U, 58 * U * E.back(lt), A);
+  else if (lt > 0) {
+    const r = 11 * U * E.back(lt), pulse = .6 + .4 * Math.sin(t * 6);
+    c.shadowColor = A; c.shadowBlur = 34 * U * pulse; c.fillStyle = A;
+    c.beginPath(); c.arc(cx, topY, r, 0, Math.PI * 2); c.fill(); c.shadowBlur = 0;
+    c.font = `500 ${18 * U}px "IBM Plex Mono", monospace`; c.fillStyle = rgba('#ffffff', .55 * lt);
+    c.direction = 'ltr'; c.fillText('ON AIR', cx, topY + 30 * U); c.direction = 'rtl';
+  }
+  c.font = `700 ${size}px ${DISPLAY}`;
+  if (t > .45) {
+    const gl = 1 - E.out(seg(t, .45, 1.3));
+    const jit = gl > 0 ? (rnd(Math.floor(t * 30)) - .5) * 40 * U * gl : 0;
+    c.globalCompositeOperation = 'lighter';
+    c.fillStyle = 'rgba(255,40,70,.85)'; c.fillText(o.name, cx + 18 * U * gl + jit, cy);
+    c.fillStyle = 'rgba(40,220,255,.85)'; c.fillText(o.name, cx - 18 * U * gl - jit, cy);
+    c.globalCompositeOperation = 'source-over';
+    c.fillStyle = '#fff'; c.fillText(o.name, cx + jit * .3, cy);
+    if (gl > .15) {
+      for (let i = 0; i < 4; i++) {
+        const y = (cy - size * .6) + rnd(Math.floor(t * 30) * 7 + i) * size * 1.2, h = (6 + rnd(i + t) * 20) * U;
+        c.drawImage(c.canvas, 0, y, W, h, (rnd(i * 3 + Math.floor(t * 30)) - .5) * 60 * U * gl, y, W, h);
+      }
+    }
+  }
+  const b = E.out(seg(t, 1.0, 1.6));
+  c.fillStyle = A; c.fillRect(cx - 140 * U * b, cy + size * .62, 280 * U * b, 6 * U);
+  const tp = seg(t, 1.3, 2.1);
+  if (tp > 0) {
+    c.font = `500 ${fit(c, o.tag, W * .8, 34 * U, 500, BODY)}px ${BODY}`;
+    c.fillStyle = '#c9ccd3'; c.fillText(o.tag.slice(0, Math.round(o.tag.length * tp)), cx, cy + size * .62 + 52 * U);
+  }
+  c.fillStyle = 'rgba(0,0,0,.2)';
+  for (let y = 0; y < H; y += 4 * U) c.fillRect(0, y, W, 1.5 * U);
+}
+
+function introFlare(c, W, H, t, o, U, cx, cy, A, size) {
+  c.fillStyle = '#050507'; c.fillRect(0, 0, W, H);
+  const g = c.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * .75);
+  g.addColorStop(0, rgba(A, .3 * seg(t, 0, .9))); g.addColorStop(.5, rgba(A, .06)); g.addColorStop(1, 'rgba(0,0,0,0)');
+  c.fillStyle = g; c.fillRect(0, 0, W, H);
+  const pa = seg(t, 0, .5);
+  for (let i = 0; i < 70; i++) {
+    const sp = 20 + rnd(i + 1) * 60, px = rnd(i) * W;
+    const py = H - ((rnd(i + 2) * H + t * sp * U * 2) % (H + 40));
+    c.fillStyle = rgba(A, (.12 + .5 * rnd(i + 4)) * pa);
+    c.beginPath(); c.arc(px, py, (1 + rnd(i + 3) * 3) * U, 0, Math.PI * 2); c.fill();
+  }
+  for (let k = 0; k < 3; k++) {
+    const p = seg(t, .15 + k * .15, 1.7 + k * .15);
+    if (p > 0 && p < 1) {
+      c.strokeStyle = rgba(A, (1 - p) * .7); c.lineWidth = (6 - 2 * k) * U;
+      c.beginPath(); c.arc(cx, cy, E.out(p) * Math.max(W, H) * .6, 0, Math.PI * 2); c.stroke();
+    }
+  }
+  const ps = seg(t, .45, 1.35);
+  if (ps > 0 && ps < 1) {
+    const x = W * 1.15 - E.io(ps) * W * 1.3;
+    c.globalCompositeOperation = 'lighter';
+    const lg = c.createLinearGradient(x - W * .3, 0, x + W * .3, 0);
+    lg.addColorStop(0, 'rgba(255,255,255,0)'); lg.addColorStop(.5, 'rgba(255,255,255,.95)'); lg.addColorStop(1, 'rgba(255,255,255,0)');
+    c.fillStyle = lg; c.fillRect(x - W * .3, cy - 2 * U, W * .6, 4 * U);
+    const rg = c.createRadialGradient(x, cy, 0, x, cy, 140 * U);
+    rg.addColorStop(0, rgba(A, .55)); rg.addColorStop(1, rgba(A, 0));
+    c.fillStyle = rg; c.fillRect(x - 140 * U, cy - 140 * U, 280 * U, 280 * U);
+    c.globalCompositeOperation = 'source-over';
+  }
+  const s = seg(t, .6, 1.25);
+  if (s > 0) {
+    const e = E.out(s);
+    if (o.logo) drawLogo(c, o.logo, cx, cy - size * .5 - 80 * U, 56 * U * e, A);
+    c.save(); c.translate(cx, cy); c.scale(1.25 - .25 * e, 1.25 - .25 * e);
+    c.globalAlpha = e; if (s < 1) c.filter = `blur(${(1 - e) * 14 * U}px)`;
+    c.shadowColor = A; c.shadowBlur = 40 * U * (.5 + .5 * (1 - e));
+    c.font = `700 ${size}px ${DISPLAY}`; c.fillStyle = '#fff'; c.fillText(o.name, 0, 0);
+    c.restore();
+  }
+  const a = seg(t, 1.25, 1.8);
+  if (a > 0) {
+    const y = cy + size * .62 + 36 * U + (1 - E.out(a)) * 16 * U;
+    const fs = fit(c, o.tag, W * .7, 32 * U, 500, BODY);
+    c.font = `500 ${fs}px ${BODY}`; c.globalAlpha = a; c.fillStyle = '#d9dbe0'; c.fillText(o.tag, cx, y);
+    const tw = c.measureText(o.tag).width / 2 + 20 * U;
+    c.fillStyle = A; c.fillRect(cx + tw, y - 1.5 * U, 60 * U * a, 3 * U); c.fillRect(cx - tw - 60 * U * a, y - 1.5 * U, 60 * U * a, 3 * U);
+    c.globalAlpha = 1;
+  }
+}
+
+function introSlices(c, W, H, t, o, U, cx, cy, A, size) {
+  const ink = inkOn(A);
+  c.fillStyle = '#0b0c10'; c.fillRect(0, 0, W, H);
+  const pw = E.io(seg(t, .35, 1.0)) * W * 1.6;
+  if (pw > 0) {
+    c.fillStyle = A; c.beginPath();
+    c.moveTo(W, 0); c.lineTo(W - pw, 0); c.lineTo(W - pw + H * .27, H); c.lineTo(W, H); c.closePath(); c.fill();
+  }
+  const cols = ['#ffffff', A, shade(A, -.4), '#ffffff', A, '#0b0c10'];
+  cols.forEach((col, i) => {
+    const p = seg(t, .05 + i * .07, .85 + i * .07);
+    if (p <= 0 || p >= 1) return;
+    const x = W * 1.3 - E.io(p) * W * 1.9, bw = W * (.05 + .06 * rnd(i + 5));
+    c.save(); c.translate(x, H / 2); c.transform(1, 0, -.3, 1, 0, 0);
+    c.fillStyle = col; c.fillRect(-bw / 2, -H, bw, 2 * H); c.restore();
+  });
+  const r = E.out(seg(t, .95, 1.5));
+  if (r > 0) {
+    if (o.logo) drawLogo(c, o.logo, cx, cy - size * .5 - 70 * U, 52 * U * r, ink);
+    c.save(); c.beginPath(); c.rect(W - W * r, 0, W * r, H); c.clip();
+    c.font = `700 ${size}px ${DISPLAY}`; c.fillStyle = ink; c.fillText(o.name, cx - (1 - r) * 40 * U, cy - 10 * U);
+    c.restore();
+  }
+  const a = seg(t, 1.4, 1.9);
+  if (a > 0) {
+    const fs = fit(c, o.tag, W * .7, 32 * U, 600, BODY);
+    c.font = `600 ${fs}px ${BODY}`;
+    const tw = c.measureText(o.tag).width + 40 * U, y = cy + size * .58 + 24 * U;
+    c.globalAlpha = a; c.fillStyle = ink; c.fillRect(cx - tw / 2, y - fs * .8, tw, fs * 1.6);
+    c.fillStyle = A; c.fillText(o.tag, cx, y + 2 * U); c.globalAlpha = 1;
+  }
+}
+
+/* ---------- drawing: outro ---------- */
+function drawOutro(c, W, H, t, o) {
+  const U = Math.min(W, H) / 720, cx = W / 2, cy = H / 2, A = o.color;
+  c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.filter = 'none'; c.globalAlpha = 1;
+  c.direction = 'rtl'; c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.fillStyle = '#0b0c10'; c.fillRect(0, 0, W, H);
+  const g = c.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * .7);
+  g.addColorStop(0, rgba(A, .2)); g.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(0, 0, W, H);
+  const fade = seg(t, 0, .4);
+  c.globalAlpha = E.out(seg(t, .1, .6));
+  c.font = `600 ${38 * U}px ${BODY}`; c.fillStyle = '#c9ccd3'; c.fillText('شكراً للمشاهدة', cx, cy - 170 * U);
+  c.globalAlpha = seg(t, .3, .8);
+  const size = fit(c, o.name, W * .8, 104 * U, 700, DISPLAY);
+  c.font = `700 ${size}px ${DISPLAY}`; c.fillStyle = '#fff'; c.fillText(o.name, cx, cy - 60 * U);
+  c.globalAlpha = 1;
+  const pop = E.back(seg(t, .7, 1.15)), done = t > 2.0, press = t > 1.85 && t < 2.05 ? .92 : 1;
+  const pwid = 340 * U, ph = 86 * U, py = cy + 90 * U, bellX = cx - pwid / 2 - 70 * U;
+  if (pop > 0) {
+    c.save(); c.translate(cx + 40 * U, py); c.scale(pop * press, pop * press);
+    c.fillStyle = done ? '#3a3d45' : '#e53935';
+    c.beginPath(); c.roundRect ? c.roundRect(-pwid / 2, -ph / 2, pwid, ph, ph / 2) : c.rect(-pwid / 2, -ph / 2, pwid, ph); c.fill();
+    c.font = `700 ${36 * U}px ${BODY}`; c.fillStyle = '#fff'; c.fillText(done ? 'تم الاشتراك ✓' : 'اشترك', 0, 2 * U);
+    c.restore();
+  }
+  const bp = E.back(seg(t, 2.1, 2.4));
+  if (bp > 0) {
+    const sh = Math.sin(t * 40) * .35 * (1 - seg(t, 2.3, 3.1)) * (t > 2.3 ? 1 : 0), s = 30 * U * bp;
+    c.save(); c.translate(bellX + 40 * U, py); c.rotate(sh); c.fillStyle = A;
+    c.beginPath(); c.moveTo(-s * .9, s * .55); c.quadraticCurveTo(-s * .72, s * .35, -s * .7, -s * .1);
+    c.quadraticCurveTo(-s * .65, -s * .88, 0, -s * .9); c.quadraticCurveTo(s * .65, -s * .88, s * .7, -s * .1);
+    c.quadraticCurveTo(s * .72, s * .35, s * .9, s * .55); c.closePath(); c.fill();
+    c.beginPath(); c.arc(0, s * .74, s * .18, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(0, -s * .98, s * .12, 0, Math.PI * 2); c.fill();
+    c.restore();
+  }
+  const cu = seg(t, 1.1, 1.85);
+  if (cu > 0 && t < 2.5) {
+    const x0 = W * .85, y0 = H * .95, x1 = cx + 60 * U, y1 = py + 14 * U, e = E.io(cu);
+    const x = x0 + (x1 - x0) * e, y = y0 + (y1 - y0) * e, k = 1.2 * U;
+    c.save(); c.translate(x, y); c.globalAlpha = 1 - seg(t, 2.2, 2.5);
+    c.beginPath(); c.moveTo(0, 0); c.lineTo(0, 34 * k); c.lineTo(9 * k, 26 * k); c.lineTo(15 * k, 39 * k); c.lineTo(21 * k, 36 * k); c.lineTo(15 * k, 24 * k); c.lineTo(26 * k, 24 * k); c.closePath();
+    c.fillStyle = '#fff'; c.fill(); c.lineWidth = 2 * U; c.strokeStyle = '#000'; c.stroke(); c.restore();
+  }
+  const cap = seg(t, 2.3, 2.8);
+  if (cap > 0) { c.globalAlpha = cap; c.font = `500 ${28 * U}px ${BODY}`; c.fillStyle = '#c9ccd3'; c.fillText('فعّل الجرس عشان يوصلك كل جديد', cx, py + 100 * U); c.globalAlpha = 1; }
+  if (fade < 1) { c.globalAlpha = 1 - fade; c.fillStyle = '#000'; c.fillRect(0, 0, W, H); c.globalAlpha = 1; }
+  const f = seg(t, OUTRO - .5, OUTRO);
+  if (f > 0) { c.globalAlpha = f; c.fillStyle = '#000'; c.fillRect(0, 0, W, H); }
+  c.restore();
+}
+
+/* ---------- drawing: clip ---------- */
+const LOOKS = {
+  natural: 'none',
+  vivid: 'contrast(1.08) saturate(1.35)',
+  cinema: 'contrast(1.12) saturate(0.82) sepia(0.12) brightness(0.97)',
+  warm: 'sepia(0.25) saturate(1.15) contrast(1.05)',
+  cool: 'hue-rotate(-10deg) saturate(1.05) contrast(1.06) brightness(1.03)',
+  mono: 'grayscale(1) contrast(1.18)',
+};
+function drawClip(c, W, H, o) {
+  const vw = video.videoWidth, vh = video.videoHeight;
+  const U = Math.min(W, H) / 720, A = o.color, look = LOOKS[o.look] || 'none';
+  c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
+  c.fillStyle = '#000'; c.fillRect(0, 0, W, H);
+  if (vw && vh) {
+    const z = o.zoom && o.segIdx % 2 === 1 ? 1.08 : 1;
+    const cover = Math.max(W / vw, H / vh), contain = Math.min(W / vw, H / vh);
+    const sameShape = Math.abs(vw / vh - W / H) < .08;
+    if (!sameShape) {
+      c.filter = `blur(${28 * U}px) brightness(0.5) ${look === 'none' ? '' : look}`;
+      const s = cover * 1.15; c.drawImage(video, (W - vw * s) / 2, (H - vh * s) / 2, vw * s, vh * s);
+    }
+    c.filter = look;
+    const s = (sameShape ? cover : contain) * z;
+    c.drawImage(video, (W - vw * s) / 2, (H - vh * s) / 2, vw * s, vh * s);
+    c.filter = 'none';
+  }
+  if (o.look === 'cinema') {
+    const vg = c.createRadialGradient(W / 2, H / 2, Math.min(W, H) * .35, W / 2, H / 2, Math.max(W, H) * .75);
+    vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.55)');
+    c.fillStyle = vg; c.fillRect(0, 0, W, H);
+    if (W > H) { const bar = (H - W / 2.39) / 2; c.fillStyle = '#000'; c.fillRect(0, 0, W, bar); c.fillRect(0, H - bar, W, bar); }
+  }
+  c.direction = 'rtl'; c.textBaseline = 'middle';
+  if (o.title && o.clipT < 6) {
+    const a = E.out(seg(o.clipT, .3, .9)) * (1 - seg(o.clipT, 5.2, 5.8));
+    if (a > 0) {
+      const fs = fit(c, o.title, W * .7, 40 * U, 700, BODY);
+      c.font = `700 ${fs}px ${BODY}`;
+      const tw = c.measureText(o.title).width, bw = tw + 56 * U, bh = fs * 1.9;
+      const x = W - 40 * U - bw + (1 - a) * 80 * U, y = H - (W > H ? 120 : 260) * U;
+      c.globalAlpha = a;
+      c.fillStyle = 'rgba(10,11,15,.82)'; c.fillRect(x, y - bh / 2, bw, bh);
+      c.fillStyle = A; c.fillRect(x + bw - 8 * U, y - bh / 2, 8 * U, bh);
+      c.fillStyle = '#fff'; c.textAlign = 'right'; c.fillText(o.title, x + bw - 28 * U, y + 2 * U);
+      c.globalAlpha = 1;
+    }
+  }
+  if (o.wm) {
+    c.font = `700 ${22 * U}px ${DISPLAY}`; c.textAlign = 'left';
+    const wmY = (o.look === 'cinema' && W > H ? (H - W / 2.39) / 2 : 0) + 40 * U;
+    c.globalAlpha = .8;
+    c.fillStyle = A; c.beginPath(); c.arc(36 * U, wmY, 6 * U, 0, Math.PI * 2); c.fill();
+    c.direction = 'ltr'; c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 8 * U;
+    c.fillStyle = '#fff'; c.fillText(o.name, 52 * U, wmY + 1 * U);
+    c.globalAlpha = 1; c.shadowBlur = 0;
+  }
+  c.restore();
+}
+
+/* ---------- canvas size ---------- */
+function dims() { return S.aspect === '9:16' ? [720, 1280] : [1280, 720]; }
+function applyAspect() {
+  const [W, H] = dims();
+  if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+  $('#monitor').classList.toggle('portrait', H > W);
+  $('#monTag').textContent = `PGM · ${W}×${H} · ${FPS}fps`;
+}
+const introOpts = () => ({ name: S.name || ' ', tag: S.tag || '', style: S.style, color: S.color, dur: S.dur, logo: S.logo });
+const clipOpts = (segIdx, clipT) => ({ segIdx, clipT, look: S.look, zoom: S.zoom, title: S.title, wm: S.wm, name: S.name, color: S.color });
+
+/* ---------- audio analysis + segments ---------- */
+async function analyse(file) {
+  S.db = S.amp = null;
+  if (file.size > 600 * 1024 * 1024) { toast('الملف كبير، القص التلقائي للسكوت ما راح يشتغل عليه'); return; }
+  try {
+    const buf = await file.arrayBuffer();
+    const oac = new OfflineAudioContext(1, 1, 22050);
+    const ab = await oac.decodeAudioData(buf);
+    const ch = [...Array(ab.numberOfChannels).keys()].map(i => ab.getChannelData(i));
+    const step = Math.max(1, Math.floor(ab.sampleRate * S.win)), n = Math.ceil(ch[0].length / step);
+    const db = new Float32Array(n), amp = new Float32Array(n);
+    for (let w = 0; w < n; w++) {
+      let sum = 0, mx = 0, cnt = 0;
+      const a = w * step, b = Math.min(ch[0].length, a + step);
+      for (let i = a; i < b; i += 2) {
+        let v = 0; for (const d of ch) v += d[i]; v /= ch.length;
+        sum += v * v; cnt++; const av = Math.abs(v); if (av > mx) mx = av;
+      }
+      db[w] = 20 * Math.log10(Math.sqrt(sum / Math.max(1, cnt)) + 1e-9); amp[w] = mx;
+    }
+    S.db = db; S.amp = amp; S.win = step / ab.sampleRate;
+  } catch (e) { S.db = S.amp = null; toast('ما قدرت أقرا صوت المقطع، القص يكون يدوي'); }
+}
+
+function computeSegs() {
+  const a = S.ts, b = S.te;
+  if (!S.file || b - a < .2) { S.segs = []; return; }
+  if (!S.sil || !S.db) { S.segs = [[a, b]]; return; }
+  const W = S.win, padS = .12, i0 = Math.floor(a / W), i1 = Math.min(S.db.length, Math.ceil(b / W));
+  const cuts = [];
+  let run = -1;
+  for (let i = i0; i <= i1; i++) {
+    const quiet = i < i1 && S.db[i] < S.thr;
+    if (quiet && run < 0) run = i;
+    if (!quiet && run >= 0) {
+      const s0 = run * W, s1 = i * W;
+      if (s1 - s0 >= S.gap) cuts.push([Math.max(a, s0 + padS), Math.min(b, s1 - padS)]);
+      run = -1;
+    }
+  }
+  const segs = []; let cur = a;
+  for (const [c0, c1] of cuts) { if (c0 - cur > .15) segs.push([cur, c0]); cur = Math.max(cur, c1); }
+  if (b - cur > .15) segs.push([cur, b]);
+  S.segs = segs.length ? segs : [[a, b]];
+}
+const clipLen = () => S.segs.reduce((s, [a, b]) => s + (b - a), 0) / S.speed;
+const totalLen = () => S.dur + (S.file ? clipLen() + (S.outro ? OUTRO : 0) : 0);
+
+/* ---------- UI: program bar, waveform, stats ---------- */
+function renderProgram() {
+  const p = $('#program'); p.innerHTML = '';
+  const tot = totalLen();
+  const add = (cls, len, txt) => { const d = document.createElement('div'); d.className = cls; d.style.width = (len / tot * 100) + '%'; d.textContent = txt; p.appendChild(d); };
+  add('p-intro', S.dur, 'إنترو');
+  if (S.file) {
+    S.segs.forEach(([a, b], i) => add('p-clip' + (i % 2 ? ' alt' : ''), (b - a) / S.speed, S.segs.length < 12 ? String(i + 1) : ''));
+    if (S.outro) add('p-outro', OUTRO, 'خاتمة');
+  }
+  const h = document.createElement('i'); h.className = 'head'; h.id = 'phead'; p.appendChild(h);
+  $('#tcTotal').textContent = tc(tot);
+  const raw = S.te - S.ts, kept = S.segs.reduce((s, [a, b]) => s + (b - a), 0);
+  $('#stCuts').textContent = Math.max(0, S.segs.length - 1);
+  $('#stSaved').textContent = (S.file ? Math.max(0, raw - kept) : 0).toFixed(1) + 'ث';
+  $('#stFinal').textContent = mmss(tot);
+}
+function setHead(progT) {
+  const h = $('#phead'); if (h) h.style.left = clamp(progT / totalLen() * 100, 0, 100) + '%';
+  $('#tcNow').textContent = tc(progT);
+}
+let waveHead = null;
+function drawWave() {
+  const dpr = window.devicePixelRatio || 1, w = Math.round(wave.clientWidth * dpr), h = Math.round(wave.clientHeight * dpr);
+  if (!w) return;
+  if (wave.width !== w || wave.height !== h) { wave.width = w; wave.height = h; }
+  wctx.clearRect(0, 0, w, h);
+  $('#waveEmpty').hidden = !!S.file;
+  if (!S.file || !S.dur0) return;
+  const css = getComputedStyle(document.documentElement);
+  const keep = css.getPropertyValue('--keep').trim(), cut = css.getPropertyValue('--cut').trim();
+  const step = 3 * dpr, bw = 2 * dpr;
+  for (let x = 0; x < w; x += step) {
+    const t0 = x / w * S.dur0, t1 = (x + step) / w * S.dur0, mid = (t0 + t1) / 2;
+    let a = .25;
+    if (S.amp) { let mx = 0; for (let i = Math.floor(t0 / S.win); i <= Math.floor(t1 / S.win) && i < S.amp.length; i++) mx = Math.max(mx, S.amp[i]); a = Math.max(.03, Math.pow(Math.min(1, mx), .6)); }
+    const inTrim = mid >= S.ts && mid <= S.te, inSeg = S.segs.some(([s0, s1]) => mid >= s0 && mid <= s1);
+    wctx.fillStyle = !inTrim ? '#3a3e48' : inSeg ? keep : cut;
+    const bh = a * h * .86; wctx.fillRect(x, (h - bh) / 2, bw, bh);
+  }
+  wctx.fillStyle = '#ecebe6';
+  for (const t of [S.ts, S.te]) wctx.fillRect(Math.min(w - 2 * dpr, t / S.dur0 * w), 0, 2 * dpr, h);
+  if (waveHead != null) { wctx.fillStyle = '#ffffff'; wctx.fillRect(waveHead / S.dur0 * w, 0, 1.5 * dpr, h); }
+}
+function refresh() { computeSegs(); renderProgram(); drawWave(); persist(); }
+
+/* ---------- audio graph ---------- */
+let ac, master, dest, sfxBus, clipGain, musicGain, noiseBuf;
+function ensureAudio() {
+  if (!ac) {
+    ac = new (window.AudioContext || window.webkitAudioContext)();
+    master = ac.createGain(); master.connect(ac.destination);
+    dest = ac.createMediaStreamDestination(); master.connect(dest);
+    sfxBus = ac.createGain(); sfxBus.gain.value = .9; sfxBus.connect(master);
+    clipGain = ac.createGain(); ac.createMediaElementSource(video).connect(clipGain); clipGain.connect(master);
+    musicGain = ac.createGain(); musicGain.gain.value = 0; ac.createMediaElementSource(musicEl).connect(musicGain); musicGain.connect(master);
+    noiseBuf = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate);
+    const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  }
+  if (ac.state === 'suspended') ac.resume();
+}
+function noise(at, len, type, f0, f1, g0) {
+  const s = ac.createBufferSource(); s.buffer = noiseBuf;
+  const f = ac.createBiquadFilter(); f.type = type; f.frequency.setValueAtTime(f0, at); f.frequency.exponentialRampToValueAtTime(f1, at + len);
+  const g = ac.createGain(); g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(g0, at + len * .6); g.gain.exponentialRampToValueAtTime(0.0001, at + len);
+  s.connect(f); f.connect(g); g.connect(sfxBus); s.start(at); s.stop(at + len + .05);
+}
+function tone(at, freq, len, vol, type = 'sine', f1) {
+  const o = ac.createOscillator(); o.type = type; o.frequency.setValueAtTime(freq, at);
+  if (f1) o.frequency.exponentialRampToValueAtTime(f1, at + len * .6);
+  const g = ac.createGain(); g.gain.setValueAtTime(vol, at); g.gain.exponentialRampToValueAtTime(0.0001, at + len);
+  o.connect(g); g.connect(sfxBus); o.start(at); o.stop(at + len + .05);
+}
+function introSfx() {
+  if (!S.sfx) return;
+  const k = S.dur / 4, at = ac.currentTime + .03, hit = at + .62 * k;
+  if (S.style === 'signal') noise(at, .7 * k, 'highpass', 1800, 4000, .12);
+  noise(at + .05, .6 * k, 'bandpass', 300, 3200, .5);
+  tone(hit, 130, .9, .8, 'sine', 38);
+  noise(hit, .25, 'highpass', 2500, 6000, .25);
+  [880, 1108.7, 1318.5].forEach((f, i) => tone(hit + .08 + i * .04, f, 2.4 * k, .045, 'triangle'));
+}
+function outroSfx() {
+  const at = ac.currentTime;
+  noise(at + 1.95, .06, 'highpass', 3000, 5000, .35);
+  tone(at + 2.15, 1568, 1.3, .12); tone(at + 2.18, 2093, 1.2, .07);
+}
+
+/* ---------- playback engine ---------- */
+let mode = 'idle', run = null;
+function frames(token, cb) {
+  return new Promise(res => {
+    const f = now => { if (token.stop) return res(false); if (cb(now) === false) return res(true); requestAnimationFrame(f); };
+    requestAnimationFrame(f);
+  });
+}
+const once = (el, ev) => new Promise(r => el.addEventListener(ev, r, { once: true }));
+async function seekTo(t) { if (Math.abs(video.currentTime - t) < .01) return; video.currentTime = t; await once(video, 'seeked'); }
+
+function pickMime() {
+  const c = ['video/mp4;codecs=avc1.640028,mp4a.40.2', 'video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
+  return window.MediaRecorder ? (c.find(m => MediaRecorder.isTypeSupported(m)) || '') : null;
+}
+
+async function playProgram({ record = false, introOnly = false } = {}) {
+  if (run) return null;
+  ensureAudio(); applyAspect();
+  const token = { stop: false }; run = token; mode = 'program';
+  setBusy(true, record);
+  const [W, H] = dims();
+  let rec = null, chunks = [], mime = '';
+  if (record) {
+    mime = pickMime();
+    if (mime === null || !cv.captureStream) { toast('متصفحك ما يدعم التصدير. جرّب Chrome أو Edge على الكمبيوتر'); finish(); return null; }
+    const vs = cv.captureStream(FPS);
+    const stream = new MediaStream([...vs.getVideoTracks(), ...dest.stream.getAudioTracks()]);
+    rec = new MediaRecorder(stream, { ...(mime ? { mimeType: mime } : {}), videoBitsPerSecond: H > 720 || W > 720 ? 8e6 : 6e6, audioBitsPerSecond: 160000 });
+    rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+    rec.start(1000);
+  }
+  const total = introOnly ? S.dur : totalLen();
+  const report = p => { setHead(p); if (record) progress(p / total); };
+  const useMusic = S.music && !introOnly;
+  if (useMusic) { musicEl.currentTime = 0; musicGain.gain.setValueAtTime(0, ac.currentTime); musicGain.gain.linearRampToValueAtTime(S.musicVol, ac.currentTime + 1); musicEl.play().catch(() => {}); }
+
+  // intro
+  phase('الإنترو');
+  introSfx();
+  let t0 = performance.now();
+  const io = introOpts();
+  await frames(token, now => { const t = (now - t0) / 1000; drawIntro(ctx, W, H, Math.min(t, S.dur), io); report(Math.min(t, S.dur)); return t < S.dur; });
+
+  // clip segments
+  if (!introOnly && S.file && !token.stop) {
+    video.playbackRate = S.speed; clipGain.gain.value = 1;
+    let acc = 0;
+    for (let i = 0; i < S.segs.length && !token.stop; i++) {
+      const [a, b] = S.segs[i];
+      phase(`المقطع · قصّة ${i + 1} من ${S.segs.length}`);
+      if (rec && rec.state === 'recording') rec.pause();
+      if (useMusic) musicEl.pause();
+      await seekTo(a);
+      drawClip(ctx, W, H, clipOpts(i, acc));
+      if (rec && rec.state === 'paused') rec.resume();
+      if (useMusic) musicEl.play().catch(() => {});
+      video.playbackRate = S.speed;
+      try { await video.play(); } catch (e) { toast('ما قدرت أشغّل المقطع'); break; }
+      await frames(token, () => {
+        const ct = video.currentTime, clipT = acc + (ct - a) / S.speed;
+        drawClip(ctx, W, H, clipOpts(i, clipT));
+        waveHead = ct; report(S.dur + clipT);
+        return !(ct >= b - .01 || video.ended);
+      });
+      video.pause(); acc += (b - a) / S.speed;
+      drawWave();
+    }
+    waveHead = null; drawWave();
+    if (S.outro && !token.stop) {
+      phase('الخاتمة');
+      if (S.sfx) outroSfx();
+      t0 = performance.now();
+      const base = S.dur + acc, oo = introOpts();
+      await frames(token, now => { const t = (now - t0) / 1000; drawOutro(ctx, W, H, Math.min(t, OUTRO), oo); report(base + Math.min(t, OUTRO)); return t < OUTRO; });
+    }
+  }
+  if (useMusic) { musicGain.gain.cancelScheduledValues(ac.currentTime); musicGain.gain.setValueAtTime(musicGain.gain.value, ac.currentTime); musicGain.gain.linearRampToValueAtTime(0, ac.currentTime + .4); setTimeout(() => musicEl.pause(), 450); }
+  video.pause();
+
+  let blob = null;
+  if (rec) {
+    const stopped = once(rec, 'stop'); rec.stop(); await stopped;
+    if (!token.stop) blob = new Blob(chunks, { type: (mime || rec.mimeType || 'video/webm').split(';')[0] });
+  }
+  const cancelled = token.stop;
+  finish();
+  if (cancelled) toast('وقّفت');
+  return blob;
+
+  function finish() { run = null; mode = 'idle'; setBusy(false); phase('الإنترو يشتغل كمعاينة'); setHead(0); waveHead = null; drawWave(); idle(); }
+}
+
+function phase(s) { $('#phase').textContent = s; }
+function progress(p) { const pc = Math.round(clamp(p, 0, 1) * 100); $('#expBar').style.width = pc + '%'; $('#expPct').textContent = pc + '%'; }
+function setBusy(b, rec) {
+  $('#btnStop').hidden = !b; $('#btnPlay').hidden = b; $('#btnIntro').hidden = b;
+  $('#btnExport').disabled = b; $('#btnExportIntro').disabled = b;
+  $('#fileVideo').disabled = b;
+  $('#tally').className = 'tally' + (b ? (rec ? ' on' : ' prev') : '');
+  if (b && rec) { $('#expBox').hidden = false; progress(0); }
+  if (!b) $('#expBox').hidden = true;
+}
+
+/* idle: loop the intro silently so the monitor always shows something real */
+let idleStart = performance.now();
+function idle() {
+  if (mode !== 'idle') return;
+  applyAspect();
+  const [W, H] = dims();
+  const t = ((performance.now() - idleStart) / 1000) % (S.dur + .8);
+  drawIntro(ctx, W, H, Math.min(t, S.dur * .89), introOpts());
+  requestAnimationFrame(idle);
+}
+async function showStill(t) {
+  if (run) return;
+  mode = 'still';
+  await seekTo(t);
+  if (mode !== 'still') return;
+  applyAspect(); const [W, H] = dims();
+  const i = Math.max(0, S.segs.findIndex(([a, b]) => t >= a && t <= b));
+  drawClip(ctx, W, H, clipOpts(i, 99));
+  waveHead = t; drawWave(); phase(`لقطة عند ${tc(t)}`); $('#tcNow').textContent = tc(t);
+}
+function backToIdle() { if (mode === 'still') { mode = 'idle'; waveHead = null; drawWave(); phase('الإنترو يشتغل كمعاينة'); idleStart = performance.now(); idle(); } }
+
+/* ---------- export & save ---------- */
+let downloads = null, lastBlob = null, lastName = '';
+if (window.claude && window.claude.use) window.claude.use('downloads').then(d => downloads = d).catch(() => {});
+async function doExport(introOnly) {
+  $('#result').hidden = true;
+  const blob = await playProgram({ record: true, introOnly });
+  if (!blob) return;
+  const ext = blob.type.includes('mp4') ? 'mp4' : 'webm';
+  const base = (S.name || 'RA').replace(/[^\p{L}\p{N} _-]/gu, '').trim().replace(/\s+/g, '-') || 'RA';
+  lastName = introOnly ? `${base}-intro.${ext}` : `${base}-montage.${ext}`;
+  lastBlob = blob;
+  const out = $('#outVid'); if (out.src) URL.revokeObjectURL(out.src); out.src = URL.createObjectURL(blob);
+  $('#outMeta').textContent = `${lastName} · ${(blob.size / 1048576).toFixed(1)} MB · ${dims().join('×')}`;
+  $('#result').hidden = false;
+  toast('الفيديو جاهز، شيّكه واحفظه');
+}
+async function saveBlob() {
+  if (!lastBlob) return;
+  if (downloads) {
+    try { await downloads.save({ filename: lastName, data: lastBlob }); toast('انحفظ الفيديو، ارفعه على يوتيوب'); }
+    catch (e) {
+      const m = { declined: 'ما انحفظ الملف', rate_limited: 'فيه نافذة حفظ مفتوحة، كمّلها أول', too_large: 'الملف كبير على الحفظ هنا' }[e && e.code];
+      toast(m || 'الحفظ مو متاح هنا');
+    }
+    return;
+  }
+  if (!window.claude) {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(lastBlob); a.download = lastName;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    return;
+  }
+  toast('الحفظ مو متاح في هذا العرض');
+}
+
+/* ---------- loading files ---------- */
+async function loadVideo(file) {
+  if (!file || !file.type.startsWith('video')) { if (file) toast('هذا الملف مو فيديو'); return; }
+  if (run) return;
+  ensureAudio();
+  if (video.src) URL.revokeObjectURL(video.src);
+  S.file = file; video.src = URL.createObjectURL(file);
+  try { await once(video, 'loadedmetadata'); } catch (e) {}
+  if (!isFinite(video.duration) || !video.videoWidth) { toast('ما قدرت أفتح هذا المقطع، جرّب MP4'); S.file = null; refresh(); return; }
+  S.dur0 = video.duration; S.vw = video.videoWidth; S.vh = video.videoHeight; S.ts = 0; S.te = S.dur0;
+  const m = $('#vidMeta'); m.hidden = false; m.textContent = `${file.name} · ${S.vw}×${S.vh} · ${mmss(S.dur0)} · ${(file.size / 1048576).toFixed(1)} MB`;
+  for (const id of ['ts', 'te']) { const r = $('#' + id); r.max = S.dur0.toFixed(1); r.disabled = false; }
+  $('#ts').value = 0; $('#te').value = S.dur0.toFixed(1); trimLabels();
+  if (S.vh > S.vw && S.aspect !== '9:16') { setRadio('aspect', '9:16'); S.aspect = '9:16'; toast('المقطع طولي، حوّلت المقاس لشورتس'); }
+  phase('أحلل الصوت…');
+  refresh();
+  await analyse(file);
+  refresh();
+  phase('الإنترو يشتغل كمعاينة');
+}
+function trimLabels() { $('#tsV').textContent = mmss(S.ts); $('#teV').textContent = mmss(S.te); }
+function setRadio(name, v) { const el = document.querySelector(`input[name="${name}"][value="${v}"]`); if (el) el.checked = true; }
+
+/* ---------- wire up controls ---------- */
+const sw = $('#swatches');
+function renderSwatches() {
+  sw.innerHTML = '';
+  COLORS.forEach(c => { const b = document.createElement('button'); b.type = 'button'; b.className = 'sw'; b.style.background = c; b.setAttribute('aria-label', 'لون ' + c); b.setAttribute('aria-pressed', String(c === S.color)); b.onclick = () => { S.color = c; renderSwatches(); persist(); }; sw.appendChild(b); });
+  const ci = document.createElement('input'); ci.type = 'color'; ci.id = 'customColor'; ci.value = S.color; ci.setAttribute('aria-label', 'لون مخصص');
+  ci.oninput = () => { S.color = ci.value; [...sw.querySelectorAll('.sw')].forEach(b => b.setAttribute('aria-pressed', 'false')); persist(); };
+  sw.appendChild(ci);
+}
+renderSwatches();
+const bindText = (id, key) => { const el = $('#' + id); el.value = S[key]; el.addEventListener('input', () => { S[key] = el.value; persist(); if (key === 'title') backToIdle(); }); };
+bindText('chName', 'name'); bindText('chTag', 'tag'); bindText('title', 'title');
+const bindCheck = (id, key, then) => { const el = $('#' + id); el.checked = !!S[key]; el.addEventListener('change', () => { S[key] = el.checked; then ? then() : persist(); }); };
+bindCheck('silOn', 'sil', refresh); bindCheck('sfxOn', 'sfx'); bindCheck('zoomOn', 'zoom'); bindCheck('wmOn', 'wm'); bindCheck('outroOn', 'outro', refresh);
+const bindRadio = (name, key, num, then) => {
+  setRadio(name, S[key]);
+  document.querySelectorAll(`input[name="${name}"]`).forEach(r => r.addEventListener('change', () => { S[key] = num ? +r.value : r.value; (then || persist)(); }));
+};
+bindRadio('style', 'style', false, () => { persist(); idleStart = performance.now(); backToIdle(); });
+bindRadio('aspect', 'aspect', false, () => { persist(); applyAspect(); if (mode === 'still' && waveHead != null) showStill(waveHead); });
+bindRadio('look', 'look', false, () => { persist(); if (mode === 'still' && waveHead != null) showStill(waveHead); });
+bindRadio('speed', 'speed', true, refresh);
+$('#introDur').value = String(S.dur);
+$('#introDur').addEventListener('change', e => { S.dur = +e.target.value; idleStart = performance.now(); refresh(); });
+const bindRange = (id, key, label, fmt, then) => { const el = $('#' + id); el.value = S[key]; const upd = () => $('#' + label).textContent = fmt(S[key]); upd(); el.addEventListener('input', () => { S[key] = +el.value; upd(); (then || persist)(); }); };
+bindRange('thr', 'thr', 'thrV', v => `${v} dB`, refresh);
+bindRange('gap', 'gap', 'gapV', v => `${v.toFixed(1)} ث`, refresh);
+bindRange('mv', 'musicVol', 'mvV', v => `${Math.round(v * 100)}%`, () => { persist(); if (ac && run && S.music) musicGain.gain.setTargetAtTime(S.musicVol, ac.currentTime, .1); });
+$('#ts').addEventListener('input', e => { S.ts = Math.min(+e.target.value, S.te - .5); e.target.value = S.ts; trimLabels(); refresh(); });
+$('#te').addEventListener('input', e => { S.te = Math.max(+e.target.value, S.ts + .5); e.target.value = S.te; trimLabels(); refresh(); });
+
+$('#fileVideo').addEventListener('change', e => loadVideo(e.target.files[0]));
+const drop = $('#drop');
+['dragenter', 'dragover'].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); if (ev === 'drop' || !e.relatedTarget) drop.classList.remove('over'); }));
+document.addEventListener('drop', e => { const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) loadVideo(f); });
+$('#fileLogo').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  const img = new Image(); img.onload = () => { S.logo = img; backToIdle(); }; img.onerror = () => toast('ما قدرت أفتح الصورة'); img.src = URL.createObjectURL(f);
+});
+$('#fileMusic').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  ensureAudio(); if (musicEl.src) URL.revokeObjectURL(musicEl.src);
+  musicEl.src = URL.createObjectURL(f); S.music = true; toast('الموسيقى جاهزة: ' + f.name);
+});
+wave.addEventListener('click', e => { if (!S.file || run) return; const r = wave.getBoundingClientRect(); showStill(clamp((e.clientX - r.left) / r.width, 0, 1) * S.dur0); });
+
+$('#btnPlay').onclick = () => { if (!S.file) toast('ارفع مقطعك أول، الحين بشغّل لك الإنترو'); playProgram(); };
+$('#btnIntro').onclick = () => playProgram({ introOnly: true });
+$('#btnStop').onclick = () => { if (run) run.stop = true; };
+$('#btnExport').onclick = () => { if (!S.file) { toast('ارفع مقطعك أول من الخطوة 1'); return; } doExport(false); };
+$('#btnExportIntro').onclick = () => doExport(true);
+$('#btnSave').onclick = saveBlob;
+window.addEventListener('resize', drawWave);
+document.addEventListener('visibilitychange', () => { if (document.hidden && run) toast('ارجع للصفحة! التصدير يتوقف لو الصفحة مخفية'); });
+
+/* boot: wait for the faces so the canvas draws Arabic in the right font */
+const fontsReady = document.fonts ? Promise.race([Promise.all([document.fonts.load(`700 80px "Reem Kufi"`), document.fonts.load(`500 30px "IBM Plex Sans Arabic"`), document.fonts.load(`700 30px "IBM Plex Sans Arabic"`)]), new Promise(r => setTimeout(r, 2500))]) : Promise.resolve();
+applyAspect(); refresh(); trimLabels(); idle();
+fontsReady.then(() => { idleStart = performance.now(); });
+})();
+</script>
