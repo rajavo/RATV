@@ -116,15 +116,6 @@ def s_open():
         expect(s in t, "missing prayer: " + s)
     expect(re.search(r"\d{1,2}:\d\d [صم]", t), "no prayer time on the screen")
     expect("هـ" in t, "no hijri date")
-    expect("قال رسول الله ﷺ" in t, "no hadith")
-    first = re.search(r"«([^»]+)»", t)
-    sh("input keyevent KEYCODE_HOME")  # away and back: a new hadith
-    time.sleep(2)
-    sh("am start -W -n %s/.MainActivity" % PKG)
-    root = wait_text("قال رسول الله")
-    second = re.search(r"«([^»]+)»", texts(root))
-    log("hadiths: %s / %s" % (first and first.group(1), second and second.group(1)))
-    expect(first and second and first.group(1) != second.group(1), "the hadith did not change")
 
 
 def s_remote():
@@ -170,7 +161,7 @@ def tile_x(root, label):
     if root is None:
         return None
     for n in root.iter("node"):
-        if (n.get("text") or "") == label and n.get("class") == "android.widget.TextView":
+        if (n.get("text") or "") == label:
             m = re.findall(r"\d+", n.get("bounds") or "")
             if len(m) == 4:
                 return (int(m[0]) + int(m[2])) // 2
@@ -186,6 +177,9 @@ def s_move():
     label = focused(root)
     x0 = tile_x(root, label)
     log("first app: %s at x=%s" % (label, x0))
+    if x0 is None:
+        with open(os.path.join(OUT, "move-start.xml"), "w", encoding="utf-8") as f:
+            f.write(ET.tostring(root, encoding="unicode") if root is not None else "")
     expect(label and x0, "no first app selected")
     sh("input keyevent --longpress KEYCODE_DPAD_CENTER")
     time.sleep(1.5)

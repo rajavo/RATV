@@ -231,12 +231,6 @@ private fun HomeScreen(resumed: Int) {
     val apps by produceState<List<Tile>?>(null, resumed) {
         value = withContext(Dispatchers.IO) { Apps.load(context) }
     }
-    val hadith by produceState<Hadith?>(null, resumed) {
-        while (true) {
-            value = Hadiths.next(context)
-            delay(5 * 60_000)
-        }
-    }
     // The viewer's order while moving an app; saved when the move ends.
     var order by remember { mutableStateOf<List<Tile>?>(null) }
     LaunchedEffect(apps) { order = apps }
@@ -274,7 +268,7 @@ private fun HomeScreen(resumed: Int) {
                     horizontalArrangement = Arrangement.spacedBy(28.dp),
                     verticalArrangement = Arrangement.spacedBy(34.dp)
                 ) {
-                    item(span = { GridItemSpan(maxLineSpan) }, key = "shelf") { PrayerShelf(day, hadith) }
+                    item(span = { GridItemSpan(maxLineSpan) }, key = "shelf") { PrayerShelf(day) }
                     val list = order
                     if (list == null) {
                         item(span = { GridItemSpan(maxLineSpan) }) { Text("جارٍ تحميل التطبيقات…", style = t(18, color = C.Text2)) }
@@ -385,7 +379,7 @@ private fun TopBar(day: Today, city: String) {
 }
 
 @Composable
-private fun PrayerShelf(day: Today, hadith: Hadith?) {
+private fun PrayerShelf(day: Today) {
     val shape = RoundedCornerShape(30.dp)
     Column(
         Modifier
@@ -420,12 +414,6 @@ private fun PrayerShelf(day: Today, hadith: Hadith?) {
                     Text(s.ar, style = t(17, isNext, if (isNext) C.Ink else C.Text2))
                     Text(clock(day.times.getValue(s)), style = t(22, true, if (isNext) C.Ink else C.Text))
                 }
-            }
-        }
-        if (hadith != null) {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text("قال رسول الله ﷺ: «${hadith.text}»", style = t(22, true), maxLines = 3, overflow = TextOverflow.Ellipsis)
-                Text("عن ${hadith.narrator} · ${hadith.source}", style = t(15, color = C.Text3))
             }
         }
     }
