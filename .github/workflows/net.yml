@@ -114,11 +114,14 @@ jobs:
         run: |
           cp "$(find apks -name app-release.apk | head -1)" RANet.apk
           # One release named "net-latest" whose file is swapped, so the download link never changes.
-          git push -f origin HEAD:refs/tags/net-latest
+          # Moving the tag can be refused when the commit changes a workflow file; the file is what matters, so go on.
+          git push -f origin HEAD:refs/tags/net-latest || echo "The net-latest tag stays where it was."
           if gh release view net-latest >/dev/null 2>&1; then
             gh release upload net-latest RANet.apk --clobber
           else
-            gh release create net-latest RANet.apk --title "RA Net" --latest=false \
+            # A new release takes the RATV release's commit, which needs no new workflow permission.
+            base=$(git ls-remote origin 'refs/tags/latest' 'refs/tags/latest^{}' | tail -1 | cut -f1)
+            gh release create net-latest RANet.apk --target "$base" --title "RA Net" --latest=false \
               --notes "تطبيق RA Net للتلفزيون: النت كله للتطبيق اللي على الشاشة. نزّل RANet.apk وثبّته."
           fi
           # The version, for RA Store to tell when an update is out.
