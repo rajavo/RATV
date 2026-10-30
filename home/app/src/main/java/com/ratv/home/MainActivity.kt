@@ -135,21 +135,19 @@ private fun t(size: Int, bold: Boolean = false, color: Color = C.Text) = TextSty
     lineHeight = (size * 1.35).sp
 )
 
-/** Selected with the remote the way Apple TV does it: the item grows and lifts, with a soft shadow. */
+/** Selected with the remote: a little bigger with a white edge, at once (no animation or shadow, so it stays light and still). */
 @Composable
-private fun Modifier.lift(shape: Shape, scale: Float = 1.1f, onClick: () -> Unit): Modifier {
+private fun Modifier.lift(shape: Shape, scale: Float = 1.06f, onClick: () -> Unit): Modifier {
     val source = remember { MutableInteractionSource() }
     val focused by source.collectIsFocusedAsState()
-    val s by animateFloatAsState(if (focused) scale else 1f, tween(160), label = "lift")
     return this
         .zIndex(if (focused) 1f else 0f)
         .graphicsLayer {
-            scaleX = s
-            scaleY = s
+            scaleX = if (focused) scale else 1f
+            scaleY = if (focused) scale else 1f
         }
-        .shadow(if (focused) 24.dp else 0.dp, shape, clip = false)
         .clip(shape)
-        .border(BorderStroke(if (focused) 2.dp else 0.dp, if (focused) Color.White.copy(alpha = 0.85f) else Color.Transparent), shape)
+        .border(BorderStroke(if (focused) 3.dp else 0.dp, if (focused) Color.White else Color.Transparent), shape)
         .clickable(interactionSource = source, indication = null, onClick = onClick)
 }
 
@@ -231,6 +229,12 @@ private fun HomeScreen(resumed: Int) {
     val apps by produceState<List<Tile>?>(null, resumed) {
         value = withContext(Dispatchers.IO) { Apps.load(context) }
     }
+    val hadith by produceState<Hadith?>(null, resumed) {
+        while (true) {
+            value = Hadiths.next(context)
+            delay(5 * 60_000)
+        }
+    }
     // The viewer's order while moving an app; saved when the move ends.
     var order by remember { mutableStateOf<List<Tile>?>(null) }
     LaunchedEffect(apps) { order = apps }
@@ -238,12 +242,6 @@ private fun HomeScreen(resumed: Int) {
     val swallowUp = remember { booleanArrayOf(false) }
     val firstTile = remember { FocusRequester() }
     val grid = rememberLazyGridState()
-    val scope = rememberCoroutineScope()
-    // On the first row of apps, the whole prayer card shows above it.
-    val toTop = Modifier.onFocusChanged { if (it.isFocused) scope.launch {
-            delay(60) // after the list brings the tile into view
-            grid.animateScrollToItem(0)
-        } }
     LaunchedEffect(apps != null, picking) {
         if (apps != null && !picking) {
             repeat(5) {
@@ -264,23 +262,15 @@ private fun HomeScreen(resumed: Int) {
                     columns = GridCells.Fixed(5),
                     state = grid,
                     modifier = Modifier.weight(1f),
-                    contentPadding = PaddingValues(start = 64.dp, end = 64.dp, top = 20.dp, bottom = 36.dp),
+                    contentPadding = PaddingValues(start = 64.dp, end = 64.dp, top = 16.dp, bottom = 36.dp),
                     horizontalArrangement = Arrangement.spacedBy(28.dp),
-                    verticalArrangement = Arrangement.spacedBy(34.dp)
+                    verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
-                    item(span = { GridItemSpan(maxLineSpan) }, key = "shelf") { PrayerShelf(day) }
+                    item(span = { GridItemSpan(maxLineSpan) }, key = "shelf") { PrayerShelf(day, hadith) }
                     val list = order
                     if (list == null) {
                         item(span = { GridItemSpan(maxLineSpan) }) { Text("جارٍ تحميل التطبيقات…", style = t(18, color = C.Text2)) }
                     } else {
-                        item(span = { GridItemSpan(maxLineSpan) }, key = "hint") {
-                            val m = moving?.let { pkg -> list.firstOrNull { it.pkg == pkg }?.label }
-                            Text(
-                                if (m != null) "حرّك «$m» بالأسهم، واضغط OK لما تخلص"
-                                else "تطبيقاتك · اضغط مطوّلاً على OK فوق أي تطبيق عشان تغيّر مكانه",
-                                style = t(16, m != null, if (m != null) C.Gold else C.Text3)
-                            )
-                        }
                         itemsIndexed(list, key = { _, it -> it.pkg }) { i, tile ->
                             // Long OK (or the menu key) picks the app up; the arrows move it; OK puts it down.
                             val keys = Modifier.onPreviewKeyEvent { e ->
@@ -316,7 +306,7 @@ private fun HomeScreen(resumed: Int) {
                                 }
                             }
                             val m = if (i == 0) keys.focusRequester(firstTile) else keys
-                            AppTile(tile, moving == tile.pkg, if (i < 5) m.then(toTop) else m) {
+                            AppTile(tile, moving == tile.pkg, m) {
                                 if (moving == null) Apps.open(context, tile.pkg)
                             }
                         }
@@ -330,6 +320,19 @@ private fun HomeScreen(resumed: Int) {
                         }
                     }
                 }
+            }
+            val movingLabel = moving?.let { pkg -> order?.firstOrNull { it.pkg == pkg }?.label }
+            if (movingLabel != null) {
+                Text(
+                    "حرّك «$movingLabel» بالأسهم، واضغط OK لما تخلص",
+                    style = t(18, true, C.Ink),
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 24.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(C.Gold)
+                        .padding(horizontal = 24.dp, vertical = 10.dp)
+                )
             }
             if (picking) {
                 CityPicker(
@@ -379,41 +382,45 @@ private fun TopBar(day: Today, city: String) {
 }
 
 @Composable
-private fun PrayerShelf(day: Today) {
-    val shape = RoundedCornerShape(30.dp)
+private fun PrayerShelf(day: Today, hadith: Hadith?) {
+    val shape = RoundedCornerShape(28.dp)
     Column(
         Modifier
             .fillMaxWidth()
             .clip(shape)
             .background(C.Glass)
             .border(BorderStroke(1.dp, C.GlassLine), shape)
-            .padding(horizontal = 36.dp, vertical = 28.dp),
-        verticalArrangement = Arrangement.spacedBy(22.dp)
+            .padding(horizontal = 32.dp, vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        Row(verticalAlignment = Alignment.Bottom) {
-            Column(Modifier.weight(1f)) {
-                Text("الصلاة القادمة", style = t(17, color = C.Text2))
-                Text(day.next.ar, style = t(46, true))
-            }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("الصلاة القادمة  ", style = t(16, color = C.Text2))
+            Text(day.next.ar, style = t(34, true), modifier = Modifier.weight(1f))
             Column(horizontalAlignment = Alignment.End) {
-                Text(left(day.untilNext), style = t(26, true, C.Gold))
-                Text("الساعة " + clock(day.times.getValue(day.next)), style = t(17, color = C.Text2))
+                Text(left(day.untilNext), style = t(24, true, C.Gold))
+                Text("الساعة " + clock(day.times.getValue(day.next)), style = t(15, color = C.Text2))
             }
         }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             for (s in Salah.entries) {
                 val isNext = s == day.next
                 Column(
                     Modifier
                         .weight(1f)
-                        .clip(RoundedCornerShape(18.dp))
+                        .clip(RoundedCornerShape(16.dp))
                         .background(if (isNext) Color.White else Color(0x14FFFFFF))
-                        .padding(vertical = 14.dp),
+                        .padding(vertical = 9.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(s.ar, style = t(17, isNext, if (isNext) C.Ink else C.Text2))
-                    Text(clock(day.times.getValue(s)), style = t(22, true, if (isNext) C.Ink else C.Text))
+                    Text(s.ar, style = t(16, isNext, if (isNext) C.Ink else C.Text2))
+                    Text(clock(day.times.getValue(s)), style = t(21, true, if (isNext) C.Ink else C.Text))
                 }
+            }
+        }
+        if (hadith != null) {
+            Column {
+                Text("قال رسول الله ﷺ: «${hadith.text}»", style = t(19, true), maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text("عن ${hadith.narrator} · ${hadith.source}", style = t(14, color = C.Text3))
             }
         }
     }
@@ -422,18 +429,10 @@ private fun PrayerShelf(day: Today) {
 @Composable
 private fun AppTile(tile: Tile, moving: Boolean, modifier: Modifier, onClick: () -> Unit) {
     val shape = RoundedCornerShape(16.dp)
-    // Picked up to be moved: it wiggles with a gold edge, like Apple TV.
-    val angle = if (moving) {
-        val wiggle by rememberInfiniteTransition(label = "wiggle")
-            .animateFloat(-1.5f, 1.5f, infiniteRepeatable(tween(140), RepeatMode.Reverse), label = "angle")
-        wiggle
-    } else {
-        0f
-    }
+    // Picked up to be moved: a gold edge, and the arrows move it.
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier
-                .graphicsLayer { rotationZ = angle }
                 .fillMaxWidth()
                 .aspectRatio(16f / 9f)
                 .lift(shape, onClick = onClick)

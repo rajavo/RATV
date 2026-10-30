@@ -116,6 +116,15 @@ def s_open():
         expect(s in t, "missing prayer: " + s)
     expect(re.search(r"\d{1,2}:\d\d [صم]", t), "no prayer time on the screen")
     expect("هـ" in t, "no hijri date")
+    expect("قال رسول الله ﷺ" in t, "no hadith")
+    first = re.search(r"«([^»]+)»", t)
+    sh("input keyevent KEYCODE_HOME")  # away and back: a new hadith
+    time.sleep(2)
+    sh("am start -W -n %s/.MainActivity" % PKG)
+    root = wait_text("قال رسول الله")
+    second = re.search(r"«([^»]+)»", texts(root))
+    log("hadiths: %s / %s" % (first and first.group(1), second and second.group(1)))
+    expect(first and second and first.group(1) != second.group(1), "the hadith did not change")
 
 
 def s_remote():
