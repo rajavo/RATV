@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,6 +56,26 @@ private val Track = Color(0x33FFFFFF)
 private val Good = Color(0xFF4CD787)
 private val Fair = Color(0xFFF2C14E)
 private val Poor = Color(0xFFFF6B6B)
+
+/** How long a channel has played: [base] already counted, plus the time since [from] (elapsed realtime; 0 while paused), ticking every second. */
+@Composable
+fun rememberWatched(base: Long, from: Long): Long {
+    fun count() = base + if (from > 0L) (android.os.SystemClock.elapsedRealtime() - from).coerceAtLeast(0L) else 0L
+    val watched by produceState(count(), base, from) {
+        value = count()
+        while (from > 0L) {
+            kotlinx.coroutines.delay(1_000L)
+            value = count()
+        }
+    }
+    return watched
+}
+
+/** The watching counter of a channel: what was counted while it played, and since when it plays again (0: paused). */
+class WatchClock(val base: Long, val from: Long)
+
+/** The watching counter of a live channel: "⏱ 42:15" (hours past the first one: 1:42:15). */
+fun watchedLabel(ms: Long): String = "⏱ " + com.ratv.app.ui.components.formatClock(ms)
 
 /** A channel number as receivers print it: at least three digits (007). */
 fun receiverNumber(num: Int): String = if (num in 0..999) String.format(Locale.US, "%03d", num) else num.toString()
@@ -99,7 +121,8 @@ internal fun BoxScope.ReceiverInfoBar(
     audioTracks: Int,
     favorite: Boolean,
     signal: Float,
-    quality: Float
+    quality: Float,
+    watching: WatchClock? = null
 ) {
     Column(
         Modifier
@@ -188,6 +211,13 @@ internal fun BoxScope.ReceiverInfoBar(
             Column(Modifier.width(150.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(hm(now), style = T.display(30.sp, FontWeight.Bold).copy(fontFamily = FontFamily.Monospace), maxLines = 1)
                 Text(dayLabel(now), style = T.body(12.sp, color = Soft), maxLines = 1)
+                if (watching != null) {
+                    Text(
+                        watchedLabel(rememberWatched(watching.base, watching.from)),
+                        style = T.body(12.sp, FontWeight.Bold, RColors.Saffron).copy(fontFamily = FontFamily.Monospace),
+                        maxLines = 1
+                    )
+                }
                 Spacer(Modifier.height(2.dp))
                 LevelRow(tr("الإشارة"), signal)
                 LevelRow(tr("الجودة"), quality)

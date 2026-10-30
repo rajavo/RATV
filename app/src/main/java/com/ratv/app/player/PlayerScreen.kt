@@ -221,6 +221,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // The receiver's info bar (Receiver.kt): shown on every change of channel and with the INFO key.
     var banner by remember { mutableStateOf<Channel?>(null) }
     var bannerTick by remember { mutableIntStateOf(0) }
+    // The watching counter of the channel playing: time counted while it played, and since when it
+    // plays again (elapsed realtime; 0 while paused or stalled), so it stops with the picture.
+    var watchedBase by remember { mutableLongStateOf(0L) }
+    var watchedFrom by remember { mutableLongStateOf(0L) }
     // Digits typed on the remote (a channel number), and the channel watched before this one.
     var typedNumber by remember { mutableStateOf("") }
     var previousChannel by remember { mutableStateOf<Channel?>(null) }
@@ -1602,6 +1606,19 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     LaunchedEffect(item?.channel?.id) {
         banner = item?.channel
         bannerTick++
+        watchedBase = 0L
+        watchedFrom = if (item?.channel != null && isPlaying) SystemClock.elapsedRealtime() else 0L
+    }
+
+    LaunchedEffect(isPlaying) {
+        if (item?.channel == null) return@LaunchedEffect
+        val t = SystemClock.elapsedRealtime()
+        if (isPlaying) {
+            if (watchedFrom == 0L) watchedFrom = t
+        } else if (watchedFrom > 0L) {
+            watchedBase += t - watchedFrom
+            watchedFrom = 0L
+        }
     }
 
     LaunchedEffect(banner, bannerTick) {
@@ -1915,7 +1932,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 audioTracks = if (zapped.id == item?.channel?.id) audioTracks else 0,
                 favorite = Keys.live(zapped.id) in favorites,
                 signal = signalLevel(bandwidthBps, netTrouble),
-                quality = qualityLevel(reserveMs, buffering)
+                quality = qualityLevel(reserveMs, buffering),
+                watching = if (zapped.id == item?.channel?.id) WatchClock(watchedBase, watchedFrom) else null
             )
         }
 
@@ -1960,6 +1978,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                             programmeStart = programme?.start,
                             programmeEnd = programme?.end,
                             programmeProgress = programme?.progress(now),
+                            watching = if (item.isLive) WatchClock(watchedBase, watchedFrom) else null,
                             nextLabel = nextProgramme?.let { tr("التالي {0} · {1}", hm(it.start), it.title) },
                             hasTrackChoice = hasTrackChoice,
                             canPip = canPip,
@@ -2200,6 +2219,7 @@ private fun Controls(
     programmeStart: Long?,
     programmeEnd: Long?,
     programmeProgress: Float?,
+    watching: WatchClock?,
     nextLabel: String?,
     hasTrackChoice: Boolean,
     canPip: Boolean,
@@ -2338,11 +2358,18 @@ private fun Controls(
         ) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 if (item.isLive) {
-                    if (programmeProgress != null && programmeStart != null && programmeEnd != null) {
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    // How long this channel has been on, as films show their time, with the programme's bar.
+                    val watched = watching?.let { watchedLabel(rememberWatched(it.base, it.from)) }
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        if (watched != null) {
+                            Text(watched, style = T.body(13.sp, FontWeight.Bold, RColors.Saffron), maxLines = 1)
+                        }
+                        if (programmeProgress != null && programmeStart != null && programmeEnd != null) {
                             Text(hm(programmeStart), style = T.body(12.sp, FontWeight.Medium, SoftText))
                             ProgressLine(programmeProgress, Modifier.weight(1f), height = 4.dp, track = Color(0x38FFFFFF))
                             Text(hm(programmeEnd), style = T.body(12.sp, FontWeight.Medium, SoftText))
+                        } else if (watched != null) {
+                            Text(tr("مدة المشاهدة"), style = T.body(12.sp, FontWeight.Medium, SoftText), maxLines = 1)
                         }
                     }
                 } else if (duration > 0L) {
