@@ -243,6 +243,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     var enhanceSetting by remember { mutableStateOf(repo.prefs.enhance) }
     var enhanceBroken by remember { mutableStateOf(repo.prefs.enhanceBroken) }
     var enhanceHd by remember { mutableStateOf(repo.prefs.enhanceHd) }
+    // Android's own video decoder for the enhancement, where the device's showed a black screen.
+    var enhanceSoftware by remember { mutableStateOf(repo.prefs.enhanceSoftware) }
     // The strongest enhancement this device is given (full, light, none): it steps down by itself.
     var enhanceStrength by remember { mutableIntStateOf(repo.prefs.enhanceStrength) }
     var enhanceFor by remember { mutableStateOf<String?>(null) }
@@ -269,14 +271,15 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         return mode.ratio ?: if (view.width > 0 && view.height > 0) view.width.toFloat() / view.height else 16f / 9f
     }
 
-    val player = remember(enhanceWanted, if (enhanceWanted) enhanceStrength else ENHANCE_OFF) {
+    val player = remember(enhanceWanted, if (enhanceWanted) enhanceStrength else ENHANCE_OFF, enhanceWanted && enhanceSoftware) {
         Steadiness.mode = repo.prefs.liveSteady
         Steadiness.attach(context)
         createPlayer(
             context, repo.prefs.bufferMode, repo.prefs.bestQuality, live = kind == "live",
             tunneling = isTv && repo.prefs.tunneling,
             enhance = enhanceWanted, stretchAspect = stretchFor(resizeIndex), enhanceStrength = enhanceStrength,
-            introTap = kind != "live"
+            introTap = kind != "live",
+            softwareVideo = enhanceWanted && enhanceSoftware
         )
     }
     // «تخطي المقدمة» (IntroSkip.kt): the opening of what plays, found by its sound or listed on TheIntroDB.
@@ -669,8 +672,20 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 if (level < 10) {
                     black++
                     if (black >= 4) {
-                        Log.w("RATVEnhance", "the screen stays black with the enhancement on")
-                        enhanceStepDown("the screen stays black", failed = true, toOff = true)
+                        if (!enhanceSoftware) {
+                            // The device's decoder (MediaTek's on TCL TVs) gives pictures the graphics chip
+                            // reads as black: a new player with Android's own decoder, remembered for this device.
+                            Log.w("RATVEnhance", "the screen stays black with the enhancement on: trying Android's video decoder")
+                            current?.let { if (!it.isLive) resumeAt = it.id to player.currentPosition }
+                            repo.prefs.enhanceSoftware = true
+                            enhanceSoftware = true
+                            streamNotice = tr("الشاشة كانت سوداء مع تحسين الصورة، فجربنا طريقة ثانية")
+                        } else {
+                            Log.w("RATVEnhance", "the screen stays black with the enhancement on, Android's decoder too")
+                            repo.prefs.enhanceSoftware = false
+                            enhanceSoftware = false
+                            enhanceStepDown("the screen stays black", failed = true, toOff = true)
+                        }
                         return@LaunchedEffect
                     }
                 } else {

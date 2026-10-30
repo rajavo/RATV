@@ -297,6 +297,11 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("enhanceHd", true)
         set(value) = sp.edit().putBoolean("enhanceHd", value).apply()
 
+    /** The enhancement shows a black screen with this device's own video decoder: it uses Android's instead. */
+    var enhanceSoftware: Boolean
+        get() = sp.getBoolean("enhanceSoftware", false)
+        set(value) = sp.edit().putBoolean("enhanceSoftware", value).apply()
+
     /** The device's graphics could not run the enhancement: it stays off until turned on again. */
     var enhanceBroken: Boolean
         get() = sp.getBoolean("enhanceBroken", false)
