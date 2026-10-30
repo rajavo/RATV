@@ -1,11 +1,20 @@
 {
   "ar": [
-    "ثبات أقوى ضد تقطيع السيرفر: إذا صار السيرفر يرسل البث أبطأ من سرعة عرضه (الاحتياطي ينقص شوي شوي)، التطبيق يفتح اتصال جديد قبل ما يخلص الاحتياطي ويعبّيه من جديد. السيرفر المزحوم اللي يرفض الاتصال لحظياً ياخذ 7 محاولات بدل 3. الاحتياطي يقدر يجمع لحد 4 دقايق و24 ثانية بدل دقيقتين لما يرسل السيرفر دفعات. ولما يتعلّم التطبيق إن الخط أو السيرفر متذبذب، يحتفظ بالحماية الأكبر 44 دقيقة بدل 20."
+    "قبل: إذا صار السيرفر بطيء، كان البث يقطّع فجأة بدون إنذار. الحين: التطبيق يحس إن الاحتياطي ينقص، ويفتح اتصال جديد يعبّيه قبل ما يخلص.",
+    "قبل: إذا السيرفر مزحوم ورفض الاتصال، كانت القناة تطلّع خطأ بسرعة. الحين: التطبيق يصبر ويحاول أكثر من الضعف قبل ما يستسلم.",
+    "قبل: الاحتياطي كان يجمع دقيقتين بالكثير. الحين: يقدر يجمع أكثر من 4 دقايق لما يسمح السيرفر.",
+    "قبل: التطبيق كان ينسى بسرعة إن السيرفر يقطّع ويرجع للحماية العادية. الحين: يحتفظ بالحماية الأقوى ضعف المدة."
   ],
   "en": [
-    "Steadier against a struggling server: when the server sends a channel slower than it plays (the store slowly shrinks), the app opens a new connection before the store runs out, refilling it. A busy server that refuses for a moment gets 7 tries instead of 3. The store can bank up to 4 minutes 24 seconds instead of 2 when the server sends in bursts. And once the app learns a line or server is unsteady, it keeps the bigger protection for 44 minutes instead of 20."
+    "Before: when the server got slow, the stream stopped suddenly with no warning. Now: the app notices the reserve shrinking and opens a new connection that refills it before it runs out.",
+    "Before: when a busy server refused the connection, the channel showed an error quickly. Now: the app waits and tries more than twice as many times before giving up.",
+    "Before: the reserve held two minutes at most. Now: it can hold more than 4 minutes when the server allows it.",
+    "Before: the app soon forgot that a server was stuttering and went back to normal protection. Now: it keeps the stronger protection twice as long."
   ],
   "es": [
-    "Más estable ante un servidor con problemas: cuando el servidor envía un canal más lento de lo que se reproduce (la reserva baja poco a poco), la app abre una conexión nueva antes de que se acabe la reserva y la rellena. Un servidor ocupado que rechaza un momento recibe 7 intentos en lugar de 3. La reserva puede acumular hasta 4 minutos y 24 segundos en lugar de 2 cuando el servidor envía a ráfagas. Y cuando la app aprende que una línea o un servidor es inestable, mantiene la protección mayor 44 minutos en lugar de 20."
+    "Antes: cuando el servidor iba lento, la emisión se cortaba de golpe sin aviso. Ahora: la app nota que la reserva baja y abre una conexión nueva que la rellena antes de que se acabe.",
+    "Antes: cuando un servidor ocupado rechazaba la conexión, el canal daba error enseguida. Ahora: la app espera y lo intenta más del doble de veces antes de rendirse.",
+    "Antes: la reserva guardaba dos minutos como mucho. Ahora: puede guardar más de 4 minutos cuando el servidor lo permite.",
+    "Antes: la app olvidaba pronto que un servidor fallaba y volvía a la protección normal. Ahora: mantiene la protección más fuerte el doble de tiempo."
   ]
 }
