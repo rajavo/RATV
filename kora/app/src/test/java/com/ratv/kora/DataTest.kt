@@ -195,4 +195,37 @@ class DataTest {
         assertEquals("عبدالله الخيبري", l.home!!.bench.first().replaced)
         assertEquals("Guga", l.away!!.starters.last().name)
     }
+
+    private fun sheet(formation: String, vararg positions: String): String {
+        val players = positions.mapIndexed { i, p ->
+            """{"starter":true,"jersey":"${i + 1}","athlete":{"displayName":"P${i + 1}"},"position":{"abbreviation":"$p"},"formationPlace":"${i + 1}"}"""
+        }
+        return """{"rosters":[{"homeAway":"home","formation":"$formation","roster":[${players.joinToString(",")}]}]}"""
+    }
+
+    @Test
+    fun theFormationGivesTheRowsOnThePitch() {
+        val text = sheet("4-2-3-1", "G", "RB", "CD-R", "CD-L", "LB", "DM", "DM", "RM", "AM", "LM", "F")
+        val rows = LineupParser.rows(LineupParser.parse(text).home!!)
+        assertEquals(listOf(1, 4, 2, 3, 1), rows.map { it.size })
+        // Each row from left to right.
+        assertEquals(listOf("P5", "P4", "P3", "P2"), rows[1].map { it.name })
+        assertEquals(listOf("P10", "P9", "P8"), rows[3].map { it.name })
+        assertEquals("P11", rows[4].single().name)
+    }
+
+    @Test
+    fun withoutAFittingFormationTheRowsAreTheLines() {
+        val rows = LineupParser.rows(LineupParser.parse(java.io.File("../ci/espn_summary.json").readText()).home!!)
+        assertEquals(listOf(1, 2, 1, 1), rows.map { it.size })
+        assertEquals(listOf("Abdullah Al-Khaibari", "Sultan Al-Ghannam"), rows[1].map { it.name })
+    }
+
+    @Test
+    fun shortNamesForThePitch() {
+        assertEquals("بينتو", shortName("بينتو"))
+        assertEquals("رونالدو", shortName("كريستيانو رونالدو"))
+        assertEquals("عبد الله", shortName("محمد عبد الله"))
+        assertEquals("Al Ghamdi", shortName("Abdullah Al Ghamdi"))
+    }
 }

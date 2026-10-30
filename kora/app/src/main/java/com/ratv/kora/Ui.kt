@@ -4,6 +4,7 @@ import android.app.UiModeManager
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,10 +15,13 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -45,6 +49,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -52,8 +57,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
@@ -74,10 +82,10 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import coil.compose.AsyncImage
+import java.util.Locale
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 // ------------------------------------------------------------------ look
 
@@ -831,6 +839,7 @@ private fun LineupDialog(m: Match, s: Schedule, tv: Boolean, onClose: () -> Unit
                             )
                         }
                         else -> {
+                            item(key = "pitch") { Pitch(l, home, away, tv) }
                             item { SheetRow(l.home?.formation?.let { Fmt.ltr(it) } ?: "", l.away?.formation?.let { Fmt.ltr(it) } ?: "", "الخطة") }
                             for (line in 0..3) {
                                 val h = l.home?.starters.orEmpty().filter { it.line == line }
@@ -850,6 +859,131 @@ private fun LineupDialog(m: Match, s: Schedule, tv: Boolean, onClose: () -> Unit
             runCatching { first.requestFocus() }
         }
     }
+}
+
+private val Grass = Color(0xFF1D5C38)
+private val Grass2 = Color(0xFF22683F)
+private val PitchLine = Color(0x99FFFFFF)
+private val AwayShirt = Color(0xFF5AA9FF)
+
+/**
+ * Both teams on one pitch, as on television: the home team defends the right goal, the away team the left;
+ * each player in his row of the formation, with his number and name.
+ */
+@Composable
+private fun Pitch(l: Lineups, home: Team, away: Team, tv: Boolean) {
+    val homeRows = remember(l) { l.home?.let { LineupParser.rows(it) }.orEmpty() }
+    val awayRows = remember(l) { l.away?.let { LineupParser.rows(it) }.orEmpty() }
+    Column(Modifier.sheetRow(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                home.name + (l.home?.formation?.let { "  " + Fmt.ltr(it) } ?: ""),
+                style = t(14f, true, C.Saffron), modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis
+            )
+            Text("الرسم التكتيكي", style = t(13f, true, C.Text2))
+            Text(
+                (l.away?.formation?.let { Fmt.ltr(it) + "  " } ?: "") + away.name,
+                style = t(14f, true, AwayShirt, TextAlign.End), modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis
+            )
+        }
+        Spacer(Modifier.height(8.dp))
+        BoxWithConstraints(
+            Modifier
+                .fillMaxWidth()
+                // Flatter on a TV, so the whole pitch fits the screen with the teams' names above it.
+                .aspectRatio(if (tv) 2.3f else 1.7f)
+                .clip(RoundedCornerShape(12.dp))
+        ) {
+            val w = maxWidth
+            val h = maxHeight
+            Canvas(Modifier.fillMaxSize()) {
+                val stripes = 12
+                val sw = size.width / stripes
+                for (i in 0 until stripes) drawRect(if (i % 2 == 0) Grass else Grass2, Offset(i * sw, 0f), Size(sw + 1f, size.height))
+                val st = Stroke(width = 2.dp.toPx())
+                val m = 6.dp.toPx()
+                val pw = size.width - 2 * m
+                val ph = size.height - 2 * m
+                drawRect(PitchLine, Offset(m, m), Size(pw, ph), style = st)
+                drawLine(PitchLine, Offset(size.width / 2, m), Offset(size.width / 2, size.height - m), strokeWidth = st.width)
+                drawCircle(PitchLine, radius = ph * 0.16f, center = center, style = st)
+                drawCircle(PitchLine, radius = 3.dp.toPx(), center = center)
+                for (left in listOf(true, false)) {
+                    val bw = pw * 0.15f
+                    val bh = ph * 0.58f
+                    val gw = pw * 0.055f
+                    val gh = ph * 0.28f
+                    drawRect(PitchLine, Offset(if (left) m else size.width - m - bw, (size.height - bh) / 2), Size(bw, bh), style = st)
+                    drawRect(PitchLine, Offset(if (left) m else size.width - m - gw, (size.height - gh) / 2), Size(gw, gh), style = st)
+                }
+            }
+            // Home: goalkeeper by the right goal, attacking left, so its left side is at the bottom. Away: the mirror.
+            PitchTeam(homeRows, home = true, w, h, tv)
+            PitchTeam(awayRows, home = false, w, h, tv)
+        }
+    }
+}
+
+@Composable
+private fun PitchTeam(rows: List<List<Player>>, home: Boolean, w: Dp, h: Dp, tv: Boolean) {
+    if (rows.isEmpty()) return
+    // Positions measured from the left edge, whatever the layout direction (the page is right to left).
+    Box(Modifier.fillMaxSize(), contentAlignment = AbsoluteAlignment.TopLeft) { PitchPlayers(rows, home, w, h, tv) }
+}
+
+@Composable
+private fun PitchPlayers(rows: List<List<Player>>, home: Boolean, w: Dp, h: Dp, tv: Boolean) {
+    val span = 0.40f
+    val step = if (rows.size > 1) span / (rows.size - 1) else 0f
+    val boxW = if (tv) 92.dp else 76.dp
+    val dot = if (tv) 28.dp else 24.dp
+    rows.forEachIndexed { r, row ->
+        val x = if (home) 0.955f - r * step else 0.045f + r * step
+        row.forEachIndexed { i, p ->
+            val across = (i + 1f) / (row.size + 1f)
+            val y = if (home) 1f - across else across
+            Column(
+                Modifier
+                    .width(boxW)
+                    .absoluteOffset(x = w * x - boxW / 2, y = h * y - dot / 2 - 2.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    Modifier
+                        .size(dot)
+                        .clip(CircleShape)
+                        .background(if (home) C.Saffron else AwayShirt)
+                        .border(BorderStroke(1.5.dp, if (p.subbedOut) C.Live else Color.White.copy(alpha = 0.8f)), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(p.number ?: "", style = t(if (tv) 12.5f else 11f, true, if (home) C.OnSaffron else C.Ink))
+                }
+                Text(
+                    shortName(p.name),
+                    style = t(if (tv) 11.5f else 10f, true, Color.White, TextAlign.Center),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .padding(top = 2.dp)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(Color(0x80000000))
+                        .padding(horizontal = 4.dp)
+                )
+            }
+        }
+    }
+}
+
+/** The name the pitch has room for: the last name ("كريستيانو رونالدو" → "رونالدو"), whole when short. */
+internal fun shortName(name: String): String {
+    val n = name.trim()
+    if (n.length <= 11) return n
+    val words = n.split(' ').filter { it.isNotBlank() }
+    if (words.size < 2) return n
+    val last = words.last()
+    // "عبد الله" and "Al Ghamdi" are one name in two words.
+    val prev = words[words.size - 2]
+    return if (prev in listOf("عبد", "أبو", "بن", "Al", "al", "El", "el", "de", "da", "van", "der", "di", "dos", "do")) "$prev $last" else last
 }
 
 @Composable
