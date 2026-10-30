@@ -52,6 +52,35 @@ const val ENHANCE_FULL = 2
 /** The height a picture of [height] lines is enlarged to by the full enhancement: twice, at most 1080. */
 fun enhancedHeight(height: Int): Int = (height * minOf(2f, 1080f / height)).roundToInt() and 1.inv()
 
+/**
+ * The brightest point (0-255) of the picture the screen shows in [view] right now, read back from the
+ * screen itself; -1 when it cannot be read. A black screen while the enhancement runs is caught this
+ * way whatever broke (the effect, the device's video pipeline or the screen surface), where the
+ * effect's own check only sees what it drew.
+ */
+suspend fun shownBrightness(view: android.view.View?): Int {
+    val surface = view as? android.view.SurfaceView ?: return -1
+    if (android.os.Build.VERSION.SDK_INT < 24 || !surface.holder.surface.isValid || surface.width <= 0) return -1
+    val bitmap = android.graphics.Bitmap.createBitmap(64, 36, android.graphics.Bitmap.Config.ARGB_8888)
+    return kotlinx.coroutines.suspendCancellableCoroutine { cont ->
+        try {
+            android.view.PixelCopy.request(surface, bitmap, { result ->
+                var brightest = -1
+                if (result == android.view.PixelCopy.SUCCESS) {
+                    val pixels = IntArray(64 * 36)
+                    bitmap.getPixels(pixels, 0, 64, 0, 0, 64, 36)
+                    brightest = pixels.maxOf { p -> (((p shr 16) and 0xFF) * 299 + ((p shr 8) and 0xFF) * 587 + (p and 0xFF) * 114) / 1000 }
+                }
+                bitmap.recycle()
+                if (cont.isActive) cont.resumeWith(Result.success(brightest))
+            }, android.os.Handler(android.os.Looper.getMainLooper()))
+        } catch (e: RuntimeException) {
+            bitmap.recycle()
+            if (cont.isActive) cont.resumeWith(Result.success(-1))
+        }
+    }
+}
+
 /** What the picture size of an item is remembered under. */
 fun enhanceKey(item: Playable): String = "${item.kind}:${item.id}"
 

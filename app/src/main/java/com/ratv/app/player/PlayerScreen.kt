@@ -617,14 +617,15 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
 
     /**
      * The enhancement does not work out on this device ([failed]: its graphics broke; otherwise it
-     * falls behind): the full strength steps down to the light one, the light one to none.
+     * falls behind): the full strength steps down to the light one, the light one to none. [toOff]
+     * goes straight to none (a black screen, which the light strength would show too).
      */
-    fun enhanceStepDown(why: String, failed: Boolean) {
+    fun enhanceStepDown(why: String, failed: Boolean, toOff: Boolean = false) {
         val item = current ?: return
         if (enhanceFor == null) return
         val used = EnhanceStatus.strength.coerceAtMost(enhanceStrength)
         if (!item.isLive) resumeAt = item.id to player.currentPosition
-        if (!failed && videoHeight >= ENHANCE_HD_LINES && used <= ENHANCE_LIGHT) {
+        if (!failed && !toOff && videoHeight >= ENHANCE_HD_LINES && used <= ENHANCE_LIGHT) {
             // Too heavy on an HD picture: HD goes straight to the screen from now on, weak channels keep it.
             Log.i("RATVEnhance", "HD enhancement does not work out ($why): only weak pictures from now on")
             repo.prefs.enhanceHd = false
@@ -633,7 +634,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             enhanceFor = null
             return
         }
-        if (used >= ENHANCE_FULL) {
+        if (used >= ENHANCE_FULL && !toOff) {
             Log.i("RATVEnhance", "full enhancement does not work out ($why): light enhancement from now on")
             repo.prefs.enhanceStrength = ENHANCE_LIGHT
             enhanceStrength = ENHANCE_LIGHT // a new player with the light strength
@@ -642,12 +643,44 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             Log.i("RATVEnhance", "the enhancement does not work out ($why): off on this device")
             repo.prefs.enhanceStrength = ENHANCE_OFF
             enhanceStrength = ENHANCE_OFF
-            streamNotice = if (failed) tr("تحسين الصورة ما اشتغل على هذا الجهاز، فأوقفناه") else tr("التلفزيون ما لحق على تحسين الصورة، فأوقفناه")
+            streamNotice = when {
+                toOff -> tr("تحسين الصورة طلّع شاشة سوداء على هذا الجهاز، فأوقفناه ورجعت الصورة")
+                failed -> tr("تحسين الصورة ما اشتغل على هذا الجهاز، فأوقفناه")
+                else -> tr("التلفزيون ما لحق على تحسين الصورة، فأوقفناه")
+            }
             enhanceFor = null
         }
     }
 
     fun enhanceTooSlow(why: String) = enhanceStepDown(why, failed = false)
+
+    // With the enhancement on, the screen is looked at for its first 20 s of picture: black at every
+    // point for 4 s in a row means the enhancement does not show on this device, and it is turned off
+    // there (the picture comes back at once). Once the enhanced picture is seen, it is left alone.
+    LaunchedEffect(player, pictureShown, enhanceWanted) {
+        if (!enhanceWanted || !pictureShown) return@LaunchedEffect
+        delay(1_500L)
+        var black = 0
+        var seen = 0
+        repeat(20) {
+            if (player.isPlaying) {
+                val level = shownBrightness(playerViewRef[0]?.videoSurfaceView)
+                if (level < 0) return@LaunchedEffect // the screen cannot be read here
+                if (level < 10) {
+                    black++
+                    if (black >= 4) {
+                        Log.w("RATVEnhance", "the screen stays black with the enhancement on")
+                        enhanceStepDown("the screen stays black", failed = true, toOff = true)
+                        return@LaunchedEffect
+                    }
+                } else {
+                    black = 0
+                    if (++seen >= 3) return@LaunchedEffect // the enhanced picture shows
+                }
+            }
+            delay(1_000L)
+        }
+    }
 
     DisposableEffect(player) {
         // Whether this player enhances the picture (it is made again to change that).
