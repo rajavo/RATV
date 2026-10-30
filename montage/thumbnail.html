@@ -2,7 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@900&family=Changa:wght@800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Lalezar&family=Rakkas&family=Reem+Kufi:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Cairo:wght@900&family=Changa:wght@800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Lalezar&family=Rakkas&family=Reem+Kufi:wght@500;700&display=swap">
 <style>
 /* Layout: same edit-suite frame as the RA montage studio. Control rack on the reading side, the 1280×720 artboard beside it, and under it the thumbnail as it will sit in the YouTube feed. Single dark look on purpose. */
 :root {
@@ -88,6 +88,17 @@ input[type=color] { width: 34px; height: 30px; border: 1px solid var(--line); bo
 .stickers button { aspect-ratio: 1; border: 1px solid var(--line); background: var(--well); border-radius: 8px; cursor: pointer; font-size: 22px; display: grid; place-items: center; padding: 0; }
 .stickers button:hover { border-color: var(--tally); }
 .stickers svg { width: 26px; height: 26px; }
+.gamebox { border-color: var(--tally); }
+.gamebox .row input { flex: 1 1 160px; min-width: 0; }
+.gstatus { font-size: 13px; color: var(--muted); min-height: 1.4em; }
+.gstatus b { color: var(--fg); }
+.titles { display: flex; flex-direction: column; gap: 6px; }
+.titles button { text-align: start; border: 1px solid var(--line); background: var(--well); border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 14px; }
+.titles button:hover { border-color: var(--tally); }
+.titles button mark { background: var(--tally); color: var(--tally-ink); padding: 0 4px; border-radius: 3px; }
+.gchips { display: flex; flex-wrap: wrap; gap: 6px; }
+.gchips button { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 3px 10px; font-size: 12px; color: var(--muted); cursor: pointer; }
+.gchips button:hover { color: var(--fg); border-color: var(--muted); }
 .selbox { border: 1px dashed var(--tally); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
 
 .board { position: relative; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); background: #000; }
@@ -155,6 +166,18 @@ input[type=color] { width: 34px; height: 30px; border: 1px solid var(--line); bo
     </section>
 
     <div class="rack">
+      <section class="unit gamebox" aria-labelledby="hGm">
+        <h2 id="hGm"><span class="n">0</span>صمّم من اسم اللعبة</h2>
+        <form class="row" id="gameForm">
+          <input type="text" id="gameQ" placeholder="اكتب اسم اللعبة: ماينكرافت، فيفا، GTA…" maxlength="60" aria-label="اسم اللعبة" autocomplete="off">
+          <button class="btn go" type="submit" id="gameGo">صمّم</button>
+        </form>
+        <div class="gchips" id="gameChips" aria-label="ألعاب مشهورة"></div>
+        <div class="gstatus" id="gameStatus" role="status">يتعرف على اللعبة ويسوي خلفية بستايلها وألوانها، ويحط شعارها ويقترح عناوين.</div>
+        <div class="titles" id="gameTitles" hidden></div>
+        <p class="hint" id="gameTip" hidden>للمسة أقوى: ارفع لقطة من قيمك في «الخلفية»، وتنصبغ بألوان اللعبة.</p>
+      </section>
+
       <section class="unit" aria-labelledby="hBg">
         <h2 id="hBg"><span class="n">1</span>الخلفية</h2>
         <div class="row">
@@ -299,6 +322,7 @@ const DEF = {
   color: '#ffffff', hi: '#ffe14d', hiStyle: 'box', tilt: false,
   grad: 0, br: 100, sa: 125, co: 110, bl: 0, zm: 100, shade: true, rays: true, vig: true,
   outline: true, badge: true, badgeTxt: 'جديد', badgeColor: '#e5463b', chName: 'RA TV',
+  theme: null, gameColors: null, gameName: '',
 };
 const S = Object.assign({}, DEF);
 try { Object.assign(S, JSON.parse(localStorage.getItem('ra-thumb') || '{}')); } catch (e) {}
@@ -324,6 +348,8 @@ function placeText() {
   t.x = L[0]; t.y = L[1]; t.align = L[2];
   const cut = els.find(e => e.type === 'cutout');
   if (cut) { cut.x = { right: W * .24, left: W * .78, center: W * .5, bottom: W * .5 }[S.layout]; cut.y = S.layout === 'bottom' ? H * .42 : H * .56; }
+  const logo = els.find(e => e.type === 'logo');
+  if (logo) { logo.align = t.align; logo.x = t.x; logo.y = S.layout === 'bottom' ? H * .5 : 112; }
 }
 
 /* ---------- drawing ---------- */
@@ -336,6 +362,14 @@ function drawBg(c) {
     const bleed = S.bl * 2;
     c.drawImage(bgImg, (W - dw) / 2 + pan.x - bleed, (H - dh) / 2 + pan.y - bleed, dw + bleed * 2, dh + bleed * 2);
     c.filter = 'none';
+    if (S.gameColors) {
+      const [d, m] = S.gameColors;
+      c.save(); c.globalCompositeOperation = 'soft-light'; c.globalAlpha = .7;
+      const tg = c.createLinearGradient(0, 0, W, H); tg.addColorStop(0, m); tg.addColorStop(1, d);
+      c.fillStyle = tg; c.fillRect(0, 0, W, H); c.restore();
+    }
+  } else if (S.theme && S.gameColors) {
+    drawTheme(c, S.theme, S.gameColors);
   } else {
     const [a, b] = GRADS[S.grad] || GRADS[0];
     const g = c.createRadialGradient(W * .3, H * .5, 40, W * .5, H * .5, W * .8);
@@ -371,7 +405,9 @@ function parseLines(text) {
       if (part === '*') { hi = !hi; continue; }
       for (const w of part.split(/\s+/).filter(Boolean)) words.push({ w, hi });
     }
-    return words;
+    // keep runs of English words in reading order: "Hollow Knight", not "Knight Hollow"
+    const ar = w => /[\u0600-\u06FF]/.test(w);
+    return words.reduce((out, x) => { const prev = out[out.length - 1]; if (prev && !ar(prev.w) && !ar(x.w) && prev.hi === x.hi && /[a-z]/i.test(prev.w + x.w)) prev.w += ' ' + x.w; else out.push({ ...x }); return out; }, []);
   });
 }
 
@@ -487,6 +523,7 @@ function render(c, withSel) {
   for (const el of els) {
     if (el.type === 'text') drawText(c, el);
     else if (el.type === 'cutout') drawCutout(c, el);
+    else if (el.type === 'logo') drawLogo(c, el);
     else drawSticker(c, el);
   }
   drawBadge(c);
@@ -536,7 +573,7 @@ cv.addEventListener('pointermove', e => {
 });
 ['pointerup', 'pointercancel'].forEach(ev => cv.addEventListener(ev, () => drag = null));
 
-const NAMES = { text: 'العنوان', cutout: 'صورتك', sticker: 'الملصق' };
+const NAMES = { text: 'العنوان', cutout: 'صورتك', sticker: 'الملصق', logo: 'اسم اللعبة' };
 function select(el) {
   sel = el;
   $('#selBox').hidden = !el;
@@ -544,7 +581,7 @@ function select(el) {
     $('#selName').textContent = 'محدد: ' + NAMES[el.type];
     $('#selS').value = Math.round(el.scale * 100); $('#selSV').textContent = Math.round(el.scale * 100) + '%';
     $('#selR').value = el.rot; $('#selRV').textContent = el.rot + '°';
-    $('#selFlip').hidden = el.type === 'text';
+    $('#selFlip').hidden = el.type === 'text' || el.type === 'logo';
   }
   draw();
 }
@@ -575,7 +612,7 @@ function swatchRow(box, colors, key, cls) {
     b.setAttribute('aria-label', isGrad ? 'خلفية متدرجة ' + (i + 1) : 'لون ' + c);
     const on = isGrad ? (!bgImg && S[key] === i) : S[key] === c;
     b.setAttribute('aria-pressed', String(on));
-    b.onclick = () => { if (isGrad) { S[key] = i; bgImg = null; } else S[key] = c; persist(); swatchRow(box, colors, key, cls); draw(); };
+    b.onclick = () => { if (isGrad) { S[key] = i; bgImg = null; S.theme = null; S.gameColors = null; } else S[key] = c; persist(); swatchRow(box, colors, key, cls); draw(); };
     el.appendChild(b);
   });
   if (!colors.some(Array.isArray)) {
@@ -656,6 +693,8 @@ $('#btnReset').onclick = () => {
   Object.assign(S, DEF); bgImg = null; pan = { x: 0, y: 0 }; persist();
   els = [{ type: 'text', x: 0, y: 0, scale: 1, rot: 0 }, { type: 'sticker', kind: 'arrow', x: W * .3, y: H * .5, scale: 1, rot: 0, flip: false }];
   placeText(); syncInputs(); select(null);
+  showTitles([]); $('#gameTip').hidden = true; $('#gameQ').value = '';
+  $('#gameStatus').textContent = 'يتعرف على اللعبة ويسوي خلفية بستايلها وألوانها، ويحط شعارها ويقترح عناوين.';
 };
 function syncInputs() {
   for (const [id, k] of [['br', 'br'], ['sa', 'sa'], ['co', 'co'], ['bl', 'bl'], ['zm', 'zm'], ['fs', 'fs'], ['sk', 'sk']]) { $('#' + id).value = S[k]; $('#' + id).dispatchEvent(new Event('input')); }
@@ -688,10 +727,291 @@ async function exportAs(kind) {
 $('#btnJpg').onclick = () => exportAs('jpg');
 $('#btnPng').onclick = () => exportAs('png');
 
+/* ---------- games: catalog, themed backgrounds, recognition ---------- */
+const THEMES = ['blocks', 'shooter', 'football', 'racing', 'horror', 'fantasy', 'city', 'space', 'battle', 'cartoon'];
+const G = (name, ar, aliases, theme, colors, emoji, titles) => ({ name, ar, aliases, theme, colors, emoji, titles });
+const GAMES = [
+  G('Minecraft', 'ماينكرافت', ['minecraft', 'ماينكرافت', 'ماين كرافت', 'ماين'], 'blocks', ['#1d3b17', '#5fae3a', '#8bd3ff'], ['⛏️', '😱'], ['عشت *100 يوم* في ماينكرافت', 'بنيت *أكبر بيت* بالعالم', 'نجوت في *الهاردكور*', 'جربت *أغرب* سيدات']),
+  G('Fortnite', 'فورتنايت', ['fortnite', 'فورتنايت', 'فورت نايت', 'فورت'], 'battle', ['#1a1446', '#7b4dff', '#ffd23f'], ['👑', '🔥'], ['فزت *بدون* ما أقتل أحد', '*أقوى* سلاح في السيزون', 'تحدي *الصندوق الذهبي*', 'أول *فوز* في السيزون الجديد']),
+  G('EA SPORTS FC', 'فيفا', ['fifa', 'ea fc', 'fc 25', 'fc 26', 'fc25', 'fc26', 'فيفا', 'اف سي', 'إي إيه إف سي'], 'football', ['#0b2a1a', '#16a34a', '#e8ff3a'], ['⚽', '🏆'], ['فتحت *بكجات* بمليون', 'بنيت *أقوى* تشكيلة', '*أفضل* خطة في التحديث', 'لعبت ضد *محترف*']),
+  G('eFootball', 'بيس', ['efootball', 'pes', 'بيس', 'اي فوتبول', 'إي فوتبول'], 'football', ['#0a1f3d', '#1d6fe0', '#9cff57'], ['⚽', '🔥'], ['فتحت *بكجات* الأساطير', '*أقوى* تشكيلة في بيس', 'هدف *ما ينصدق*', 'تحدي *ضد* المحترفين']),
+  G('GTA', 'قراند', ['gta', 'gta v', 'gta 5', 'gta 6', 'gta vi', 'grand theft auto', 'قراند', 'جي تي اي', 'قراند 5', 'قراند 6', 'جراند'], 'city', ['#2a0f3d', '#ff4fa3', '#ffb347'], ['🚓', '💰'], ['هربت من *الشرطة* 5 نجوم', 'سرقت *أغلى* سيارة', 'يوم *كامل* في لوس سانتوس', '*أسرار* ما تعرفها']),
+  G('Call of Duty', 'كود', ['call of duty', 'cod', 'warzone', 'black ops', 'كود', 'كول اوف ديوتي', 'وورزون', 'بلاك اوبس'], 'shooter', ['#15150f', '#8a7a45', '#ff6a00'], ['🎯', '🔥'], ['*30 قتلة* في قيم واحد', '*أقوى* كلاس في السيزون', 'فزت *لوحدي* ضد سكوادات', 'نوك *ما ينصدق*']),
+  G('VALORANT', 'فالورانت', ['valorant', 'فالورانت', 'فالو'], 'shooter', ['#0f1923', '#ff4655', '#ece8e1'], ['🎯', '💯'], ['*إيس* ما ينصدق', '*أفضل* إيجنت للمبتدئين', 'وصلت *ريدينت*', 'كلتش *1 ضد 5*']),
+  G('Counter-Strike 2', 'كاونتر', ['cs2', 'cs', 'counter strike', 'csgo', 'كاونتر', 'كاونتر سترايك', 'سي اس'], 'shooter', ['#17150f', '#de9b35', '#5d79ae'], ['🎯', '💣'], ['*إيس* بالديقل', 'كلتش *1 ضد 4*', '*أقوى* سمارتات', 'فتحت *صناديق* بألف']),
+  G('PUBG', 'ببجي', ['pubg', 'pubg mobile', 'ببجي', 'بوبجي', 'ببجي موبايل'], 'battle', ['#1c1a12', '#f2a900', '#ffffff'], ['🍗', '🔥'], ['*عشاء دجاج* لوحدي', '*أقوى* سلاح في ببجي', 'نزلت *بوتشينكي*', '*20 قتلة* سولو سكواد']),
+  G('Free Fire', 'فري فاير', ['free fire', 'freefire', 'فري فاير', 'فري فاير ماكس', 'فري'], 'battle', ['#1a0d05', '#ff7a00', '#ffd23f'], ['🔥', '💎'], ['*بوياه* لوحدي', '*أقوى* شخصية في فري فاير', '*هيدشوت* بس', 'تحدي *الألماس*']),
+  G('Apex Legends', 'أبكس', ['apex', 'apex legends', 'ابكس', 'أبكس'], 'battle', ['#1a0a0a', '#da292a', '#f5f5f5'], ['🔥', '👑'], ['*20 بوم* بقيم واحد', '*أقوى* ليجند', 'فزت *بسلاح واحد*', 'وصلت *بريداتور*']),
+  G('Roblox', 'روبلوكس', ['roblox', 'روبلوكس', 'روبلكس'], 'cartoon', ['#1b1b3a', '#e2231a', '#00b2ff'], ['😂', '😱'], ['جربت *أصعب* ماب', 'هربت من *السجن*', '*أغرب* ألعاب روبلوكس', 'صرت *أغنى* لاعب']),
+  G('Among Us', 'أمونق أس', ['among us', 'امونق اس', 'امونج اس', 'أمونق أس'], 'space', ['#0b0f2a', '#c51111', '#38fedc'], ['👀', '😱'], ['صرت *إمبوستر* 10 مرات', '*كشفته* من أول دقيقة', '*أذكى* إمبوستر', 'خدعت *الكل*']),
+  G('Rocket League', 'روكيت ليق', ['rocket league', 'روكيت ليق', 'روكت ليق', 'روكيت'], 'racing', ['#0b1440', '#1e90ff', '#ff8c00'], ['🚗', '⚽'], ['*أقوى* هدف جوي', 'وصلت *SSL*', 'ترك *ما ينصدق*', 'تحدي *الهدف الذهبي*']),
+  G('Need for Speed', 'نيد فور سبيد', ['need for speed', 'nfs', 'نيد فور سبيد', 'نيد'], 'racing', ['#0a0a14', '#00e5ff', '#ff2bd6'], ['🏎️', '🔥'], ['*أسرع* سيارة باللعبة', 'هربت من *الشرطة*', 'عدلت سيارة *بمليون*', 'سباق *ما ينصدق*']),
+  G('Forza Horizon', 'فورزا', ['forza', 'forza horizon', 'فورزا', 'فورزا هورايزن'], 'racing', ['#1a0b2e', '#ff3d7f', '#ffd166'], ['🏎️', '💯'], ['*أسرع* سيارة في فورزا', 'عدلت سيارة *بمليون*', 'سباق *ما ينصدق*', '*أفضل* تيونق']),
+  G('Fall Guys', 'فول قايز', ['fall guys', 'فول قايز', 'فول غايز'], 'cartoon', ['#3b1a6b', '#ff5fb7', '#ffe14d'], ['😂', '👑'], ['فزت *بالتاج* أخيراً', '*أصعب* جولة', 'تحدي *ما أطيح*', 'ضحك *ما وقف*']),
+  G('Brawl Stars', 'براول ستارز', ['brawl stars', 'براول ستارز', 'براول'], 'cartoon', ['#0e1a5c', '#ffcc00', '#ff3b3b'], ['🔥', '🏆'], ['فتحت *ميقا بوكس*', '*أقوى* براولر', 'وصلت *50 ألف* كأس', 'تحدي *ما أخسر*']),
+  G('Clash Royale', 'كلاش رويال', ['clash royale', 'كلاش رويال', 'كلاش'], 'fantasy', ['#0d2a5c', '#3d8cff', '#ffcc00'], ['👑', '🔥'], ['*أقوى* ديك في الموسم', 'وصلت *الأبطال*', 'فتحت *صناديق* أسطورية', 'ديك *ما يخسر*']),
+  G('Elden Ring', 'إلدن رينق', ['elden ring', 'الدن رينق', 'إلدن رينق', 'الدن رنق'], 'fantasy', ['#14110b', '#c9a24a', '#e8dcc0'], ['⚔️', '💀'], ['هزمت *أصعب* بوس', '*مليون* روح في ساعة', 'بلد *ما يموت*', 'خلصتها *بدون* ما أموت']),
+  G('God of War', 'قود أوف وار', ['god of war', 'قود اوف وار', 'غود اوف وار'], 'fantasy', ['#1a0d0a', '#b8261b', '#e6d3b3'], ['⚔️', '🔥'], ['هزمت *أصعب* بوس', '*أسرار* القصة', 'خلصتها على *أصعب* مستوى', 'كريتوس *ضد* ثور']),
+  G('Genshin Impact', 'قنشن', ['genshin', 'genshin impact', 'قنشن', 'جنشن', 'غنشن'], 'fantasy', ['#14203d', '#7ec8e3', '#f5d76e'], ['✨', '😱'], ['سحبت *شخصية* أسطورية', '*أقوى* تيم', 'فتحت *100 سحبة*', 'ماب *سري*']),
+  G('League of Legends', 'ليق', ['league of legends', 'lol', 'ليق اوف ليجندز', 'ليق', 'لول'], 'fantasy', ['#0a1428', '#c89b3c', '#0ac8b9'], ['⚔️', '👑'], ['*بنتا كيل* ما ينصدق', '*أقوى* شامبيون', 'وصلت *تشالنجر*', 'كمباك *مستحيل*']),
+  G('Overwatch 2', 'أوفرواتش', ['overwatch', 'overwatch 2', 'اوفرواتش', 'أوفرواتش'], 'shooter', ['#1b1f2a', '#f99e1a', '#ffffff'], ['🎯', '🔥'], ['*بوتق* ما ينصدق', '*أقوى* هيرو', 'كاري *لوحدي*', 'وصلت *قراند ماستر*']),
+  G('Resident Evil', 'ريزدنت إيفل', ['resident evil', 'ريزدنت ايفل', 'رزدنت ايفل', 'ريزدنت', 'بايوهازرد'], 'horror', ['#0a0606', '#8b0000', '#d9d0c1'], ['😱', '💀'], ['*لا تلعبها* بالليل', '*أصعب* مطاردة', 'خلصتها *بسكين* بس', '*أسرار* القصة']),
+  G('The Last of Us', 'ذا لاست أوف أس', ['the last of us', 'last of us', 'tlou', 'ذا لاست اوف اس', 'لاست اوف اس'], 'horror', ['#0b0f0a', '#5a7a3a', '#e3d9b8'], ['😢', '💀'], ['*أقوى* لحظة في القصة', 'خلصتها على *أصعب* مستوى', '*ما توقعت* النهاية', 'نجوت *بدون* سلاح']),
+  G('Five Nights at Freddy\'s', 'فناف', ['fnaf', 'five nights at freddys', 'فناف', 'فريدي'], 'horror', ['#0a0a0a', '#7a3cff', '#ffd23f'], ['😱', '👀'], ['*ما نمت* بعدها', 'نجوت *5 ليالي*', '*أخوف* لحظة', 'لا تلعبها *لحالك*']),
+  G('Marvel\'s Spider-Man', 'سبايدرمان', ['spider-man', 'spiderman', 'spider man', 'سبايدرمان', 'سبايدر مان'], 'city', ['#0d0f2b', '#d1121e', '#2b5cff'], ['🕷️', '🔥'], ['*أقوى* بدلة', 'هزمت *فينوم*', 'طرت فوق *نيويورك*', '*أسرار* المدينة']),
+  G('Subway Surfers', 'صب واي', ['subway surfers', 'صب واي', 'سب واي', 'صبواي'], 'cartoon', ['#0b3d91', '#ffb703', '#ff006e'], ['🏃', '💰'], ['ركضت *ساعة كاملة*', '*أعلى* سكور', 'جمعت *مليون* عملة', 'تحدي *ما أطيح*']),
+];
+const norm = s => String(s || '').toLowerCase().replace(/[ً-ْـ]/g, '').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[^\p{L}\p{N}]+/gu, '');
+function findGame(q) {
+  const n = norm(q); if (!n) return null;
+  let best = null, score = 0;
+  for (const g of GAMES) for (const a of g.aliases.concat(g.name, g.ar)) {
+    const an = norm(a); let sc = 0;
+    if (an === n) sc = 100 + an.length;
+    else if (n.length >= 3 && an.length >= 3 && (n.includes(an) || an.includes(n))) sc = Math.min(an.length, n.length);
+    if (sc > score) { score = sc; best = g; }
+  }
+  return best;
+}
+const genericTitles = ar => [`جربت *${ar}* لأول مرة`, `*أقوى* لحظات ${ar}`, `${ar}: *أسرار* ما تعرفها`, `تحدي *مستحيل* في ${ar}`];
+
+const hrnd = i => { const x = Math.sin(i * 91.7 + 17.3) * 43758.5453; return x - Math.floor(x); };
+const tint = (h, k) => { const n = parseInt(h.slice(1), 16); const f = v => clamp(Math.round(k < 0 ? v * (1 + k) : v + (255 - v) * k), 0, 255); return `rgb(${f(n >> 16 & 255)},${f(n >> 8 & 255)},${f(n & 255)})`; };
+const alpha = (h, a) => { const n = parseInt(h.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; };
+const glowAt = (c, x, y, r, col, a) => { const g = c.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, alpha(col, a)); g.addColorStop(1, alpha(col, 0)); c.fillStyle = g; c.fillRect(x - r, y - r, r * 2, r * 2); };
+// side of the frame away from the title, where the theme's focal object goes
+const focalX = () => S.layout === 'left' ? W * .78 : S.layout === 'right' ? W * .24 : W * .5;
+
+function drawTheme(c, theme, [d, m, a]) {
+  c.save();
+  const fx = focalX();
+  const vg = (top, bot) => { const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, top); g.addColorStop(1, bot); c.fillStyle = g; c.fillRect(0, 0, W, H); };
+  if (theme === 'blocks') {
+    vg(tint(a, -.1), tint(a, .45));
+    c.fillStyle = '#ffe680'; c.fillRect(fx - 50, 70, 100, 100);
+    c.fillStyle = 'rgba(255,255,255,.92)';
+    for (let i = 0; i < 5; i++) { const x = hrnd(i) * W, y = 40 + hrnd(i + 9) * 140; for (let k = 0; k < 4; k++) c.fillRect(x + k * 40, y + (k % 2) * 20, 60, 40); }
+    const B = 64;
+    for (let col = 0; col * B < W; col++) {
+      const h = 3 + Math.round(2.2 * Math.sin(col * .55) + 1.4 * Math.sin(col * 1.3 + 2));
+      for (let r = 0; r < h + 4; r++) {
+        const y = H - (h - r) * B - B * 1.2, x = col * B;
+        const base = r === 0 ? m : r < 3 ? '#7a5230' : '#6b6b6b';
+        c.fillStyle = base; c.fillRect(x, y, B, B);
+        for (let p = 0; p < 16; p++) { c.fillStyle = hrnd(col * 31 + r * 7 + p) > .5 ? 'rgba(255,255,255,.12)' : 'rgba(0,0,0,.14)'; c.fillRect(x + (p % 4) * 16, y + Math.floor(p / 4) * 16, 16, 16); }
+        if (r === 0) { c.fillStyle = '#7a5230'; for (let p = 0; p < 4; p++) if (hrnd(col + p) > .4) c.fillRect(x + p * 16, y + 40, 16, 24); }
+      }
+    }
+  } else if (theme === 'shooter') {
+    const g = c.createRadialGradient(fx, H * .5, 0, fx, H * .5, W * .8); g.addColorStop(0, tint(m, -.35)); g.addColorStop(1, d); c.fillStyle = g; c.fillRect(0, 0, W, H);
+    for (let i = 0; i < 40; i++) glowAt(c, hrnd(i) * W, hrnd(i + 50) * H, 80 + hrnd(i + 3) * 160, '#ffffff', .05);
+    c.strokeStyle = alpha(m, .25); c.lineWidth = 1;
+    for (let x = -H; x < W; x += 40) { c.beginPath(); c.moveTo(x, H); c.lineTo(x + H, 0); c.stroke(); }
+    c.lineCap = 'round';
+    for (let i = 0; i < 9; i++) {
+      const y = 60 + hrnd(i + 20) * (H - 120), x0 = hrnd(i + 30) * W * .6, len = 200 + hrnd(i + 40) * 400;
+      const tg = c.createLinearGradient(x0, y, x0 + len, y - len * .18); tg.addColorStop(0, alpha(a, 0)); tg.addColorStop(1, alpha(a, .9));
+      c.strokeStyle = tg; c.lineWidth = 3 + hrnd(i) * 3; c.beginPath(); c.moveTo(x0, y); c.lineTo(x0 + len, y - len * .18); c.stroke();
+    }
+    c.shadowColor = a; c.shadowBlur = 30; c.strokeStyle = a; c.lineWidth = 8;
+    const R = 150, cy = H * .5;
+    c.beginPath(); c.arc(fx, cy, R, 0, Math.PI * 2); c.stroke();
+    c.lineWidth = 6; for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { c.beginPath(); c.moveTo(fx + dx * (R + 40), cy + dy * (R + 40)); c.lineTo(fx + dx * 45, cy + dy * 45); c.stroke(); }
+    c.fillStyle = a; c.beginPath(); c.arc(fx, cy, 8, 0, Math.PI * 2); c.fill(); c.shadowBlur = 0;
+  } else if (theme === 'football') {
+    const hz = H * .36;
+    vg(tint(d, -.3), d);
+    for (let i = 0; i < 6; i++) { const lx = W * (i + .5) / 6; glowAt(c, lx, 50, 160, '#ffffff', .5); c.fillStyle = '#fff'; c.beginPath(); c.arc(lx, 50, 10, 0, Math.PI * 2); c.fill(); }
+    for (let i = 0; i < 500; i++) { c.fillStyle = `hsla(${hrnd(i) * 360},60%,${40 + hrnd(i + 1) * 30}%,.6)`; c.fillRect(hrnd(i + 2) * W, hz - 120 + hrnd(i + 3) * 110, 4, 4); }
+    const vx = W / 2;
+    for (let i = -10; i < 10; i++) {
+      c.fillStyle = i % 2 ? m : tint(m, -.18);
+      c.beginPath(); c.moveTo(vx + i * 60, hz); c.lineTo(vx + (i + 1) * 60, hz); c.lineTo(vx + (i + 1) * 260, H); c.lineTo(vx + i * 260, H); c.closePath(); c.fill();
+    }
+    c.strokeStyle = 'rgba(255,255,255,.85)'; c.lineWidth = 6;
+    c.beginPath(); c.moveTo(0, hz + 2); c.lineTo(W, hz + 2); c.stroke();
+    c.beginPath(); c.ellipse(vx, H * .68, 300, 90, 0, 0, Math.PI * 2); c.stroke();
+    c.beginPath(); c.moveTo(vx, hz); c.lineTo(vx, H); c.stroke();
+    glowAt(c, fx, H * .55, 260, a, .35);
+  } else if (theme === 'racing') {
+    vg(d, tint(d, .12));
+    glowAt(c, W / 2, H * .38, 500, m, .45);
+    const hz = H * .4, vx = W / 2;
+    c.fillStyle = '#1b1c20'; c.beginPath(); c.moveTo(vx - 40, hz); c.lineTo(vx + 40, hz); c.lineTo(W + 200, H); c.lineTo(-200, H); c.closePath(); c.fill();
+    c.shadowBlur = 25;
+    for (const [side, col] of [[-1, m], [1, a]]) { c.shadowColor = col; c.strokeStyle = col; c.lineWidth = 8; c.beginPath(); c.moveTo(vx + side * 40, hz); c.lineTo(vx + side * (W / 2 + 200), H); c.stroke(); }
+    c.shadowBlur = 0; c.fillStyle = 'rgba(255,255,255,.85)';
+    for (let k = 0; k < 7; k++) { const t0 = Math.pow(k / 7, 1.8), t1 = Math.pow((k + .5) / 7, 1.8); const y0 = hz + (H - hz) * t0, y1 = hz + (H - hz) * t1, w0 = 3 + 14 * t0, w1 = 3 + 14 * t1; c.beginPath(); c.moveTo(vx - w0, y0); c.lineTo(vx + w0, y0); c.lineTo(vx + w1, y1); c.lineTo(vx - w1, y1); c.closePath(); c.fill(); }
+    for (let i = 0; i < 40; i++) { const y = hrnd(i) * H, len = 150 + hrnd(i + 1) * 500, x = hrnd(i + 2) * W; c.fillStyle = alpha(hrnd(i + 3) > .5 ? m : a, .25 + hrnd(i + 4) * .4); c.fillRect(x, y, len, 2 + hrnd(i + 5) * 3); }
+  } else if (theme === 'horror') {
+    vg(tint(d, .06), d);
+    const mx = fx, my = 150;
+    glowAt(c, mx, my, 260, a, .35); c.fillStyle = tint(a, .2); c.beginPath(); c.arc(mx, my, 80, 0, Math.PI * 2); c.fill();
+    c.fillStyle = alpha(m, .25); c.beginPath(); c.arc(mx + 22, my - 10, 80, 0, Math.PI * 2); c.fill();
+    c.strokeStyle = '#030303'; c.lineCap = 'round';
+    const tree = (x, y, len, ang, w, depth) => { if (depth === 0) return; const x2 = x + Math.cos(ang) * len, y2 = y + Math.sin(ang) * len; c.lineWidth = w; c.beginPath(); c.moveTo(x, y); c.lineTo(x2, y2); c.stroke(); tree(x2, y2, len * .72, ang - .45 - hrnd(depth + x) * .2, w * .65, depth - 1); tree(x2, y2, len * .7, ang + .4 + hrnd(depth + y) * .2, w * .65, depth - 1); };
+    tree(W * .08, H, 170, -Math.PI / 2 - .1, 26, 7); tree(W * .93, H, 150, -Math.PI / 2 + .15, 22, 7);
+    for (let i = 0; i < 6; i++) { const g = c.createLinearGradient(0, H * (.55 + i * .07), 0, H); g.addColorStop(0, 'rgba(160,160,160,0)'); g.addColorStop(1, 'rgba(160,160,160,.12)'); c.fillStyle = g; c.fillRect(0, H * (.55 + i * .07), W, H); }
+    c.strokeStyle = alpha(m, .5); c.lineWidth = 3;
+    for (let i = 0; i < 4; i++) { const x = fx - 120 + i * 50; c.beginPath(); c.moveTo(x, H * .55); c.lineTo(x + 60, H * .85); c.stroke(); }
+    const rv = c.createRadialGradient(W / 2, H / 2, H * .3, W / 2, H / 2, W * .7); rv.addColorStop(0, 'rgba(0,0,0,0)'); rv.addColorStop(1, alpha(m, .55)); c.fillStyle = rv; c.fillRect(0, 0, W, H);
+  } else if (theme === 'fantasy') {
+    vg(d, tint(m, -.2));
+    glowAt(c, fx, H * .4, 380, a, .5); c.fillStyle = tint(a, .3); c.beginPath(); c.arc(fx, H * .4, 95, 0, Math.PI * 2); c.fill();
+    for (let i = 0; i < 90; i++) { c.fillStyle = alpha(a, .3 + hrnd(i) * .6); const s = 1 + hrnd(i + 1) * 3; c.fillRect(hrnd(i + 2) * W, hrnd(i + 3) * H * .7, s, s); }
+    [[.55, .45, -.35], [.68, .7, -.55], [.8, 1, -.75]].forEach(([base, amp, k], li) => {
+      c.fillStyle = tint(d, k); c.beginPath(); c.moveTo(0, H);
+      for (let x = 0; x <= W; x += 40) c.lineTo(x, H * base - Math.abs(Math.sin(x * .004 + li * 2)) * 160 * amp - hrnd(x + li) * 30);
+      c.lineTo(W, H); c.closePath(); c.fill();
+    });
+  } else if (theme === 'city') {
+    const g = c.createLinearGradient(0, 0, 0, H * .75); g.addColorStop(0, d); g.addColorStop(.55, m); g.addColorStop(1, a); c.fillStyle = g; c.fillRect(0, 0, W, H);
+    const sx = fx, sy = H * .55, R = 170;
+    c.save(); c.beginPath(); c.arc(sx, sy, R, 0, Math.PI * 2); c.clip();
+    const sg = c.createLinearGradient(0, sy - R, 0, sy + R); sg.addColorStop(0, '#ffe680'); sg.addColorStop(1, a); c.fillStyle = sg; c.fillRect(sx - R, sy - R, R * 2, R * 2);
+    c.fillStyle = m; for (let k = 0; k < 6; k++) c.fillRect(sx - R, sy + k * 26, R * 2, 6 + k * 2);
+    c.restore();
+    for (let i = 0; i < 26; i++) {
+      const bw = 50 + hrnd(i) * 70, bh = 120 + hrnd(i + 7) * 300, x = i * (W / 24) - 20, y = H - bh;
+      c.fillStyle = '#0b0712'; c.fillRect(x, y, bw, bh);
+      for (let wy = y + 14; wy < H - 10; wy += 22) for (let wx = x + 8; wx < x + bw - 10; wx += 16) if (hrnd(wx * 3 + wy) > .62) { c.fillStyle = alpha(hrnd(wx + wy) > .5 ? a : '#ffe680', .85); c.fillRect(wx, wy, 7, 10); }
+    }
+  } else if (theme === 'space') {
+    c.fillStyle = d; c.fillRect(0, 0, W, H);
+    glowAt(c, W * .3, H * .3, 500, m, .35); glowAt(c, W * .75, H * .7, 450, a, .25);
+    for (let i = 0; i < 260; i++) { c.fillStyle = `rgba(255,255,255,${.3 + hrnd(i) * .7})`; const s = hrnd(i + 1) > .95 ? 3 : 1.5; c.fillRect(hrnd(i + 2) * W, hrnd(i + 3) * H, s, s); }
+    const px = fx, py = H * .58, R = 150;
+    const pg = c.createRadialGradient(px - 50, py - 50, 10, px, py, R); pg.addColorStop(0, tint(m, .35)); pg.addColorStop(1, tint(m, -.55));
+    c.strokeStyle = alpha(a, .8); c.lineWidth = 12;
+    c.beginPath(); c.ellipse(px, py, R * 1.7, R * .4, -.3, Math.PI, Math.PI * 2); c.stroke();
+    c.fillStyle = pg; c.beginPath(); c.arc(px, py, R, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.ellipse(px, py, R * 1.7, R * .4, -.3, 0, Math.PI); c.stroke();
+  } else if (theme === 'battle') {
+    vg(tint(d, .1), d);
+    for (let i = 0; i < 30; i++) glowAt(c, hrnd(i) * W, hrnd(i + 9) * H * .6, 120 + hrnd(i + 4) * 200, m, .12);
+    c.save(); c.shadowColor = m; c.shadowBlur = 40; c.strokeStyle = alpha(m, .9); c.lineWidth = 10;
+    c.beginPath(); c.ellipse(fx, H * .78, 420, 150, 0, Math.PI * 1.05, Math.PI * 1.95); c.stroke(); c.restore();
+    c.fillStyle = tint(d, -.4); c.beginPath(); c.moveTo(0, H);
+    for (let x = 0; x <= W; x += 30) c.lineTo(x, H * .82 - Math.sin(x * .006) * 40 - hrnd(x) * 12);
+    c.lineTo(W, H); c.closePath(); c.fill();
+    const bolt = (x, y, seed) => { c.beginPath(); c.moveTo(x, y); let cx = x, cy = y; for (let k = 0; k < 7; k++) { cx += (hrnd(seed + k) - .5) * 90; cy += 55; c.lineTo(cx, cy); } c.stroke(); };
+    c.save(); c.shadowColor = a; c.shadowBlur = 30; c.strokeStyle = '#fff'; c.lineWidth = 5; c.lineJoin = 'round';
+    bolt(fx - 60, 0, 3); c.lineWidth = 3; bolt(fx + 120, 0, 11); c.restore();
+  } else {
+    const cx = fx, cy = H * .5;
+    c.fillStyle = m; c.fillRect(0, 0, W, H);
+    c.save(); c.translate(cx, cy); c.fillStyle = tint(m, .18);
+    for (let i = 0; i < 16; i++) { c.rotate(Math.PI * 2 / 16); c.beginPath(); c.moveTo(0, 0); c.lineTo(W * 1.2, -110); c.lineTo(W * 1.2, 110); c.closePath(); c.fill(); }
+    c.restore();
+    glowAt(c, cx, cy, 300, '#ffffff', .35);
+    for (let i = 0; i < 60; i++) { c.save(); c.translate(hrnd(i) * W, hrnd(i + 1) * H); c.rotate(hrnd(i + 2) * 6); c.fillStyle = [a, '#ffffff', d, tint(a, .4)][i % 4]; c.fillRect(-9, -5, 18, 10); c.restore(); }
+    c.fillStyle = '#fff';
+    for (let i = 0; i < 9; i++) { c.beginPath(); c.arc(i * 160 + 40, H + 20, 110 + hrnd(i) * 40, 0, Math.PI * 2); c.fill(); }
+  }
+  c.restore();
+}
+
+function drawLogo(c, el) {
+  const txt = (el.text || '').toUpperCase();
+  if (!txt) { el.bounds = null; return; }
+  const latin = !/[؀-ۿ]/.test(txt), fam = latin ? '"Anton", "Changa", sans-serif' : '"Cairo", "IBM Plex Sans Arabic", sans-serif';
+  let fs = 96 * el.scale;
+  c.save(); c.font = `${latin ? 400 : 900} ${fs}px ${fam}`;
+  const maxW = (S.layout === 'center' || S.layout === 'bottom' ? W * .8 : W * .55);
+  let tw = c.measureText(txt).width;
+  if (tw > maxW) { fs *= maxW / tw; c.font = `${latin ? 400 : 900} ${fs}px ${fam}`; tw = maxW; }
+  c.translate(el.x, el.y); c.rotate(el.rot * Math.PI / 180);
+  const x0 = el.align === 'center' ? -tw / 2 : -tw;
+  c.textAlign = 'left'; c.textBaseline = 'middle'; c.direction = 'ltr'; c.lineJoin = 'round';
+  const [, m, a] = S.gameColors || ['#000', '#f2b33d', '#ffffff'];
+  c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 24; c.shadowOffsetY = 10;
+  c.lineWidth = fs * .16; c.strokeStyle = '#000'; c.strokeText(txt, x0, 0);
+  c.shadowColor = 'transparent';
+  c.lineWidth = fs * .07; c.strokeStyle = m; c.strokeText(txt, x0, 0);
+  const g = c.createLinearGradient(0, -fs / 2, 0, fs / 2); g.addColorStop(0, '#ffffff'); g.addColorStop(.55, '#ffffff'); g.addColorStop(1, tint(a, -.05));
+  c.fillStyle = g; c.fillText(txt, x0, 0);
+  c.restore();
+  el.bounds = { x0: el.x + x0 - 12, x1: el.x + x0 + tw + 12, y0: el.y - fs * .6, y1: el.y + fs * .6 };
+}
+
+let sampler = null;
+if (window.claude && window.claude.use) window.claude.use('sample').then(s => sampler = s).catch(() => {});
+function showTitles(list) {
+  const box = $('#gameTitles'); box.innerHTML = ''; box.hidden = !list.length;
+  for (const t of list) {
+    const b = document.createElement('button'); b.type = 'button';
+    t.split(/(\*[^*]+\*)/).forEach(part => { if (/^\*[^*]+\*$/.test(part)) { const mk = document.createElement('mark'); mk.textContent = part.slice(1, -1); b.appendChild(mk); } else if (part) b.appendChild(document.createTextNode(part)); });
+    b.onclick = () => { S.text = twoLines(t); $('#txt').value = S.text; persist(); draw(); };
+    box.appendChild(b);
+  }
+}
+function applyGame(g) {
+  S.theme = THEMES.includes(g.theme) ? g.theme : 'battle';
+  S.gameColors = g.colors; S.gameName = g.name;
+  const lumOf = h => { const n = parseInt(h.slice(1), 16); return .2126 * (n >> 16 & 255) + .7152 * (n >> 8 & 255) + .0722 * (n & 255); };
+  S.hi = lumOf(g.colors[2]) > 120 ? g.colors[2] : lumOf(g.colors[1]) > 120 ? g.colors[1] : '#ffe14d';
+  S.rays = false; S.shade = true;
+  $('#raysOn').checked = false; $('#shadeOn').checked = true;
+  const titles = (g.titles && g.titles.length ? g.titles : genericTitles(g.ar || g.name)).slice(0, 4);
+  S.text = twoLines(titles[0]); $('#txt').value = S.text;
+  els = els.filter(e => e.type !== 'logo' && e.type !== 'sticker');
+  const ti = els.findIndex(e => e.type === 'text');
+  els.splice(ti, 0, { type: 'logo', text: g.name, x: 0, y: 0, scale: 1, rot: 0 });
+  if (!els.some(e => e.type === 'cutout') && g.emoji && g.emoji[0]) els.push({ type: 'sticker', kind: 'emoji:' + g.emoji[0], x: focalX(), y: H * .5, scale: 1.3, rot: -8, flip: false });
+  placeText(); allSwatches(); showTitles(titles);
+  $('#gameTip').hidden = false;
+  persist(); select(null);
+}
+// break a title into two balanced lines, never inside a *highlight*
+function twoLines(t) {
+  const toks = []; let inHi = false;
+  for (const w of t.split(/\s+/).filter(Boolean)) { const start = inHi; if ((w.match(/\*/g) || []).length % 2 === 1) inHi = !inHi; toks.push({ w, safe: !start }); }
+  if (toks.length < 3) return t;
+  const len = ws => ws.map(x => x.w.replace(/\*/g, '')).join(' ').length;
+  let best = -1, diff = Infinity;
+  for (let i = 1; i < toks.length; i++) { if (!toks[i].safe) continue; const d = Math.abs(len(toks.slice(0, i)) - len(toks.slice(i))); if (d < diff) { diff = d; best = i; } }
+  return best < 0 ? t : toks.slice(0, best).map(x => x.w).join(' ') + '\n' + toks.slice(best).map(x => x.w).join(' ');
+}
+function isHex(h) { return typeof h === 'string' && /^#[0-9a-f]{6}$/i.test(h); }
+async function recognise(q) {
+  const st = $('#gameStatus');
+  const local = findGame(q);
+  if (local) { applyGame(local); st.innerHTML = ''; st.append('تعرفت عليها: ', Object.assign(document.createElement('b'), { textContent: `${local.name} · ${local.ar}` })); return; }
+  if (!sampler) {
+    applyGame({ name: q, ar: q, theme: 'battle', colors: ['#16123a', '#7b4dff', '#ffd23f'], emoji: ['🔥'] });
+    st.textContent = 'ما عرفت هذي اللعبة، سويت لك تصميم عام باسمها. جرّب اسمها بالإنجليزي.'; return;
+  }
+  const go = $('#gameGo'); go.disabled = true; st.textContent = 'أتعرف على اللعبة…';
+  const prompt = `A YouTuber typed the name of a video game (it may be in Arabic, English, abbreviated or misspelled): "${q.slice(0, 60)}".
+Identify the game. Reply with only one JSON object, no other text:
+{"found": true, "name": "official title in English, short form", "ar": "the name Arab gamers use, in Arabic letters", "theme": one of "blocks","shooter","football","racing","horror","fantasy","city","space","battle","cartoon" (the visual world that fits the game best), "colors": ["#hex darkest background tone of the game's art", "#hex the game's main brand colour", "#hex a bright accent colour from the game"], "titles": [4 catchy YouTube thumbnail titles in Gulf Arabic dialect about this game, 2 to 5 words each, with the single most striking word or number wrapped in *asterisks*], "emoji": [2 emoji that fit the game]}
+If the text is not a video game you recognise, reply {"found": false}.`;
+  try {
+    const r = await sampler.json(prompt, { modelTier: 'quick' });
+    if (!r || !r.found || !r.name) { st.textContent = 'ما لقيت لعبة بهذا الاسم. تأكد من الكتابة أو جرّب اسمها بالإنجليزي.'; return; }
+    const colors = Array.isArray(r.colors) && r.colors.length >= 3 && r.colors.slice(0, 3).every(isHex) ? r.colors.slice(0, 3) : ['#16123a', '#7b4dff', '#ffd23f'];
+    const titles = Array.isArray(r.titles) ? r.titles.filter(t => typeof t === 'string' && t.trim()).map(t => t.trim().slice(0, 50)) : [];
+    const name = String(r.name).slice(0, 32), ar = typeof r.ar === 'string' ? r.ar.slice(0, 32) : name;
+    applyGame({ name, ar, theme: r.theme, colors, emoji: Array.isArray(r.emoji) ? r.emoji.map(String).slice(0, 2) : [], titles: titles.length ? titles : genericTitles(ar) });
+    st.innerHTML = ''; st.append('تعرفت عليها: ', Object.assign(document.createElement('b'), { textContent: `${name} · ${ar}` }));
+  } catch (e) {
+    const m = { not_granted: 'ما سمحت للصفحة تستخدم Claude، فأقدر أتعرف بس على الألعاب المشهورة اللي تحت.', sampling_disabled: 'التعرف على الألعاب الجديدة مو متاح لحسابك. جرّب لعبة من القائمة.', rate_limited: 'طلبات كثيرة، جرّب بعد شوي.', refused: 'ما قدرت أتعرف على هذا الاسم.' }[e && e.code];
+    st.textContent = m || 'صار خطأ في التعرف على اللعبة، جرّب مرة ثانية.';
+  } finally { go.disabled = false; }
+}
+$('#gameForm').addEventListener('submit', e => { e.preventDefault(); const q = $('#gameQ').value.trim(); if (q) recognise(q); else $('#gameQ').focus(); });
+['Minecraft', 'Fortnite', 'EA SPORTS FC', 'GTA', 'Call of Duty', 'Roblox', 'Free Fire', 'Resident Evil'].forEach(n => {
+  const g = GAMES.find(x => x.name === n), b = document.createElement('button'); b.type = 'button'; b.textContent = g.ar;
+  b.onclick = () => { $('#gameQ').value = g.ar; recognise(g.ar); };
+  $('#gameChips').appendChild(b);
+});
+
 /* ---------- boot: an example thumbnail, ready to edit ---------- */
 els = [{ type: 'text', x: 0, y: 0, scale: 1, rot: 0 }, { type: 'sticker', kind: 'arrow', x: W * .3, y: H * .5, scale: 1, rot: 0, flip: false }];
+if (S.theme && S.gameName) els.splice(0, 0, { type: 'logo', text: S.gameName, x: 0, y: 0, scale: 1, rot: 0 });
 placeText(); allSwatches(); draw();
 if (document.fonts) {
+  document.fonts.load('400 60px "Anton"').then(draw, () => {});
   Promise.all(FONTS.map(f => document.fonts.load(`${f.w} 60px ${f.css}`, 'أبجد')).concat(document.fonts.load('900 40px "Cairo"', 'جديد'))).then(draw, draw);
   document.fonts.ready.then(draw);
 }
