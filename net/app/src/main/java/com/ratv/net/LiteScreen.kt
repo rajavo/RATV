@@ -164,31 +164,18 @@ fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
                         }
                     }
                 }
-                item {
-                    Card {
-                        Text("٣. احجب الإعلانات والتتبّع", style = t(18, true, C.Saffron))
-                        Text(
-                            "يحجب الإعلانات وأدوات التتبّع في كل تطبيقات الشاشة قبل لا توصل، فالقوائم تفتح أسرع والنت يروح للي تشوفه. " +
-                                "القنوات والأفلام ما تتأثر.",
-                            style = t(15, color = C.Text2)
-                        )
-                        when {
-                            !Lite.adsSupported() -> Text("هذي الخاصية تحتاج أندرويد ٩ أو أحدث.", style = t(14, color = C.Text3))
-                            adsOn -> {
-                                Text("الحاجب شغّال الحين.", style = t(15, color = C.Success))
-                                Pill("طفّ الحاجب", false) { work { Lite.allowAds(context) } }
-                            }
-                            else -> Pill("احجب الإعلانات", true) { work { Lite.blockAds(context) } }
+                // The ads blocker is gone; a TV that still has it on from an older RA Net can turn it off here.
+                if (adsOn) {
+                    item {
+                        Card {
+                            Text("حاجب الإعلانات شغّال من نسخة قبل", style = t(18, true, C.Saffron))
+                            Pill("طفّه", true) { work { Lite.allowAds(context) } }
                         }
-                        Text(
-                            "إعلانات يوتيوب اللي داخل الفيديو نفسه ما تنحجب بهذي الطريقة. ولو ما اشتغل النت مع الحاجب يرجع كل شي مثل ما كان تلقائياً.",
-                            style = t(13, color = C.Text3)
-                        )
                     }
                 }
                 item {
                     Card {
-                        Text("٤. راحة العين", style = t(18, true, C.Saffron))
+                        Text("٣. راحة العين", style = t(18, true, C.Saffron))
                         Text(
                             "ألوان أدفى وإضاءة أهدى فوق كل التطبيقات، عشان عينك ما تتعب بالليل وفي المشاهدة الطويلة.",
                             style = t(15, color = C.Text2)
@@ -217,7 +204,7 @@ fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
                 }
                 item {
                     Card {
-                        Text("٥. خلّ RA Home الواجهة الأساسية", style = t(18, true, C.Saffron))
+                        Text("٤. خلّ RA Home الواجهة الأساسية", style = t(18, true, C.Saffron))
                         val replaced = prefs.homeDisabled.isNotEmpty()
                         when {
                             !homeInstalled -> Text(
@@ -243,7 +230,7 @@ fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
                 }
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        SectionTitle("٦. احذف تطبيقات المصنع الزايدة")
+                        SectionTitle("٥. احذف تطبيقات المصنع الزايدة")
                         Text(
                             "علّم على اللي ما تبيه واضغط «احذف». المعلّمة من البداية آمن حذفها. الأساسية (الإعدادات، المتجر، الواجهة، المصادر) ما تطلع هنا.",
                             style = t(14, color = C.Text2)

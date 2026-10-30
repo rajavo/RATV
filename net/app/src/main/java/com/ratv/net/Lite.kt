@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Build
 import android.provider.Settings
 import androidx.compose.ui.graphics.ImageBitmap
@@ -17,7 +16,6 @@ import dadb.Dadb
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.File
 import java.net.ConnectException
-import java.net.InetAddress
 import java.net.SocketTimeoutException
 
 class ExtraApp(val pkg: String, val label: String, val icon: ImageBitmap?, val suggested: Boolean)
@@ -179,12 +177,9 @@ object Lite {
         tv.shell("settings put global ble_scan_always_enabled 0")
     }
 
-    // ------------------------------------------------------------- ads and trackers
+    // ------------------------------------------------------------- the old ads blocker
 
-    /**
-     * Name lookups for the whole TV go to AdGuard DNS (Android's «DNS خاص»), which answers nothing for
-     * ad and tracking addresses: every app loses its ads and trackers, and the rest of the internet is untouched.
-     */
+    /** Older RA Net could send the TV's name lookups to AdGuard DNS; only turning that off is left. */
     const val AD_DNS = "dns.adguard-dns.com"
 
     fun adsSupported() = Build.VERSION.SDK_INT >= 28
@@ -195,44 +190,11 @@ object Lite {
         return runCatching { cm.getLinkProperties(cm.activeNetwork)?.privateDnsServerName == AD_DNS }.getOrDefault(false)
     }
 
-    fun blockAds(context: Context) = onTv(context, null) { tv ->
-        if (!adsSupported()) {
-            message.value = "حجب الإعلانات يحتاج أندرويد ٩ أو أحدث."
-            return@onTv
-        }
-        tv.shell("settings put global private_dns_specifier $AD_DNS")
-        tv.shell("settings put global private_dns_mode hostname")
-        message.value = "أتأكد إن النت شغّال مع الحاجب…"
-        message.value = if (dnsWorks(context)) {
-            "انحجبت الإعلانات والتتبّع في كل التطبيقات. لو موقع أو تطبيق ما اشتغل، طفّ الحاجب من هنا."
-        } else {
-            // A network that does not let it through would leave the TV with no internet at all: undo.
-            allowAdsOn(tv)
-            "شبكتك ما تسمح بالحاجب، فرجّعت النت مثل ما كان. ما تغيّر شي."
-        }
-    }
-
     fun allowAds(context: Context) = onTv(context, "انطفى حاجب الإعلانات، ورجع النت مثل ما كان.") { tv -> allowAdsOn(tv) }
 
     private fun allowAdsOn(tv: Dadb) {
         tv.shell("settings put global private_dns_mode opportunistic")
         tv.shell("settings delete global private_dns_specifier")
-    }
-
-    /** Waits for the network to take the blocker and to still reach the internet through it. */
-    private fun dnsWorks(context: Context): Boolean {
-        val cm = context.getSystemService(ConnectivityManager::class.java) ?: return false
-        repeat(20) {
-            Thread.sleep(1000)
-            val net = cm.activeNetwork ?: return@repeat
-            val lp = cm.getLinkProperties(net) ?: return@repeat
-            val caps = cm.getNetworkCapabilities(net) ?: return@repeat
-            if (lp.privateDnsServerName == AD_DNS && lp.isPrivateDnsActive &&
-                caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) &&
-                runCatching { InetAddress.getByName("connectivitycheck.gstatic.com") }.isSuccess
-            ) return true
-        }
-        return false
     }
 
     // ------------------------------------------------------------- eye comfort
