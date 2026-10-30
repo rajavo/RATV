@@ -73,6 +73,7 @@ fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
             delay(1000)
         }
     }
+    var autoClean by remember { mutableStateOf(prefs.autoClean) }
     val homeInstalled by produceState(Lite.homeInstalled(context), changes) { value = Lite.homeInstalled(context) }
     val home by produceState(Lite.currentHome(context), changes) { value = Lite.currentHome(context) }
     // Ticked apps; the suggested ones start ticked.
@@ -142,7 +143,30 @@ fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
                 }
                 item {
                     Card {
-                        Text("٢. احجب الإعلانات والتتبّع", style = t(18, true, C.Saffron))
+                        Text("٢. اضغط التطبيقات", style = t(18, true, C.Saffron))
+                        Text(
+                            "يمر على تطبيقاتك واحد ورا الثاني ويجهّزها على قد استخدامك (تفتح أسرع وتتعب الشاشة أقل)، " +
+                                "وبعدين يمسح الملفات المؤقتة لكل التطبيقات. ياخذ كم دقيقة، والتقدّم يطلع تحت.",
+                            style = t(15, color = C.Text2)
+                        )
+                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            Pill("اضغط كل التطبيقات", true) { work { Lite.packAll(context) } }
+                            Pill(if (autoClean) "المسح التلقائي: شغّال" else "المسح التلقائي: طافي", false) {
+                                autoClean = !autoClean
+                                prefs.autoClean = autoClean
+                                CleanJob.schedule(context, autoClean)
+                                Lite.message.value = if (autoClean) {
+                                    "تمام: الملفات المؤقتة تنمسح لحالها كل ٦ ساعات، مادام «تصحيح USB» شغّال."
+                                } else {
+                                    "وقف المسح التلقائي."
+                                }
+                            }
+                        }
+                    }
+                }
+                item {
+                    Card {
+                        Text("٣. احجب الإعلانات والتتبّع", style = t(18, true, C.Saffron))
                         Text(
                             "يحجب الإعلانات وأدوات التتبّع في كل تطبيقات الشاشة قبل لا توصل، فالقوائم تفتح أسرع والنت يروح للي تشوفه. " +
                                 "القنوات والأفلام ما تتأثر.",
@@ -164,7 +188,7 @@ fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
                 }
                 item {
                     Card {
-                        Text("٣. راحة العين", style = t(18, true, C.Saffron))
+                        Text("٤. راحة العين", style = t(18, true, C.Saffron))
                         Text(
                             "ألوان أدفى وإضاءة أهدى فوق كل التطبيقات، عشان عينك ما تتعب بالليل وفي المشاهدة الطويلة.",
                             style = t(15, color = C.Text2)
@@ -193,7 +217,7 @@ fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
                 }
                 item {
                     Card {
-                        Text("٤. خلّ RA Home الواجهة الأساسية", style = t(18, true, C.Saffron))
+                        Text("٥. خلّ RA Home الواجهة الأساسية", style = t(18, true, C.Saffron))
                         val replaced = prefs.homeDisabled.isNotEmpty()
                         when {
                             !homeInstalled -> Text(
@@ -219,7 +243,7 @@ fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
                 }
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        SectionTitle("٥. احذف تطبيقات المصنع الزايدة")
+                        SectionTitle("٦. احذف تطبيقات المصنع الزايدة")
                         Text(
                             "علّم على اللي ما تبيه واضغط «احذف». المعلّمة من البداية آمن حذفها. الأساسية (الإعدادات، المتجر، الواجهة، المصادر) ما تطلع هنا.",
                             style = t(14, color = C.Text2)

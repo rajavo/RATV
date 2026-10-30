@@ -73,6 +73,12 @@
                 android:resource="@xml/accessibility" />
         </service>
 
+        <!-- The automatic clean of the caches, every six hours while it is on. -->
+        <service
+            android:name=".CleanJob"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <receiver
             android:name=".BootReceiver"
             android:exported="true">

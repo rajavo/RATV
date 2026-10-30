@@ -106,6 +106,7 @@ class FocusAccessibilityService : AccessibilityService() {
 /** Turns focus mode back on after the TV restarts or RA Net is updated, if it was on. */
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
+        if (Prefs(context).autoClean) CleanJob.schedule(context, true)
         if (!Prefs(context).enabled) return
         if (VpnService.prepare(context) != null) return // the VPN request must be accepted again on the screen
         try {

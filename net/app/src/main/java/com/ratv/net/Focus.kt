@@ -71,6 +71,11 @@ class Prefs(context: Context) {
         get() = sp.getStringSet("removed", null)?.toSet() ?: emptySet()
         set(value) = sp.edit().putStringSet("removed", HashSet(value)).apply()
 
+    /** The caches are emptied every few hours on their own. */
+    var autoClean: Boolean
+        get() = sp.getBoolean("auto_clean", false)
+        set(value) = sp.edit().putBoolean("auto_clean", value).apply()
+
     /** The TV's own home screens turned off so RA Home is the home screen, to turn back on. */
     var homeDisabled: Set<String>
         get() = sp.getStringSet("home_disabled", null)?.toSet() ?: emptySet()

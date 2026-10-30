@@ -298,6 +298,38 @@ object Lite {
         }
     }
 
+    // ------------------------------------------------------------- packing the apps
+
+    /**
+     * Packs every app the viewer can open, one after the other: each is compiled ahead of time from how it is
+     * used (quicker to open, less work for the TV), then the caches of all apps are emptied.
+     */
+    fun packAll(context: Context) = onTv(context, null) { tv ->
+        val before = freeBytes()
+        val pkgs = Apps.forSettings(context).map { it.pkg }
+        pkgs.forEachIndexed { i, pkg ->
+            message.value = "يضغط ${i + 1} من ${pkgs.size}: ${Apps.label(context, pkg)}"
+            tv.shell("cmd package compile -m speed-profile $pkg")
+        }
+        message.value = "يمسح الملفات المؤقتة…"
+        tv.shell("pm trim-caches 999G")
+        val freed = (freeBytes() - before).coerceAtLeast(0) / (1024 * 1024)
+        message.value = "خلص: انضغط ${pkgs.size} تطبيق، وفضّى $freed ميجا من المساحة."
+    }
+
+    /** Empties the caches of all apps, without a word on the screen (the automatic clean). True when it ran. */
+    fun cleanQuietly(context: Context): Boolean {
+        if (!supported()) return false
+        return try {
+            Dadb.create(HOST, PORT, keys(context), 3_000, 60_000).use { tv -> tv.shell("pm trim-caches 999G") }
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun freeBytes(): Long = android.os.Environment.getDataDirectory().usableSpace
+
     /** Runs [block] on this TV's debugging service, and puts what happened in [message]. */
     private fun onTv(context: Context, done: String?, block: (Dadb) -> Unit) {
         if (!supported()) {
@@ -307,7 +339,7 @@ object Lite {
         busy.value = true
         message.value = "لو طلعت رسالة «السماح بتصحيح الأخطاء»، اختر «السماح دائماً» ثم موافق."
         try {
-            Dadb.create(HOST, PORT, keys(context), 3_000, 90_000).use { tv ->
+            Dadb.create(HOST, PORT, keys(context), 3_000, 180_000).use { tv ->
                 block(tv)
             }
             if (done != null) message.value = done
