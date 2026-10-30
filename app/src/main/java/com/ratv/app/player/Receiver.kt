@@ -57,17 +57,22 @@ private val Good = Color(0xFF4CD787)
 private val Fair = Color(0xFFF2C14E)
 private val Poor = Color(0xFFFF6B6B)
 
-/** How long the channel opened at [since] (elapsed realtime) has been watched, ticking every second. */
+/** How long a channel has played: [base] already counted, plus the time since [from] (elapsed realtime; 0 while paused), ticking every second. */
 @Composable
-fun rememberWatched(since: Long): Long {
-    val elapsed by produceState(android.os.SystemClock.elapsedRealtime() - since, since) {
-        while (true) {
-            value = android.os.SystemClock.elapsedRealtime() - since
+fun rememberWatched(base: Long, from: Long): Long {
+    fun count() = base + if (from > 0L) (android.os.SystemClock.elapsedRealtime() - from).coerceAtLeast(0L) else 0L
+    val watched by produceState(count(), base, from) {
+        value = count()
+        while (from > 0L) {
             kotlinx.coroutines.delay(1_000L)
+            value = count()
         }
     }
-    return if (since > 0L) elapsed.coerceAtLeast(0L) else 0L
+    return watched
 }
+
+/** The watching counter of a channel: what was counted while it played, and since when it plays again (0: paused). */
+class WatchClock(val base: Long, val from: Long)
 
 /** The watching counter of a live channel: "⏱ 42:15" (hours past the first one: 1:42:15). */
 fun watchedLabel(ms: Long): String = "⏱ " + com.ratv.app.ui.components.formatClock(ms)
@@ -117,7 +122,7 @@ internal fun BoxScope.ReceiverInfoBar(
     favorite: Boolean,
     signal: Float,
     quality: Float,
-    watchingSince: Long = 0L
+    watching: WatchClock? = null
 ) {
     Column(
         Modifier
@@ -206,9 +211,9 @@ internal fun BoxScope.ReceiverInfoBar(
             Column(Modifier.width(150.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(hm(now), style = T.display(30.sp, FontWeight.Bold).copy(fontFamily = FontFamily.Monospace), maxLines = 1)
                 Text(dayLabel(now), style = T.body(12.sp, color = Soft), maxLines = 1)
-                if (watchingSince > 0L) {
+                if (watching != null) {
                     Text(
-                        watchedLabel(rememberWatched(watchingSince)),
+                        watchedLabel(rememberWatched(watching.base, watching.from)),
                         style = T.body(12.sp, FontWeight.Bold, RColors.Saffron).copy(fontFamily = FontFamily.Monospace),
                         maxLines = 1
                     )

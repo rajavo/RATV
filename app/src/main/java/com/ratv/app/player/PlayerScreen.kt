@@ -221,8 +221,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // The receiver's info bar (Receiver.kt): shown on every change of channel and with the INFO key.
     var banner by remember { mutableStateOf<Channel?>(null) }
     var bannerTick by remember { mutableIntStateOf(0) }
-    // When the channel playing was opened (elapsed realtime), for the watching counter.
-    var channelSince by remember { mutableLongStateOf(0L) }
+    // The watching counter of the channel playing: time counted while it played, and since when it
+    // plays again (elapsed realtime; 0 while paused or stalled), so it stops with the picture.
+    var watchedBase by remember { mutableLongStateOf(0L) }
+    var watchedFrom by remember { mutableLongStateOf(0L) }
     // Digits typed on the remote (a channel number), and the channel watched before this one.
     var typedNumber by remember { mutableStateOf("") }
     var previousChannel by remember { mutableStateOf<Channel?>(null) }
@@ -1604,7 +1606,19 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     LaunchedEffect(item?.channel?.id) {
         banner = item?.channel
         bannerTick++
-        channelSince = if (item?.channel != null) SystemClock.elapsedRealtime() else 0L
+        watchedBase = 0L
+        watchedFrom = if (item?.channel != null && isPlaying) SystemClock.elapsedRealtime() else 0L
+    }
+
+    LaunchedEffect(isPlaying) {
+        if (item?.channel == null) return@LaunchedEffect
+        val t = SystemClock.elapsedRealtime()
+        if (isPlaying) {
+            if (watchedFrom == 0L) watchedFrom = t
+        } else if (watchedFrom > 0L) {
+            watchedBase += t - watchedFrom
+            watchedFrom = 0L
+        }
     }
 
     LaunchedEffect(banner, bannerTick) {
@@ -1919,7 +1933,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 favorite = Keys.live(zapped.id) in favorites,
                 signal = signalLevel(bandwidthBps, netTrouble),
                 quality = qualityLevel(reserveMs, buffering),
-                watchingSince = if (zapped.id == item?.channel?.id) channelSince else 0L
+                watching = if (zapped.id == item?.channel?.id) WatchClock(watchedBase, watchedFrom) else null
             )
         }
 
@@ -1964,7 +1978,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                             programmeStart = programme?.start,
                             programmeEnd = programme?.end,
                             programmeProgress = programme?.progress(now),
-                            watchingSince = channelSince,
+                            watching = if (item.isLive) WatchClock(watchedBase, watchedFrom) else null,
                             nextLabel = nextProgramme?.let { tr("التالي {0} · {1}", hm(it.start), it.title) },
                             hasTrackChoice = hasTrackChoice,
                             canPip = canPip,
@@ -2205,7 +2219,7 @@ private fun Controls(
     programmeStart: Long?,
     programmeEnd: Long?,
     programmeProgress: Float?,
-    watchingSince: Long,
+    watching: WatchClock?,
     nextLabel: String?,
     hasTrackChoice: Boolean,
     canPip: Boolean,
@@ -2345,7 +2359,7 @@ private fun Controls(
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 if (item.isLive) {
                     // How long this channel has been on, as films show their time, with the programme's bar.
-                    val watched = if (watchingSince > 0L) watchedLabel(rememberWatched(watchingSince)) else null
+                    val watched = watching?.let { watchedLabel(rememberWatched(it.base, it.from)) }
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         if (watched != null) {
                             Text(watched, style = T.body(13.sp, FontWeight.Bold, RColors.Saffron), maxLines = 1)
