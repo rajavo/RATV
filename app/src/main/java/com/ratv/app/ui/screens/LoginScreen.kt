@@ -81,6 +81,7 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ratv.app.data.Links
+import com.ratv.app.data.PhoneEntry
 import com.ratv.app.data.PhoneLink
 import com.ratv.app.data.Playlist
 import com.ratv.app.data.PlaylistType
@@ -202,14 +203,14 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
 
     // On TV, a QR code opens a page on the TV from a phone: the link pasted there fills the form.
     var phoneUrl by remember { mutableStateOf<String?>(null) }
-    var fromPhone by remember { mutableStateOf<Pair<String, String>?>(null) }
+    var fromPhone by remember { mutableStateOf<PhoneEntry?>(null) }
     var fromPhoneCount by remember { mutableStateOf(0) }
     if (tv) {
         DisposableEffect(Unit) {
             val main = android.os.Handler(android.os.Looper.getMainLooper())
-            val link = PhoneLink { l, e ->
+            val link = PhoneLink { entry ->
                 main.post {
-                    fromPhone = l to e
+                    fromPhone = entry
                     fromPhoneCount++
                 }
             }
@@ -225,19 +226,28 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
         }
     }
     LaunchedEffect(fromPhoneCount) {
-        val (link, guide) = fromPhone ?: return@LaunchedEffect
+        val entry = fromPhone ?: return@LaunchedEffect
         if (loading) return@LaunchedEffect
-        // A get.php link carries the user name and password: signed in as Xtream, with films and series.
-        val lower = link.lowercase()
-        if ("get.php" in lower && "username=" in lower && "password=" in lower) {
+        if (entry.xtream) {
+            // The subscription's details as the phone sent them: signed in as Xtream, with films and series.
             xtream = true
-            server = link
-            username = ""
-            password = ""
+            server = entry.server
+            username = entry.username
+            password = entry.password
         } else {
-            xtream = false
-            m3uUrl = link
-            epgUrl = guide
+            val link = entry.link
+            // A get.php link carries the user name and password: signed in as Xtream, with films and series.
+            val lower = link.lowercase()
+            if ("get.php" in lower && "username=" in lower && "password=" in lower) {
+                xtream = true
+                server = link
+                username = ""
+                password = ""
+            } else {
+                xtream = false
+                m3uUrl = link
+                epgUrl = entry.epg
+            }
         }
         submit()
     }
@@ -260,7 +270,7 @@ fun LoginScreen(onDone: () -> Unit, onBack: (() -> Unit)? = null) {
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(tr("أسهل: أرسل الرابط من جوالك"), style = T.body(16.sp, FontWeight.Bold))
                     Text(
-                        tr("امسح الرمز بكاميرا الجوال، والصق رابط القائمة M3U في الصفحة اللي تفتح، ويوصل للتلفزيون على طول."),
+                        tr("امسح الرمز بكاميرا الجوال، والصق رابط القائمة M3U أو اكتب بيانات الاشتراك في الصفحة اللي تفتح، ويوصل للتلفزيون على طول."),
                         style = T.body(13.sp, color = RColors.Text2).copy(lineHeight = 20.sp)
                     )
                     Text(tr("الجوال لازم يكون على نفس شبكة الواي فاي."), style = T.body(12.sp, color = RColors.Text3))
