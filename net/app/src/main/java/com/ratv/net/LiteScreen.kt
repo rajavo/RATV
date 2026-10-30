@@ -45,7 +45,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/** «خفّف الشاشة»: quicker animations, memory freed, and the factory apps the viewer does not need removed. */
+/**
+ * «خفّف الشاشة»: quicker animations and memory freed, ads and trackers blocked, a screen easier on the eyes,
+ * and the factory apps the viewer does not need removed.
+ */
 @Composable
 fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
     val context = LocalContext.current
@@ -60,6 +63,15 @@ fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
     }
     val removed by produceState(emptyList<ExtraApp>(), changes) {
         value = withContext(Dispatchers.IO) { Lite.removed(context, prefs) }
+    }
+    val adsOn by produceState(Lite.adsBlocked(context), changes) { value = Lite.adsBlocked(context) }
+    LaunchedEffect(Unit) { Comfort.load(context) }
+    val comfort by Comfort.level.collectAsState()
+    val comfortReady by produceState(Focus.accessibilityConnected) {
+        while (true) {
+            value = Focus.accessibilityConnected
+            delay(1000)
+        }
     }
     val homeInstalled by produceState(Lite.homeInstalled(context), changes) { value = Lite.homeInstalled(context) }
     val home by produceState(Lite.currentHome(context), changes) { value = Lite.currentHome(context) }
@@ -130,7 +142,58 @@ fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
                 }
                 item {
                     Card {
-                        Text("٢. خلّ RA Home الواجهة الأساسية", style = t(18, true, C.Saffron))
+                        Text("٢. احجب الإعلانات والتتبّع", style = t(18, true, C.Saffron))
+                        Text(
+                            "يحجب الإعلانات وأدوات التتبّع في كل تطبيقات الشاشة قبل لا توصل، فالقوائم تفتح أسرع والنت يروح للي تشوفه. " +
+                                "القنوات والأفلام ما تتأثر.",
+                            style = t(15, color = C.Text2)
+                        )
+                        when {
+                            !Lite.adsSupported() -> Text("هذي الخاصية تحتاج أندرويد ٩ أو أحدث.", style = t(14, color = C.Text3))
+                            adsOn -> {
+                                Text("الحاجب شغّال الحين.", style = t(15, color = C.Success))
+                                Pill("طفّ الحاجب", false) { work { Lite.allowAds(context) } }
+                            }
+                            else -> Pill("احجب الإعلانات", true) { work { Lite.blockAds(context) } }
+                        }
+                        Text(
+                            "إعلانات يوتيوب اللي داخل الفيديو نفسه ما تنحجب بهذي الطريقة. ولو ما اشتغل النت مع الحاجب يرجع كل شي مثل ما كان تلقائياً.",
+                            style = t(13, color = C.Text3)
+                        )
+                    }
+                }
+                item {
+                    Card {
+                        Text("٣. راحة العين", style = t(18, true, C.Saffron))
+                        Text(
+                            "ألوان أدفى وإضاءة أهدى فوق كل التطبيقات، عشان عينك ما تتعب بالليل وفي المشاهدة الطويلة.",
+                            style = t(15, color = C.Text2)
+                        )
+                        if (comfortReady) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                                Comfort.NAMES.forEachIndexed { level, name ->
+                                    Pill(name, level == comfort) { Comfort.set(context, level) }
+                                }
+                            }
+                        } else {
+                            Text(
+                                "تحتاج تشغيل RA Net في «إمكانية الوصول» (نفس اللي يعرف التطبيق اللي على الشاشة): زر «شغّلها» يسويها لك، " +
+                                    "أو فعّله بنفسك من الإعدادات.",
+                                style = t(14, color = C.Text3)
+                            )
+                            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                                Pill("شغّلها", true) { work { Lite.turnOnComfort(context, 2) } }
+                                Pill("من الإعدادات", false) {
+                                    if (comfort <= 0) Comfort.set(context, 2)
+                                    Lite.openAccessibility(context)
+                                }
+                            }
+                        }
+                    }
+                }
+                item {
+                    Card {
+                        Text("٤. خلّ RA Home الواجهة الأساسية", style = t(18, true, C.Saffron))
                         val replaced = prefs.homeDisabled.isNotEmpty()
                         when {
                             !homeInstalled -> Text(
@@ -156,7 +219,7 @@ fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
                 }
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        SectionTitle("٣. احذف تطبيقات المصنع الزايدة")
+                        SectionTitle("٥. احذف تطبيقات المصنع الزايدة")
                         Text(
                             "علّم على اللي ما تبيه واضغط «احذف». المعلّمة من البداية آمن حذفها. الأساسية (الإعدادات، المتجر، الواجهة، المصادر) ما تطلع هنا.",
                             style = t(14, color = C.Text2)

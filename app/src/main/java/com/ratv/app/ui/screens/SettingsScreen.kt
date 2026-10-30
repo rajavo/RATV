@@ -42,6 +42,8 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -55,6 +57,7 @@ import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -63,6 +66,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -188,13 +193,20 @@ fun SettingsScreen(nav: Navigator) {
     var checkingUpdate by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     var pinMode by remember { mutableStateOf<String?>(null) }
+    // On TV: the setting that has focus, and what the bar at the bottom says about it.
+    var focusedInfo by remember { mutableStateOf<Pair<String, String?>?>(null) }
+    val setInfo: (String, String?) -> Unit = remember { { label: String, sub: String? -> focusedInfo = label to sub } }
     val firstFocus = remember { FocusRequester() }
     TvInitialFocus(firstFocus)
 
+    Box(Modifier.fillMaxSize()) {
+    CompositionLocalProvider(LocalSettingInfo provides setInfo) {
     Column(
         Modifier
             .fillMaxSize()
             .screenBackground()
+            // On TV the bar at the bottom explains the focused setting, so the list stops above it.
+            .padding(bottom = if (onTv) 112.dp else 0.dp)
             // With the remote, up and down go to the row above or below; where the usual search finds
             // none (it happened with long translated rows), the previous or next one in order is taken.
             .onPreviewKeyEvent { e ->
@@ -522,6 +534,9 @@ fun SettingsScreen(nav: Navigator) {
             Icon(RIcons.ChevronLeft, contentDescription = null, tint = RColors.Text3, modifier = Modifier.size(18.dp))
         }
         Spacer(Modifier.height(28.dp))
+    }
+    }
+    if (onTv) SettingInfoBar(focusedInfo, Modifier.align(Alignment.BottomCenter))
     }
 
     if (showSubLang) {
@@ -1021,25 +1036,157 @@ private fun GroupTitle(text: String) {
     )
 }
 
+/** On TV, a focused setting puts its name and explanation in the bar at the bottom of the screen. */
+private val LocalSettingInfo = compositionLocalOf<(String, String?) -> Unit> { { _, _ -> } }
+
+/** A group of settings: a card with lines between the rows on a phone, a grid of tiles on TV. */
 @Composable
-private fun Group(content: @Composable ColumnScope.() -> Unit) {
-    Column(
-        Modifier
-            .padding(horizontal = 20.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(18.dp))
-            .background(RColors.Surface),
-        content = content
-    )
+private fun Group(content: @Composable () -> Unit) {
+    if (rememberIsTv()) {
+        TileGrid(Modifier.padding(horizontal = 20.dp).fillMaxWidth(), content = content)
+    } else {
+        Column(
+            Modifier
+                .padding(horizontal = 20.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(18.dp))
+                .background(RColors.Surface)
+        ) {
+            content()
+        }
+    }
+}
+
+/** Tiles of one size, three to a row (four on a very wide screen), filled from the left. */
+@Composable
+private fun TileGrid(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Layout(content = content, modifier = modifier) { measurables, constraints ->
+        val gap = 12.dp.roundToPx()
+        val columns = if (constraints.maxWidth >= 1200.dp.roundToPx()) 4 else 3
+        val tileWidth = ((constraints.maxWidth - gap * (columns - 1)) / columns).coerceAtLeast(0)
+        val tileHeight = 120.dp.roundToPx()
+        val tiles = measurables.map { it.measure(Constraints.fixed(tileWidth, tileHeight)) }
+        val rows = (tiles.size + columns - 1) / columns
+        val height = if (rows == 0) 0 else rows * tileHeight + (rows - 1) * gap
+        layout(constraints.maxWidth, height) {
+            tiles.forEachIndexed { i, tile ->
+                tile.place((i % columns) * (tileWidth + gap), (i / columns) * (tileHeight + gap))
+            }
+        }
+    }
 }
 
 @Composable
 private fun Divider() {
+    // On TV the tiles stand apart already, so no line goes between them.
+    if (rememberIsTv()) return
     HorizontalDivider(Modifier.padding(horizontal = 16.dp), color = RColors.Line)
+}
+
+/** One setting on TV: its name, its state or value, and its explanation in the bar when it has focus. */
+@Composable
+private fun SettingTile(label: String, sub: String?, value: String, checked: Boolean?, onClick: () -> Unit) {
+    val setInfo = LocalSettingInfo.current
+    val shape = RoundedCornerShape(18.dp)
+    Column(
+        Modifier
+            .fillMaxSize()
+            .clip(shape)
+            .background(RColors.Surface)
+            .onFocusChanged { if (it.isFocused) setInfo(label, sub ?: value.takeIf { v -> v.isNotBlank() }) }
+            .tvClickable(shape, role = if (checked != null) Role.Switch else Role.Button, onClick = onClick)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(label, style = T.body(15.sp, FontWeight.Bold), maxLines = 2, overflow = TextOverflow.Ellipsis)
+        if (checked != null) {
+            Text(
+                if (checked) tr("مفعّل") else tr("متوقف"),
+                style = T.body(13.sp, FontWeight.Bold, if (checked) RColors.Saffron else RColors.Text3)
+            )
+        } else if (value.isNotBlank()) {
+            Text(value, style = T.body(13.sp, color = RColors.Text2), maxLines = 2, overflow = TextOverflow.Ellipsis)
+        }
+    }
+}
+
+/** A subscription on TV: a card with its name and detail, a «متصل» mark on the one in use, and its delete button. */
+@Composable
+private fun UserTile(user: Playlist, current: Boolean, detail: String, onOpen: () -> Unit, onDelete: () -> Unit) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .clip(RoundedCornerShape(18.dp))
+            .background(RColors.Surface)
+            .padding(10.dp),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Icon(RIcons.User, contentDescription = null, tint = if (current) RColors.Saffron else RColors.Text3, modifier = Modifier.size(20.dp))
+            Spacer(Modifier.weight(1f))
+            if (current) {
+                Text(
+                    tr("متصل"),
+                    style = T.body(11.sp, FontWeight.Bold, RColors.Saffron),
+                    modifier = Modifier
+                        .border(1.dp, RColors.Saffron, RoundedCornerShape(6.dp))
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                )
+            }
+            CircleIconButton(RIcons.Close, tr("حذف {0}", user.name), onDelete)
+        }
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .tvClickable(RoundedCornerShape(12.dp), onClickLabel = tr("فتح {0}", user.name), onClick = onOpen)
+                .padding(horizontal = 6.dp, vertical = 4.dp)
+        ) {
+            Text(user.name, style = T.body(15.sp, FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(detail, style = T.body(12.5.sp, color = RColors.Text3), maxLines = 1, overflow = TextOverflow.Ellipsis)
+        }
+    }
+}
+
+/** The bar at the bottom of the TV settings: the focused setting's name and what it does. */
+@Composable
+private fun SettingInfoBar(info: Pair<String, String?>?, modifier: Modifier = Modifier) {
+    Column(
+        modifier
+            .fillMaxWidth()
+            .height(112.dp)
+            .background(RColors.Surface2)
+            .padding(horizontal = 28.dp, vertical = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Text(
+            info?.first ?: tr("اختر إعداداً لتقرأ شرحه هنا."),
+            style = T.body(16.sp, FontWeight.Bold, RColors.Saffron),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        val text = info?.second
+        if (!text.isNullOrBlank()) {
+            Text(
+                text,
+                style = T.body(14.sp, color = RColors.Text2).copy(lineHeight = 20.sp),
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
 }
 
 @Composable
 private fun ValueRow(label: String, value: String, onClick: () -> Unit) {
+    if (rememberIsTv()) {
+        SettingTile(label, null, value, null, onClick)
+        return
+    }
     Row(
         Modifier
             .fillMaxWidth()
@@ -1058,6 +1205,10 @@ private fun ValueRow(label: String, value: String, onClick: () -> Unit) {
 
 @Composable
 private fun ToggleRow(label: String, sub: String?, checked: Boolean, onChange: (Boolean) -> Unit) {
+    if (rememberIsTv()) {
+        SettingTile(label, sub, "", checked) { onChange(!checked) }
+        return
+    }
     Row(
         Modifier
             .fillMaxWidth()
@@ -1135,6 +1286,10 @@ private fun UserRow(user: Playlist, current: Boolean, onOpen: () -> Unit, onDele
         else -> Uri.parse(user.m3uUrl).host ?: user.m3uUrl
     }
     val detail = (if (user.type == PlaylistType.XTREAM && user.username.isNotBlank()) user.username + " · " else "") + source
+    if (rememberIsTv()) {
+        UserTile(user, current, detail, onOpen, onDelete)
+        return
+    }
     Row(
         Modifier
             .fillMaxWidth()

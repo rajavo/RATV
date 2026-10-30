@@ -479,7 +479,7 @@ private fun LiteCard(onClick: () -> Unit) {
     ) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text("خفّف الشاشة", style = t(18, true, C.Saffron))
-            Text("حركة أسرع، ذاكرة أفضى، وحذف تطبيقات المصنع اللي ما تحتاجها.", style = t(14, color = C.Text2))
+            Text("حركة أسرع، حجب الإعلانات والتتبّع، راحة العين، وحذف تطبيقات المصنع اللي ما تحتاجها.", style = t(14, color = C.Text2))
         }
         Spacer(Modifier.width(12.dp))
         Text(

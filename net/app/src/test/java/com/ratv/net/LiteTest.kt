@@ -1,5 +1,6 @@
 package com.ratv.net
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -31,5 +32,26 @@ class LiteTest {
             "com.tcl.waterfall.overseas",
             "tv.pluto.android"
         )) assertFalse(pkg, Lite.keep(pkg))
+    }
+
+    @Test
+    fun comfortJoinsTheAccessibilityServicesAlreadyOn() {
+        val me = "com.ratv.net/com.ratv.net.FocusAccessibilityService"
+        assertEquals(me, Lite.withService("null", me))
+        assertEquals(me, Lite.withService("", me))
+        assertEquals("a/.B:$me", Lite.withService("a/.B", me))
+        assertEquals("a/.B:$me", Lite.withService("a/.B:$me", me))
+    }
+
+    @Test
+    fun comfortIsWarmAndStrongerStepByStep() {
+        assertEquals(0, Comfort.color(0))
+        var last = 0
+        for (level in 1..3) {
+            val alpha = Comfort.color(level) ushr 24
+            assertTrue(alpha > last)
+            last = alpha
+        }
+        assertEquals(0x401C00, Comfort.color(2) and 0xFFFFFF)
     }
 }

@@ -65,7 +65,30 @@ object Kora {
 
     private fun dataUrl() = debugProperty("debug.kora.data") ?: DATA_URL
     private fun espn() = debugProperty("debug.kora.espn") ?: ESPN
+    fun espnBase() = espn()
     private fun cacheFile(context: Context) = File(context.filesDir, "fixtures.json")
+    private fun namesFile(context: Context) = File(context.filesDir, "players_ar.json")
+
+    /** Players' names in Arabic (English name → Arabic), published beside the schedule. */
+    @Volatile
+    var playerNames: Map<String, String> = emptyMap()
+        private set
+
+    /** The names kept on the device, then a fresh copy when they are older than 12 hours; never in the way of the schedule. */
+    private fun refreshNames(context: Context) {
+        val f = namesFile(context)
+        try {
+            if (playerNames.isEmpty() && f.exists()) playerNames = LineupParser.names(f.readText())
+            if (f.exists() && System.currentTimeMillis() - f.lastModified() < 12 * 60 * MIN) return
+            val text = get(dataUrl().substringBeforeLast('/') + "/players_ar.json")
+            val names = LineupParser.names(text)
+            f.writeText(text)
+            playerNames = names
+            Log.i(TAG, "players' names: ${names.size}")
+        } catch (e: Exception) {
+            Log.w(TAG, "players' names: $e")
+        }
+    }
 
     /** The schedule kept on the device, at once. */
     suspend fun loadSaved(context: Context) = withContext(Dispatchers.IO) {
@@ -85,6 +108,7 @@ object Kora {
         lock.withLock {
             loadSaved(context)
             if (!force && _schedule.value != null && System.currentTimeMillis() - _fetchedAt.value < FRESH_MS) {
+                refreshNames(context)
                 return@withLock true
             }
             _loading.value = true
@@ -99,6 +123,7 @@ object Kora {
                 _fetchedAt.value = System.currentTimeMillis()
                 _error.value = null
                 Log.i(TAG, "schedule: ${parsed.matches.size} matches, ${parsed.leagues.size} competitions")
+                refreshNames(context)
                 true
             } catch (e: Exception) {
                 Log.w(TAG, "schedule download failed: $e")
