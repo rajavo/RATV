@@ -61,6 +61,8 @@ fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
     val removed by produceState(emptyList<ExtraApp>(), changes) {
         value = withContext(Dispatchers.IO) { Lite.removed(context, prefs) }
     }
+    val homeInstalled by produceState(Lite.homeInstalled(context), changes) { value = Lite.homeInstalled(context) }
+    val home by produceState(Lite.currentHome(context), changes) { value = Lite.currentHome(context) }
     // Ticked apps; the suggested ones start ticked.
     var picked by remember { mutableStateOf<Set<String>?>(null) }
     val list = extras
@@ -127,8 +129,34 @@ fun LiteScreen(prefs: Prefs, onBack: () -> Unit) {
                     }
                 }
                 item {
+                    Card {
+                        Text("٢. خلّ RA Home الواجهة الأساسية", style = t(18, true, C.Saffron))
+                        val replaced = prefs.homeDisabled.isNotEmpty()
+                        when {
+                            !homeInstalled -> Text(
+                                "ثبّت RA Home أول (الواجهة اللي فيها مواقيت الصلاة) من الرابط:\n" + Lite.RA_HOME_LINK,
+                                style = t(15, color = C.Text2)
+                            )
+                            home == Lite.RA_HOME || replaced -> {
+                                Text("RA Home هي الواجهة الحين: تطلع لك كل ما ضغطت زر البيت.", style = t(15, color = C.Success))
+                                if (replaced) Pill("رجّع واجهة الشاشة الأصلية", false) { work { Lite.restoreHome(context, prefs) } }
+                            }
+                            else -> {
+                                Text(
+                                    "يوقف واجهة الشاشة الأصلية، وتصير RA Home هي اللي تطلع لما تضغط زر البيت. ترجع الأصلية من هنا بضغطة.",
+                                    style = t(15, color = C.Text2)
+                                )
+                                Pill("خلّها الواجهة", true) { work { Lite.makeHome(context, prefs) } }
+                            }
+                        }
+                        if (homeInstalled) {
+                            Text("لا تحذف RA Home وهي الواجهة: رجّع الأصلية من هنا أول.", style = t(13, color = C.Text3))
+                        }
+                    }
+                }
+                item {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        SectionTitle("٢. احذف تطبيقات المصنع الزايدة")
+                        SectionTitle("٣. احذف تطبيقات المصنع الزايدة")
                         Text(
                             "علّم على اللي ما تبيه واضغط «احذف». المعلّمة من البداية آمن حذفها. الأساسية (الإعدادات، المتجر، الواجهة، المصادر) ما تطلع هنا.",
                             style = t(14, color = C.Text2)

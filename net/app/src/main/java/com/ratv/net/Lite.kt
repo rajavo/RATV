@@ -114,6 +114,51 @@ object Lite {
             .map { it.activityInfo.packageName }.toSet()
     }
 
+    // ------------------------------------------------------------- RA Home as the home screen
+
+    const val RA_HOME = "com.ratv.home"
+    const val RA_HOME_LINK = "github.com/rajavo/RATV/releases/download/home-latest/RAHome.apk"
+
+    fun homeInstalled(context: Context) = runCatching { context.packageManager.getApplicationInfo(RA_HOME, 0) }.isSuccess
+
+    /** The app the remote's home button opens now. */
+    fun currentHome(context: Context): String? {
+        @Suppress("DEPRECATION")
+        return context.packageManager
+            .resolveActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), PackageManager.MATCH_DEFAULT_ONLY)
+            ?.activityInfo?.packageName
+    }
+
+    /**
+     * Makes RA Home the home screen: it is set as the preferred one, and the TV's own home screens are
+     * turned off (Google TV does not let the viewer choose another). The settings' fallback home stays.
+     */
+    fun makeHome(context: Context, prefs: Prefs) = onTv(context, null) { tv ->
+        if (!homeInstalled(context)) {
+            message.value = "ثبّت RA Home أول، وبعدين ارجع هنا."
+            return@onTv
+        }
+        tv.shell("cmd package set-home-activity $RA_HOME/.MainActivity")
+        val off = ArrayList<String>()
+        for (pkg in homeApps(context) - RA_HOME) {
+            if ("settings" in pkg.lowercase() || pkg == "android") continue
+            val out = tv.shell("pm disable-user --user 0 $pkg").allOutput
+            if (out.contains("disabled", true)) off.add(pkg)
+        }
+        prefs.homeDisabled = prefs.homeDisabled + off
+        message.value = if (currentHome(context) == RA_HOME || off.isNotEmpty()) {
+            "صارت RA Home الواجهة الأساسية. اضغط زر البيت في الريموت وبتطلع لك."
+        } else {
+            "ما قدرت أغيّر الواجهة في هذي الشاشة."
+        }
+    }
+
+    /** Turns the TV's own home screens back on. */
+    fun restoreHome(context: Context, prefs: Prefs) = onTv(context, "رجعت واجهة الشاشة الأصلية. اضغط زر البيت في الريموت.") { tv ->
+        for (pkg in prefs.homeDisabled) tv.shell("pm enable $pkg")
+        prefs.homeDisabled = emptySet()
+    }
+
     fun animationsFast(context: Context): Boolean =
         Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) < 1f
 
