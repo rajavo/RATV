@@ -551,14 +551,15 @@ private fun TvHome(
                 MenuButton(RIcons.Refresh, tr("تحديث المحتوى"), Modifier.weight(1f), onRefresh)
                 MenuButton(RIcons.Logout, tr("خروج"), Modifier.weight(1f), onExit)
             }
+            // Arabic reads right to left: the first tile of a row is the rightmost, as in the reference.
             Column(Modifier.weight(1.3f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                    MenuTile(RIcons.Film, tr("أفلام"), Modifier.weight(1f), onMovies)
                     MenuTile(RIcons.Layers, tr("مسلسلات"), Modifier.weight(1f), onSeries)
+                    MenuTile(RIcons.Film, tr("أفلام"), Modifier.weight(1f), onMovies)
                 }
                 Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                    MenuTile(RIcons.Trophy, tr("المباريات"), Modifier.weight(1f), onMatches)
                     MenuTile(RIcons.User, tr("حسابي"), Modifier.weight(1f), onAccount)
+                    MenuTile(RIcons.Trophy, tr("المباريات"), Modifier.weight(1f), onMatches)
                 }
             }
             LiveTile(Modifier.weight(1f).fillMaxHeight().focusRequester(liveFocus), onLive)
