@@ -36,6 +36,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -47,6 +49,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,6 +57,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -220,6 +224,13 @@ private fun HomeScreen(resumed: Int) {
         value = withContext(Dispatchers.IO) { Apps.load(context) }
     }
     val firstTile = remember { FocusRequester() }
+    val grid = rememberLazyGridState()
+    val scope = rememberCoroutineScope()
+    // On the first row of apps, the whole prayer card shows above it.
+    val toTop = Modifier.onFocusChanged { if (it.isFocused) scope.launch {
+            delay(60) // after the list brings the tile into view
+            grid.animateScrollToItem(0)
+        } }
     LaunchedEffect(apps != null, picking) {
         if (apps != null && !picking) {
             repeat(5) {
@@ -238,6 +249,7 @@ private fun HomeScreen(resumed: Int) {
                 Box(Modifier.padding(start = 64.dp, end = 64.dp, top = 32.dp, bottom = 4.dp)) { TopBar(day, city.name) }
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(5),
+                    state = grid,
                     modifier = Modifier.weight(1f),
                     contentPadding = PaddingValues(start = 64.dp, end = 64.dp, top = 20.dp, bottom = 36.dp),
                     horizontalArrangement = Arrangement.spacedBy(28.dp),
@@ -248,9 +260,9 @@ private fun HomeScreen(resumed: Int) {
                     if (list == null) {
                         item(span = { GridItemSpan(maxLineSpan) }) { Text("جارٍ تحميل التطبيقات…", style = t(18, color = C.Text2)) }
                     } else {
-                        items(list, key = { it.pkg }) { tile ->
-                            val first = tile == list.firstOrNull()
-                            AppTile(tile, if (first) Modifier.focusRequester(firstTile) else Modifier) { Apps.open(context, tile.pkg) }
+                        itemsIndexed(list, key = { _, it -> it.pkg }) { i, tile ->
+                            val m = if (i == 0) Modifier.focusRequester(firstTile) else Modifier
+                            AppTile(tile, if (i < 5) m.then(toTop) else m) { Apps.open(context, tile.pkg) }
                         }
                         item(key = "city") {
                             ActionTile("المدينة", city.name) { picking = true }
