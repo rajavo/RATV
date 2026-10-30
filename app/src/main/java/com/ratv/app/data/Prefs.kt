@@ -122,6 +122,11 @@ class Prefs(context: Context) {
         get() = sp.getStringSet(k("favorites"), null)?.toSet() ?: emptySet()
         set(value) = sp.edit().putStringSet(k("favorites"), HashSet(value)).apply()
 
+    /** Channels the user deleted from their lists (by id), as on a receiver: kept out of every list. */
+    var hiddenChannels: Set<String>
+        get() = sp.getStringSet(k("hiddenChannels"), null)?.toSet() ?: emptySet()
+        set(value) = sp.edit().putStringSet(k("hiddenChannels"), HashSet(value)).apply()
+
     var watched: Set<String>
         get() = sp.getStringSet(k("watched"), null)?.toSet() ?: emptySet()
         set(value) = sp.edit().putStringSet(k("watched"), HashSet(value)).apply()
@@ -364,6 +369,6 @@ class Prefs(context: Context) {
         const val KEY_OLD_PLAYLIST = "playlist"
         const val KEY_PLAYLISTS = "playlists"
         const val KEY_CURRENT = "currentPlaylist"
-        val USER_KEYS = listOf("favorites", "watched", "history", "lastChannel", "recentChannels")
+        val USER_KEYS = listOf("favorites", "hiddenChannels", "watched", "history", "lastChannel", "recentChannels")
     }
 }
