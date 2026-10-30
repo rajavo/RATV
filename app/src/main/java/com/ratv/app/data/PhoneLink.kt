@@ -16,14 +16,29 @@ import java.net.URLDecoder
 import kotlin.concurrent.thread
 
 /**
- * A small page on the TV itself, for sending a playlist link from a phone instead of typing it
- * with the remote. The sign-in screen shows its address as a QR code; the phone (on the same home
- * network) opens it, the link is pasted there and arrives on the TV.
+ * What the phone page sent: a playlist link (with an optional guide link), or a subscription's server,
+ * user name and password, cleaned the way the sign-in screen cleans them. A plain class, so the
+ * password never shows up in a printed or logged copy.
+ */
+class PhoneEntry(
+    val xtream: Boolean,
+    val link: String = "",
+    val epg: String = "",
+    val server: String = "",
+    val username: String = "",
+    val password: String = ""
+)
+
+/**
+ * A small page on the TV itself, for sending a playlist link, or a subscription's server, user name
+ * and password, from a phone instead of typing them with the remote. The sign-in screen shows its
+ * address as a QR code; the phone (on the same home network) opens it, the details are typed there
+ * and they arrive on the TV.
  *
  * It runs only while the sign-in screen is open, answers only at an address with a random part
- * (another device on the network cannot guess it), and never writes the link to the log.
+ * (another device on the network cannot guess it), and never writes the link or the password to the log.
  */
-class PhoneLink(private val onLink: (link: String, epg: String) -> Unit) {
+class PhoneLink(private val onEntry: (PhoneEntry) -> Unit) {
     @Volatile
     private var socket: ServerSocket? = null
 
@@ -101,42 +116,79 @@ class PhoneLink(private val onLink: (link: String, epg: String) -> Unit) {
         val fields = parseForm(String(body, 0, read, Charsets.UTF_8))
         val typed = fields["link"].orEmpty()
         val typedEpg = fields["epg"].orEmpty()
-        val link = Links.clean(typed)
-        val epg = Links.clean(typedEpg)
-        val error = when {
-            link.isEmpty() -> tr("الصق رابط القائمة أولاً.")
-            !Links.isWebLink(link) -> tr("رابط القائمة غير صحيح. الصقه كاملاً كما وصلك، ويبدأ بـ http://‎")
-            epg.isNotEmpty() && !Links.isWebLink(epg) -> tr("رابط دليل البرامج غير صحيح. صحّحه أو اترك خانته فارغة.")
-            else -> null
+        val typedServer = fields["server"].orEmpty()
+        val typedUser = fields["username"].orEmpty()
+        val typedPass = fields["password"].orEmpty()
+        // Subscription details when any of the three is filled in; otherwise a playlist link.
+        val xtream = listOf(typedServer, typedUser, typedPass).any { it.isNotBlank() }
+        // Cleaned exactly as the sign-in screen cleans them: a pasted get.php link gives its own user name and password.
+        val sub = XtreamClient.fromUserInput("", typedServer, typedUser, typedPass)
+        val entry = if (xtream) {
+            PhoneEntry(xtream = true, server = sub.server, username = sub.username, password = sub.password)
+        } else {
+            PhoneEntry(xtream = false, link = Links.clean(typed), epg = Links.clean(typedEpg))
+        }
+        val error = if (xtream) {
+            when {
+                entry.server.isEmpty() || entry.username.isEmpty() || entry.password.isEmpty() ->
+                    tr("أكمل رابط الخادم واسم المستخدم وكلمة المرور.")
+                !Links.isWebLink(entry.server) -> tr("رابط الخادم غير صحيح. اكتبه كاملاً مثل: http://server.com:8080")
+                else -> null
+            }
+        } else {
+            when {
+                entry.link.isEmpty() -> tr("الصق رابط القائمة، أو اكتب بيانات الاشتراك أولاً.")
+                !Links.isWebLink(entry.link) -> tr("رابط القائمة غير صحيح. الصقه كاملاً كما وصلك، ويبدأ بـ http://‎")
+                entry.epg.isNotEmpty() && !Links.isWebLink(entry.epg) -> tr("رابط دليل البرامج غير صحيح. صحّحه أو اترك خانته فارغة.")
+                else -> null
+            }
         }
         if (error != null) {
-            Log.i(TAG, "a link from the phone was refused: $error")
-            respond(out, 200, form(error, typed, typedEpg))
+            Log.i(TAG, "details from the phone were refused: $error")
+            respond(out, 200, form(error, typed, typedEpg, typedServer, typedUser, typedPass))
             return
         }
-        Log.i(TAG, "a link came from the phone")
-        onLink(link, epg)
+        Log.i(TAG, if (xtream) "subscription details came from the phone" else "a link came from the phone")
+        onEntry(entry)
+        val done = if (xtream) tr("وصلت بيانات الاشتراك للتلفزيون ✓") else tr("وصل الرابط للتلفزيون ✓")
         respond(
             out, 200,
             page(
-                "<p class=\"ok\">" + esc(tr("وصل الرابط للتلفزيون ✓")) + "</p>" +
-                    "<p>" + esc(tr("شوف التلفزيون: يضيف القائمة الحين. إذا ظهر خطأ على الشاشة، صحّح الرابط وأرسله من جديد.")) + "</p>" +
+                "<p class=\"ok\">" + esc(done) + "</p>" +
+                    "<p>" + esc(tr("شوف التلفزيون: يضيف القائمة الحين. إذا ظهر خطأ على الشاشة، صحّح ما فات وأرسله من جديد.")) + "</p>" +
                     "<p><a href=\"/$token\">" + esc(tr("إرسال رابط ثاني")) + "</a></p>"
             )
         )
     }
 
-    private fun form(error: String?, link: String, epg: String): String = page(
+    private fun form(
+        error: String?,
+        link: String,
+        epg: String,
+        server: String = "",
+        username: String = "",
+        password: String = ""
+    ): String = page(
         "<h1>" + esc(tr("أرسل قائمتك للتلفزيون")) + "</h1>" +
-            "<p>" + esc(tr("الصق رابط القائمة (M3U أو M3U8) كما وصلك من المزوّد، واضغط «أرسل للتلفزيون».")) + "</p>" +
+            "<p>" + esc(tr("الصق رابط القائمة (M3U أو M3U8) كما وصلك من المزوّد، أو اكتب بيانات الاشتراك: رابط الخادم واسم المستخدم وكلمة المرور، واضغط «أرسل للتلفزيون».")) + "</p>" +
             (if (error != null) note(error, error = true) else "") +
             "<form method=\"post\" action=\"/$token\">" +
             "<label for=\"link\">" + esc(tr("رابط القائمة")) + "</label>" +
-            "<textarea id=\"link\" name=\"link\" required autocapitalize=\"off\" autocorrect=\"off\" spellcheck=\"false\" " +
+            "<textarea id=\"link\" name=\"link\" autocapitalize=\"off\" autocorrect=\"off\" spellcheck=\"false\" " +
             "placeholder=\"http://server.example/playlist.m3u8\">" + esc(link) + "</textarea>" +
             "<label for=\"epg\">" + esc(tr("رابط دليل البرامج EPG (اختياري)")) + "</label>" +
             "<input id=\"epg\" name=\"epg\" type=\"url\" autocapitalize=\"off\" autocorrect=\"off\" spellcheck=\"false\" " +
             "placeholder=\"http://server.example/epg.xml\" value=\"" + esc(epg) + "\">" +
+            "<p class=\"or\">" + esc(tr("أو بيانات اشتراكك")) + "</p>" +
+            "<label for=\"server\">" + esc(tr("رابط الخادم")) + "</label>" +
+            "<input id=\"server\" name=\"server\" inputmode=\"url\" autocapitalize=\"off\" autocorrect=\"off\" spellcheck=\"false\" " +
+            "placeholder=\"http://server.example:8080\" value=\"" + esc(server) + "\">" +
+            "<label for=\"username\">" + esc(tr("اسم المستخدم")) + "</label>" +
+            "<input id=\"username\" name=\"username\" autocapitalize=\"off\" autocorrect=\"off\" spellcheck=\"false\" " +
+            "value=\"" + esc(username) + "\">" +
+            "<label for=\"password\">" + esc(tr("كلمة المرور")) + "</label>" +
+            "<input id=\"password\" name=\"password\" type=\"password\" autocapitalize=\"off\" autocorrect=\"off\" " +
+            "spellcheck=\"false\" autocomplete=\"off\" value=\"" + esc(password) + "\">" +
             "<button type=\"submit\">" + esc(tr("أرسل للتلفزيون")) + "</button>" +
             "</form>"
     )
@@ -154,6 +206,7 @@ class PhoneLink(private val onLink: (link: String, epg: String) -> Unit) {
             "textarea,input{width:100%;box-sizing:border-box;background:#211e1b;color:#f3eee8;border:1px solid #4a423a;" +
             "border-radius:12px;padding:14px;font:16px/1.4 ui-monospace,monospace;direction:ltr;text-align:left}" +
             "textarea{min-height:120px;word-break:break-all}" +
+            ".or{color:#f3eee8;font-weight:800;margin:26px 0 0;padding-top:18px;border-top:1px solid #4a423a}" +
             "button{width:100%;margin-top:22px;padding:17px;border:0;border-radius:14px;background:#e8730c;color:#1a1000;" +
             "font:700 20px system-ui,-apple-system,sans-serif}" +
             ".err{background:#3d1714;color:#ffb8ad;border-radius:12px;padding:12px 14px}" +
