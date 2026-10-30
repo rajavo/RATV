@@ -150,7 +150,8 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 
 private val Glass = Color(0x1FFFFFFF)
-private const val MAX_RECONNECTS = 5
+/** Tries after a network error before a film or episode stops with a message (a live channel never stops). */
+private const val MAX_RECONNECTS = 50
 
 /** Stalls counted toward moving to another version of the channel: those of the last 4 minutes. */
 private const val VERSION_WINDOW_MS = 4L * 60L * 1000L
@@ -190,6 +191,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val view = LocalView.current
     val epg by repo.epg.collectAsStateWithLifecycle()
     val channels by repo.channels.collectAsStateWithLifecycle()
+    val favorites by repo.favorites.collectAsStateWithLifecycle()
     val now = rememberNow(15_000L)
 
     var current by remember { mutableStateOf<Playable?>(null) }
@@ -216,7 +218,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     var subPos by remember { mutableLongStateOf(0L) }
     var upgrade by remember { mutableStateOf<Playable?>(null) }
     var upgradeEpisodes by remember { mutableStateOf<List<Episode>?>(null) }
+    // The receiver's info bar (Receiver.kt): shown on every change of channel and with the INFO key.
     var banner by remember { mutableStateOf<Channel?>(null) }
+    var bannerTick by remember { mutableIntStateOf(0) }
     // Digits typed on the remote (a channel number), and the channel watched before this one.
     var typedNumber by remember { mutableStateOf("") }
     var previousChannel by remember { mutableStateOf<Channel?>(null) }
@@ -565,20 +569,23 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // ------------------------------------------------------- listeners
-    // When the network comes back, a live channel waiting to reconnect tries at once.
+    // When the network comes back, a channel, film or episode waiting to reconnect tries at once (a
+    // film carries on where it was).
     DisposableEffect(player) {
         val cm = context.applicationContext.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as? android.net.ConnectivityManager
         val main = android.os.Handler(android.os.Looper.getMainLooper())
         val callback = object : android.net.ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: android.net.Network) {
                 main.post {
-                    if (current?.isLive == true && player.mediaItemCount > 0 &&
+                    val playing = current
+                    if (playing != null && player.mediaItemCount > 0 &&
                         (reconnecting || playerError != null || player.playbackState == Player.STATE_IDLE)
                     ) {
                         Log.i("RATVPlayback", "network back: reconnecting now")
                         playerError = null
                         reconnecting = false
-                        player.seekToDefaultPosition()
+                        reconnectAttempts = 0
+                        if (playing.isLive) player.seekToDefaultPosition()
                         player.prepare()
                         player.playWhenReady = true
                     }
@@ -1299,7 +1306,6 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         val index = zapList.indexOfFirst { it.id == ch.id }
         val target = zapList[((if (index < 0) 0 else index) + step + zapList.size) % zapList.size]
         play(liveToPlayable(target), showControls = false)
-        banner = target
     }
 
     /** Opens the channel whose number was typed on the remote. */
@@ -1314,7 +1320,6 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         }
         if (target.id != item?.channel?.id) {
             play(liveToPlayable(target), showControls = false)
-            banner = target
         }
     }
 
@@ -1390,12 +1395,22 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 val back = previousChannel
                 if (live && back != null) {
                     play(liveToPlayable(back), showControls = false)
-                    banner = back
                 }
                 return true
             }
             android.view.KeyEvent.KEYCODE_INFO -> {
-                showControls()
+                // As on a receiver: INFO brings up the channel's info bar, and puts it away.
+                val ch = item?.channel
+                if (live && ch != null && !controlsVisible) {
+                    if (banner != null) {
+                        banner = null
+                    } else {
+                        banner = ch
+                        bannerTick++
+                    }
+                } else {
+                    showControls()
+                }
                 return true
             }
             android.view.KeyEvent.KEYCODE_GUIDE -> {
@@ -1502,9 +1517,15 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         }
     }
 
-    LaunchedEffect(banner) {
+    // Every new channel (zapping, a number, the previous channel, another version) shows its info bar.
+    LaunchedEffect(item?.channel?.id) {
+        banner = item?.channel
+        bannerTick++
+    }
+
+    LaunchedEffect(banner, bannerTick) {
         if (banner != null) {
-            delay(3_000L)
+            delay(5_000L)
             banner = null
         }
     }
@@ -1677,14 +1698,13 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         }
 
         if (!inPip) {
-            // At a corner the board makes way only for what shares that corner: the zapping banner (at the
-            // start side) and the commentary label (at the end side); the notices along the top centre.
+            // At a corner the board makes way only for what shares that corner: the commentary label (at
+            // the end side); the notices along the top centre. The info bar is along the bottom.
             val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
             val centred = scorePlace == BoardPlace.CENTER
             val atLeft = scorePlace == BoardPlace.CORNER
             val boardTop = when {
                 controlsVisible && !locked -> if (centred) 112.dp else 76.dp
-                banner != null && (centred || atLeft != rtl) -> 96.dp
                 resizeNotice != null || streamNotice != null || reconnecting || (reconnectAttempts > 0 && buffering) || netTrouble -> 70.dp
                 !centred && mix.channel != null && atLeft == rtl -> 62.dp
                 centred -> if (isTv) 18.dp else 12.dp
@@ -1791,40 +1811,31 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             TopNotice(told, RIcons.Swap)
         }
 
-        // The channel number being typed on the remote, as TVs show it.
+        // The channel number being typed on the remote, in its slots as receivers show it.
         if (typedNumber.isNotEmpty() && !inPip) {
-            Box(
-                Modifier
-                    .align(AbsoluteAlignment.TopLeft)
-                    .absolutePadding(left = 40.dp, top = 30.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(Color(0xCC0B0C10))
-                    .padding(horizontal = 22.dp, vertical = 8.dp)
-            ) {
-                Text(typedNumber, style = T.display(40.sp, FontWeight.ExtraBold, RColors.Saffron))
-            }
+            val typedNum = typedNumber.toIntOrNull()
+            ReceiverNumberEntry(
+                typed = typedNumber,
+                highest = channels.maxOfOrNull { it.num } ?: 0,
+                target = typedNum?.let { n -> channels.firstOrNull { it.num == n } }
+            )
         }
 
         val zapped = banner
-        if (zapped != null && !controlsVisible && !inPip) {
-            Row(
-                Modifier
-                    .align(Alignment.TopStart)
-                    .padding(24.dp)
-                    .clip(RoundedCornerShape(18.dp))
-                    .background(Color(0xD90B0C10))
-                    .padding(horizontal = 14.dp, vertical = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(zapped.num.toString(), style = T.display(20.sp, FontWeight.Bold, RColors.Saffron))
-                ChannelLogo(zapped.name, zapped.logo, 40.dp, corner = 10.dp)
-                Column {
-                    Text(zapped.name, style = T.body(16.sp, FontWeight.Bold), maxLines = 1)
-                    val now0 = epg.forChannel(zapped).current(now)?.title
-                    if (now0 != null) Text(now0, style = T.body(13.sp, color = SoftText), maxLines = 1)
-                }
-            }
+        if (zapped != null && !controlsVisible && !inPip && !panelOpen && !sourcesOpen && !scorePickOpen && typedNumber.isEmpty()) {
+            val zappedProgrammes = epg.forChannel(zapped)
+            ReceiverInfoBar(
+                channel = zapped,
+                categoryName = repo.liveCategoryName(zapped.categoryId),
+                programme = zappedProgrammes.current(now),
+                next = zappedProgrammes.next(now),
+                now = now,
+                resolution = if (zapped.id == item?.channel?.id) resolutionLabel(videoHeight) else null,
+                audioTracks = if (zapped.id == item?.channel?.id) audioTracks else 0,
+                favorite = Keys.live(zapped.id) in favorites,
+                signal = signalLevel(bandwidthBps, netTrouble),
+                quality = qualityLevel(reserveMs, buffering)
+            )
         }
 
         if (!inPip) {
@@ -2452,9 +2463,10 @@ private fun ChannelPanel(
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         Text(
-                            ch.num.toString(),
-                            style = T.body(12.sp, color = if (selected) RColors.Saffron else RColors.Text3),
-                            modifier = Modifier.width(30.dp),
+                            receiverNumber(ch.num),
+                            style = T.body(13.sp, FontWeight.Bold, if (selected) RColors.Saffron else RColors.Text3)
+                                .copy(fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace),
+                            modifier = Modifier.width(40.dp),
                             maxLines = 1
                         )
                         ChannelLogo(ch.name, ch.logo, 38.dp, corner = 10.dp)
