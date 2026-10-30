@@ -378,7 +378,10 @@ private fun TopBar(day: Today, city: String) {
             Text(day.date, style = t(22, true))
             Text(day.hijri + " · " + city, style = t(17, color = C.Text2))
         }
-        Text(clock(day.now), style = t(40, true))
+        Column(horizontalAlignment = Alignment.End) {
+            Text(clock(day.now), style = t(40, true))
+            Text("صُنع بكل حب ♥ رجا", style = t(14, color = C.Text3))
+        }
     }
 }
 

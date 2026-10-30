@@ -116,6 +116,7 @@ def s_open():
         expect(s in t, "missing prayer: " + s)
     expect(re.search(r"\d{1,2}:\d\d [صم]", t), "no prayer time on the screen")
     expect("هـ" in t, "no hijri date")
+    expect("صُنع بكل حب" in t, "no «made with love» line")
     expect("قال رسول الله ﷺ" in t, "no hadith")
     first = re.search(r"«([^»]+)»", t)
     sh("input keyevent KEYCODE_HOME")  # away and back: a new hadith
