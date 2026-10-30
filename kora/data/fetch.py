@@ -377,9 +377,6 @@ def learn_names(matches, teams, cards):
 KOOORA_URL = "https://www.kooora.com/%D9%83%D8%B1%D8%A9-%D8%A7%D9%84%D9%82%D8%AF%D9%85/%D9%85%D8%A8%D8%A7%D8%B1%D9%8A%D8%A7%D8%AA-%D8%A7%D9%84%D9%8A%D9%88%D9%85"
 
 
-KOOORA_SAMPLES = []  # raw matches, in report.json, to see what Kooora gives
-
-
 def kooora_day():
     try:
         html = get(KOOORA_URL, ua=BROWSER)[2].decode("utf-8", "replace")
@@ -400,8 +397,6 @@ def kooora_day():
             t = ts(mt.get("startDate"))
             a = ((mt.get("teamA") or {}).get("name") or "").strip()
             b = ((mt.get("teamB") or {}).get("name") or "").strip()
-            if tv and t and a and b and len(KOOORA_SAMPLES) < 3:
-                KOOORA_SAMPLES.append(mt)
             if tv and t and a and b:
                 out.append({"t": t, "a": a, "b": b, "comp": comp, "tv": tv,
                             "venue": ((mt.get("venue") or {}).get("name") or "").strip(),
@@ -889,36 +884,6 @@ def arabic_places(match_list, previous_places):
              "sample": dict(list(sorted(names.items()))[:12] + [kv for kv in sorted(names.items()) if kv[0].startswith("v:")][:25])}
     return {"v": PLACES_VERSION, "names": names, "miss": miss}, state
 
-def commentator_probe():
-    """Where commentators' names can be read (Kooora and Yalla Kora have none): snippets around «معلق» on other sites."""
-    out = {}
-
-    def around(html, n=4):
-        spots = [m.start() for m in re.finditer(r"المعلق|معلق|التعليق", html)][:n]
-        return [re.sub(r"<[^>]+>", " ", re.sub(r"\s+", " ", html[max(0, i - 300):i + 300])) for i in spots]
-
-    today = dt.datetime.now(dt.timezone.utc).date()
-    for site, day_url, link_re, base in (
-        ("filgoal", "https://www.filgoal.com/matches/?date=%s" % today.isoformat(), r'href="(/matches/\d+[^"]*)"', "https://www.filgoal.com"),
-        ("btolat", "https://www.btolat.com/matches-center", r'href="([^"]*/match/\d+[^"]*)"', "https://www.btolat.com"),
-        ("btolat2", "https://www.btolat.com/", r'href="([^"]*/match/\d+[^"]*)"', "https://www.btolat.com"),
-    ):
-        try:
-            code, _, body = get(day_url, tries=1, ua=BROWSER)
-            html = body.decode("utf-8", "replace")
-            links = list(dict.fromkeys(re.findall(link_re, html)))[:3]
-            out[site] = {"code": code, "size": len(html), "around": around(html, 3), "links": links}
-            for l in links[:2]:
-                url = urllib.parse.quote(l if l.startswith("http") else base + l, safe=":/?=&%#")
-                try:
-                    page = get(url, tries=1, ua=BROWSER)[2].decode("utf-8", "replace")
-                    out[url] = {"size": len(page), "around": around(page)}
-                except Exception as e:
-                    out[url] = {"error": str(e)[:150]}
-        except Exception as e:
-            out[site] = {"error": str(e)[:150]}
-    return out
-
 def main():
     out_dir = sys.argv[1]
     os.makedirs(out_dir, exist_ok=True)
@@ -1172,7 +1137,6 @@ def main():
         "absences": absent_state,
         "players_ar": players_state,
         "places_ar": places_state,
-        "commentator_probe": commentator_probe(),
         "teams": sorted(({"id": tid, "en": t["en"], "ar": t.get("ar"), "leagues": sorted(t["leagues"])}
                          for tid, t in teams.items()), key=lambda x: (x["leagues"], x["en"])),
     }
