@@ -890,46 +890,34 @@ def arabic_places(match_list, previous_places):
     return {"v": PLACES_VERSION, "names": names, "miss": miss}, state
 
 def commentator_probe():
-    """Where commentators' names can be read (Kooora's match list has none): snippets around «معلق» in a few pages."""
+    """Where commentators' names can be read (Kooora and Yalla Kora have none): snippets around «معلق» on other sites."""
     out = {}
 
     def around(html, n=4):
-        spots = [m.start() for m in re.finditer(r"معلق|التعليق|commentat", html)][:n]
-        return [re.sub(r"\s+", " ", html[max(0, i - 400):i + 400]) for i in spots]
+        spots = [m.start() for m in re.finditer(r"المعلق|معلق|التعليق", html)][:n]
+        return [re.sub(r"<[^>]+>", " ", re.sub(r"\s+", " ", html[max(0, i - 300):i + 300])) for i in spots]
 
-    for k in KOOORA_SAMPLES[:2]:
-        link = k.get("link") or {}
-        slug, mid = link.get("slug") or "", link.get("id") or k.get("id")
-        for pat in ("https://www.kooora.com/%%D9%%83%%D8%%B1%%D8%%A9-%%D8%%A7%%D9%%84%%D9%%82%%D8%%AF%%D9%%85/%%D9%%85%%D8%%A8%%D8%%A7%%D8%%B1%%D8%%A7%%D8%%A9/%s/%s",
-                    "https://www.kooora.com/match/%s/%s"):
-            url = pat % (urllib.request.quote(slug), mid)
-            try:
-                code, _, body = get(url, tries=1, ua=BROWSER)
-                html = body.decode("utf-8", "replace")
-                nd = re.search(r'<script id="__NEXT_DATA__" type="application/json"[^>]*>(.*?)</script>', html, re.S)
-                keys = sorted(set(re.findall(r'"([A-Za-z]*[Cc]omment[A-Za-z]*)"', nd.group(1) if nd else html)))[:20]
-                out[url] = {"code": code, "size": len(html), "comment_keys": keys, "around": around(html)}
-                break
-            except Exception as e:
-                out[url] = {"error": str(e)[:150]}
-    today = dt.datetime.now(YK_ZONE).date()
-    try:
-        html = get(YK_URL % (today.month, today.day, today.year), ua=BROWSER)[2].decode("utf-8", "replace")
-        cards = html.split('liveScoreMatchId="')[1:4]
-        out["yallakora day"] = {"around": around(html), "card": [re.sub(r"\s+", " ", c[:2500]) for c in cards[:2]],
-                                "links": re.findall(r'href="([^"]*match[^"]*)"', html)[:5]}
-        links = [l for l in re.findall(r'href="([^"]*/match/[^"]*)"', html)][:2]
-        for l in links:
-            url = l if l.startswith("http") else "https://www.yallakora.com" + l
-            try:
-                page = get(url, tries=1, ua=BROWSER)[2].decode("utf-8", "replace")
-                out[url] = {"size": len(page), "around": around(page)}
-            except Exception as e:
-                out[url] = {"error": str(e)[:150]}
-    except Exception as e:
-        out["yallakora day"] = {"error": str(e)[:150]}
+    today = dt.datetime.now(dt.timezone.utc).date()
+    for site, day_url, link_re, base in (
+        ("filgoal", "https://www.filgoal.com/matches/?date=%s" % today.isoformat(), r'href="(/matches/\d+[^"]*)"', "https://www.filgoal.com"),
+        ("btolat", "https://www.btolat.com/matches-center", r'href="([^"]*/match/\d+[^"]*)"', "https://www.btolat.com"),
+        ("btolat2", "https://www.btolat.com/", r'href="([^"]*/match/\d+[^"]*)"', "https://www.btolat.com"),
+    ):
+        try:
+            code, _, body = get(day_url, tries=1, ua=BROWSER)
+            html = body.decode("utf-8", "replace")
+            links = list(dict.fromkeys(re.findall(link_re, html)))[:3]
+            out[site] = {"code": code, "size": len(html), "around": around(html, 3), "links": links}
+            for l in links[:2]:
+                url = l if l.startswith("http") else base + l
+                try:
+                    page = get(url, tries=1, ua=BROWSER)[2].decode("utf-8", "replace")
+                    out[url] = {"size": len(page), "around": around(page)}
+                except Exception as e:
+                    out[url] = {"error": str(e)[:150]}
+        except Exception as e:
+            out[site] = {"error": str(e)[:150]}
     return out
-
 
 def main():
     out_dir = sys.argv[1]
