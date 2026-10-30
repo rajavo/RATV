@@ -242,6 +242,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // the item playing is known (or seen) to be under 720 lines. HD goes straight to the screen.
     var enhanceSetting by remember { mutableStateOf(repo.prefs.enhance) }
     var enhanceBroken by remember { mutableStateOf(repo.prefs.enhanceBroken) }
+    var enhanceHd by remember { mutableStateOf(repo.prefs.enhanceHd) }
     // The strongest enhancement this device is given (full, light, none): it steps down by itself.
     var enhanceStrength by remember { mutableIntStateOf(repo.prefs.enhanceStrength) }
     var enhanceFor by remember { mutableStateOf<String?>(null) }
@@ -252,11 +253,12 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val enhanceWanted = current?.let { enhanceFor == enhanceKey(it) } == true
     val playerViewRef = remember { arrayOfNulls<PlayerView>(1) }
 
-    /** True when [item] should be enhanced: a weak picture, on a device that can still enhance. */
+    /** True when [item] should be enhanced: a picture up to 1080p (HD while the TV keeps up with it), on a device that can still enhance. */
     fun wantsEnhance(item: Playable, seenHeight: Int? = null): Boolean {
         if (!enhanceSetting || enhanceBroken || enhanceStrength <= ENHANCE_OFF) return false
         val known = EnhanceMemory.get(context, enhanceKey(item))
         val h = seenHeight ?: known?.height ?: nameHintHeight(item.channel?.name ?: item.title) ?: return false
+        if (h >= ENHANCE_HD_LINES && !enhanceHd) return false
         return h in 1 until ENHANCE_BELOW_HEIGHT
     }
 
@@ -622,6 +624,15 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         if (enhanceFor == null) return
         val used = EnhanceStatus.strength.coerceAtMost(enhanceStrength)
         if (!item.isLive) resumeAt = item.id to player.currentPosition
+        if (!failed && videoHeight >= ENHANCE_HD_LINES && used <= ENHANCE_LIGHT) {
+            // Too heavy on an HD picture: HD goes straight to the screen from now on, weak channels keep it.
+            Log.i("RATVEnhance", "HD enhancement does not work out ($why): only weak pictures from now on")
+            repo.prefs.enhanceHd = false
+            enhanceHd = false
+            streamNotice = tr("التلفزيون ما لحق على تحسين صورة HD، فخليناه للقنوات الضعيفة بس")
+            enhanceFor = null
+            return
+        }
         if (used >= ENHANCE_FULL) {
             Log.i("RATVEnhance", "full enhancement does not work out ($why): light enhancement from now on")
             repo.prefs.enhanceStrength = ENHANCE_LIGHT
@@ -1358,6 +1369,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             enhanceBroken = false
             repo.prefs.enhanceStrength = ENHANCE_FULL
             enhanceStrength = ENHANCE_FULL
+            repo.prefs.enhanceHd = true
+            enhanceHd = true
         } else {
             repo.prefs.enhance = false
             enhanceSetting = false
