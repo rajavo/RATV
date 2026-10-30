@@ -54,17 +54,20 @@ def focus_towards(word, tag, tries=30, pause=0.8):
     """Moves the focus with the remote, press by press, to the item whose text holds [word].
 
     The screens are rows of buttons and grids of tiles, so each press follows where the items lie: sideways
-    when the target is in the same row as the focus, otherwise up or down. A press that did not move the
-    focus is followed by one the other way (the end of a row, or nothing further in that direction)."""
+    when the target is in the same row as the focus, otherwise up or down. The target is the card, tile or
+    poster around the text: the text of the hero sits at its foot, below the row of tiles. A press that did
+    not move the focus, or a place the walk has come back to three times, is followed by one the other way."""
     f = None
     prev = None
+    visits = {}
     for _ in range(tries):
         root = S.dump(tag)
         f = focused_text(root)
         S.log("focus[%s]: %s" % (tag, f))
         if f and word in f:
             return f
-        stuck = f is not None and f == prev
+        visits[f] = visits.get(f, 0) + 1
+        stuck = f is not None and (f == prev or visits[f] > 2)
         prev = f
         nodes = S.nodes(root)
         here = focused_node(root)
@@ -72,11 +75,20 @@ def focus_towards(word, tag, tries=30, pause=0.8):
         if here is None or not found:
             key("DPAD_DOWN", pause=pause)
             continue
-        if any(n is here for n in found):
+        parent = {c: p for p in root.iter() for c in p}
+        targets = []
+        for n in found:
+            t = n
+            while t is not None and t.get("focusable") != "true" and t.get("clickable") != "true":
+                t = parent.get(t)
+            if t is not None and all(t is not x for x in targets):
+                targets.append(t)
+        targets = targets or found
+        if any(t is here for t in targets):
             return f
         # A text on the bar at the foot of the settings is not a target: an item above the bar is preferred.
         screen_h = S.bounds(nodes[0])[3]
-        target = next((n for n in found if mid(n)[1] < screen_h * 0.85), found[0])
+        target = next((t for t in targets if mid(t)[1] < screen_h * 0.85), targets[0])
         hx1, hy1, hx2, hy2 = S.bounds(here)
         tx1, ty1, tx2, ty2 = S.bounds(target)
         same_row = ty1 < hy2 and hy1 < ty2
@@ -1000,6 +1012,16 @@ def t_guess_movie():
             break
 
 
+def ensure_app_front():
+    """A step that ends with BACK on the home screen leaves the app behind the launcher, and the next step
+    would start from there: the app is brought back to the front."""
+    resumed = [l for l in S.shell("dumpsys activity activities").splitlines() if "mResumedActivity" in l]
+    if resumed and S.PKG not in resumed[0]:
+        S.log("!! the app is behind: %s" % resumed[0].strip()[:160])
+        S.shell("am start -W -n %s/.MainActivity" % S.PKG)
+        time.sleep(3)
+
+
 if __name__ == "__main__":
     for name, fn in [
         ("launch", S.s_launch),
@@ -1029,4 +1051,5 @@ if __name__ == "__main__":
         ("phone-subscription", t_phone_subscription),
     ]:
         S.step(name, fn)
+        ensure_app_front()
     S.finish()
