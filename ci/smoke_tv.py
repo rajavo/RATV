@@ -118,6 +118,13 @@ NAV_LANG = {
 }
 
 
+# The texts of the home screen in the other languages: its live tile, its refresh button, its account tile.
+HOME_LANG = {
+    "en": {"live": "Live", "refresh": "Refresh content", "account": "My account"},
+    "es": {"live": "En vivo", "refresh": "Actualizar contenido", "account": "Mi cuenta"},
+}
+
+
 def go_tab(label, nav=NAV, tries=30):
     """Moves up to the top bar with the remote and opens a section."""
     rtl = nav is NAV
@@ -238,7 +245,8 @@ def t_player_remote():
     key("BACK", pause=1.5)
     S.shot("player-controls-hidden")
     key("BACK", pause=2.5)
-    _, n = wait_home(15, save="home-after-player")
+    # Back from the player goes to the channels the live tile opened: they have the top bar.
+    _, n = S.wait_for(timeout=15, text="الرئيسية", save="home-after-player")
     S.shot("home-after-player")
     expect(n is not None, "Back did not return from the player")
 
@@ -249,17 +257,36 @@ def at_home():
     return "بث مباشر" in texts and "تحديث المحتوى" in texts
 
 
-def wait_home(timeout, save=None):
-    """Waits for the home screen (see at_home); returns (found, root) like S.wait_for."""
+def wait_home_in(timeout, live, refresh, save=None):
+    """Waits for the home screen in the language under test: its live tile and its refresh button."""
     end = time.time() + timeout
     while True:
         root = S.dump(save) if save else S.dump()
         texts = S.all_texts(root)
-        if "بث مباشر" in texts and "تحديث المحتوى" in texts:
+        if live in texts and refresh in texts:
             return True, root
         if time.time() > end:
             return False, None
         time.sleep(1)
+
+
+def wait_home(timeout, save=None):
+    """Waits for the home screen (see at_home); returns (found, root) like S.wait_for."""
+    return wait_home_in(timeout, "بث مباشر", "تحديث المحتوى", save)
+
+
+def back_to_bar(times, pause=1.5):
+    """Back until a screen with the top bar shows (the channels, a section). The home screen has no top bar,
+    and Back on it closes the app, so Back is not pressed there: the walk back stops at home."""
+    for _ in range(times):
+        _, n = S.wait_for(timeout=2, text="الرئيسية")
+        if n is not None:
+            return True
+        if at_home():
+            return False
+        key("BACK", pause=pause)
+    _, n = S.wait_for(timeout=4, text="الرئيسية")
+    return n is not None
 
 
 def focus_home_item(word, tag, presses=5):
@@ -315,12 +342,8 @@ def t_player_numbers():
         playback = S.shell("logcat -d -s RATVPlayback:I")
         expect("steadiness level" not in playback, "changing channel was taken for a stall: " + playback[-300:])
     finally:
-        # Out of the player whatever happened, so the next steps start from the home screen.
-        for _ in range(3):
-            key("BACK", pause=2)
-            _, n = wait_home(4)
-            if n is not None:
-                break
+        # Out of the player whatever happened: to the channels (with their top bar), or to the home screen.
+        back_to_bar(3, pause=2)
 
 
 def t_update_notes():
@@ -521,11 +544,7 @@ def t_intro():
         expect(any("tmdb_id=550" in q for q in asked), "TheIntroDB was not asked about the film (tmdb 550)")
         expect(any("tmdb_id=1399" in q and "episode=3" in q for q in asked), "TheIntroDB was not asked about the episode")
     finally:
-        for _ in range(4):
-            key("BACK", pause=1.5)
-            _, n = wait_home(4)
-            if n is not None:
-                break
+        back_to_bar(4)
 
 
 def t_settings():
@@ -671,11 +690,7 @@ def t_enhance():
     finally:
         S.shell("setprop debug.ratv.enhancekeep ''")
         S.shell("setprop debug.ratv.enhancegpu ''")
-        for _ in range(4):
-            key("BACK", pause=1.5)
-            _, n = wait_home(4)
-            if n is not None:
-                break
+        back_to_bar(4)
 
 
 def mock(path):
@@ -813,11 +828,7 @@ def t_scoreboard():
         expect(wait_board("board-hidden", timeout=10, gone=True) is None, "the board did not go when hidden")
         S.shot("board-hidden")
     finally:
-        for _ in range(4):
-            key("BACK", pause=1.5)
-            _, n = wait_home(4)
-            if n is not None:
-                break
+        back_to_bar(4)
 
 
 def open_number(n, wait=8):
@@ -889,11 +900,7 @@ def t_sports_guide():
         expect(p is not None, "OK did not open the match list after the question")
         key("BACK", pause=1.5)
     finally:
-        for _ in range(4):
-            key("BACK", pause=1.5)
-            _, n = wait_home(4)
-            if n is not None:
-                break
+        back_to_bar(4)
 
 
 def t_languages():
@@ -901,13 +908,16 @@ def t_languages():
     try:
         for lang in ("en", "es"):
             nav = NAV_LANG[lang]
+            home = HOME_LANG[lang]
             S.shell("setprop debug.ratv.lang " + lang)
             restart_app()
-            _, n = S.wait_for(timeout=45, text=nav[0], save="home-" + lang)
+            ok, _ = wait_home_in(45, home["live"], home["refresh"], save="home-" + lang)
             time.sleep(2)
             S.shot("home-" + lang)
-            expect(n is not None, "%s: the top bar shows no %s" % (lang, nav[0]))
-            go_tab(nav[-1], nav)
+            expect(ok, "%s: the home screen shows neither %s nor %s" % (lang, home["live"], home["refresh"]))
+            f = focus_towards(home["account"], "home-account-" + lang, tries=20, pause=0.6)
+            expect(f is not None and home["account"] in f, "%s: the account tile not focused (focus: %s)" % (lang, f))
+            key("DPAD_CENTER", pause=2)
             time.sleep(2)
             S.shot("settings-" + lang)
             # To the language row of the settings, then open its list.
@@ -931,7 +941,7 @@ def t_languages():
 def open_phone_page(tag, local_port):
     """«إضافة مستخدم» on the account tab opens the add-user screen; its QR page is forwarded to local_port.
     Returns the address of the forwarded page and its random part."""
-    go_tab("حسابي")
+    open_from_home_or_bar("حسابي")
     time.sleep(1.5)
     f = None
     for i in range(10):
@@ -1037,11 +1047,7 @@ def t_guess_movie():
     out = S.shell("logcat -d -s RATVIntro:I")
     expect("skipped the first 90 s" in out, "OK did not take the film's first skip")
     S.shot("guess-movie-skipped")
-    for _ in range(3):
-        key("BACK", pause=1.5)
-        _, n = wait_home(4)
-        if n is not None:
-            break
+    back_to_bar(3)
 
 
 def ensure_app_front():
