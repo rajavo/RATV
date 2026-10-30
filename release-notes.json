@@ -1,14 +1,23 @@
 {
   "ar": [
-    "جديد: صفحة الجوال (رمز QR في شاشة إضافة المستخدم) تقبل بيانات الاشتراك أيضاً: رابط الخادم واسم المستخدم وكلمة المرور، إلى جانب رابط القائمة M3U. اكتبها من جوالك وتوصل للتلفزيون على طول.",
-    "جديد: عداد مدة المشاهدة للقنوات المباشرة، مثل الأفلام والمسلسلات. يحسب وقت التشغيل فعلاً: يوقف لما توقّف البث مؤقتاً أو يتوقف البث، ويكمل لما يرجع. يطلع (⏱ 42:15) تحت مع أدوات التحكم وفي شريط المعلومات (زر INFO)، ويرجع من الصفر لما تغيّر القناة."
+    "ملاحظة: شكل التطبيق يتغيّر في هذا التحديث على شاشة التلفاز. الأزرار والأقسام صارت في أماكن جديدة، والمشاهدة نفسها ما تغيّرت.",
+    "الصفحة الرئيسية: المربعات في الوسط (أفلام، مسلسلات، المباريات، حسابي). الأزرار (بحث، الإعدادات، تحديث المحتوى) على اليمين. والبطاقة الكبيرة على اليسار فيها المحتوى المميز.",
+    "الأفلام والمسلسلات: الأقسام صارت على اليسار، وكل صف فيه خمس صور.",
+    "الإعدادات: كل إعداد صار مربعاً، وإذا اخترت أي مربع يطلع شرحه تحت.",
+    "حسابي: الاشتراكات والمستخدمون صاروا بطاقات واضحة."
   ],
   "en": [
-    "New: the phone page (the QR code on the add-user screen) also takes the subscription details: server link, user name and password, besides the M3U playlist link. Type them on your phone and they reach the TV at once.",
-    "New: a watching counter for live channels, as films and series have. It counts actual playing time: it stops when you pause or the stream stalls, and carries on when it plays again. It shows (⏱ 42:15) at the bottom with the controls and in the info bar (INFO key), and starts from zero when you change channel."
+    "Note: the look of the app changes in this update on the TV. The buttons and sections are in new places. Watching itself has not changed.",
+    "Home: the boxes in the middle (Movies, Series, Matches, My account). The buttons (Search, Settings, Refresh content) on the right. The big card on the left shows the featured content.",
+    "Movies and series: the sections are now on the left, and each row has five posters.",
+    "Settings: each setting is now a box. When you pick a box, its explanation appears at the bottom.",
+    "My account: the subscriptions and users are now clear cards."
   ],
   "es": [
-    "Nuevo: la página del móvil (el código QR de la pantalla para añadir usuario) también acepta los datos de la suscripción: enlace del servidor, nombre de usuario y contraseña, además del enlace de la lista M3U. Escríbelos en el móvil y llegan a la TV al momento.",
-    "Nuevo: un contador de tiempo viendo para los canales en directo, como en películas y series. Cuenta el tiempo real de reproducción: se para al pausar o si la emisión se detiene, y sigue cuando vuelve. Aparece (⏱ 42:15) abajo con los controles y en la barra de información (tecla INFO), y vuelve a cero al cambiar de canal."
+    "Aviso: el aspecto de la aplicación cambia en esta actualización en la TV. Los botones y las secciones están en lugares nuevos. La reproducción no ha cambiado.",
+    "Inicio: las casillas del centro (Películas, Series, Partidos, Mi cuenta). Los botones (Buscar, Ajustes, Actualizar contenido) a la derecha. La tarjeta grande de la izquierda muestra el contenido destacado.",
+    "Películas y series: las secciones están ahora a la izquierda, y cada fila tiene cinco carteles.",
+    "Ajustes: cada ajuste es ahora una casilla. Al elegir una, su explicación aparece abajo.",
+    "Mi cuenta: las suscripciones y los usuarios se muestran ahora como tarjetas claras."
   ]
 }

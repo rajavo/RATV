@@ -345,21 +345,21 @@ def s_lineups():
             break
     expect(f and "التشكيلة" in f, "could not reach the lineups button (%s)" % f)
     key("DPAD_CENTER", 2)
-    root = wait_text("حارس المرمى", timeout=15, save="lineups")
+    root = wait_text("الرسم التكتيكي", timeout=15, save="lineups")
     shot("lineups")
-    expect(root is not None, "the lineups did not open")
-    t = texts(root)
-    log("lineups: " + t[:600])
-    # Names in Arabic where players_ar.json has them, else as ESPN writes them.
-    for want in ("4-4-1-1", "بينتو", "كريستيانو رونالدو", "Hamed Al-Shanqiti", "الدفاع", "الهجوم"):
-        expect(want in t, "'%s' is missing from the lineups" % want)
-    for _ in range(8):
+    expect(root is not None, "the lineups did not open with the pitch")
+    seen = texts(root)
+    log("lineups: " + seen[:600])
+    # The pitch: the players by the short names it has room for, numbers in their places.
+    for want in ("4-4-1-1", "بينتو", "رونالدو", "Al-Shanqiti"):
+        expect(want in seen, "'%s' is missing from the pitch" % want)
+    for i in range(10):
         key("DPAD_DOWN", 0.6)
-    root = dump("lineups-end")
+        seen += " " + texts(dump("lineups-end" if i == 9 else None))
     shot("lineups-end")
-    t = texts(root)
-    expect("الغيابات" in t, "the absences part is missing: " + t[:400])
-    expect("Rakan Al Ghamdi" in t and "دخل" in t, "the substitute who came on is missing")
+    # The lists under it, names in Arabic where players_ar.json has them, else as ESPN writes them.
+    for want in ("حارس المرمى", "كريستيانو رونالدو", "Hamed Al-Shanqiti", "الدفاع", "الهجوم", "الغيابات", "Rakan Al Ghamdi", "دخل"):
+        expect(want in seen, "'%s' is missing from the lineups" % want)
     key("BACK", 1.2)
     expect(wait_text("شاهد على RA TV", timeout=8) is not None, "Back did not return to the match details")
     key("BACK", 1.5)
