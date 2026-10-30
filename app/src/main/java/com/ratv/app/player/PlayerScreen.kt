@@ -221,6 +221,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // The receiver's info bar (Receiver.kt): shown on every change of channel and with the INFO key.
     var banner by remember { mutableStateOf<Channel?>(null) }
     var bannerTick by remember { mutableIntStateOf(0) }
+    // When the channel playing was opened (elapsed realtime), for the watching counter.
+    var channelSince by remember { mutableLongStateOf(0L) }
     // Digits typed on the remote (a channel number), and the channel watched before this one.
     var typedNumber by remember { mutableStateOf("") }
     var previousChannel by remember { mutableStateOf<Channel?>(null) }
@@ -1602,6 +1604,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     LaunchedEffect(item?.channel?.id) {
         banner = item?.channel
         bannerTick++
+        channelSince = if (item?.channel != null) SystemClock.elapsedRealtime() else 0L
     }
 
     LaunchedEffect(banner, bannerTick) {
@@ -1915,7 +1918,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 audioTracks = if (zapped.id == item?.channel?.id) audioTracks else 0,
                 favorite = Keys.live(zapped.id) in favorites,
                 signal = signalLevel(bandwidthBps, netTrouble),
-                quality = qualityLevel(reserveMs, buffering)
+                quality = qualityLevel(reserveMs, buffering),
+                watchingSince = if (zapped.id == item?.channel?.id) channelSince else 0L
             )
         }
 
@@ -1960,6 +1964,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                             programmeStart = programme?.start,
                             programmeEnd = programme?.end,
                             programmeProgress = programme?.progress(now),
+                            watchingSince = channelSince,
                             nextLabel = nextProgramme?.let { tr("التالي {0} · {1}", hm(it.start), it.title) },
                             hasTrackChoice = hasTrackChoice,
                             canPip = canPip,
@@ -2200,6 +2205,7 @@ private fun Controls(
     programmeStart: Long?,
     programmeEnd: Long?,
     programmeProgress: Float?,
+    watchingSince: Long,
     nextLabel: String?,
     hasTrackChoice: Boolean,
     canPip: Boolean,
@@ -2338,11 +2344,18 @@ private fun Controls(
         ) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 if (item.isLive) {
-                    if (programmeProgress != null && programmeStart != null && programmeEnd != null) {
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    // How long this channel has been on, as films show their time, with the programme's bar.
+                    val watched = if (watchingSince > 0L) watchedLabel(rememberWatched(watchingSince)) else null
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        if (watched != null) {
+                            Text(watched, style = T.body(13.sp, FontWeight.Bold, RColors.Saffron), maxLines = 1)
+                        }
+                        if (programmeProgress != null && programmeStart != null && programmeEnd != null) {
                             Text(hm(programmeStart), style = T.body(12.sp, FontWeight.Medium, SoftText))
                             ProgressLine(programmeProgress, Modifier.weight(1f), height = 4.dp, track = Color(0x38FFFFFF))
                             Text(hm(programmeEnd), style = T.body(12.sp, FontWeight.Medium, SoftText))
+                        } else if (watched != null) {
+                            Text(tr("مدة المشاهدة"), style = T.body(12.sp, FontWeight.Medium, SoftText), maxLines = 1)
                         }
                     }
                 } else if (duration > 0L) {

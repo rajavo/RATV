@@ -1,20 +1,11 @@
 {
   "ar": [
-    "قبل: إذا صار السيرفر بطيء، كان البث يقطّع فجأة بدون إنذار. الحين: التطبيق يحس إن الاحتياطي ينقص، ويفتح اتصال جديد يعبّيه قبل ما يخلص.",
-    "قبل: إذا السيرفر مزحوم ورفض الاتصال، كانت القناة تطلّع خطأ بسرعة. الحين: التطبيق يصبر ويحاول أكثر من الضعف قبل ما يستسلم.",
-    "قبل: الاحتياطي كان يجمع دقيقتين بالكثير. الحين: يقدر يجمع أكثر من 4 دقايق لما يسمح السيرفر.",
-    "قبل: التطبيق كان ينسى بسرعة إن السيرفر يقطّع ويرجع للحماية العادية. الحين: يحتفظ بالحماية الأقوى ضعف المدة."
+    "جديد: عداد مدة المشاهدة للقنوات المباشرة، مثل الأفلام والمسلسلات. يبدأ من أول ما تفتح القناة ويطلع (⏱ 42:15) تحت مع أدوات التحكم وفي شريط المعلومات (زر INFO). يرجع من الصفر لما تغيّر القناة."
   ],
   "en": [
-    "Before: when the server got slow, the stream stopped suddenly with no warning. Now: the app notices the reserve shrinking and opens a new connection that refills it before it runs out.",
-    "Before: when a busy server refused the connection, the channel showed an error quickly. Now: the app waits and tries more than twice as many times before giving up.",
-    "Before: the reserve held two minutes at most. Now: it can hold more than 4 minutes when the server allows it.",
-    "Before: the app soon forgot that a server was stuttering and went back to normal protection. Now: it keeps the stronger protection twice as long."
+    "New: a watching counter for live channels, as films and series have. It starts when the channel opens and shows (⏱ 42:15) at the bottom with the controls and in the info bar (INFO key). It starts again from zero when you change channel."
   ],
   "es": [
-    "Antes: cuando el servidor iba lento, la emisión se cortaba de golpe sin aviso. Ahora: la app nota que la reserva baja y abre una conexión nueva que la rellena antes de que se acabe.",
-    "Antes: cuando un servidor ocupado rechazaba la conexión, el canal daba error enseguida. Ahora: la app espera y lo intenta más del doble de veces antes de rendirse.",
-    "Antes: la reserva guardaba dos minutos como mucho. Ahora: puede guardar más de 4 minutos cuando el servidor lo permite.",
-    "Antes: la app olvidaba pronto que un servidor fallaba y volvía a la protección normal. Ahora: mantiene la protección más fuerte el doble de tiempo."
+    "Nuevo: un contador de tiempo viendo para los canales en directo, como en películas y series. Empieza al abrir el canal y aparece (⏱ 42:15) abajo con los controles y en la barra de información (tecla INFO). Vuelve a cero al cambiar de canal."
   ]
 }
