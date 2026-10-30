@@ -140,16 +140,14 @@ def s_remote():
 
 
 def s_city():
-    for _ in range(40):
+    # The city tile is in the last row: down to it, then along the row both ways.
+    f = None
+    for k in ["DPAD_DOWN"] * 4 + ["DPAD_RIGHT"] * 5 + ["DPAD_LEFT"] * 6:
         f = focused(dump())
         if f and "المدينة" in f:
             break
-        key("DPAD_DOWN", 0.4)
-        f2 = focused(dump())
-        if f2 and "المدينة" in f2:
-            f = f2
-            break
-        key("DPAD_LEFT", 0.4)
+        key(k, 0.6)
+    f = focused(dump()) if not (f and "المدينة" in f) else f
     log("focus on the city tile: %s" % f)
     expect(f and "المدينة" in f, "the city tile is not reachable with the remote")
     key("DPAD_CENTER", 2)
