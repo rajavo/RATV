@@ -13319,3 +13319,456 @@ Status: o
 16:25:03 screenshot 74-phone-settings-2-qr.png 1920x1080
 16:25:03 phone page on port 8686
 16:25:06 screenshot 75-phone-home-subscription.png 1920x1080
+17:04:35 == launch
+17:05:23 debug.ratv.subs=http://10.0.2.2:8000
+17:05:24 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 942
+WaitTime: 942
+Complete
+17:05:26 screenshot 01-splash.png 1920x1080
+17:05:26 == login-screen
+17:05:32 focus[login-initial]: http://server.example:8080
+17:05:32 screenshot 02-login.png 1920x1080
+17:05:32 == keyboard-on-ok
+17:05:36 screenshot 03-login-keyboard.png 1920x1080
+17:05:39 == fill-with-remote
+17:05:49 focus[login-user]: username
+17:06:06 focus[login-name]: مثال: اشتراك المنزل
+17:06:09 focus[login-submit]: دخول
+17:06:09 screenshot 04-login-filled.png 1920x1080
+17:06:19 screenshot 05-home.png 1920x1080
+17:06:19 == home-focus
+17:06:21 focus[home-focus]: بث مباشر
+17:06:21 screenshot 06-home-focus.png 1920x1080
+17:06:21 == tv-menu
+17:06:23 screenshot 07-tv-menu.png 1920x1080
+17:06:23 == low-latency
+17:06:23   10-30 17:05:22.802  4403  4403 I RATVNet : Wi-Fi low latency on (low latency)
+17:06:23   10-30 17:06:09.356  4403  4403 I RATVNet : keeping a connection ready to 10.0.2.2
+17:06:23 wifi locks: WifiLock{RATV:low-latency type=4 uid=1000 workSource=WorkSource{10076}}
+17:06:23 == player-remote
+17:06:26 focus[player-hero]: بث مباشر
+17:06:32 focus[player-hero-channels]: 1 | RATV News HD | Live Match | HD
+17:06:43 screenshot 08-player.png 1920x1080
+17:06:46 screenshot 09-player-zap.png 1920x1080
+17:06:49 screenshot 10-player-controls.png 1920x1080
+17:06:51 screenshot 11-player-controls-moved.png 1920x1080
+17:06:55 screenshot 12-player-controls-hidden.png 1920x1080
+17:07:16 screenshot 13-home-after-player.png 1920x1080
+17:07:16 !! RuntimeError('Back did not return from the player')
+17:07:16 screenshot 14-fail-player-remote.png 1920x1080
+17:07:16 == player-numbers
+17:07:20 focus[nav-search]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+17:07:23 focus[nav-search]: 1 | RATV News HD | Live Match | HD
+17:07:27 focus[nav-search]: تعديل القوائم
+17:07:30 focus[nav-search]: أفلام
+17:07:31 focus[nav-start]: أفلام
+17:07:38 focus[nav-target]: الرئيسية
+17:07:44 focus[numbers-hero]: بث مباشر
+17:07:49 focus[numbers-hero-channels]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+17:08:00 screenshot 15-player-number-typed.png 1920x1080
+17:08:05 screenshot 16-player-number.png 1920x1080
+17:08:12 screenshot 17-player-last-channel.png 1920x1080
+17:08:23 == update-notes
+17:08:26 focus[update-banner]: بث مباشر
+17:08:29 focus[update-banner]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:08:33 screenshot 18-update-notes.png 1920x1080
+17:08:39 screenshot 19-update-notes-scrolled.png 1920x1080
+17:08:40 focus[update-notes-scrolled]: لاحقاً
+17:08:42 == movies
+17:08:47 focus[tile-أفلام]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:08:50 focus[tile-أفلام]: مسلسلات
+17:08:53 focus[tile-أفلام]: أفلام
+17:08:59 focus[movies]: Desert Night (2023) | 7.4 | Desert Night (2023)
+17:08:59 screenshot 20-movies.png 1920x1080
+17:09:04 focus[movie-detail]: تشغيل
+17:09:04 screenshot 21-movie-detail.png 1920x1080
+17:09:19 screenshot 22-player-movie-seek.png 1920x1080
+17:09:22 screenshot 23-movie-detail-after.png 1920x1080
+17:09:25 == guess-movie
+17:09:26 focus[nav-search]: Desert Night (2023) | 7.4 | Desert Night (2023)
+17:09:30 focus[nav-search]: بحث
+17:09:33 focus[nav-search]: مباشر
+17:09:34 focus[nav-start]: مباشر
+17:09:39 focus[nav-target]: أفلام
+17:09:44 focus[guess-grid]: أفلام
+17:09:47 focus[guess-grid]: الترتيب: الأحدث إضافة
+17:09:50 focus[guess-grid]: Silent Sea (2019) | 7.0 | Silent Sea (2019)
+17:09:53 focus[guess-grid]: Fast Track 4K | 4K | 5.9 | Fast Track 4K
+17:09:56 focus[guess-grid]: ليالي الصحراء | 8.2 | ليالي الصحراء
+17:09:59 focus[guess-grid]: The Long Road 2021 | 6.8 | The Long Road 2021
+17:10:04 focus[guess-detail]: تشغيل
+17:10:16 screenshot 24-guess-movie.png 1920x1080
+17:10:19 screenshot 25-guess-movie-skipped.png 1920x1080
+17:10:35 == live
+17:10:36 focus[nav-search]: بث مباشر
+17:10:39 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:10:42 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:10:45 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:10:48 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:10:51 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:10:54 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:10:57 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:00 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:03 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:10 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:13 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:16 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:19 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:22 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:25 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:28 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:31 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:34 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:52 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:55 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:11:58 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:07 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:07 screenshot 26-stuck-before-مباشر.png 1920x1080
+17:12:07 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+17:12:08 screenshot 27-fail-live.png 1920x1080
+17:12:08 == series
+17:12:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:12 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:24 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:27 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:30 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:33 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:52 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:55 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:12:58 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:10 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:13 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:16 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:19 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:22 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:25 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:28 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:31 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:34 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:40 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:40 screenshot 28-stuck-before-مسلسلات.png 1920x1080
+17:13:40 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+17:13:40 screenshot 29-fail-series.png 1920x1080
+17:13:40 == matches
+17:13:42 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:45 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:48 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:51 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:54 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:13:57 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:00 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:03 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:06 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:12 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:24 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:27 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:30 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:33 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:36 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:52 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:55 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:14:58 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:15:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:15:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:15:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:15:10 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:15:13 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:15:13 screenshot 30-stuck-before-المباريات.png 1920x1080
+17:15:13 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+17:15:13 screenshot 31-fail-matches.png 1920x1080
+17:15:13 == match-link
+17:15:13 Starting: Intent { act=android.intent.action.VIEW dat=ratv://match?home=Real Madrid&away=Barcelona&homeAr=ريال مدريد&awayAr=برشلونة&start=1793379613706&league=الدوري الإسباني pkg=com.ratv.app }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+Status: o
+17:15:17 screenshot 32-match-link.png 1920x1080
+17:15:18 focus[match-link]: Sport 1 4K | الحين: الدوري الإسباني: ريال مدريد × برشلونة
+17:15:26 screenshot 33-match-link-play.png 1920x1080
+17:15:33 == scoreboard
+17:15:36 focus[board-hero]: بث مباشر
+17:15:41 focus[board-hero-channels]: 11 | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة | 4K
+17:15:53 screenshot 34-board.png 1920x1080
+17:15:53   --------- beginning of main
+17:15:53   --------- beginning of system
+17:15:53   10-30 17:15:41.854  4403  4403 I RATVScore: board on Sport 1 4K: 900001 (link)
+17:15:53 board: لوحة النتيجة: ريال مدريد 2 - 1 برشلونة، 23:50
+17:16:47 screenshot 35-board-goal.png 1920x1080
+17:16:54 screenshot 36-board-corner.png 1920x1080
+17:16:54 board alone at (60, 28, 638, 154)
+17:16:56 screenshot 37-board-controls.png 1920x1080
+17:17:08 focus[board-pill]: تحسين الصورة
+17:17:11 focus[board-pill]: لوحة النتيجة
+17:17:17 screenshot 38-board-pick.png 1920x1080
+17:17:21 focus[board-pick-yk]: ريال مدريد × برشلونة | الدوري الإسباني · بدأت 16:39 · من دليل البرامج | المختار
+17:17:24 focus[board-pick-yk]: ن | الشمال × نادي قطر | دوري نجوم قطر · بدأت 16:47
+17:17:31 screenshot 39-board-yk.png 1920x1080
+17:17:31 board: لوحة النتيجة: الشمال 1 - 0 نادي قطر، مباشر
+17:17:41 focus[board-pill2]: تحسين الصورة
+17:17:44 focus[board-pill2]: لوحة النتيجة
+17:17:50 focus[board-hide]: ن | الشمال × نادي قطر | دوري نجوم قطر · بدأت 16:47 | المختار
+17:17:53 focus[board-hide]: ا | ا | الهلال × النصر | دوري روشن السعودي · بدأت 16:52
+17:17:56 focus[board-hide]: ا | ا | الاتحاد × الدرعية | دوري روشن السعودي · بدأت 16:42
+17:17:59 focus[board-hide]: بدون لوحة | تختفي من هذي القناة لين تخلص المباراة
+17:18:04 screenshot 40-board-hidden.png 1920x1080
+17:18:14 == sports-guide
+17:18:17 focus[guide-hero]: بث مباشر
+17:18:23 focus[guide-hero-channels]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+17:18:43 screenshot 41-guide-bein3.png 1920x1080
+17:18:43   --------- beginning of system
+17:18:43   10-30 17:15:41.854  4403  4403 I RATVScore: board on Sport 1 4K: 900001 (link)
+17:18:43   10-30 17:17:24.170  4403  4403 I RATVScore: board on Sport 1 HD: y112832 (hand)
+17:18:43   10-30 17:17:59.184  4403  4403 I RATVScore: board on Sport 1 HD: none (-)
+17:18:43   10-30 17:18:32.002  4403  4403 I RATVScore: board on AR| beIN SPORTS 3 HD: 900004 (guide)
+17:18:47 screenshot 42-guide-bein3-controls.png 1920x1080
+17:19:06 screenshot 43-guide-bein1.png 1920x1080
+17:19:22 screenshot 44-guide-bein2-controls.png 1920x1080
+17:19:42 screenshot 45-guide-thmanyah3.png 1920x1080
+17:19:59 screenshot 46-guide-ask.png 1920x1080
+17:20:07 screenshot 47-guide-ask-pick.png 1920x1080
+17:20:19 == intro
+17:20:21 focus[nav-search]: بث مباشر
+17:20:24 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:20:27 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:20:30 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:20:33 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:20:36 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:20:39 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:20:42 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:20:45 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:20:48 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:20:51 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:20:54 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:20:57 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:00 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:03 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:06 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:12 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:24 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:27 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:30 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:33 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:36 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:39 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:52 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:21:52 screenshot 48-stuck-before-مسلسلات.png 1920x1080
+17:22:19 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+17:22:20 screenshot 49-fail-intro.png 1920x1080
+17:22:20 !! the app is behind: mResumedActivity: ActivityRecord{bac40f0 u0 com.google.android.tvlauncher/.MainActivity t4}
+17:22:23 == settings
+17:22:25 focus[nav-search]: بث مباشر
+17:22:28 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:22:31 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:22:34 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:22:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:22:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:22:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:22:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:22:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:22:52 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:22:55 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:22:58 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:10 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:13 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:16 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:19 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:22 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:25 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:28 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:31 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:34 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:52 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:55 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:23:56 screenshot 50-stuck-before-حسابي.png 1920x1080
+17:23:56 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+17:23:56 screenshot 51-fail-settings.png 1920x1080
+17:23:56 == settings-deep
+17:23:57 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:00 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:03 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:06 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:12 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:16 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:19 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:22 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:25 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:28 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:31 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:34 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:52 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:55 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:24:58 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:10 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:13 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:16 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:19 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:22 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:25 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:28 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:29 screenshot 52-stuck-before-حسابي.png 1920x1080
+17:25:29 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+17:25:29 screenshot 53-fail-settings-deep.png 1920x1080
+17:25:29 == enhance
+17:25:30 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:33 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:36 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:39 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:42 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:45 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:48 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:51 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:54 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:25:57 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:10 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:13 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:16 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:19 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:22 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:25 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:28 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:31 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:34 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:52 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:55 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:26:58 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:27:01 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:27:01 screenshot 54-stuck-before-حسابي.png 1920x1080
+17:27:27 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+17:27:28 screenshot 55-fail-enhance.png 1920x1080
+17:27:28 !! the app is behind: mResumedActivity: ActivityRecord{bac40f0 u0 com.google.android.tvlauncher/.MainActivity t4}
+17:27:31 == languages
+17:28:22 screenshot 56-home-en.png 1920x1080
+17:28:26 !! RuntimeError('en: the top bar shows no Home')
+17:28:26 screenshot 57-fail-languages.png 1920x1080
+17:28:26 == phone-link
+17:28:28 focus[nav-search]: بث مباشر
+17:28:31 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:28:34 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:28:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:28:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:28:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:28:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:28:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:28:52 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:28:55 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:28:58 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:10 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:13 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:16 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:19 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:23 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:26 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:29 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:32 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:35 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:38 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:41 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:44 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:47 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:50 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:53 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:56 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:59 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:29:59 screenshot 58-stuck-before-حسابي.png 1920x1080
+17:29:59 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+17:29:59 screenshot 59-fail-phone-link.png 1920x1080
+17:29:59 == phone-subscription
+17:30:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:10 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:13 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:16 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:19 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:22 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:25 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:28 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:31 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:34 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:52 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:55 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:30:58 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:31:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:31:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:31:08 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:31:11 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:31:14 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:31:17 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:31:20 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:31:23 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:31:26 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:31:29 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:31:32 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:31:32 screenshot 60-stuck-before-حسابي.png 1920x1080
+17:31:32 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+17:31:32 screenshot 61-fail-phone-subscription.png 1920x1080
