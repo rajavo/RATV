@@ -905,20 +905,24 @@ def t_guess_movie():
     go_tab("أفلام")
     _, n = S.wait_for(timeout=20, contains="The Long Road")
     expect(n is not None, "The Long Road missing")
-    # The category list is at the side (it opens on «متابعة المشاهدة»): down to «أكشن», then right into the posters.
+    # The posters of «الكل» (the category it opens on): «The Long Road» is the second one of the first row.
+    # The focus rests on the top bar, on the sort button or on a poster: from the bar, down past the sort
+    # button; from a poster, up towards the bar. (The category list is on the right, so it is not needed.)
     f = None
-    for _ in range(14):
-        _, f = log_focus("guess-side")
-        if f is not None and f.startswith("أكشن"):
-            break
-        key("DPAD_DOWN", pause=0.7)
-    expect(f is not None and f.startswith("أكشن"), "the action category not focused (focus: %s)" % f)
-    key("DPAD_RIGHT", pause=1.0)
-    for _ in range(8):
+    for _ in range(24):
         _, f = log_focus("guess-grid")
         if f is not None and "The Long Road" in f:
             break
-        key("DPAD_RIGHT", pause=0.7)
+        if f in NAV:
+            if f != "أفلام":
+                step = NAV.index("أفلام") - NAV.index(f)
+                key("DPAD_LEFT" if step > 0 else "DPAD_RIGHT", abs(step), pause=0.8)
+            else:
+                key("DPAD_DOWN", pause=0.8)
+        elif f is not None and f.startswith("الترتيب"):
+            key("DPAD_DOWN", pause=0.8)
+        else:
+            key("DPAD_UP", pause=0.8)
     expect(f is not None and "The Long Road" in f, "The Long Road not focused (focus: %s)" % f)
     key("DPAD_CENTER", pause=3)
     _, f = log_focus("guess-detail")
