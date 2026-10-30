@@ -1,6 +1,9 @@
 package com.ratv.app.ui.screens
 
 import com.ratv.app.i18n.tr
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
+import com.ratv.app.BuildConfig
 import com.ratv.app.data.MatchEvent
 import com.ratv.app.data.Updater
 import androidx.compose.runtime.LaunchedEffect
@@ -15,6 +18,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -55,6 +59,7 @@ import com.ratv.app.data.progress
 import com.ratv.app.ui.LocalRepo
 import com.ratv.app.ui.Navigator
 import com.ratv.app.ui.components.ChannelLogo
+import com.ratv.app.ui.components.arabicDate
 import com.ratv.app.ui.components.CircleIconButton
 import com.ratv.app.ui.components.LiveBadge
 import com.ratv.app.ui.components.PosterImage
@@ -99,6 +104,8 @@ fun HomeScreen(nav: Navigator) {
     val history by repo.history.collectAsStateWithLifecycle()
     val epg by repo.epg.collectAsStateWithLifecycle()
     val libraryLoading by repo.libraryLoading.collectAsStateWithLifecycle()
+    val account by repo.account.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     val now = rememberNow()
 
     val featured: Channel? = remember(channels, favorites) {
@@ -165,42 +172,82 @@ fun HomeScreen(nav: Navigator) {
             }
         }
 
-        if (featured != null) {
+        if (wide) {
             item {
-                val programmes = epg.forChannel(featured)
-                val programme = programmes.current(now)
-                HeroCard(
-                    channel = featured,
-                    title = programme?.title ?: featured.name,
-                    meta = if (programme != null) tr("بدأ {0} · {1}", hm(programme.start), minutesLeft(programme.end, now))
-                    else (repo.liveCategoryName(featured.categoryId) ?: tr("بث مباشر")),
-                    progress = programme?.progress(now),
-                    onWatch = { nav.playLive(featured.id) },
-                    modifier = Modifier
-                        .padding(start = 20.dp, end = 20.dp, top = 20.dp)
-                        .focusRequester(heroFocus)
+                val programme = featured?.let { epg.forChannel(it).current(now) }
+                TvMenu(
+                    liveTile = { m ->
+                        if (featured != null) {
+                            HeroCard(
+                                channel = featured,
+                                title = programme?.title ?: featured.name,
+                                meta = if (programme != null) tr("بدأ {0} · {1}", hm(programme.start), minutesLeft(programme.end, now))
+                                else (repo.liveCategoryName(featured.categoryId) ?: tr("بث مباشر")),
+                                progress = programme?.progress(now),
+                                onWatch = { nav.playLive(featured.id) },
+                                modifier = m.focusRequester(heroFocus)
+                            )
+                        } else {
+                            Box(m.clip(RoundedCornerShape(22.dp)).background(RColors.Surface)) {}
+                        }
+                    },
+                    movieCount = if (libraryLoading && movies.isEmpty()) tr("جارٍ التحميل…") else tr("{0} فيلم", formatCount(movies.size)),
+                    seriesCount = if (libraryLoading && series.isEmpty()) tr("جارٍ التحميل…") else tr("{0} مسلسل", formatCount(series.size)),
+                    matchCount = if (todayMatches.isEmpty()) tr("لا توجد مباريات اليوم") else tr("مباريات اليوم: {0}", formatCount(todayMatches.size)),
+                    expiry = account?.expDate?.let { tr("ينتهي في {0}", arabicDate(it)) },
+                    version = tr("الإصدار {0}", BuildConfig.VERSION_NAME),
+                    onMovies = { nav.tab("movies") },
+                    onSeries = { nav.tab("series") },
+                    onMatches = { nav.tab("matches") },
+                    onAccount = { nav.tab("settings") },
+                    onSearch = { nav.search() },
+                    onSettings = { nav.tab("settings") },
+                    onRefresh = {
+                        repo.refresh()
+                        Toast.makeText(context, tr("جارٍ تحديث المحتوى…"), Toast.LENGTH_SHORT).show()
+                    }
                 )
             }
-        }
+        } else {
+            if (featured != null) {
+                item {
+                    val programmes = epg.forChannel(featured)
+                    val programme = programmes.current(now)
+                    HeroCard(
+                        channel = featured,
+                        title = programme?.title ?: featured.name,
+                        meta = if (programme != null) tr("بدأ {0} · {1}", hm(programme.start), minutesLeft(programme.end, now))
+                        else (repo.liveCategoryName(featured.categoryId) ?: tr("بث مباشر")),
+                        progress = programme?.progress(now),
+                        onWatch = { nav.playLive(featured.id) },
+                        modifier = Modifier
+                            .padding(start = 20.dp, end = 20.dp, top = 20.dp)
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .focusRequester(heroFocus)
+                    )
+                }
+            }
 
-        item {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp, top = 18.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                CategoryTile(RIcons.Broadcast, tr("مباشر"), tr("{0} قناة", formatCount(channels.size)), Modifier.weight(1f)) { nav.tab("live") }
-                CategoryTile(
-                    RIcons.Film, tr("أفلام"),
-                    if (libraryLoading && movies.isEmpty()) tr("جارٍ التحميل…") else tr("{0} فيلم", formatCount(movies.size)),
-                    Modifier.weight(1f)
-                ) { nav.tab("movies") }
-                CategoryTile(
-                    RIcons.Layers, tr("مسلسلات"),
-                    if (libraryLoading && series.isEmpty()) tr("جارٍ التحميل…") else tr("{0} مسلسل", formatCount(series.size)),
-                    Modifier.weight(1f)
-                ) { nav.tab("series") }
+            item {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp, top = 18.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    CategoryTile(RIcons.Broadcast, tr("مباشر"), tr("{0} قناة", formatCount(channels.size)), Modifier.weight(1f)) { nav.tab("live") }
+                    CategoryTile(
+                        RIcons.Film, tr("أفلام"),
+                        if (libraryLoading && movies.isEmpty()) tr("جارٍ التحميل…") else tr("{0} فيلم", formatCount(movies.size)),
+                        Modifier.weight(1f)
+                    ) { nav.tab("movies") }
+                    CategoryTile(
+                        RIcons.Layers, tr("مسلسلات"),
+                        if (libraryLoading && series.isEmpty()) tr("جارٍ التحميل…") else tr("{0} مسلسل", formatCount(series.size)),
+                        Modifier.weight(1f)
+                    ) { nav.tab("series") }
+                }
             }
         }
 
@@ -385,8 +432,6 @@ private fun HeroCard(
 ) {
     Box(
         modifier
-            .fillMaxWidth()
-            .height(200.dp)
             .clip(RoundedCornerShape(22.dp))
             .background(Brush.verticalGradient(listOf(RColors.SaffronDeep.copy(alpha = 0.32f), RColors.Surface)))
             .tvClickable(RoundedCornerShape(22.dp), onClick = onWatch)
@@ -453,6 +498,138 @@ private fun HeroCard(
                 Text(tr("شاهد الآن"), style = T.body(14.sp, FontWeight.Bold, RColors.OnSaffron))
             }
         }
+    }
+}
+
+/**
+ * The TV start screen as one block: the live channel on the left, four tiles in a square in the middle,
+ * and three buttons on the right. Arabic reads right to left, so the first item of a row is the rightmost.
+ */
+@Composable
+private fun TvMenu(
+    liveTile: @Composable (Modifier) -> Unit,
+    movieCount: String,
+    seriesCount: String,
+    matchCount: String,
+    expiry: String?,
+    version: String,
+    onMovies: () -> Unit,
+    onSeries: () -> Unit,
+    onMatches: () -> Unit,
+    onAccount: () -> Unit,
+    onSearch: () -> Unit,
+    onSettings: () -> Unit,
+    onRefresh: () -> Unit
+) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp, top = 16.dp)
+    ) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            // The expiry date at the start (top right in Arabic), the logo at the end.
+            if (expiry != null) {
+                Text(
+                    expiry,
+                    style = T.body(13.sp, FontWeight.Medium, RColors.Text2),
+                    maxLines = 1,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(RColors.Surface)
+                        .border(1.dp, RColors.Line, RoundedCornerShape(12.dp))
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                )
+            }
+            Spacer(Modifier.weight(1f))
+            RatvLogo(22.sp)
+        }
+        Spacer(Modifier.height(14.dp))
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .height(300.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
+            Column(
+                Modifier
+                    .width(230.dp)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                MenuButton(RIcons.Search, tr("بحث"), Modifier.weight(1f), onSearch)
+                MenuButton(RIcons.Sliders, tr("الإعدادات"), Modifier.weight(1f), onSettings)
+                MenuButton(RIcons.Refresh, tr("تحديث المحتوى"), Modifier.weight(1f), onRefresh)
+            }
+            Column(
+                Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    MenuTile(RIcons.Film, tr("أفلام"), movieCount, Modifier.weight(1f), onMovies)
+                    MenuTile(RIcons.Layers, tr("مسلسلات"), seriesCount, Modifier.weight(1f), onSeries)
+                }
+                Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    MenuTile(RIcons.Trophy, tr("المباريات"), matchCount, Modifier.weight(1f), onMatches)
+                    MenuTile(RIcons.User, tr("حسابي"), tr("الاشتراك والمستخدمون"), Modifier.weight(1f), onAccount)
+                }
+            }
+            liveTile(Modifier.weight(1.6f).fillMaxHeight())
+        }
+        Spacer(Modifier.height(8.dp))
+        Row(Modifier.fillMaxWidth()) {
+            Text(version, style = T.caption, maxLines = 1)
+            Spacer(Modifier.weight(1f))
+        }
+    }
+}
+
+/** One of the four tiles of the TV start screen: an icon, a name and a short line under it. */
+@Composable
+private fun MenuTile(icon: ImageVector, label: String, sub: String, modifier: Modifier, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(18.dp)
+    Column(
+        modifier
+            .clip(shape)
+            .background(Brush.verticalGradient(listOf(RColors.Surface2, RColors.Surface)))
+            .border(1.dp, RColors.Line, shape)
+            .tvClickable(shape, onClick = onClick)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Box(
+            Modifier
+                .size(42.dp)
+                .clip(RoundedCornerShape(13.dp))
+                .background(RColors.AccentBrush),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(icon, contentDescription = null, tint = RColors.OnSaffron, modifier = Modifier.size(22.dp))
+        }
+        Column {
+            Text(label, style = T.title)
+            Text(sub, style = T.caption, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        }
+    }
+}
+
+/** One of the three buttons on the right of the TV start screen. */
+@Composable
+private fun MenuButton(icon: ImageVector, label: String, modifier: Modifier, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(18.dp)
+    Row(
+        modifier
+            .clip(shape)
+            .background(RColors.Surface)
+            .border(1.dp, RColors.Line, shape)
+            .tvClickable(shape, onClick = onClick)
+            .padding(horizontal = 18.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Icon(icon, contentDescription = null, tint = RColors.Saffron, modifier = Modifier.size(22.dp))
+        Text(label, style = T.body(16.sp, FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 

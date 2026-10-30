@@ -101,7 +101,8 @@ fun MoviesScreen(nav: Navigator) {
             },
             emptyTitle = tr("لا توجد أفلام"),
             badgeOf = { item -> repo.movie(item.id)?.let { repo.movieQuality(it) } },
-            onOpen = { nav.movie(it) }
+            onOpen = { nav.movie(it) },
+            onSearch = { nav.search() }
         )
     } else {
         CatalogScreen(
@@ -143,7 +144,8 @@ fun SeriesScreen(nav: Navigator) {
             },
             emptyTitle = tr("لا توجد مسلسلات"),
             badgeOf = { item -> repo.seriesItem(item.id)?.let { repo.seriesQuality(it) } },
-            onOpen = { nav.show(it) }
+            onOpen = { nav.show(it) },
+            onSearch = { nav.search() }
         )
     } else {
         CatalogScreen(

@@ -668,5 +668,14 @@
 "🌍 أفريقيا": "🌍 Africa",
 "🌍 القنوات العربية": "🌍 Arabic channels",
 "🌎 أمريكا اللاتينية": "🌎 Latin America",
-"📺 قنوات أخرى": "📺 Other channels"
+"📺 قنوات أخرى": "📺 Other channels",
+"الإعدادات": "Settings",
+"متصل": "Connected",
+"مفعّل": "On",
+"متوقف": "Off",
+"ينتهي في {0}": "Expires {0}",
+"الاشتراك والمستخدمون": "Subscription and users",
+"مباريات اليوم: {0}": "Matches today: {0}",
+"لا توجد مباريات اليوم": "No matches today",
+"اختر إعداداً لتقرأ شرحه هنا.": "Choose a setting to read its explanation here."
 }
