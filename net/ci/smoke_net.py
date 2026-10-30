@@ -327,7 +327,7 @@ def s_lite():
         for _ in range(10):
             key("DPAD_UP", 0.4)
         tap_text(dump(), "^خفّف الشاشة$")
-    root = wait_text("احذف تطبيقات المصنع", save="lite")
+    root = wait_text("خفّف الحين", save="lite")
     shot("lite")
     expect(root is not None, "the lite page did not open")
     log("lite page: " + texts(root)[:1200])
