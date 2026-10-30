@@ -1,20 +1,11 @@
 {
   "ar": [
-    "استجابة أسرع: التطبيق يطلب من التلفزيون «واي فاي سريع الاستجابة» وهو مفتوح، بدل وضع توفير الطاقة اللي يأخر كل رد.",
-    "تغيير القناة وتقديم الفيلم أسرع: التطبيق يخلي اتصال جاهز مع سيرفر الاشتراك، ويحفظ عناوين السيرفرات، فما ينتظر فتح اتصال جديد كل مرة.",
-    "قياس زمن الاستجابة صار أدق، ولو كان بطيء يقول لك وش تسوي (مثل توصيل التلفزيون بكيبل إنترنت).",
-    "زر «تخطي المقدمة» و«الحلقة التالية» صار يشتغل بزر OK حتى لو أزرار التحكم ظاهرة. قبل كان OK يوقف الفيديو أو يشغّله بدل ما يتخطى."
+    "زر «تخطي المقدمة» صار لكل الأفلام والمسلسلات في السيرفر، حتى اللي ما يعرف التطبيق مقدمتها: يطلع في أول دقيقة ونص، وOK يروح لـ1:30. إذا عرف التطبيق المقدمة الحقيقية، يطلع الزر الدقيق بدله."
   ],
   "en": [
-    "Faster answers: the app asks the TV for low-latency Wi-Fi while it is open, instead of the power saving that delays every answer.",
-    "Changing channels and jumping in films is quicker: the app keeps a connection to the subscription's server ready and remembers the servers' addresses, so it does not wait for a new connection each time.",
-    "The response time measure is more accurate, and when it is slow it tells you what to do (such as connecting the TV with an internet cable).",
-    "The “Skip intro” and “Next episode” buttons now work with OK even when the controls are showing. Before, OK paused or played the video instead of skipping."
+    "The “Skip intro” button now shows for every film and series on the server, even where the app does not know the opening: in the first minute and a half, OK goes to 1:30. Where the app knows the real opening, the exact button shows instead."
   ],
   "es": [
-    "Respuestas más rápidas: la app pide al televisor Wi-Fi de baja latencia mientras está abierta, en lugar del ahorro de energía que retrasa cada respuesta.",
-    "Cambiar de canal y saltar en las películas es más rápido: la app mantiene lista una conexión con el servidor de la suscripción y recuerda las direcciones de los servidores, así no espera una conexión nueva cada vez.",
-    "La medida del tiempo de respuesta es más precisa, y si es lento te dice qué hacer (como conectar el televisor con un cable de internet).",
-    "Los botones «Saltar intro» y «Siguiente episodio» ahora funcionan con OK aunque los controles estén en pantalla. Antes, OK pausaba o reproducía el vídeo en lugar de saltar."
+    "El botón «Saltar intro» ahora aparece en todas las películas y series del servidor, aunque la app no conozca la entrada: en el minuto y medio inicial, OK va al 1:30. Donde la app conoce la entrada real, aparece el botón exacto."
   ]
 }
