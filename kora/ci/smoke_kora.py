@@ -10,6 +10,7 @@ import gzip
 import json
 import os
 import re
+import shutil
 import subprocess
 import time
 import xml.etree.ElementTree as ET
@@ -201,6 +202,7 @@ def write_schedule(offset_min):
         "competitors": [{"homeAway": "home", "score": "2"}, {"homeAway": "away", "score": "1"}]}]}]}
     with open(os.path.join(WWW, "espn_ksa.1.json"), "w", encoding="utf-8") as f:
         json.dump(live, f)
+    shutil.copy(os.path.join(os.path.dirname(os.path.abspath(__file__)), "espn_summary.json"), os.path.join(WWW, "espn_summary.json"))
     log("schedule written: local midnight %s UTC" % dt.datetime.fromtimestamp(today0, dt.timezone.utc))
 
 
@@ -324,6 +326,43 @@ def s_details():
     expect(f and "الهلال" in f, "the selection did not come back to the match (%s)" % f)
 
 
+def s_lineups():
+    """From the Al Hilal match: the lineups button opens both teams' sheets, read from ESPN's summary."""
+    f = focused(dump())
+    expect(f and "الهلال" in f, "not on the Al Hilal match (%s)" % f)
+    key("DPAD_CENTER", 1.5)
+    expect(wait_text("التشكيلة والغيابات", timeout=10) is not None, "no lineups button in the details")
+    f = None
+    for direction in ("DPAD_LEFT", "DPAD_RIGHT"):
+        for _ in range(2):
+            key(direction, 0.8)
+            f = focused(dump())
+            if f and "التشكيلة" in f:
+                break
+        if f and "التشكيلة" in f:
+            break
+    expect(f and "التشكيلة" in f, "could not reach the lineups button (%s)" % f)
+    key("DPAD_CENTER", 2)
+    root = wait_text("حارس المرمى", timeout=15, save="lineups")
+    shot("lineups")
+    expect(root is not None, "the lineups did not open")
+    t = texts(root)
+    log("lineups: " + t[:600])
+    for want in ("4-4-1-1", "Bento", "Hamed Al-Shanqiti", "الدفاع", "الهجوم"):
+        expect(want in t, "'%s' is missing from the lineups" % want)
+    for _ in range(8):
+        key("DPAD_DOWN", 0.6)
+    root = dump("lineups-end")
+    shot("lineups-end")
+    t = texts(root)
+    expect("الغيابات" in t, "the absences part is missing: " + t[:400])
+    expect("Rakan Al Ghamdi" in t and "دخل" in t, "the substitute who came on is missing")
+    key("BACK", 1.2)
+    expect(wait_text("شاهد على RA TV", timeout=8) is not None, "Back did not return to the match details")
+    key("BACK", 1.5)
+    expect(wait_text("شاهد على RA TV", timeout=8, gone=True) is not None, "the details did not close")
+
+
 def s_offline():
     """The schedule kept on the device opens even when it cannot be downloaded."""
     os.rename(os.path.join(WWW, "fixtures.json"), os.path.join(WWW, "fixtures.off"))
@@ -384,6 +423,7 @@ if __name__ == "__main__":
         ("yesterday", s_yesterday),
         ("filter", s_filter),
         ("details", s_details),
+        ("lineups", s_lineups),
         ("offline", s_offline),
         ("real-data", s_real_data),
     ]:

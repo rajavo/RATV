@@ -65,6 +65,7 @@ object Kora {
 
     private fun dataUrl() = debugProperty("debug.kora.data") ?: DATA_URL
     private fun espn() = debugProperty("debug.kora.espn") ?: ESPN
+    fun espnBase() = espn()
     private fun cacheFile(context: Context) = File(context.filesDir, "fixtures.json")
 
     /** The schedule kept on the device, at once. */
