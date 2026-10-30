@@ -1,23 +1,26 @@
 {
   "ar": [
-    "ملاحظة: شكل التطبيق يتغيّر في هذا التحديث على شاشة التلفاز. الأزرار والأقسام صارت في أماكن جديدة، والمشاهدة نفسها ما تغيّرت.",
-    "الصفحة الرئيسية: المربعات في الوسط (أفلام، مسلسلات، المباريات، حسابي). الأزرار (بحث، الإعدادات، تحديث المحتوى) على اليمين. والبطاقة الكبيرة على اليسار فيها المحتوى المميز.",
+    "ملاحظة: شكل الصفحة الرئيسية على التلفاز تغيّر في هذا التحديث. الأزرار والأقسام صارت في أماكن جديدة، والمشاهدة نفسها ما تغيّرت.",
+    "الصفحة الرئيسية: البث المباشر على اليسار. في الوسط أربعة مربعات: مسلسلات، أفلام، حسابي، المباريات. وعلى اليمين الأزرار: الإعدادات، تحديث المحتوى، خروج.",
+    "قائمة القنوات: عند فتحها تظهر القناة الأخيرة التي شاهدتها.",
     "الأفلام والمسلسلات: الأقسام صارت على اليسار، وكل صف فيه خمس صور.",
     "الإعدادات: كل إعداد صار مربعاً، وإذا اخترت أي مربع يطلع شرحه تحت.",
     "حسابي: الاشتراكات والمستخدمون صاروا بطاقات واضحة."
   ],
   "en": [
-    "Note: the look of the app changes in this update on the TV. The buttons and sections are in new places. Watching itself has not changed.",
-    "Home: the boxes in the middle (Movies, Series, Matches, My account). The buttons (Search, Settings, Refresh content) on the right. The big card on the left shows the featured content.",
+    "Note: the home screen on the TV has changed in this update. The buttons and sections are in new places. Watching itself has not changed.",
+    "Home: Live on the left. In the middle, four boxes: Series, Movies, My account, Matches. On the right, the buttons: Settings, Refresh content, Exit.",
+    "Channel list: when it opens, the last channel you watched is in view.",
     "Movies and series: the sections are now on the left, and each row has five posters.",
     "Settings: each setting is now a box. When you pick a box, its explanation appears at the bottom.",
     "My account: the subscriptions and users are now clear cards."
   ],
   "es": [
-    "Aviso: el aspecto de la aplicación cambia en esta actualización en la TV. Los botones y las secciones están en lugares nuevos. La reproducción no ha cambiado.",
-    "Inicio: las casillas del centro (Películas, Series, Partidos, Mi cuenta). Los botones (Buscar, Ajustes, Actualizar contenido) a la derecha. La tarjeta grande de la izquierda muestra el contenido destacado.",
+    "Aviso: la pantalla de inicio de la TV ha cambiado en esta actualización. Los botones y las secciones están en lugares nuevos. La reproducción no ha cambiado.",
+    "Inicio: En vivo a la izquierda. En el centro, cuatro casillas: Series, Películas, Mi cuenta, Partidos. A la derecha, los botones: Ajustes, Actualizar contenido, Salir.",
+    "Lista de canales: al abrirla, se ve el último canal que viste.",
     "Películas y series: las secciones están ahora a la izquierda, y cada fila tiene cinco carteles.",
     "Ajustes: cada ajuste es ahora una casilla. Al elegir una, su explicación aparece abajo.",
-    "Mi cuenta: las suscripciones y los usuarios se muestran ahora como tarjetas claras."
+    "Mi cuenta: las suscripciones y los usuarios se muestran como tarjetas claras."
   ]
 }
