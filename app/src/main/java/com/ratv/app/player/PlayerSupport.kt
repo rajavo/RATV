@@ -196,11 +196,11 @@ private class PatientLoadErrorPolicy : DefaultLoadErrorHandlingPolicy() {
     override fun getRetryDelayMsFor(loadErrorInfo: LoadErrorHandlingPolicy.LoadErrorInfo): Long {
         val e = loadErrorInfo.exception
         if (e is HttpDataSource.InvalidResponseCodeException && e.responseCode in 400..499) {
-            // A busy server refuses for a moment (too many connections right after changing channel):
-            // three more tries, 2 s apart. Not a refused login, nor a missing HLS playlist (that falls
-            // back to TS at once).
+            // A busy server refuses for a moment (too many connections right after changing channel, or
+            // overloaded): seven more tries, 2 s apart. Not a refused login, nor a missing HLS playlist
+            // (that falls back to TS at once).
             val path = loadErrorInfo.loadEventInfo.uri.path.orEmpty().lowercase()
-            val retry = e.responseCode != 401 && !path.endsWith(".m3u8") && loadErrorInfo.errorCount <= 3
+            val retry = e.responseCode != 401 && !path.endsWith(".m3u8") && loadErrorInfo.errorCount <= 7
             return if (retry) 2_000L else C.TIME_UNSET
         }
         return if (super.getRetryDelayMsFor(loadErrorInfo) == C.TIME_UNSET) C.TIME_UNSET else 2_000L
@@ -290,8 +290,9 @@ fun createPlayer(
     // (10 minutes; as the TV's memory allows), topped up as they play, so a weak or intermittent
     // line, or minutes without internet, do not stop them.
     // Live: a 6 s store before playing and 10 s after a stall, made bigger by Steadiness after stalls
-    // (up to 70 s, or 100 s with «أقصى ثبات»): the store may hold two minutes.
-    val durations = if (live) intArrayOf(30_000, 120_000, 6_000, Steadiness.AFTER_STALL_MS) else intArrayOf(reserve - 60_000, reserve, 3_000, 5_000)
+    // (up to 70 s, or 100 s with «أقصى ثبات»): the store may hold 4.4 minutes, for servers that send
+    // in bursts (and HLS, whose pieces come faster than they play) to bank as much as they give.
+    val durations = if (live) intArrayOf(30_000, 264_000, 6_000, Steadiness.AFTER_STALL_MS) else intArrayOf(reserve - 60_000, reserve, 3_000, 5_000)
     val memoryCap = (Runtime.getRuntime().maxMemory() * 0.45).toLong().coerceIn(32L shl 20, 220L shl 20).toInt()
     // Live TS channels reconnect at once when the connection breaks or gets stuck, as other IPTV
     // players do, instead of stalling once the store runs out (see LiveReconnectingDataSource).
