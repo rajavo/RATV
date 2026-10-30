@@ -404,6 +404,7 @@ def kooora_day():
                 KOOORA_SAMPLES.append(mt)
             if tv and t and a and b:
                 out.append({"t": t, "a": a, "b": b, "comp": comp, "tv": tv,
+                            "venue": ((mt.get("venue") or {}).get("name") or "").strip(),
                             "la": ((mt.get("teamA") or {}).get("image") or {}).get("url") or "",
                             "lb": ((mt.get("teamB") or {}).get("image") or {}).get("url") or ""})
     return "ok", out
@@ -458,6 +459,8 @@ def attach_tv(matches, teams, kooora):
                         best, score = m, s
         if best is not None:
             best["tv"] = list(dict.fromkeys((best.get("tv") or []) + k["tv"]))
+            if k.get("venue"):
+                best["venue_ar"] = k["venue"]  # Kooora writes the stadium in Arabic
             attached += 1
         else:
             unmatched.append(k)
@@ -796,9 +799,10 @@ def player_names(match_list, previous_players):
 
 WD_SEARCH_AR = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=%s&language=en&uselang=en&type=item&limit=5&format=json"
 WD_GET_PLACE = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=%s&props=labels%%7Caliases%%7Cdescriptions&languages=ar%%7Cen&format=json"
-PLACES_VERSION = 1
+PLACES_VERSION = 2
 VENUE_WORDS = re.compile(r"stadium|arena|ground|park|field|venue|stade|estadio|stadio|bowl|dome|sports", re.I)
-CITY_WORDS = re.compile(r"city|town|capital|municipality|commune|village|metropolis|county|borough|district|port|human settlement", re.I)
+CITY_WORDS = re.compile(r"\b(city|town|capital|municipality|commune|village|metropolis|borough|human settlement)\b", re.I)
+NOT_A_PLACE = re.compile(r"airport|station|stadium|club|team|football|church|university|river", re.I)
 
 
 def wikidata_place(name, kind):
@@ -812,7 +816,7 @@ def wikidata_place(name, kind):
     for qid in ids:
         e = ents.get(qid) or {}
         desc = ((e.get("descriptions") or {}).get("en") or {}).get("value") or ""
-        if not (VENUE_WORDS if kind == "v" else CITY_WORDS).search(desc):
+        if not (VENUE_WORDS if kind == "v" else CITY_WORDS).search(desc) or (kind == "c" and NOT_A_PLACE.search(desc)):
             continue
         english = [((e.get("labels") or {}).get("en") or {}).get("value") or ""] + [a.get("value") or "" for a in (e.get("aliases") or {}).get("en") or []]
         if max(difflib.SequenceMatcher(None, want, norm(x)).ratio() for x in english) < 0.85:
@@ -837,6 +841,14 @@ def arabic_places(match_list, previous_places):
         except Exception:
             return True
 
+    # Kooora's own Arabic stadium names: kept for the next matches there too.
+    from_kooora = 0
+    for m in match_list:
+        ar = m.pop("venue_ar", None)
+        if ar and m.get("v") and not re.search("[\u0600-\u06FF]", m["v"]):
+            names["v:" + m["v"]] = ar
+            miss.pop("v:" + m["v"], None)
+            from_kooora += 1
     wanted = []
     for m in sorted(match_list, key=lambda m: m["t"]):
         for kind in ("v", "c"):
@@ -872,10 +884,52 @@ def arabic_places(match_list, previous_places):
             if ar:
                 m[kind] = ar
                 shown += 1
-    state = {"to_look_up": len(wanted), "looked_up": looked, "found": found, "errors": errors, "known": len(names),
+    state = {"from_kooora": from_kooora, "to_look_up": len(wanted), "looked_up": looked, "found": found, "errors": errors, "known": len(names),
              "places_in_arabic": shown, "seconds": round(time.time() - started, 1),
-             "sample": dict(sorted(names.items())[:20])}
+             "sample": dict(list(sorted(names.items()))[:12] + [kv for kv in sorted(names.items()) if kv[0].startswith("v:")][:25])}
     return {"v": PLACES_VERSION, "names": names, "miss": miss}, state
+
+def commentator_probe():
+    """Where commentators' names can be read (Kooora's match list has none): snippets around «معلق» in a few pages."""
+    out = {}
+
+    def around(html, n=4):
+        spots = [m.start() for m in re.finditer(r"معلق|التعليق|commentat", html)][:n]
+        return [re.sub(r"\s+", " ", html[max(0, i - 400):i + 400]) for i in spots]
+
+    for k in KOOORA_SAMPLES[:2]:
+        link = k.get("link") or {}
+        slug, mid = link.get("slug") or "", link.get("id") or k.get("id")
+        for pat in ("https://www.kooora.com/%%D9%%83%%D8%%B1%%D8%%A9-%%D8%%A7%%D9%%84%%D9%%82%%D8%%AF%%D9%%85/%%D9%%85%%D8%%A8%%D8%%A7%%D8%%B1%%D8%%A7%%D8%%A9/%s/%s",
+                    "https://www.kooora.com/match/%s/%s"):
+            url = pat % (urllib.request.quote(slug), mid)
+            try:
+                code, _, body = get(url, tries=1, ua=BROWSER)
+                html = body.decode("utf-8", "replace")
+                nd = re.search(r'<script id="__NEXT_DATA__" type="application/json"[^>]*>(.*?)</script>', html, re.S)
+                keys = sorted(set(re.findall(r'"([A-Za-z]*[Cc]omment[A-Za-z]*)"', nd.group(1) if nd else html)))[:20]
+                out[url] = {"code": code, "size": len(html), "comment_keys": keys, "around": around(html)}
+                break
+            except Exception as e:
+                out[url] = {"error": str(e)[:150]}
+    today = dt.datetime.now(YK_ZONE).date()
+    try:
+        html = get(YK_URL % (today.month, today.day, today.year), ua=BROWSER)[2].decode("utf-8", "replace")
+        cards = html.split('liveScoreMatchId="')[1:4]
+        out["yallakora day"] = {"around": around(html), "card": [re.sub(r"\s+", " ", c[:2500]) for c in cards[:2]],
+                                "links": re.findall(r'href="([^"]*match[^"]*)"', html)[:5]}
+        links = [l for l in re.findall(r'href="([^"]*/match/[^"]*)"', html)][:2]
+        for l in links:
+            url = l if l.startswith("http") else "https://www.yallakora.com" + l
+            try:
+                page = get(url, tries=1, ua=BROWSER)[2].decode("utf-8", "replace")
+                out[url] = {"size": len(page), "around": around(page)}
+            except Exception as e:
+                out[url] = {"error": str(e)[:150]}
+    except Exception as e:
+        out["yallakora day"] = {"error": str(e)[:150]}
+    return out
+
 
 def main():
     out_dir = sys.argv[1]
@@ -1130,7 +1184,7 @@ def main():
         "absences": absent_state,
         "players_ar": players_state,
         "places_ar": places_state,
-        "kooora_samples": KOOORA_SAMPLES,
+        "commentator_probe": commentator_probe(),
         "teams": sorted(({"id": tid, "en": t["en"], "ar": t.get("ar"), "leagues": sorted(t["leagues"])}
                          for tid, t in teams.items()), key=lambda x: (x["leagues"], x["en"])),
     }
