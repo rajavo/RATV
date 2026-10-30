@@ -852,52 +852,92 @@ def t_languages():
         S.wait_for(timeout=45, text="الرئيسية")
 
 
-def t_phone_link():
-    """The QR code on the add-user screen: its page takes a link from a phone, and the TV adds it."""
-    import urllib.parse
-    import urllib.request
+def open_phone_page(tag, local_port):
+    """«إضافة مستخدم» on the account tab opens the add-user screen; its QR page is forwarded to local_port.
+    Returns the address of the forwarded page and its random part."""
     go_tab("حسابي")
     time.sleep(1.5)
-    _, f = log_focus("phone-settings")
+    f = None
+    for i in range(10):
+        _, f = log_focus(tag)
+        if f is not None and "إضافة مستخدم" in f:
+            break
+        key("DPAD_DOWN" if i % 2 == 0 else "DPAD_UP", pause=0.8)
     expect(f is not None and "إضافة مستخدم" in f, "add-user button not focused (focus: %s)" % f)
     key("DPAD_CENTER", pause=3)
-    _, n = S.wait_for(timeout=20, text="أضف اشتراكك", save="phone-login")
+    _, n = S.wait_for(timeout=20, text="أضف اشتراكك", save=tag + "-login")
     expect(n is not None, "add-user screen not shown")
     time.sleep(2)
-    root = S.dump("phone-qr")
-    S.shot("phone-qr")
+    root = S.dump(tag + "-qr")
+    S.shot(tag + "-qr")
     expect(any("رمز QR" in (x.get("content-desc") or "") for x in S.nodes(root)), "no QR code on the screen")
-    texts = S.all_texts(root)
-    expect("أرسل الرابط من جوالك" in texts, "no words with the QR code")
+    expect("أرسل الرابط من جوالك" in S.all_texts(root), "no words with the QR code")
     out = S.shell("logcat -d -s RATVPhone:I")
     urls = re.findall(r"phone page at http://[0-9.]+:(\d+)/(\w+)", out)
     expect(urls, "the phone page did not start")
     port, token = urls[-1]
     S.log("phone page on port %s" % port)
-    S.adb("forward", "tcp:18686", "tcp:" + port)
-    base = "http://127.0.0.1:18686/"
+    S.adb("forward", "tcp:%d" % local_port, "tcp:" + port)
+    return "http://127.0.0.1:%d/" % local_port, token
 
-    def post(fields, path=token):
-        data = urllib.parse.urlencode(fields).encode()
-        return urllib.request.urlopen(base + path, data=data, timeout=15).read().decode("utf-8")
 
-    page = urllib.request.urlopen(base + token, timeout=15).read().decode("utf-8")
-    expect('name="link"' in page and "أرسل للتلفزيون" in page, "the phone page has no form")
+def phone_get(base, token):
+    import urllib.request
+    return urllib.request.urlopen(base + token, timeout=15).read().decode("utf-8")
+
+
+def phone_post(base, token, fields):
+    import urllib.parse
+    import urllib.request
+    data = urllib.parse.urlencode(fields).encode()
+    return urllib.request.urlopen(base + token, data=data, timeout=15).read().decode("utf-8")
+
+
+def expect_phone_form(page):
+    expect('name="link"' in page and "أرسل للتلفزيون" in page, "the phone page has no playlist form")
+    for field in ("server", "username", "password"):
+        expect('name="%s"' % field in page, "the phone page has no %s box" % field)
+    expect("أو بيانات اشتراكك" in page, "the phone page does not offer the subscription details")
+
+
+def t_phone_link():
+    """The QR code on the add-user screen: its page takes a playlist link from a phone, and the TV adds it."""
+    import urllib.error
+    import urllib.request
+    base, token = open_phone_page("phone-settings", 18686)
+    expect_phone_form(phone_get(base, token))
     try:
         urllib.request.urlopen(base + "wrong1", timeout=15)
         expect(False, "a wrong address was answered")
     except urllib.error.HTTPError as e:
         expect(e.code == 404, "wrong address gave %s" % e.code)
-    empty = post({"link": "  "})
-    expect("الصق رابط القائمة أولاً" in empty, "an empty link was not refused")
-    ok = post({"link": "http://10.0.2.2:8000/playlist.m3u", "epg": ""})
+    empty = phone_post(base, token, {"link": "  "})
+    expect("الصق رابط القائمة، أو اكتب بيانات الاشتراك أولاً." in empty, "an empty form was not refused")
+    half = phone_post(base, token, {"server": "http://10.0.2.2:8000", "username": "test", "password": ""})
+    expect("أكمل رابط الخادم واسم المستخدم وكلمة المرور." in half, "a subscription without its password was not refused")
+    ok = phone_post(base, token, {"link": "http://10.0.2.2:8000/playlist.m3u", "epg": ""})
     expect("وصل الرابط للتلفزيون" in ok, "the link was not taken")
     _, n = S.wait_for(timeout=90, text="الرئيسية", save="phone-home")
     S.shot("phone-home")
     expect(n is not None, "the TV did not add the playlist sent from the phone")
     log = S.shell("logcat -d -s RATVPhone:I")
     expect("a link came from the phone" in log, "the TV did not note the link")
-    expect("10.0.2.2:8000/playlist" not in log, "the link was written to the log")
+    expect("details from the phone were refused" in log, "the TV did not note the refused details")
+    expect("10.0.2.2:8000" not in log, "the address was written to the log")
+
+
+def t_phone_subscription():
+    """The same QR page takes a subscription's server, user name and password from a phone; the TV signs in with them."""
+    base, token = open_phone_page("phone-settings-2", 18687)
+    expect_phone_form(phone_get(base, token))
+    done = phone_post(base, token, {"server": "http://10.0.2.2:8000", "username": "test", "password": "test"})
+    expect("وصلت بيانات الاشتراك للتلفزيون" in done, "the subscription details were not taken")
+    _, n = S.wait_for(timeout=90, text="الرئيسية", save="phone-home-subscription")
+    S.shot("phone-home-subscription")
+    expect(n is not None, "the TV did not sign in with the details sent from the phone")
+    log = S.shell("logcat -d -s RATVPhone:I")
+    expect("subscription details came from the phone" in log, "the TV did not note the subscription details")
+    expect("10.0.2.2:8000" not in log, "the server address was written to the log")
 
 
 def t_guess_movie():
@@ -968,6 +1008,7 @@ if __name__ == "__main__":
         ("enhance", t_enhance),
         ("languages", t_languages),
         ("phone-link", t_phone_link),
+        ("phone-subscription", t_phone_subscription),
     ]:
         S.step(name, fn)
     S.finish()
