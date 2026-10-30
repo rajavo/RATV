@@ -1,0 +1,15 @@
+{
+ "results": [
+  {
+   "step": "list",
+   "ok": true,
+   "error": ""
+  },
+  {
+   "step": "install",
+   "ok": true,
+   "error": ""
+  }
+ ],
+ "rastore_crashed": false
+}
