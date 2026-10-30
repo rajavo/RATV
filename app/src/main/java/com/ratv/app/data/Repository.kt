@@ -64,6 +64,10 @@ class Repository(private val context: Context, val prefs: Prefs) {
     private val _favorites = MutableStateFlow(prefs.favorites)
     val favorites: StateFlow<Set<String>> = _favorites.asStateFlow()
 
+    private val _hiddenChannels = MutableStateFlow(prefs.hiddenChannels)
+    /** Channels deleted from the lists by the user (ids). */
+    val hiddenChannels: StateFlow<Set<String>> = _hiddenChannels.asStateFlow()
+
     private val _watched = MutableStateFlow(prefs.watched)
     val watched: StateFlow<Set<String>> = _watched.asStateFlow()
 
@@ -97,12 +101,24 @@ class Repository(private val context: Context, val prefs: Prefs) {
 
     // ------------------------------------------------ filtered (parental) views
 
-    val liveCategories: StateFlow<List<Category>> = combine(_liveCats, _hideAdult) { cats, hide ->
+    /** Every live section, those whose channels were all deleted too (for editing the lists). */
+    val allLiveCategories: StateFlow<List<Category>> = combine(_liveCats, _hideAdult) { cats, hide ->
         if (hide) cats.filterNot { isAdultName(it.name) } else cats
     }.stateIn(scope, SharingStarted.Eagerly, emptyList())
 
-    val channels: StateFlow<List<Channel>> = combine(_channels, _liveCats, _hideAdult) { list, cats, hide ->
+    /** Every channel, the deleted ones too (for editing the lists). */
+    val allChannels: StateFlow<List<Channel>> = combine(_channels, _liveCats, _hideAdult) { list, cats, hide ->
         filterAdult(list, cats, hide, { it.categoryId }, { it.name }, { it.adult })
+    }.stateIn(scope, SharingStarted.Eagerly, emptyList())
+
+    /** The channels in the lists: without those the user deleted. */
+    val channels: StateFlow<List<Channel>> = combine(allChannels, _hiddenChannels) { list, hidden ->
+        if (hidden.isEmpty()) list else list.filter { it.id !in hidden }
+    }.stateIn(scope, SharingStarted.Eagerly, emptyList())
+
+    /** The live sections that still have a channel once the deleted ones are out. */
+    val liveCategories: StateFlow<List<Category>> = combine(allLiveCategories, channels, _hiddenChannels) { cats, list, hidden ->
+        if (hidden.isEmpty()) cats else list.mapTo(HashSet()) { it.categoryId }.let { kept -> cats.filter { it.id in kept } }
     }.stateIn(scope, SharingStarted.Eagerly, emptyList())
 
     val vodCategories: StateFlow<List<Category>> = combine(_vodCats, _hideAdult) { cats, hide ->
@@ -239,6 +255,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
 
     private fun reloadUserData() {
         _favorites.value = prefs.favorites
+        _hiddenChannels.value = prefs.hiddenChannels
         _watched.value = prefs.watched
         _history.value = prefs.loadHistory()
         _recentChannels.value = prefs.recentChannels
@@ -635,6 +652,17 @@ class Repository(private val context: Context, val prefs: Prefs) {
         _favorites.value = set
         prefs.favorites = set
     }
+
+    /** Deletes [ids] from the lists, or brings them back ([hidden] false), as on a receiver. */
+    fun setChannelsHidden(ids: Collection<String>, hidden: Boolean) {
+        val set = _hiddenChannels.value.toMutableSet()
+        if (hidden) set.addAll(ids) else set.removeAll(ids.toSet())
+        _hiddenChannels.value = set
+        prefs.hiddenChannels = set
+    }
+
+    /** Brings every deleted channel back. */
+    fun restoreAllChannels() = setChannelsHidden(_hiddenChannels.value, false)
 
     fun saveProgress(entry: WatchEntry) {
         val finished = entry.duration > 0 && entry.position >= entry.duration * 0.95

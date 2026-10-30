@@ -266,6 +266,9 @@ def s_accessibility():
     r = probe_after(mark, 11)
     log("accessibility, probe in background: %s" % r)
     expect(len(r) >= 3 and r[-3:] == ["fail"] * 3, "accessibility only: the background app still has internet: %s" % r)
+    # uiautomator dumps unbind accessibility services while they run, so later steps need usage access back.
+    sh("appops set %s GET_USAGE_STATS allow" % PKG)
+    time.sleep(2)
 
 
 def s_turn_off():
@@ -285,6 +288,79 @@ def s_turn_off():
     time.sleep(2)
     expect(not vpn_up(), "the VPN interface is still there")
     expect(shell_net() is not False, "the internet did not come back for every app")
+
+
+def tap_text(root, pattern):
+    """Taps the first node whose text matches; True when one was found."""
+    if root is None:
+        return False
+    for n in root.iter("node"):
+        if re.search(pattern, n.get("text") or "", re.I):
+            m = re.findall(r"\d+", n.get("bounds") or "")
+            if len(m) == 4:
+                x1, y1, x2, y2 = map(int, m)
+                sh("input tap %d %d" % ((x1 + x2) // 2, (y1 + y2) // 2))
+                time.sleep(1)
+                return True
+    return False
+
+
+def s_lite():
+    """The «خفّف الشاشة» page: it opens, lists the factory apps, and its button answers without a crash."""
+    open_ranet()
+    f = None
+    for _ in range(20):  # up to the on/off card at the top
+        f = focused(dump())
+        if f and "التركيز" in f:
+            break
+        key("DPAD_UP", 0.5)
+    time.sleep(3)  # let the lists settle, so rows do not move under the remote
+    key("DPAD_DOWN", 1.5)
+    root = dump("lite-focus")
+    f = focused(root)
+    log("focus one step below the on/off card: %s" % f)
+    shot("lite-card")
+    if f and "خفّف الشاشة" in f:
+        key("DPAD_CENTER", 2)
+    else:
+        log("the remote did not land on the lite card; opening it by touch to check the page")
+        for _ in range(10):
+            key("DPAD_UP", 0.4)
+        tap_text(dump(), "^خفّف الشاشة$")
+    root = wait_text("احذف تطبيقات المصنع", save="lite")
+    shot("lite")
+    expect(root is not None, "the lite page did not open")
+    log("lite page: " + texts(root)[:1200])
+    f = focused(root)
+    log("first focus on the lite page: %s" % f)
+    key("DPAD_CENTER", 2)
+    outcome = None
+    end = time.time() + 100
+    t = ""
+    while time.time() < end and outcome is None:
+        root = dump()
+        t = texts(root)
+        if tap_text(root, r"always allow|السماح دائم"):
+            log("debugging prompt: allowed")
+            tap_text(dump(), r"^(allow|ok|السماح|موافق)$")
+            continue
+        for want in ("خفّت الشاشة", "تصحيح الأخطاء طافي", "ما وصلت الموافقة", "صار خطأ"):
+            if want in t and "لحظة" not in t:
+                outcome = want
+        time.sleep(1)
+    shot("lite-after")
+    log("lite screen after the button: " + t[:600])
+    log("lite outcome: %s, animator scale: %s" % (outcome, sh("settings get global animator_duration_scale").strip()))
+    expect(outcome is not None, "the lighten button gave no answer")
+    expect(outcome != "صار خطأ", "the lighten button failed: " + texts(dump("lite-error"))[:400])
+    if outcome == "خفّت الشاشة":
+        expect(sh("settings get global animator_duration_scale").strip() == "0.5", "animations were not made quicker")
+        sh("settings put global window_animation_scale 1.0; settings put global transition_animation_scale 1.0; "
+           "settings put global animator_duration_scale 1.0")
+    key("BACK", 2)
+    expect(wait_text("التركيز", timeout=10) is not None, "back did not return to the main page")
+    if not (f and "خفّف الشاشة" in f):
+        log("WARNING: the remote did not reach the lite card in one step (focus: %s)" % f)
 
 
 def finish():
@@ -313,6 +389,7 @@ if __name__ == "__main__":
         ("blocked-list", s_blocked_list),
         ("accessibility", s_accessibility),
         ("turn-off", s_turn_off),
+        ("lite", s_lite),
     ]:
         step(name, fn)
     finish()

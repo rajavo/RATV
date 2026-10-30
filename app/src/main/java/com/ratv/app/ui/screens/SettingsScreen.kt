@@ -180,6 +180,8 @@ fun SettingsScreen(nav: Navigator) {
     var showAbout by remember { mutableStateOf(false) }
     var confirmDelete by remember { mutableStateOf<Playlist?>(null) }
     var confirmClearHistory by remember { mutableStateOf(false) }
+    val hiddenChannels by repo.hiddenChannels.collectAsStateWithLifecycle()
+    var confirmRestore by remember { mutableStateOf(false) }
     var showSpeed by remember { mutableStateOf(false) }
     val update by Updater.available.collectAsStateWithLifecycle()
     var showUpdate by remember { mutableStateOf(false) }
@@ -357,11 +359,12 @@ fun SettingsScreen(nav: Navigator) {
                 repo.prefs.enhanceStrength <= com.ratv.app.player.ENHANCE_OFF ->
                     "\n" + tr("أوقفناه على هذا الجهاز لأنه ما لحق عليه. أطفئه وشغّله من جديد عشان نجرّب مرة ثانية.")
                 repo.prefs.enhanceStrength == com.ratv.app.player.ENHANCE_LIGHT -> "\n" + tr("يشتغل على هذا الجهاز بالتحسين الخفيف.")
+                !repo.prefs.enhanceHd -> "\n" + tr("على هذا الجهاز يحسّن القنوات الضعيفة بس، لأنه ما لحق على صورة HD.")
                 else -> ""
             }
             ToggleRow(
                 tr("تحسين الصورة الذكي"),
-                tr("يرفع وضوح القنوات الضعيفة (أقل من 720) داخل التلفزيون نفسه، بدون أي استهلاك إضافي للنت. ينطفي لحاله إذا ما لحق عليه الجهاز.") + enhanceNote,
+                tr("يرفع وضوح الصورة وحدّتها ويحيي ألوانها للقنوات والأفلام لحد 1080، والضعيفة يكبّرها بعد، داخل التلفزيون نفسه بدون أي استهلاك إضافي للنت. يخفّ أو ينطفي لحاله إذا ما لحق عليه الجهاز.") + enhanceNote,
                 enhance
             ) {
                 enhance = it
@@ -370,6 +373,7 @@ fun SettingsScreen(nav: Navigator) {
                     // Turned on by hand: try again even where it was stopped before.
                     repo.prefs.enhanceBroken = false
                     repo.prefs.enhanceStrength = com.ratv.app.player.ENHANCE_FULL
+                    repo.prefs.enhanceHd = true
                 }
             }
             Divider()
@@ -451,6 +455,15 @@ fun SettingsScreen(nav: Navigator) {
             }
             Divider()
             ValueRow(tr("حذف سجل المشاهدة"), "") { confirmClearHistory = true }
+            Divider()
+            // Channels deleted from the lists («تعديل القوائم» in البث المباشر), all brought back at once.
+            ValueRow(tr("القنوات المحذوفة من القوائم"), if (hiddenChannels.isEmpty()) tr("لا يوجد") else formatCount(hiddenChannels.size)) {
+                if (hiddenChannels.isEmpty()) {
+                    Toast.makeText(context, tr("تحذف القنوات من «تعديل القوائم» في البث المباشر"), Toast.LENGTH_LONG).show()
+                } else {
+                    confirmRestore = true
+                }
+            }
         }
 
         GroupTitle(tr("التطبيق"))
@@ -851,6 +864,28 @@ fun SettingsScreen(nav: Navigator) {
             text = {
                 Text(
                     tr("يُحذف «تابع المشاهدة» والقنوات التي شوهدت مؤخراً وعلامات المشاهدة لهذا المستخدم. المفضلة تبقى."),
+                    style = T.body(14.sp, color = RColors.Text2)
+                )
+            },
+            containerColor = RColors.Surface
+        )
+    }
+
+    if (confirmRestore) {
+        AlertDialog(
+            onDismissRequest = { confirmRestore = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmRestore = false
+                    repo.restoreAllChannels()
+                    Toast.makeText(context, tr("رجعت كل القنوات للقوائم"), Toast.LENGTH_SHORT).show()
+                }) { Text(tr("إرجاع الكل"), color = RColors.Saffron) }
+            },
+            dismissButton = { TextButton(onClick = { confirmRestore = false }) { Text(tr("إلغاء"), color = RColors.Text2) } },
+            title = { Text(tr("إرجاع القنوات المحذوفة؟"), style = T.h2) },
+            text = {
+                Text(
+                    tr("ترجع {0} قناة للقوائم والدليل. وتقدر ترجع قناة وحدة من «تعديل القوائم» في البث المباشر.", hiddenChannels.size),
                     style = T.body(14.sp, color = RColors.Text2)
                 )
             },

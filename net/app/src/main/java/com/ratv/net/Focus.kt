@@ -66,6 +66,16 @@ class Prefs(context: Context) {
         get() = sp.getStringSet("always", null)?.toSet() ?: DEFAULT_ALLOWED
         set(value) = sp.edit().putStringSet("always", HashSet(value)).apply()
 
+    /** Factory apps removed from the «خفّف الشاشة» page, so they can be brought back. */
+    var removed: Set<String>
+        get() = sp.getStringSet("removed", null)?.toSet() ?: emptySet()
+        set(value) = sp.edit().putStringSet("removed", HashSet(value)).apply()
+
+    /** The TV's own home screens turned off so RA Home is the home screen, to turn back on. */
+    var homeDisabled: Set<String>
+        get() = sp.getStringSet("home_disabled", null)?.toSet() ?: emptySet()
+        set(value) = sp.edit().putStringSet("home_disabled", HashSet(value)).apply()
+
     companion object {
         /**
          * Google Play services (sign-in, casting), the Chromecast receiver and voice search (the Google app),

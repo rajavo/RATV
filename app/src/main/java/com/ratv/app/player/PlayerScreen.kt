@@ -150,7 +150,8 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 
 private val Glass = Color(0x1FFFFFFF)
-private const val MAX_RECONNECTS = 5
+/** Tries after a network error before a film or episode stops with a message (a live channel never stops). */
+private const val MAX_RECONNECTS = 50
 
 /** Stalls counted toward moving to another version of the channel: those of the last 4 minutes. */
 private const val VERSION_WINDOW_MS = 4L * 60L * 1000L
@@ -190,6 +191,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val view = LocalView.current
     val epg by repo.epg.collectAsStateWithLifecycle()
     val channels by repo.channels.collectAsStateWithLifecycle()
+    val favorites by repo.favorites.collectAsStateWithLifecycle()
     val now = rememberNow(15_000L)
 
     var current by remember { mutableStateOf<Playable?>(null) }
@@ -216,7 +218,13 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     var subPos by remember { mutableLongStateOf(0L) }
     var upgrade by remember { mutableStateOf<Playable?>(null) }
     var upgradeEpisodes by remember { mutableStateOf<List<Episode>?>(null) }
+    // The receiver's info bar (Receiver.kt): shown on every change of channel and with the INFO key.
     var banner by remember { mutableStateOf<Channel?>(null) }
+    var bannerTick by remember { mutableIntStateOf(0) }
+    // The watching counter of the channel playing: time counted while it played, and since when it
+    // plays again (elapsed realtime; 0 while paused or stalled), so it stops with the picture.
+    var watchedBase by remember { mutableLongStateOf(0L) }
+    var watchedFrom by remember { mutableLongStateOf(0L) }
     // Digits typed on the remote (a channel number), and the channel watched before this one.
     var typedNumber by remember { mutableStateOf("") }
     var previousChannel by remember { mutableStateOf<Channel?>(null) }
@@ -238,6 +246,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // the item playing is known (or seen) to be under 720 lines. HD goes straight to the screen.
     var enhanceSetting by remember { mutableStateOf(repo.prefs.enhance) }
     var enhanceBroken by remember { mutableStateOf(repo.prefs.enhanceBroken) }
+    var enhanceHd by remember { mutableStateOf(repo.prefs.enhanceHd) }
+    // Android's own video decoder for the enhancement, where the device's showed a black screen.
+    var enhanceSoftware by remember { mutableStateOf(repo.prefs.enhanceSoftware) }
     // The strongest enhancement this device is given (full, light, none): it steps down by itself.
     var enhanceStrength by remember { mutableIntStateOf(repo.prefs.enhanceStrength) }
     var enhanceFor by remember { mutableStateOf<String?>(null) }
@@ -248,11 +259,12 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val enhanceWanted = current?.let { enhanceFor == enhanceKey(it) } == true
     val playerViewRef = remember { arrayOfNulls<PlayerView>(1) }
 
-    /** True when [item] should be enhanced: a weak picture, on a device that can still enhance. */
+    /** True when [item] should be enhanced: a picture up to 1080p (HD while the TV keeps up with it), on a device that can still enhance. */
     fun wantsEnhance(item: Playable, seenHeight: Int? = null): Boolean {
         if (!enhanceSetting || enhanceBroken || enhanceStrength <= ENHANCE_OFF) return false
         val known = EnhanceMemory.get(context, enhanceKey(item))
         val h = seenHeight ?: known?.height ?: nameHintHeight(item.channel?.name ?: item.title) ?: return false
+        if (h >= ENHANCE_HD_LINES && !enhanceHd) return false
         return h in 1 until ENHANCE_BELOW_HEIGHT
     }
 
@@ -263,14 +275,15 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         return mode.ratio ?: if (view.width > 0 && view.height > 0) view.width.toFloat() / view.height else 16f / 9f
     }
 
-    val player = remember(enhanceWanted, if (enhanceWanted) enhanceStrength else ENHANCE_OFF) {
+    val player = remember(enhanceWanted, if (enhanceWanted) enhanceStrength else ENHANCE_OFF, enhanceWanted && enhanceSoftware) {
         Steadiness.mode = repo.prefs.liveSteady
         Steadiness.attach(context)
         createPlayer(
             context, repo.prefs.bufferMode, repo.prefs.bestQuality, live = kind == "live",
             tunneling = isTv && repo.prefs.tunneling,
             enhance = enhanceWanted, stretchAspect = stretchFor(resizeIndex), enhanceStrength = enhanceStrength,
-            introTap = kind != "live"
+            introTap = kind != "live",
+            softwareVideo = enhanceWanted && enhanceSoftware
         )
     }
     // «تخطي المقدمة» (IntroSkip.kt): the opening of what plays, found by its sound or listed on TheIntroDB.
@@ -565,20 +578,23 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     }
 
     // ------------------------------------------------------- listeners
-    // When the network comes back, a live channel waiting to reconnect tries at once.
+    // When the network comes back, a channel, film or episode waiting to reconnect tries at once (a
+    // film carries on where it was).
     DisposableEffect(player) {
         val cm = context.applicationContext.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as? android.net.ConnectivityManager
         val main = android.os.Handler(android.os.Looper.getMainLooper())
         val callback = object : android.net.ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: android.net.Network) {
                 main.post {
-                    if (current?.isLive == true && player.mediaItemCount > 0 &&
+                    val playing = current
+                    if (playing != null && player.mediaItemCount > 0 &&
                         (reconnecting || playerError != null || player.playbackState == Player.STATE_IDLE)
                     ) {
                         Log.i("RATVPlayback", "network back: reconnecting now")
                         playerError = null
                         reconnecting = false
-                        player.seekToDefaultPosition()
+                        reconnectAttempts = 0
+                        if (playing.isLive) player.seekToDefaultPosition()
                         player.prepare()
                         player.playWhenReady = true
                     }
@@ -608,14 +624,24 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
 
     /**
      * The enhancement does not work out on this device ([failed]: its graphics broke; otherwise it
-     * falls behind): the full strength steps down to the light one, the light one to none.
+     * falls behind): the full strength steps down to the light one, the light one to none. [toOff]
+     * goes straight to none (a black screen, which the light strength would show too).
      */
-    fun enhanceStepDown(why: String, failed: Boolean) {
+    fun enhanceStepDown(why: String, failed: Boolean, toOff: Boolean = false) {
         val item = current ?: return
         if (enhanceFor == null) return
         val used = EnhanceStatus.strength.coerceAtMost(enhanceStrength)
         if (!item.isLive) resumeAt = item.id to player.currentPosition
-        if (used >= ENHANCE_FULL) {
+        if (!failed && !toOff && videoHeight >= ENHANCE_HD_LINES && used <= ENHANCE_LIGHT) {
+            // Too heavy on an HD picture: HD goes straight to the screen from now on, weak channels keep it.
+            Log.i("RATVEnhance", "HD enhancement does not work out ($why): only weak pictures from now on")
+            repo.prefs.enhanceHd = false
+            enhanceHd = false
+            streamNotice = tr("التلفزيون ما لحق على تحسين صورة HD، فخليناه للقنوات الضعيفة بس")
+            enhanceFor = null
+            return
+        }
+        if (used >= ENHANCE_FULL && !toOff) {
             Log.i("RATVEnhance", "full enhancement does not work out ($why): light enhancement from now on")
             repo.prefs.enhanceStrength = ENHANCE_LIGHT
             enhanceStrength = ENHANCE_LIGHT // a new player with the light strength
@@ -624,12 +650,56 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             Log.i("RATVEnhance", "the enhancement does not work out ($why): off on this device")
             repo.prefs.enhanceStrength = ENHANCE_OFF
             enhanceStrength = ENHANCE_OFF
-            streamNotice = if (failed) tr("تحسين الصورة ما اشتغل على هذا الجهاز، فأوقفناه") else tr("التلفزيون ما لحق على تحسين الصورة، فأوقفناه")
+            streamNotice = when {
+                toOff -> tr("تحسين الصورة طلّع شاشة سوداء على هذا الجهاز، فأوقفناه ورجعت الصورة")
+                failed -> tr("تحسين الصورة ما اشتغل على هذا الجهاز، فأوقفناه")
+                else -> tr("التلفزيون ما لحق على تحسين الصورة، فأوقفناه")
+            }
             enhanceFor = null
         }
     }
 
     fun enhanceTooSlow(why: String) = enhanceStepDown(why, failed = false)
+
+    // With the enhancement on, the screen is looked at for its first 20 s of picture: black at every
+    // point for 4 s in a row means the enhancement does not show on this device, and it is turned off
+    // there (the picture comes back at once). Once the enhanced picture is seen, it is left alone.
+    LaunchedEffect(player, pictureShown, enhanceWanted) {
+        if (!enhanceWanted || !pictureShown) return@LaunchedEffect
+        delay(1_500L)
+        var black = 0
+        var seen = 0
+        repeat(20) {
+            if (player.isPlaying) {
+                val level = shownBrightness(playerViewRef[0]?.videoSurfaceView)
+                if (level < 0) return@LaunchedEffect // the screen cannot be read here
+                if (level < 10) {
+                    black++
+                    if (black >= 4) {
+                        if (!enhanceSoftware) {
+                            // The device's decoder (MediaTek's on TCL TVs) gives pictures the graphics chip
+                            // reads as black: a new player with Android's own decoder, remembered for this device.
+                            Log.w("RATVEnhance", "the screen stays black with the enhancement on: trying Android's video decoder")
+                            current?.let { if (!it.isLive) resumeAt = it.id to player.currentPosition }
+                            repo.prefs.enhanceSoftware = true
+                            enhanceSoftware = true
+                            streamNotice = tr("الشاشة كانت سوداء مع تحسين الصورة، فجربنا طريقة ثانية")
+                        } else {
+                            Log.w("RATVEnhance", "the screen stays black with the enhancement on, Android's decoder too")
+                            repo.prefs.enhanceSoftware = false
+                            enhanceSoftware = false
+                            enhanceStepDown("the screen stays black", failed = true, toOff = true)
+                        }
+                        return@LaunchedEffect
+                    }
+                } else {
+                    black = 0
+                    if (++seen >= 3) return@LaunchedEffect // the enhanced picture shows
+                }
+            }
+            delay(1_000L)
+        }
+    }
 
     DisposableEffect(player) {
         // Whether this player enhances the picture (it is made again to change that).
@@ -894,6 +964,10 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         val reconnectBase = LiveReconnectingDataSource.reconnects.get()
         liveReconnects = 0
         var bufferingSince = 0L
+        // The store of a live channel over the last seconds of playing: a server that sends, but slower
+        // than the channel plays, shows as a store shrinking steadily.
+        val reserveTrend = ArrayDeque<Pair<Long, Long>>()
+        var lastRefresh = 0L
         while (true) {
             liveReconnects = LiveReconnectingDataSource.reconnects.get() - reconnectBase
             if (player.isPlaying || player.playbackState == Player.STATE_BUFFERING) Playback.markActive()
@@ -927,6 +1001,22 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             lastPosAt = posAt
             reserveMs = player.totalBufferedDuration
             Steadiness.reserveMs = reserveMs
+            // Lost 4 s or more of store in 10 s of playing (the server gives 60% of the picture or less),
+            // with under 12 s left: a new connection, whose burst refills it before it runs out. Once
+            // in 30 s at most.
+            if (current?.isLive == true && player.isPlaying && playingUri != null) {
+                reserveTrend.addLast(tick to reserveMs)
+                while (reserveTrend.size > 1 && tick - reserveTrend.first().first > 10_500L) reserveTrend.removeFirst()
+                val (since, then) = reserveTrend.first()
+                if (tick - since >= 9_500L && then - reserveMs >= 4_000L && reserveMs in 1_000L..12_000L &&
+                    tick - lastRefresh >= 30_000L && LiveReconnectingDataSource.refresh(playingUri)
+                ) {
+                    lastRefresh = tick
+                    reserveTrend.clear()
+                }
+            } else {
+                reserveTrend.clear()
+            }
             val grew = player.bufferedPosition > lastBuffered + 200L
             lastBuffered = player.bufferedPosition
             if (grew) netTrouble = false
@@ -1299,7 +1389,6 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         val index = zapList.indexOfFirst { it.id == ch.id }
         val target = zapList[((if (index < 0) 0 else index) + step + zapList.size) % zapList.size]
         play(liveToPlayable(target), showControls = false)
-        banner = target
     }
 
     /** Opens the channel whose number was typed on the remote. */
@@ -1314,7 +1403,6 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         }
         if (target.id != item?.channel?.id) {
             play(liveToPlayable(target), showControls = false)
-            banner = target
         }
     }
 
@@ -1353,6 +1441,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             enhanceBroken = false
             repo.prefs.enhanceStrength = ENHANCE_FULL
             enhanceStrength = ENHANCE_FULL
+            repo.prefs.enhanceHd = true
+            enhanceHd = true
         } else {
             repo.prefs.enhance = false
             enhanceSetting = false
@@ -1390,12 +1480,22 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 val back = previousChannel
                 if (live && back != null) {
                     play(liveToPlayable(back), showControls = false)
-                    banner = back
                 }
                 return true
             }
             android.view.KeyEvent.KEYCODE_INFO -> {
-                showControls()
+                // As on a receiver: INFO brings up the channel's info bar, and puts it away.
+                val ch = item?.channel
+                if (live && ch != null && !controlsVisible) {
+                    if (banner != null) {
+                        banner = null
+                    } else {
+                        banner = ch
+                        bannerTick++
+                    }
+                } else {
+                    showControls()
+                }
                 return true
             }
             android.view.KeyEvent.KEYCODE_GUIDE -> {
@@ -1502,9 +1602,28 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         }
     }
 
-    LaunchedEffect(banner) {
+    // Every new channel (zapping, a number, the previous channel, another version) shows its info bar.
+    LaunchedEffect(item?.channel?.id) {
+        banner = item?.channel
+        bannerTick++
+        watchedBase = 0L
+        watchedFrom = if (item?.channel != null && isPlaying) SystemClock.elapsedRealtime() else 0L
+    }
+
+    LaunchedEffect(isPlaying) {
+        if (item?.channel == null) return@LaunchedEffect
+        val t = SystemClock.elapsedRealtime()
+        if (isPlaying) {
+            if (watchedFrom == 0L) watchedFrom = t
+        } else if (watchedFrom > 0L) {
+            watchedBase += t - watchedFrom
+            watchedFrom = 0L
+        }
+    }
+
+    LaunchedEffect(banner, bannerTick) {
         if (banner != null) {
-            delay(3_000L)
+            delay(5_000L)
             banner = null
         }
     }
@@ -1677,14 +1796,13 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         }
 
         if (!inPip) {
-            // At a corner the board makes way only for what shares that corner: the zapping banner (at the
-            // start side) and the commentary label (at the end side); the notices along the top centre.
+            // At a corner the board makes way only for what shares that corner: the commentary label (at
+            // the end side); the notices along the top centre. The info bar is along the bottom.
             val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
             val centred = scorePlace == BoardPlace.CENTER
             val atLeft = scorePlace == BoardPlace.CORNER
             val boardTop = when {
                 controlsVisible && !locked -> if (centred) 112.dp else 76.dp
-                banner != null && (centred || atLeft != rtl) -> 96.dp
                 resizeNotice != null || streamNotice != null || reconnecting || (reconnectAttempts > 0 && buffering) || netTrouble -> 70.dp
                 !centred && mix.channel != null && atLeft == rtl -> 62.dp
                 centred -> if (isTv) 18.dp else 12.dp
@@ -1791,40 +1909,32 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             TopNotice(told, RIcons.Swap)
         }
 
-        // The channel number being typed on the remote, as TVs show it.
+        // The channel number being typed on the remote, in its slots as receivers show it.
         if (typedNumber.isNotEmpty() && !inPip) {
-            Box(
-                Modifier
-                    .align(AbsoluteAlignment.TopLeft)
-                    .absolutePadding(left = 40.dp, top = 30.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(Color(0xCC0B0C10))
-                    .padding(horizontal = 22.dp, vertical = 8.dp)
-            ) {
-                Text(typedNumber, style = T.display(40.sp, FontWeight.ExtraBold, RColors.Saffron))
-            }
+            val typedNum = typedNumber.toIntOrNull()
+            ReceiverNumberEntry(
+                typed = typedNumber,
+                highest = channels.maxOfOrNull { it.num } ?: 0,
+                target = typedNum?.let { n -> channels.firstOrNull { it.num == n } }
+            )
         }
 
         val zapped = banner
-        if (zapped != null && !controlsVisible && !inPip) {
-            Row(
-                Modifier
-                    .align(Alignment.TopStart)
-                    .padding(24.dp)
-                    .clip(RoundedCornerShape(18.dp))
-                    .background(Color(0xD90B0C10))
-                    .padding(horizontal = 14.dp, vertical = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(zapped.num.toString(), style = T.display(20.sp, FontWeight.Bold, RColors.Saffron))
-                ChannelLogo(zapped.name, zapped.logo, 40.dp, corner = 10.dp)
-                Column {
-                    Text(zapped.name, style = T.body(16.sp, FontWeight.Bold), maxLines = 1)
-                    val now0 = epg.forChannel(zapped).current(now)?.title
-                    if (now0 != null) Text(now0, style = T.body(13.sp, color = SoftText), maxLines = 1)
-                }
-            }
+        if (zapped != null && !controlsVisible && !inPip && !panelOpen && !sourcesOpen && !scorePickOpen && typedNumber.isEmpty()) {
+            val zappedProgrammes = epg.forChannel(zapped)
+            ReceiverInfoBar(
+                channel = zapped,
+                categoryName = repo.liveCategoryName(zapped.categoryId),
+                programme = zappedProgrammes.current(now),
+                next = zappedProgrammes.next(now),
+                now = now,
+                resolution = if (zapped.id == item?.channel?.id) resolutionLabel(videoHeight) else null,
+                audioTracks = if (zapped.id == item?.channel?.id) audioTracks else 0,
+                favorite = Keys.live(zapped.id) in favorites,
+                signal = signalLevel(bandwidthBps, netTrouble),
+                quality = qualityLevel(reserveMs, buffering),
+                watching = if (zapped.id == item?.channel?.id) WatchClock(watchedBase, watchedFrom) else null
+            )
         }
 
         if (!inPip) {
@@ -1868,6 +1978,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                             programmeStart = programme?.start,
                             programmeEnd = programme?.end,
                             programmeProgress = programme?.progress(now),
+                            watching = if (item.isLive) WatchClock(watchedBase, watchedFrom) else null,
                             nextLabel = nextProgramme?.let { tr("التالي {0} · {1}", hm(it.start), it.title) },
                             hasTrackChoice = hasTrackChoice,
                             canPip = canPip,
@@ -2108,6 +2219,7 @@ private fun Controls(
     programmeStart: Long?,
     programmeEnd: Long?,
     programmeProgress: Float?,
+    watching: WatchClock?,
     nextLabel: String?,
     hasTrackChoice: Boolean,
     canPip: Boolean,
@@ -2246,11 +2358,18 @@ private fun Controls(
         ) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 if (item.isLive) {
-                    if (programmeProgress != null && programmeStart != null && programmeEnd != null) {
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    // How long this channel has been on, as films show their time, with the programme's bar.
+                    val watched = watching?.let { watchedLabel(rememberWatched(it.base, it.from)) }
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        if (watched != null) {
+                            Text(watched, style = T.body(13.sp, FontWeight.Bold, RColors.Saffron), maxLines = 1)
+                        }
+                        if (programmeProgress != null && programmeStart != null && programmeEnd != null) {
                             Text(hm(programmeStart), style = T.body(12.sp, FontWeight.Medium, SoftText))
                             ProgressLine(programmeProgress, Modifier.weight(1f), height = 4.dp, track = Color(0x38FFFFFF))
                             Text(hm(programmeEnd), style = T.body(12.sp, FontWeight.Medium, SoftText))
+                        } else if (watched != null) {
+                            Text(tr("مدة المشاهدة"), style = T.body(12.sp, FontWeight.Medium, SoftText), maxLines = 1)
                         }
                     }
                 } else if (duration > 0L) {
@@ -2452,9 +2571,10 @@ private fun ChannelPanel(
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         Text(
-                            ch.num.toString(),
-                            style = T.body(12.sp, color = if (selected) RColors.Saffron else RColors.Text3),
-                            modifier = Modifier.width(30.dp),
+                            receiverNumber(ch.num),
+                            style = T.body(13.sp, FontWeight.Bold, if (selected) RColors.Saffron else RColors.Text3)
+                                .copy(fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace),
+                            modifier = Modifier.width(40.dp),
                             maxLines = 1
                         )
                         ChannelLogo(ch.name, ch.logo, 38.dp, corner = 10.dp)

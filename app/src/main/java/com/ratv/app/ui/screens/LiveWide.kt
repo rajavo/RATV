@@ -2,6 +2,7 @@ package com.ratv.app.ui.screens
 
 import com.ratv.app.i18n.tr
 import android.view.ViewGroup
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -41,6 +43,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -92,12 +95,21 @@ fun LiveWideScreen(nav: Navigator) {
     val repo = LocalRepo.current
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val channels by repo.channels.collectAsStateWithLifecycle()
-    val categories by repo.liveCategories.collectAsStateWithLifecycle()
+    val shownChannels by repo.channels.collectAsStateWithLifecycle()
+    val shownCategories by repo.liveCategories.collectAsStateWithLifecycle()
+    val allChannels by repo.allChannels.collectAsStateWithLifecycle()
+    val allCategories by repo.allLiveCategories.collectAsStateWithLifecycle()
+    val hidden by repo.hiddenChannels.collectAsStateWithLifecycle()
     val favorites by repo.favorites.collectAsStateWithLifecycle()
     val recentIds by repo.recentChannels.collectAsStateWithLifecycle()
     val epg by repo.epg.collectAsStateWithLifecycle()
     val now = rememberNow()
+
+    // Editing the lists, as on a receiver: every channel is listed, and OK deletes it or brings it back.
+    var editing by rememberSaveable { mutableStateOf(false) }
+    BackHandler(enabled = editing) { editing = false }
+    val channels = if (editing) allChannels else shownChannels
+    val categories = if (editing) allCategories else shownCategories
 
     var selected by rememberSaveable { mutableStateOf(ALL) }
     val byId = remember(channels) { channels.associateBy { it.id } }
@@ -152,8 +164,14 @@ fun LiveWideScreen(nav: Navigator) {
         onDispose { preview?.release() }
     }
     val shown: Channel? = focusedId?.let { byId[it] } ?: visible.firstOrNull { it.id == startId }
-    LaunchedEffect(shown?.id) {
+    LaunchedEffect(shown?.id, editing) {
         val p = preview ?: return@LaunchedEffect
+        if (editing) {
+            // No picture while editing: moving through the list deletes and restores, nothing plays.
+            p.stop()
+            previewingId = null
+            return@LaunchedEffect
+        }
         val ch = shown ?: return@LaunchedEffect
         if (previewingId == ch.id) return@LaunchedEffect
         p.stop()
@@ -198,6 +216,18 @@ fun LiveWideScreen(nav: Navigator) {
         repo.toggleFavorite(key)
         toast = if (adding) tr("أُضيفت {0} إلى المفضلة", ch.name) else tr("أُزيلت {0} من المفضلة", ch.name)
     }
+    fun toggleHidden(ch: Channel) {
+        val deleting = ch.id !in hidden
+        repo.setChannelsHidden(listOf(ch.id), deleting)
+        toast = if (deleting) tr("حُذفت {0} من القوائم", ch.name) else tr("رجعت {0} للقوائم", ch.name)
+    }
+    // The section shown, deleted or brought back as a whole (a real section, not "all" or the favourites).
+    val sectionIds = if (selected == ALL || selected == FAV || selected == RECENT) emptyList() else visible.map { it.id }
+    val sectionDeleted = sectionIds.isNotEmpty() && sectionIds.all { it in hidden }
+    fun toggleSection() {
+        repo.setChannelsHidden(sectionIds, !sectionDeleted)
+        toast = if (sectionDeleted) tr("رجع القسم «{0}» للقوائم", sectionName) else tr("حُذف القسم «{0}» من القوائم", sectionName)
+    }
 
     Box(
         Modifier
@@ -238,6 +268,21 @@ fun LiveWideScreen(nav: Navigator) {
                 ) {
                     Text(sectionName, style = T.h2, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
                     Text(formatCount(visible.size) + tr(" قناة"), style = T.caption)
+                    Spacer(Modifier.weight(1f))
+                    if (editing && sectionIds.isNotEmpty()) {
+                        EditPill(if (sectionDeleted) tr("إرجاع القسم") else tr("حذف القسم كله"), RIcons.Close, danger = !sectionDeleted) { toggleSection() }
+                    }
+                    EditPill(if (editing) tr("تم") else tr("تعديل القوائم"), if (editing) RIcons.Check else RIcons.ListIcon, active = editing) {
+                        editing = !editing
+                    }
+                }
+                if (editing) {
+                    Text(
+                        tr("OK يحذف القناة أو يرجعها · المحذوفة ما تطلع في القوائم ولا الدليل ولا التنقّل بالأسهم · {0} محذوفة", hidden.size),
+                        style = T.small,
+                        maxLines = 2,
+                        modifier = Modifier.padding(start = 6.dp, bottom = 8.dp)
+                    )
                 }
                 if (visible.isEmpty()) {
                     EmptyState(
@@ -261,9 +306,10 @@ fun LiveWideScreen(nav: Navigator) {
                                 programme = epg.forChannel(ch).current(now)?.title,
                                 favorite = Keys.live(ch.id) in favorites,
                                 active = ch.id == shown?.id,
+                                deleted = editing && ch.id in hidden,
                                 focusRequester = if (ch.id == focusTarget) rowFocus else null,
                                 onFocused = { focusedId = ch.id },
-                                onOpen = { open(ch) },
+                                onOpen = { if (editing) toggleHidden(ch) else open(ch) },
                                 onToggleFavorite = { toggleFavorite(ch) }
                             )
                         }
@@ -306,6 +352,7 @@ private fun WideChannelRow(
     programme: String?,
     favorite: Boolean,
     active: Boolean,
+    deleted: Boolean,
     focusRequester: FocusRequester?,
     onFocused: () -> Unit,
     onOpen: () -> Unit,
@@ -322,6 +369,7 @@ private fun WideChannelRow(
             .clip(shape)
             .background(if (active) RColors.Surface3 else Color.Transparent)
             .tvClickable(shape, onClickLabel = tr("مشاهدة {0}", channel.name), onClick = onOpen)
+            .alpha(if (deleted) 0.45f else 1f)
             .padding(horizontal = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -336,7 +384,8 @@ private fun WideChannelRow(
         Column(Modifier.weight(1f)) {
             Text(
                 channel.name,
-                style = T.body(15.sp, FontWeight.Bold, if (active) RColors.Saffron else RColors.Text),
+                style = T.body(15.sp, FontWeight.Bold, if (active) RColors.Saffron else RColors.Text)
+                    .copy(textDecoration = if (deleted) TextDecoration.LineThrough else null),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -346,6 +395,7 @@ private fun WideChannelRow(
         }
         channel.quality?.let { QualityBadge(it, color = if (it == "4K") RColors.SaffronLight else RColors.Text2) }
         if (favorite) Icon(RIcons.StarFilled, contentDescription = tr("مفضلة"), tint = RColors.Saffron, modifier = Modifier.size(16.dp))
+        if (deleted) DeletedMark()
     }
 }
 
