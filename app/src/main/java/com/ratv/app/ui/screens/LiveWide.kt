@@ -141,8 +141,9 @@ fun LiveWideScreen(nav: Navigator) {
     val rowFocus = remember { FocusRequester() }
     var entered by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
+        // The list's position is always set: a position kept from the last visit must not hide the last channel.
         val index = visible.indexOfFirst { it.id == startId }
-        if (index > 3) listState.scrollToItem(index - 3)
+        listState.scrollToItem(if (index > 3) index - 3 else 0)
     }
     TvInitialFocus(rowFocus)
 

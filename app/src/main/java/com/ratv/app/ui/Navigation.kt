@@ -141,7 +141,7 @@ fun RatvRoot() {
                 true
             }
     ) {
-    if (wide && showBar) {
+    if (wide && showBar && route != "home") {
         TopBar(current = currentTab, onSelect = { navigator.tab(it) }, onSearch = { navigator.search() })
     }
     Box(Modifier.weight(1f)) {
