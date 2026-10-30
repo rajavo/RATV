@@ -45,6 +45,51 @@ def log_focus(tag):
     return root, f
 
 
+def mid(n):
+    x1, y1, x2, y2 = S.bounds(n)
+    return (x1 + x2) / 2, (y1 + y2) / 2
+
+
+def focus_towards(word, tag, tries=30, pause=0.8):
+    """Moves the focus with the remote, press by press, to the item whose text holds [word].
+
+    The screens are rows of buttons and grids of tiles, so each press follows where the items lie: sideways
+    when the target is in the same row as the focus, otherwise up or down. A press that did not move the
+    focus is followed by one the other way (the end of a row, or nothing further in that direction)."""
+    f = None
+    prev = None
+    for _ in range(tries):
+        root = S.dump(tag)
+        f = focused_text(root)
+        S.log("focus[%s]: %s" % (tag, f))
+        if f and word in f:
+            return f
+        stuck = f is not None and f == prev
+        prev = f
+        nodes = S.nodes(root)
+        here = focused_node(root)
+        found = [n for n in nodes if word in ((n.get("text") or "") + (n.get("content-desc") or ""))]
+        if here is None or not found:
+            key("DPAD_DOWN", pause=pause)
+            continue
+        if any(n is here for n in found):
+            return f
+        # A text on the bar at the foot of the settings is not a target: an item above the bar is preferred.
+        screen_h = S.bounds(nodes[0])[3]
+        target = next((n for n in found if mid(n)[1] < screen_h * 0.85), found[0])
+        hx1, hy1, hx2, hy2 = S.bounds(here)
+        tx1, ty1, tx2, ty2 = S.bounds(target)
+        same_row = ty1 < hy2 and hy1 < ty2
+        across = same_row != stuck
+        hx, hy = (hx1 + hx2) / 2, (hy1 + hy2) / 2
+        tx, ty = (tx1 + tx2) / 2, (ty1 + ty2) / 2
+        if across and tx != hx:
+            key("DPAD_RIGHT" if tx > hx else "DPAD_LEFT", pause=pause)
+        else:
+            key("DPAD_DOWN" if ty > hy else "DPAD_UP", pause=pause)
+    return f
+
+
 def ime_shown():
     return "mInputShown=true" in S.shell("dumpsys input_method")
 
@@ -145,6 +190,15 @@ def t_home_focus():
     expect(f is not None and "RATV News HD" in f, "hero not focused (focus: %s)" % f)
 
 
+def t_tv_menu():
+    """The start screen on TV: the live channel on the left; beside it the four tiles and the three buttons."""
+    root = S.dump("tv-menu")
+    S.shot("tv-menu")
+    texts = S.all_texts(root)
+    for word in ("أفلام", "مسلسلات", "المباريات", "الاشتراك والمستخدمون", "الإعدادات", "تحديث المحتوى", "بحث"):
+        expect(word in texts, "the start screen has no «%s»" % word)
+
+
 def t_low_latency():
     """Low-latency Wi-Fi while the app is shown, and a connection kept ready to the subscription's server."""
     out = S.shell("logcat -d -s RATVNet:I")
@@ -178,17 +232,10 @@ def t_player_remote():
 
 
 def focus_home_item(word, tag, presses=5):
-    """From the top bar, down the home screen until the focus holds [word]."""
+    """From the top bar, to the home screen's item that holds [word] (the menu's tiles are not one column)."""
     go_tab("الرئيسية")
     time.sleep(2)
-    f = None
-    for _ in range(presses):
-        _, f = log_focus(tag)
-        if f and word in f:
-            return f
-        key("DPAD_DOWN", pause=0.8)
-    _, f = log_focus(tag)
-    return f
+    return focus_towards(word, tag, tries=10 + 3 * presses)
 
 
 def t_player_numbers():
@@ -437,6 +484,8 @@ def t_settings():
     _, f = log_focus("settings")
     S.shot("settings")
     expect(f is not None and "إضافة مستخدم" in f, "settings not focused (focus: %s)" % f)
+    root = S.dump("settings-bar")
+    expect("اختر إعداداً لتقرأ شرحه هنا." in S.all_texts(root), "no explanation bar at the foot of the settings")
 
 
 def restart_app():
@@ -448,14 +497,8 @@ def deep_settings_and_back(nav, tag):
     """Down the settings to the language row, then up to the top bar again (both ways with the remote)."""
     go_tab(nav[-1], nav)
     time.sleep(2)
-    found = False
-    for _ in range(44):
-        _, f = log_focus("deep-" + tag)
-        if f and "Language" in f:
-            found = True
-            break
-        key("DPAD_DOWN", pause=0.6)
-    expect(found, "%s: no language row in the settings" % tag)
+    f = focus_towards("Language", "deep-" + tag, tries=50, pause=0.6)
+    expect(f is not None and "Language" in f, "%s: no language row in the settings (focus: %s)" % (tag, f))
     for i in range(40):
         _, f = log_focus("up-" + tag)
         if f in nav:
@@ -512,14 +555,9 @@ def t_enhance():
     try:
         go_tab("حسابي")
         time.sleep(2)
-        found = None
-        for _ in range(30):
-            _, f = log_focus("enhance-setting")
-            if f and "تحسين الصورة الذكي" in f:
-                found = f
-                break
-            key("DPAD_DOWN", pause=0.6)
-        expect(found, "no picture enhancement row in the settings")
+        found = focus_towards("تحسين الصورة الذكي", "enhance-setting", tries=50, pause=0.6)
+        expect(found and "تحسين الصورة الذكي" in found, "no picture enhancement row in the settings (focus: %s)" % found)
+        expect("يرفع وضوح الصورة" in S.all_texts(S.dump("enhance-bar")), "the explanation of the picture enhancement is not in the bar")
         key("DPAD_CENTER", pause=1.5)
         S.shot("enhance-setting")
         go_tab("الرئيسية", tries=40)
@@ -828,15 +866,9 @@ def t_languages():
             go_tab(nav[-1], nav)
             time.sleep(2)
             S.shot("settings-" + lang)
-            # Down the settings to the language row, then open its list.
-            found = False
-            for _ in range(34):
-                _, f = log_focus("settings-" + lang)
-                if f and "Language" in f:
-                    found = True
-                    break
-                key("DPAD_DOWN", pause=0.6)
-            expect(found, "%s: no language row in the settings" % lang)
+            # To the language row of the settings, then open its list.
+            f = focus_towards("Language", "settings-" + lang, tries=50, pause=0.6)
+            expect(f is not None and "Language" in f, "%s: no language row in the settings (focus: %s)" % (lang, f))
             key("DPAD_CENTER", pause=2)
             root = S.dump("language-" + lang)
             S.shot("language-" + lang)
@@ -945,24 +977,9 @@ def t_guess_movie():
     go_tab("أفلام")
     _, n = S.wait_for(timeout=20, contains="The Long Road")
     expect(n is not None, "The Long Road missing")
-    # The posters of «الكل» (the category it opens on): «The Long Road» is the second one of the first row.
-    # The focus rests on the top bar, on the sort button or on a poster: from the bar, down past the sort
-    # button; from a poster, up towards the bar. (The category list is on the right, so it is not needed.)
-    f = None
-    for _ in range(24):
-        _, f = log_focus("guess-grid")
-        if f is not None and "The Long Road" in f:
-            break
-        if f in NAV:
-            if f != "أفلام":
-                step = NAV.index("أفلام") - NAV.index(f)
-                key("DPAD_LEFT" if step > 0 else "DPAD_RIGHT", abs(step), pause=0.8)
-            else:
-                key("DPAD_DOWN", pause=0.8)
-        elif f is not None and f.startswith("الترتيب"):
-            key("DPAD_DOWN", pause=0.8)
-        else:
-            key("DPAD_UP", pause=0.8)
+    # The posters of «الكل» (the category it opens on): «The Long Road» is in the first row. The focus
+    # walks there from the top bar, the sort button or a poster, by where the posters lie on the screen.
+    f = focus_towards("The Long Road", "guess-grid", tries=40)
     expect(f is not None and "The Long Road" in f, "The Long Road not focused (focus: %s)" % f)
     key("DPAD_CENTER", pause=3)
     _, f = log_focus("guess-detail")
@@ -990,6 +1007,7 @@ if __name__ == "__main__":
         ("keyboard-on-ok", t_keyboard_on_ok),
         ("fill-with-remote", t_fill_with_remote),
         ("home-focus", t_home_focus),
+        ("tv-menu", t_tv_menu),
         ("low-latency", t_low_latency),
         ("player-remote", t_player_remote),
         ("player-numbers", t_player_numbers),
