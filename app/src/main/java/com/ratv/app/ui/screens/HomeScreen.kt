@@ -42,7 +42,6 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -52,6 +51,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -584,14 +586,16 @@ private fun LiveTile(modifier: Modifier, onClick: () -> Unit) {
 }
 
 /**
- * A start-screen tile whose picture already carries its name. The name stays in the tree, invisible,
- * so the tile is still read out and found by its name.
+ * A start-screen tile whose picture already carries its name. The picture does not print the name as
+ * text, so the tile itself is given the name as its text: it is still read out and found by its name.
  */
 @Composable
 private fun PictureTile(picture: Int, label: String, modifier: Modifier, onClick: () -> Unit) {
     val shape = RoundedCornerShape(20.dp)
     Box(
-        modifier.tvClickable(shape, onClickLabel = label, onClick = onClick),
+        modifier
+            .semantics { this[SemanticsProperties.Text] = listOf(AnnotatedString(label)) }
+            .tvClickable(shape, onClickLabel = label, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Image(
@@ -600,7 +604,6 @@ private fun PictureTile(picture: Int, label: String, modifier: Modifier, onClick
             contentScale = ContentScale.Fit,
             modifier = Modifier.fillMaxSize().clip(shape)
         )
-        Text(label, modifier = Modifier.alpha(0f), maxLines = 1)
     }
 }
 
