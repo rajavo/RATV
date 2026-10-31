@@ -193,6 +193,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val epg by repo.epg.collectAsStateWithLifecycle()
     val channels by repo.channels.collectAsStateWithLifecycle()
     val favorites by repo.favorites.collectAsStateWithLifecycle()
+    val commentarySource by repo.commentarySource.collectAsStateWithLifecycle()
+    val commentaryChannels by repo.commentaryChannels.collectAsStateWithLifecycle()
+    val commentaryError by repo.commentaryError.collectAsStateWithLifecycle()
     val now = rememberNow(15_000L)
 
     var current by remember { mutableStateOf<Playable?>(null) }
@@ -337,6 +340,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val mix = remember(player) { MixController(context, scope, player, repo.prefs.bufferMode) }
     // A commentary from another channel that waits for its new picture (the enhancement going off, see onMix).
     var mixAfterRebuild by remember { mutableStateOf<Channel?>(null) }
+    // Whether that commentary is one of the other saved subscription (its own connection, so no limit to check here).
+    var mixAfterRebuildOther by remember { mutableStateOf(false) }
     val subs = remember { SubtitleController(scope, repo.prefs) }
     val inPip = rememberIsInPictureInPicture(activity)
     val canPip = remember {
@@ -522,8 +527,15 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     // The commentary asked for while the enhancement had to go off: it starts on the new picture.
     LaunchedEffect(mix) {
         val ch = mixAfterRebuild ?: return@LaunchedEffect
+        val fromOther = mixAfterRebuildOther
         mixAfterRebuild = null
-        mix.start(ch, repo.account.value?.maxCons)
+        mixAfterRebuildOther = false
+        mix.start(ch, if (fromOther) null else repo.account.value?.maxCons)
+    }
+
+    // The sources panel reads the commentators' channels the first time it opens; after that they are already there.
+    LaunchedEffect(sourcesOpen) {
+        if (sourcesOpen) repo.loadCommentary()
     }
 
     // ------------------------------------- subtitles and 4K copies of films and episodes
@@ -2132,6 +2144,19 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                         sports = sportsChoices,
                         mix = mix,
                         canMix = (repo.account.value?.maxCons ?: 2) >= 2,
+                        otherName = commentarySource?.name,
+                        other = commentaryChannels,
+                        otherError = commentaryError,
+                        onMixOther = { ch ->
+                            if (enhanceWanted) {
+                                // As the commentary of this subscription (see onMix): it starts once the picture is built again.
+                                mixAfterRebuild = ch
+                                mixAfterRebuildOther = true
+                                enhanceFor = null
+                            } else {
+                                mix.start(ch, null)
+                            }
+                        },
                         epgLookup = { ch -> epg.forChannel(ch).current(now)?.title },
                         onPickAudio = { option ->
                             mix.stop()

@@ -681,5 +681,12 @@
 "الاشتراك والمستخدمون": "Suscripción y usuarios",
 "مباريات اليوم: {0}": "Partidos hoy: {0}",
 "لا توجد مباريات اليوم": "No hay partidos hoy",
-"اختر إعداداً لتقرأ شرحه هنا.": "Elige un ajuste para leer aquí su explicación."
+"اختر إعداداً لتقرأ شرحه هنا.": "Elige un ajuste para leer aquí su explicación.",
+"معلقو {0}": "Comentaristas de {0}",
+"جارٍ تحميل قنوات اشتراك المعلق…": "Cargando los canales de la suscripción del comentarista…",
+"لم نجد قنوات رياضية في اشتراك المعلق.": "No encontramos canales deportivos en la suscripción del comentarista.",
+"المعلق": "Comentarista",
+"اشتراك المعلق": "Suscripción del comentarista",
+"بدون": "Ninguna",
+"يسمع العميل معلق قناة رياضية من اشتراك ثاني وهو يشوف المباراة من اشتراكه الحالي، والصورة تبقى كما هي. كل اشتراك يبقى على اتصاله.": "El cliente escucha a un comentarista de un canal deportivo de una segunda suscripción mientras ve el partido con la suscripción en uso. La imagen no cambia y cada suscripción mantiene su propia conexión."
 }

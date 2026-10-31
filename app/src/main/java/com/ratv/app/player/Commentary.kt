@@ -183,7 +183,11 @@ internal fun SourcesPanel(
     onSwitch: (Channel) -> Unit,
     onClose: () -> Unit,
     tv: Boolean,
-    canMix: Boolean
+    canMix: Boolean,
+    otherName: String?,
+    other: List<Channel>?,
+    otherError: String?,
+    onMixOther: (Channel) -> Unit
 ) {
     val firstFocus = remember { FocusRequester() }
     LaunchedEffect(Unit) {
@@ -262,6 +266,37 @@ internal fun SourcesPanel(
                         modifier = if (index == 0) focusIf("audio") else Modifier,
                         onClick = { onPickAudio(option) }
                     )
+                }
+            }
+
+            // The commentators of another saved subscription: that subscription has its own connection for them.
+            if (otherName != null) {
+                item { PanelHeader(tr("معلقو {0}", otherName)) }
+                val otherList = other
+                when {
+                    otherError != null -> item { PanelNote(otherError, RColors.Danger) }
+                    otherList == null -> item {
+                        Row(
+                            Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            CircularProgressIndicator(color = RColors.Saffron, strokeWidth = 2.dp, modifier = Modifier.size(16.dp))
+                            Text(tr("جارٍ تحميل قنوات اشتراك المعلق…"), style = T.caption)
+                        }
+                    }
+                    otherList.isEmpty() -> item { PanelNote(tr("لم نجد قنوات رياضية في اشتراك المعلق.")) }
+                    else -> items(otherList.take(200), key = { "o" + it.id }) { ch ->
+                        SourceRow(
+                            title = ch.name,
+                            subtitle = null,
+                            badge = null,
+                            selected = mixing?.url == ch.url,
+                            icon = RIcons.Mic,
+                            modifier = Modifier,
+                            onClick = { onMixOther(ch) }
+                        )
+                    }
                 }
             }
 

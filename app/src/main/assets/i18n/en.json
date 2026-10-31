@@ -681,5 +681,12 @@
 "الاشتراك والمستخدمون": "Subscription and users",
 "مباريات اليوم: {0}": "Matches today: {0}",
 "لا توجد مباريات اليوم": "No matches today",
-"اختر إعداداً لتقرأ شرحه هنا.": "Choose a setting to read its explanation here."
+"اختر إعداداً لتقرأ شرحه هنا.": "Choose a setting to read its explanation here.",
+"معلقو {0}": "Commentators of {0}",
+"جارٍ تحميل قنوات اشتراك المعلق…": "Loading the commentary subscription's channels…",
+"لم نجد قنوات رياضية في اشتراك المعلق.": "No sports channels found in the commentary subscription.",
+"المعلق": "Commentary",
+"اشتراك المعلق": "Commentary subscription",
+"بدون": "None",
+"يسمع العميل معلق قناة رياضية من اشتراك ثاني وهو يشوف المباراة من اشتراكه الحالي، والصورة تبقى كما هي. كل اشتراك يبقى على اتصاله.": "The customer hears a sports commentator from a second subscription while watching the match on the subscription in use. The picture stays the same, and each subscription keeps its own connection."
 }

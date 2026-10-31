@@ -170,6 +170,8 @@ fun SettingsScreen(nav: Navigator) {
     var showScoreDelay by remember { mutableStateOf(false) }
     var scorePlace by remember { mutableStateOf(repo.prefs.scorePlace) }
     var showScorePlace by remember { mutableStateOf(false) }
+    var commentarySourceId by remember { mutableStateOf(repo.prefs.commentaryPlaylistId ?: "") }
+    var showCommentarySource by remember { mutableStateOf(false) }
     var introSkip by remember { mutableStateOf(repo.prefs.introSkip) }
     var showIntroSkip by remember { mutableStateOf(false) }
     var showPalette by remember { mutableStateOf(false) }
@@ -410,6 +412,15 @@ fun SettingsScreen(nav: Navigator) {
                 ValueRow(tr("مكان لوحة النتيجة"), scorePlaceLabels[scorePlace] ?: scorePlaceLabels.values.first()) { showScorePlace = true }
                 Divider()
                 ValueRow(tr("تأخير النتيجة"), scoreDelayLabels[scoreDelay] ?: tr("تلقائي")) { showScoreDelay = true }
+            }
+        }
+
+        // Only with a second saved subscription there is someone to hear over the picture.
+        if (users.size > 1) {
+            GroupTitle(tr("المعلق"))
+            Group {
+                val commentaryName = users.firstOrNull { it.id == commentarySourceId }?.name
+                ValueRow(tr("اشتراك المعلق"), commentaryName ?: tr("بدون")) { showCommentarySource = true }
             }
         }
 
@@ -683,6 +694,22 @@ fun SettingsScreen(nav: Navigator) {
                 }
             },
             containerColor = RColors.Surface
+        )
+    }
+
+    if (showCommentarySource) {
+        val labels = linkedMapOf("" to tr("بدون"))
+        users.filter { it.id != playlist?.id }.forEach { labels[it.id] = it.name }
+        ChoiceDialog(
+            title = tr("اشتراك المعلق"),
+            labels = labels,
+            selected = commentarySourceId,
+            note = tr("يسمع العميل معلق قناة رياضية من اشتراك ثاني وهو يشوف المباراة من اشتراكه الحالي، والصورة تبقى كما هي. كل اشتراك يبقى على اتصاله."),
+            onPick = {
+                commentarySourceId = it
+                repo.setCommentarySource(users.firstOrNull { u -> u.id == it })
+            },
+            onDismiss = { showCommentarySource = false }
         )
     }
 
