@@ -252,6 +252,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     var enhanceSoftware by remember { mutableStateOf(repo.prefs.enhanceSoftware) }
     // The strongest enhancement this device is given (full, light, none): it steps down by itself.
     var enhanceStrength by remember { mutableIntStateOf(repo.prefs.enhanceStrength) }
+    // The channel's picture runs at 50 or 60 frames a second (ENHANCE_FAST_FPS): it is sharpened only.
+    var fastPicture by remember { mutableStateOf(false) }
     var enhanceFor by remember { mutableStateOf<String?>(null) }
     // Whether the playing channel or film has shown its first picture yet.
     var pictureShown by remember { mutableStateOf(false) }
@@ -269,6 +271,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         return h in 1 until ENHANCE_BELOW_HEIGHT
     }
 
+    /** The channel's picture was seen at 50 or 60 frames a second the last time it played. */
+    fun fastPictureKnown(item: Playable): Boolean = (EnhanceMemory.get(context, enhanceKey(item))?.fps ?: 0f) >= ENHANCE_FAST_FPS
+
     /** The shape the enhanced picture is stretched to (fill or a fixed shape), or null to keep its own. */
     fun stretchFor(index: Int): Float? {
         val mode = resizeModes[index]
@@ -276,12 +281,14 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         return mode.ratio ?: if (view.width > 0 && view.height > 0) view.width.toFloat() / view.height else 16f / 9f
     }
 
-    val player = remember(enhanceWanted, if (enhanceWanted) enhanceStrength else ENHANCE_OFF, enhanceWanted && enhanceSoftware) {
+    // A 50 or 60 fps picture is sharpened only: the full strength enlarges every frame, more than the TV keeps up with.
+    val strengthNow = if (fastPicture) minOf(enhanceStrength, ENHANCE_LIGHT) else enhanceStrength
+    val player = remember(enhanceWanted, if (enhanceWanted) strengthNow else ENHANCE_OFF, enhanceWanted && enhanceSoftware) {
         Steadiness.mode = repo.prefs.liveSteady
         Steadiness.attach(context)
         createPlayer(
             context, repo.prefs.bufferMode, repo.prefs.bestQuality, live = kind == "live",
-            enhance = enhanceWanted, stretchAspect = stretchFor(resizeIndex), enhanceStrength = enhanceStrength,
+            enhance = enhanceWanted, stretchAspect = stretchFor(resizeIndex), enhanceStrength = strengthNow,
             introTap = kind != "live",
             softwareVideo = enhanceWanted && enhanceSoftware
         )
@@ -371,6 +378,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         mix.stop()
         current = item
         enhanceFor = if (wantsEnhance(item)) enhanceKey(item) else null
+        fastPicture = fastPictureKnown(item)
         panelOpen = false
         sourcesOpen = false
         subsOpen = false
@@ -411,6 +419,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             episodes = resolved.episodes
             current = resolved.playable
             enhanceFor = if (wantsEnhance(resolved.playable)) enhanceKey(resolved.playable) else null
+            fastPicture = fastPictureKnown(resolved.playable)
         }
     }
 
@@ -645,6 +654,14 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     fun enhanceStepDown(why: String, failed: Boolean, toOff: Boolean = false) {
         val item = current ?: return
         if (enhanceFor == null) return
+        if (fastPicture && !failed && !toOff) {
+            // More than this TV keeps up with: only this channel goes without the enhancement; the others keep it.
+            Log.i("RATVEnhance", "the enhancement does not keep up with a 50 or 60 fps picture ($why): off for this channel")
+            if (!item.isLive) resumeAt = item.id to player.currentPosition
+            enhanceFor = null
+            streamNotice = tr("هذه القناة 50 أو 60 فريم، والتلفزيون ما لحق على تحسينها، فأوقفناه لها بس")
+            return
+        }
         val used = EnhanceStatus.strength.coerceAtMost(enhanceStrength)
         if (!item.isLive) resumeAt = item.id to player.currentPosition
         if (!failed && !toOff && videoHeight >= ENHANCE_HD_LINES && used <= ENHANCE_LIGHT) {
@@ -807,6 +824,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 if (video != null && video.height > 0 && item != null) {
                     EnhanceMemory.put(context, enhanceKey(item), video.height, video.frameRate)
                     if (!pictureShown && !player.isPlaying) {
+                        if (video.frameRate >= ENHANCE_FAST_FPS) fastPicture = true
                         val want = wantsEnhance(item, seenHeight = video.height)
                         if (want != pipeline) {
                             Log.i("RATVEnhance", "picture ${video.width}x${video.height}: enhancement " + if (want) "on" else "off")
@@ -1042,6 +1060,12 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                 if (lastFrames >= 0 && player.isPlaying && t - lastFramesAt >= 2_900L) {
                     val fps = (frames - lastFrames) * 1000f / (t - lastFramesAt)
                     if (fps > 5f) measuredFps = standardFrameRate(fps)
+                    if (measuredFps >= ENHANCE_FAST_FPS && !fastPicture) {
+                        // Found at 50 or 60 frames a second: from now on sharpened only (a film goes on from where it is).
+                        Log.i("RATVEnhance", "the picture runs at ${measuredFps.toInt()} fps: sharpened only from now on")
+                        if (enhanceWanted) current?.let { if (!it.isLive) resumeAt = it.id to player.currentPosition }
+                        fastPicture = true
+                    }
                     lastFrames = frames
                     lastFramesAt = t
                 } else if (lastFrames < 0 || !player.isPlaying) {
