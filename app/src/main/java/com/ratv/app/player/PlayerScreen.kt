@@ -276,19 +276,14 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         return mode.ratio ?: if (view.width > 0 && view.height > 0) view.width.toFloat() / view.height else 16f / 9f
     }
 
-    // On a TV whose graphics chip cannot read its own decoder's pictures (enhanceSoftware), every picture
-    // takes the one way that shows: Android's decoder, then the graphics chip. Turning the enhancement off
-    // then only switches its sharpening off (a plain copy). It never goes back to the decoder that shows black.
-    val strengthNow = if (enhanceWanted) enhanceStrength else ENHANCE_OFF
-    val player = remember(enhanceWanted, strengthNow, enhanceSoftware) {
+    val player = remember(enhanceWanted, if (enhanceWanted) enhanceStrength else ENHANCE_OFF, enhanceWanted && enhanceSoftware) {
         Steadiness.mode = repo.prefs.liveSteady
         Steadiness.attach(context)
         createPlayer(
             context, repo.prefs.bufferMode, repo.prefs.bestQuality, live = kind == "live",
-            tunneling = isTv && repo.prefs.tunneling,
-            enhance = enhanceWanted || enhanceSoftware, stretchAspect = stretchFor(resizeIndex), enhanceStrength = strengthNow,
+            enhance = enhanceWanted, stretchAspect = stretchFor(resizeIndex), enhanceStrength = enhanceStrength,
             introTap = kind != "live",
-            softwareVideo = enhanceSoftware
+            softwareVideo = enhanceWanted && enhanceSoftware
         )
     }
     // «تخطي المقدمة» (IntroSkip.kt): the opening of what plays, found by its sound or listed on TheIntroDB.
@@ -2061,7 +2056,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                                 resizeIndex = (resizeIndex + 1) % resizeModes.size
                                 repo.prefs.resizeMode = resizeIndex
                                 resizeNotice = resizeModes[resizeIndex].label
-                                if (enhanceWanted || enhanceSoftware) player.setVideoEffects(listOf(TvEnhanceEffect(stretchFor(resizeIndex), strengthNow)))
+                                if (enhanceWanted) player.setVideoEffects(listOf(TvEnhanceEffect(stretchFor(resizeIndex), enhanceStrength)))
                             },
                             onStats = {
                                 touch()

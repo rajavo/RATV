@@ -276,7 +276,6 @@ fun createPlayer(
     bestQuality: Boolean,
     handleAudioFocus: Boolean = true,
     live: Boolean = false,
-    tunneling: Boolean = false,
     enhance: Boolean = false,
     stretchAspect: Float? = null,
     enhanceStrength: Int = ENHANCE_FULL,
@@ -356,14 +355,6 @@ fun createPlayer(
     // Smart enhancement of a weak picture by the TV's graphics chip (see Enhance.kt). It has to be
     // set before the first prepare; the picture then goes through it instead of straight to the screen.
     if (enhance) player.setVideoEffects(listOf(TvEnhanceEffect(stretchAspect, enhanceStrength)))
-    // Tunneled playback: the TV's hardware times the picture with the sound (used only where the
-    // device's decoder supports it for the stream; otherwise playback goes on the usual way).
-    // Not with the enhancement, whose picture does not go straight from the decoder to the screen.
-    if (tunneling && !enhance) {
-        (player.trackSelector as? androidx.media3.exoplayer.trackselection.DefaultTrackSelector)?.let { s ->
-            s.setParameters(s.buildUponParameters().setTunnelingEnabled(true))
-        }
-    }
     return player
 }
 

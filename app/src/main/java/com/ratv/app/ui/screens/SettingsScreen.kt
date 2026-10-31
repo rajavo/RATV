@@ -177,7 +177,6 @@ fun SettingsScreen(nav: Navigator) {
     val hostContext = androidx.compose.ui.platform.LocalContext.current
     var liveSteady by remember { mutableStateOf(repo.prefs.liveSteady) }
     var matchFrameRate by remember { mutableStateOf(repo.prefs.matchFrameRate) }
-    var tunneling by remember { mutableStateOf(repo.prefs.tunneling) }
     var enhance by remember { mutableStateOf(repo.prefs.enhance) }
     val focusManager = androidx.compose.ui.platform.LocalFocusManager.current
     var autoVersion by remember { mutableStateOf(repo.prefs.autoVersion) }
@@ -353,15 +352,6 @@ fun SettingsScreen(nav: Navigator) {
                 ) {
                     matchFrameRate = it
                     repo.prefs.matchFrameRate = it
-                }
-                Divider()
-                ToggleRow(
-                    tr("تشغيل الصورة بعتاد التلفزيون (تجريبي)"),
-                    tr("قد تصير الحركة أنعم على بعض الشاشات. إذا صارت الشاشة سوداء أو تأخر الصوت، أطفئه. يطبَّق من المرة الجاية اللي تفتح فيها قناة."),
-                    tunneling
-                ) {
-                    tunneling = it
-                    repo.prefs.tunneling = it
                 }
             }
             Divider()
