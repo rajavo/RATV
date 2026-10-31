@@ -5,11 +5,13 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
 import com.ratv.app.BuildConfig
+import com.ratv.app.R
 import com.ratv.app.data.MatchEvent
 import com.ratv.app.data.Updater
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -40,7 +42,10 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
@@ -547,15 +552,15 @@ private fun TvHome(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Column(Modifier.weight(1.1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                MenuButton(RIcons.Sliders, tr("الإعدادات"), Modifier.weight(1f), onSettings)
+                PictureTile(R.drawable.menu_settings, tr("الإعدادات"), Modifier.weight(1f), onSettings)
                 MenuButton(RIcons.Refresh, tr("تحديث المحتوى"), Modifier.weight(1f), onRefresh)
                 MenuButton(RIcons.Logout, tr("خروج"), Modifier.weight(1f), onExit)
             }
             // Arabic reads right to left: the first tile of a row is the rightmost, as in the reference.
             Column(Modifier.weight(1.3f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                    MenuTile(RIcons.Layers, tr("مسلسلات"), Modifier.weight(1f), onSeries)
-                    MenuTile(RIcons.Film, tr("أفلام"), Modifier.weight(1f), onMovies)
+                    PictureTile(R.drawable.menu_series, tr("مسلسلات"), Modifier.weight(1f), onSeries)
+                    PictureTile(R.drawable.menu_movies, tr("أفلام"), Modifier.weight(1f), onMovies)
                 }
                 Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                     MenuTile(RIcons.User, tr("حسابي"), Modifier.weight(1f), onAccount)
@@ -575,20 +580,27 @@ private fun TvHome(
 /** The big tile on the left of the start screen: the live channels. */
 @Composable
 private fun LiveTile(modifier: Modifier, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(22.dp)
-    Column(
-        modifier
-            .clip(shape)
-            .background(Brush.verticalGradient(listOf(RColors.SaffronDeep.copy(alpha = 0.32f), RColors.Surface)))
-            .border(2.dp, RColors.Saffron, shape)
-            .tvClickable(shape, onClickLabel = tr("بث مباشر"), onClick = onClick)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    PictureTile(R.drawable.menu_tv, tr("بث مباشر"), modifier, onClick)
+}
+
+/**
+ * A start-screen tile whose picture already carries its name. The name stays in the tree, invisible,
+ * so the tile is still read out and found by its name.
+ */
+@Composable
+private fun PictureTile(picture: Int, label: String, modifier: Modifier, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(20.dp)
+    Box(
+        modifier.tvClickable(shape, onClickLabel = label, onClick = onClick),
+        contentAlignment = Alignment.Center
     ) {
-        Icon(RIcons.Tv, contentDescription = null, tint = RColors.Saffron, modifier = Modifier.size(72.dp))
-        Spacer(Modifier.height(18.dp))
-        Text(tr("بث مباشر"), style = T.title.copy(fontSize = 22.sp), maxLines = 1)
+        Image(
+            painter = painterResource(picture),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.fillMaxSize().clip(shape)
+        )
+        Text(label, modifier = Modifier.alpha(0f), maxLines = 1)
     }
 }
 
