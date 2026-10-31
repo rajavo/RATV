@@ -281,7 +281,6 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         Steadiness.attach(context)
         createPlayer(
             context, repo.prefs.bufferMode, repo.prefs.bestQuality, live = kind == "live",
-            tunneling = isTv && repo.prefs.tunneling,
             enhance = enhanceWanted, stretchAspect = stretchFor(resizeIndex), enhanceStrength = enhanceStrength,
             introTap = kind != "live",
             softwareVideo = enhanceWanted && enhanceSoftware

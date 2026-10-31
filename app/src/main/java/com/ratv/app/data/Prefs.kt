@@ -239,11 +239,6 @@ class Prefs(context: Context) {
         get() = sp.getString("uiLanguage", "ar") ?: "ar"
         set(value) = sp.edit().putString("uiLanguage", value).apply()
 
-    /** Video timed by the TV's own hardware (tunneled playback), for screens where it plays smoother. */
-    var tunneling: Boolean
-        get() = sp.getBoolean("tunneling", false)
-        set(value) = sp.edit().putBoolean("tunneling", value).apply()
-
     var autoVersion: Boolean
         get() = sp.getBoolean("autoVersion", false)
         set(value) = sp.edit().putBoolean("autoVersion", value).apply()
