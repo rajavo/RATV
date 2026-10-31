@@ -1,5 +1,7 @@
 {
   "ar": [
+    "المعلق يبقى شغال مع القناة: ما ينقطع إذا تغيّرت الصورة تلقائياً، أو إذا البث تقطّع والتطبيق انتقل لنسخة ثانية من القناة. وإذا غيّرت تحسين الصورة بنفسك، يوقف المعلق.",
+    "قائمة «معلقو …» صارت تعرض كل القنوات مقسمة حسب التصنيف، والرياضة أولاً، ومعها خانة «ابحث عن قناة» تكتب فيها الاسم وتجدها بسرعة.",
     "اشتراك المعلق من اشتراك ثاني: إذا عندك اشتراكين محفوظين في التطبيق، تقدر تسمع معلق قناة رياضية من الاشتراك الثاني وأنت تتفرج على المباراة من اشتراكك الحالي. من الإعدادات، في قسم «المعلق»، اختر «اشتراك المعلق» وحدد الاشتراك الثاني.",
     "لسماعه وأنت تتفرج: افتح «المعلق والجودة» واختر القناة من قسم «معلقو …». الصورة تبقى كما هي، وكل اشتراك يبقى على اتصاله.",
     "تحسين الصورة صار يشتغل أيضاً على القنوات اللي سرعتها 50 أو 60 فريم، بتحسين أخف يناسبها. وإذا التلفزيون ما يلحق عليها، يوقف التحسين لتلك القناة بس.",
@@ -10,6 +12,8 @@
     "حذفنا الإعداد التجريبي «تشغيل الصورة بعتاد التلفزيون»، لأنه كان سبب المشكلة."
   ],
   "en": [
+    "The commentator keeps playing with the channel: it does not stop when the picture enhancement changes by itself, or when the stream stalls and the app moves to another copy of the channel. If you turn the picture enhancement off yourself, the commentator stops.",
+    "The list \"Commentators of …\" now shows all channels, grouped by category with sports first, and a \"Search for a channel\" box to find a channel quickly.",
     "Commentary from a second subscription: if you have two subscriptions saved in the app, you can hear a sports commentator from the second one while you watch the match on your current subscription. In Settings, under \"Commentary\", choose \"Commentary subscription\" and pick the second one.",
     "To hear it while you watch: open \"Commentary & quality\" and pick a channel under \"Commentators of …\". The picture stays the same, and each subscription keeps its own connection.",
     "The picture enhancement now also works on channels at 50 or 60 frames per second, with a lighter enhancement that suits them. If the TV cannot keep up, the enhancement turns off for that channel only.",
@@ -20,6 +24,8 @@
     "We removed the experimental setting \"Play the picture with the TV's hardware\", which was the cause."
   ],
   "es": [
+    "El comentarista sigue sonando con el canal: no se detiene si la mejora de imagen cambia sola, ni si la transmisión se corta y la app pasa a otra copia del canal. Si apagas tú la mejora de imagen, el comentarista se detiene.",
+    "La lista «Comentaristas de …» ahora muestra todos los canales, agrupados por categoría y con los deportes primero, y tiene un cuadro «Buscar un canal» para encontrar uno rápido.",
     "Comentarista de una segunda suscripción: si tienes dos suscripciones guardadas en la app, puedes escuchar a un comentarista deportivo de la segunda mientras ves el partido con tu suscripción actual. En Ajustes, en «Comentarista», elige «Suscripción del comentarista» y selecciona la segunda.",
     "Para escucharlo mientras ves: abre «Comentarios y calidad» y elige un canal en «Comentaristas de …». La imagen no cambia y cada suscripción mantiene su propia conexión.",
     "La mejora de imagen ahora también funciona en canales de 50 o 60 fps, con una mejora más ligera que se adapta a ellos. Si el televisor no da abasto, la mejora se apaga solo en ese canal.",
