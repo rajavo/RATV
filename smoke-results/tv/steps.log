@@ -1333,448 +1333,893 @@ Status: o
 16:20:30 screenshot 39-home-en.png 1920x1080
 16:21:18 !! RuntimeError('en: the top bar shows no Home')
 16:21:18 screenshot 40-fail-languages.png 1920x1080
-16:57:39 == launch
-16:58:26 debug.ratv.subs=http://10.0.2.2:8000
-16:58:27 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+16:44:18 == launch
+16:45:04 debug.ratv.subs=http://10.0.2.2:8000
+16:45:05 Starting: Intent { cmp=com.ratv.app/.MainActivity }
 Status: ok
 LaunchState: COLD
 Activity: com.ratv.app/.MainActivity
-TotalTime: 752
-WaitTime: 798
+TotalTime: 1050
+WaitTime: 1055
 Complete
-16:58:29 screenshot 01-splash.png 1920x1080
-16:58:29 == login-screen
-16:58:35 focus[login-initial]: http://server.example:8080
-16:58:35 screenshot 02-login.png 1920x1080
-16:58:35 == keyboard-on-ok
-16:58:38 screenshot 03-login-keyboard.png 1920x1080
-16:58:42 == fill-with-remote
-16:58:52 focus[login-user]: username
-16:59:08 focus[login-name]: مثال: اشتراك المنزل
-16:59:11 focus[login-submit]: دخول
-16:59:11 screenshot 04-login-filled.png 1920x1080
-17:00:46 !! RuntimeError('home not reached')
-17:00:46 screenshot 05-fail-fill-with-remote.png 1920x1080
-17:00:46 == home-focus
-17:00:48 focus[home-focus]: بث مباشر
-17:00:48 screenshot 06-home-focus.png 1920x1080
-17:00:48 !! RuntimeError('hero not focused (focus: بث مباشر)')
-17:00:48 screenshot 07-fail-home-focus.png 1920x1080
-17:00:48 == player-remote
-17:00:59 screenshot 08-player.png 1920x1080
-17:01:02 screenshot 09-player-zap.png 1920x1080
-17:01:04 screenshot 10-player-controls.png 1920x1080
-17:01:06 screenshot 11-player-controls-moved.png 1920x1080
-17:01:10 screenshot 12-player-controls-hidden.png 1920x1080
-17:01:16 screenshot 13-home-after-player.png 1920x1080
-17:01:16 == player-numbers
-17:01:18 focus[nav-search]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
-17:01:21 focus[nav-search]: 1 | RATV News HD | وثائقي الطبيعة | HD
-17:01:24 focus[nav-search]: تعديل القوائم
-17:01:27 focus[nav-search]: أفلام
-17:01:29 focus[nav-start]: أفلام
-17:01:35 focus[nav-target]: الرئيسية
-17:01:41 focus[numbers-hero]: بث مباشر
-17:01:44 focus[numbers-hero]: بث مباشر
-17:01:47 focus[numbers-hero]: بث مباشر
-17:01:50 focus[numbers-hero]: بث مباشر
-17:01:52 focus[numbers-hero]: بث مباشر
-17:01:55 focus[numbers-hero]: بث مباشر
-17:01:55 !! RuntimeError('watch-now not focused (focus: بث مباشر)')
-17:01:55 screenshot 14-fail-player-numbers.png 1920x1080
-17:01:55 == update-notes
-17:01:57 focus[nav-search]: بث مباشر
-17:02:00 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:03 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:06 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:12 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:24 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:27 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:30 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:33 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:36 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:39 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:42 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:45 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:48 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:51 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:54 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:02:57 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:00 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:03 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:06 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:12 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:24 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:27 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:27 screenshot 15-stuck-before-الرئيسية.png 1920x1080
-17:03:27 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
-17:03:28 screenshot 16-fail-update-notes.png 1920x1080
-17:03:28 == movies
-17:03:29 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:32 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:35 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:38 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:41 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:44 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:47 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:50 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:53 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:56 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:03:59 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:02 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:05 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:08 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:11 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:14 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:17 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:20 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:23 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:26 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:29 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:32 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:35 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:38 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:41 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:44 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:47 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:50 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:53 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:56 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:04:59 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:00 screenshot 17-stuck-before-أفلام.png 1920x1080
-17:05:00 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
-17:05:00 screenshot 18-fail-movies.png 1920x1080
-17:05:00 == live
-17:05:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:10 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:13 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:16 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:19 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:22 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:25 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:28 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:31 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:34 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:52 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:55 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:05:58 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:10 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:13 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:16 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:19 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:22 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:25 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:28 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:31 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:32 screenshot 19-stuck-before-مباشر.png 1920x1080
-17:06:32 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
-17:06:32 screenshot 20-fail-live.png 1920x1080
-17:06:32 == series
-17:06:34 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:52 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:55 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:06:58 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:10 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:13 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:16 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:19 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:22 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:25 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:28 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:31 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:34 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:52 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:55 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:07:58 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:04 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:04 screenshot 21-stuck-before-مسلسلات.png 1920x1080
-17:08:04 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
-17:08:04 screenshot 22-fail-series.png 1920x1080
-17:08:04 == matches
-17:08:06 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:12 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:24 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:27 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:30 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:33 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:36 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:39 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:42 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:45 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:48 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:51 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:54 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:08:57 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:09:00 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:09:03 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:09:06 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:09:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:09:12 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:09:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:09:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:09:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:09:24 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:09:27 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:09:30 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:09:33 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:09:36 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:09:36 screenshot 23-stuck-before-المباريات.png 1920x1080
-17:09:36 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
-17:09:36 screenshot 24-fail-matches.png 1920x1080
-17:09:36 == match-link
-17:09:36 Starting: Intent { act=android.intent.action.VIEW dat=ratv://match?home=Real Madrid&away=Barcelona&homeAr=ريال مدريد&awayAr=برشلونة&start=1793465676860&league=الدوري الإسباني pkg=com.ratv.app }
+16:45:07 screenshot 01-splash.png 1920x1080
+16:45:08 == login-screen
+16:45:14 focus[login-initial]: http://server.example:8080
+16:45:14 screenshot 02-login.png 1920x1080
+16:45:14 == keyboard-on-ok
+16:45:18 screenshot 03-login-keyboard.png 1920x1080
+16:45:22 == fill-with-remote
+16:45:32 focus[login-user]: username
+16:45:49 focus[login-name]: مثال: اشتراك المنزل
+16:45:52 focus[login-submit]: دخول
+16:45:52 screenshot 04-login-filled.png 1920x1080
+16:47:28 !! RuntimeError('home not reached')
+16:47:28 screenshot 05-fail-fill-with-remote.png 1920x1080
+16:47:28 == home-focus
+16:47:30 focus[home-focus]: بث مباشر
+16:47:30 screenshot 06-home-focus.png 1920x1080
+16:47:30 !! RuntimeError('hero not focused (focus: بث مباشر)')
+16:47:31 screenshot 07-fail-home-focus.png 1920x1080
+16:47:31 == player-remote
+16:47:42 screenshot 08-player.png 1920x1080
+16:47:45 screenshot 09-player-zap.png 1920x1080
+16:47:48 screenshot 10-player-controls.png 1920x1080
+16:47:50 screenshot 11-player-controls-moved.png 1920x1080
+16:47:55 screenshot 12-player-controls-hidden.png 1920x1080
+16:48:02 screenshot 13-home-after-player.png 1920x1080
+16:48:02 == player-numbers
+16:48:03 focus[nav-search]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+16:48:07 focus[nav-search]: 1 | RATV News HD | وثائقي الطبيعة | HD
+16:48:10 focus[nav-search]: تعديل القوائم
+16:48:14 focus[nav-search]: أفلام
+16:48:15 focus[nav-start]: أفلام
+16:48:22 focus[nav-target]: الرئيسية
+16:48:28 focus[numbers-hero]: بث مباشر
+16:48:31 focus[numbers-hero]: بث مباشر
+16:48:33 focus[numbers-hero]: بث مباشر
+16:48:36 focus[numbers-hero]: بث مباشر
+16:48:39 focus[numbers-hero]: بث مباشر
+16:48:42 focus[numbers-hero]: بث مباشر
+16:48:42 !! RuntimeError('watch-now not focused (focus: بث مباشر)')
+16:48:43 screenshot 14-fail-player-numbers.png 1920x1080
+16:48:43 == update-notes
+16:48:44 focus[nav-search]: بث مباشر
+16:48:47 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:48:50 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:48:53 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:48:56 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:48:59 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:02 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:06 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:12 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:24 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:27 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:30 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:33 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:36 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:39 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:42 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:45 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:48 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:51 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:54 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:49:58 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:10 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:13 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:16 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:16 screenshot 15-stuck-before-الرئيسية.png 1920x1080
+16:50:16 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+16:50:17 screenshot 16-fail-update-notes.png 1920x1080
+16:50:17 == movies
+16:50:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:25 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:28 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:31 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:34 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:52 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:55 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:50:58 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:10 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:13 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:16 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:20 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:23 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:26 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:29 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:32 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:35 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:38 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:41 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:44 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:47 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:50 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:51 screenshot 17-stuck-before-أفلام.png 1920x1080
+16:51:51 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+16:51:51 screenshot 18-fail-movies.png 1920x1080
+16:51:51 == live
+16:51:53 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:56 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:51:59 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:02 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:05 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:08 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:11 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:14 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:17 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:20 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:23 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:26 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:29 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:32 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:35 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:39 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:42 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:45 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:48 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:51 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:54 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:52:57 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:00 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:03 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:06 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:12 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:24 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:25 screenshot 19-stuck-before-مباشر.png 1920x1080
+16:53:25 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+16:53:25 screenshot 20-fail-live.png 1920x1080
+16:53:25 == series
+16:53:27 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:30 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:33 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:36 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:39 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:42 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:45 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:48 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:51 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:54 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:53:57 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:10 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:13 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:16 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:19 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:22 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:25 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:28 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:31 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:34 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:50 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:53 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:56 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:59 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:54:59 screenshot 21-stuck-before-مسلسلات.png 1920x1080
+16:54:59 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+16:55:00 screenshot 22-fail-series.png 1920x1080
+16:55:00 == matches
+16:55:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:10 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:13 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:16 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:19 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:23 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:26 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:29 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:32 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:35 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:38 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:41 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:44 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:47 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:50 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:53 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:56 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:55:59 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:56:02 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:56:05 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:56:08 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:56:11 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:56:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:56:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:56:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:56:24 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:56:27 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:56:30 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:56:33 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:56:33 screenshot 23-stuck-before-المباريات.png 1920x1080
+16:56:33 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+16:56:34 screenshot 24-fail-matches.png 1920x1080
+16:56:34 == match-link
+16:56:34 Starting: Intent { act=android.intent.action.VIEW dat=ratv://match?home=Real Madrid&away=Barcelona&homeAr=ريال مدريد&awayAr=برشلونة&start=1793464894268&league=الدوري الإسباني pkg=com.ratv.app }
 Warning: Activity not started, intent has been delivered to currently running top-most instance.
 Status: o
-17:09:40 screenshot 25-match-link.png 1920x1080
-17:09:41 focus[match-link]: Sport 1 4K | الحين: الدوري الإسباني: ريال مدريد × برشلونة
-17:09:49 screenshot 26-match-link-play.png 1920x1080
-17:09:56 == scoreboard
-17:09:57 focus[nav-search]: بث مباشر
-17:10:00 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:03 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:06 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:12 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:25 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:28 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:31 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:34 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:52 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:54 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:10:58 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:11:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:11:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:11:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:11:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:11:12 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:11:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:11:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:11:22 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:11:25 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:11:28 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
-17:11:28 screenshot 27-stuck-before-الرئيسية.png 1920x1080
-17:11:59 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
-17:12:00 screenshot 28-fail-scoreboard.png 1920x1080
-17:12:00 == sports-guide
-17:12:02 focus[nav-search]: Add app to favorites | Add app to favorites
-17:12:05 focus[nav-search]: Pluto TV | Star Trek: The Next Generation | Remembering actor Sir Patrick Stewart in his iconic role as Captain Jean-Luc Picard | IN MEMORIAM | Watch on Pluto TV
-17:12:08 focus[nav-search]: Select to speak your search query
-17:12:11 focus[nav-search]: Select to speak your search query
-17:12:14 focus[nav-search]: Select to speak your search query
-17:12:18 focus[nav-search]: Select to speak your search query
-17:12:21 focus[nav-search]: Select to speak your search query
-17:12:24 focus[nav-search]: Select to speak your search query
-17:12:27 focus[nav-search]: Select to speak your search query
-17:12:30 focus[nav-search]: Select to speak your search query
-17:12:33 focus[nav-search]: Select to speak your search query
-17:12:36 focus[nav-search]: Select to speak your search query
-17:12:40 focus[nav-search]: Select to speak your search query
-17:12:43 focus[nav-search]: Select to speak your search query
-17:12:46 focus[nav-search]: Select to speak your search query
-17:12:49 focus[nav-search]: Select to speak your search query
-17:12:52 focus[nav-search]: Select to speak your search query
-17:12:55 focus[nav-search]: Select to speak your search query
-17:12:58 focus[nav-search]: Select to speak your search query
-17:13:02 focus[nav-search]: Select to speak your search query
-17:13:05 focus[nav-search]: Select to speak your search query
-17:13:08 focus[nav-search]: Select to speak your search query
-17:13:11 focus[nav-search]: Select to speak your search query
-17:13:14 focus[nav-search]: Select to speak your search query
-17:13:17 focus[nav-search]: Select to speak your search query
-17:13:20 focus[nav-search]: Select to speak your search query
-17:13:24 focus[nav-search]: Select to speak your search query
-17:13:27 focus[nav-search]: Select to speak your search query
-17:13:30 focus[nav-search]: Select to speak your search query
-17:13:33 focus[nav-search]: Select to speak your search query
-17:13:36 focus[nav-start]: Select to speak your search query
-17:13:37 screenshot 29-stuck-before-الرئيسية.png 1920x1080
-17:14:11 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
-17:14:12 screenshot 30-fail-sports-guide.png 1920x1080
-17:14:12 == intro
-17:14:13 focus[nav-search]: Add app to favorites | Add app to favorites
-17:14:17 focus[nav-search]: Pluto TV | Star Trek: The Next Generation | Remembering actor Sir Patrick Stewart in his iconic role as Captain Jean-Luc Picard | IN MEMORIAM | Watch on Pluto TV
-17:14:20 focus[nav-search]: Select to speak your search query
-17:14:23 focus[nav-search]: Select to speak your search query
-17:14:26 focus[nav-search]: Select to speak your search query
-17:14:29 focus[nav-search]: Select to speak your search query
-17:14:32 focus[nav-search]: Select to speak your search query
-17:14:36 focus[nav-search]: Select to speak your search query
-17:14:39 focus[nav-search]: Select to speak your search query
-17:14:42 focus[nav-search]: Select to speak your search query
-17:14:45 focus[nav-search]: Select to speak your search query
-17:14:48 focus[nav-search]: Select to speak your search query
-17:14:51 focus[nav-search]: Select to speak your search query
-17:14:54 focus[nav-search]: Select to speak your search query
-17:14:57 focus[nav-search]: Select to speak your search query
-17:15:01 focus[nav-search]: Select to speak your search query
-17:15:04 focus[nav-search]: Select to speak your search query
-17:15:08 focus[nav-search]: Select to speak your search query
-17:15:11 focus[nav-search]: Select to speak your search query
-17:15:14 focus[nav-search]: Select to speak your search query
-17:15:17 focus[nav-search]: Select to speak your search query
-17:15:20 focus[nav-search]: Select to speak your search query
-17:15:23 focus[nav-search]: Select to speak your search query
-17:15:26 focus[nav-search]: Select to speak your search query
-17:15:29 focus[nav-search]: Select to speak your search query
-17:15:32 focus[nav-search]: Select to speak your search query
-17:15:36 focus[nav-search]: Select to speak your search query
-17:15:39 focus[nav-search]: Select to speak your search query
-17:15:42 focus[nav-search]: Select to speak your search query
-17:15:45 focus[nav-search]: Select to speak your search query
-17:15:48 focus[nav-start]: Select to speak your search query
-17:15:49 screenshot 31-stuck-before-مسلسلات.png 1920x1080
-17:16:23 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
-17:16:23 screenshot 32-fail-intro.png 1920x1080
-17:16:23 == settings
-17:16:25 focus[nav-search]: Add app to favorites | Add app to favorites
-17:16:28 focus[nav-search]: Pluto TV | Star Trek: The Next Generation | Remembering actor Sir Patrick Stewart in his iconic role as Captain Jean-Luc Picard | IN MEMORIAM | Watch on Pluto TV
-17:16:31 focus[nav-search]: Select to speak your search query
-17:16:35 focus[nav-search]: Select to speak your search query
-17:16:38 focus[nav-search]: Select to speak your search query
-17:16:41 focus[nav-search]: Select to speak your search query
-17:16:44 focus[nav-search]: Select to speak your search query
-17:16:47 focus[nav-search]: Select to speak your search query
-17:16:50 focus[nav-search]: Select to speak your search query
-17:16:53 focus[nav-search]: Select to speak your search query
-17:16:56 focus[nav-search]: Select to speak your search query
-17:17:00 focus[nav-search]: Select to speak your search query
-17:17:03 focus[nav-search]: Select to speak your search query
-17:17:06 focus[nav-search]: Select to speak your search query
-17:17:09 focus[nav-search]: Select to speak your search query
-17:17:12 focus[nav-search]: Select to speak your search query
-17:17:15 focus[nav-search]: Select to speak your search query
-17:17:18 focus[nav-search]: Select to speak your search query
-17:17:22 focus[nav-search]: Select to speak your search query
-17:17:25 focus[nav-search]: Select to speak your search query
-17:17:28 focus[nav-search]: Select to speak your search query
-17:17:31 focus[nav-search]: Select to speak your search query
-17:17:34 focus[nav-search]: Select to speak your search query
-17:17:37 focus[nav-search]: Select to speak your search query
-17:17:40 focus[nav-search]: Select to speak your search query
-17:17:44 focus[nav-search]: Select to speak your search query
-17:17:47 focus[nav-search]: Select to speak your search query
-17:17:50 focus[nav-search]: Select to speak your search query
-17:17:53 focus[nav-search]: Select to speak your search query
-17:17:56 focus[nav-search]: Select to speak your search query
-17:17:59 focus[nav-start]: Select to speak your search query
-17:18:00 screenshot 33-stuck-before-حسابي.png 1920x1080
-17:18:00 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
-17:18:00 screenshot 34-fail-settings.png 1920x1080
-17:18:00 == settings-deep
-17:18:02 focus[nav-search]: Select to speak your search query
-17:18:05 focus[nav-search]: Select to speak your search query
-17:18:08 focus[nav-search]: Select to speak your search query
-17:18:11 focus[nav-search]: Select to speak your search query
-17:18:15 focus[nav-search]: Select to speak your search query
-17:18:18 focus[nav-search]: Select to speak your search query
-17:18:21 focus[nav-search]: Select to speak your search query
-17:18:24 focus[nav-search]: Select to speak your search query
-17:18:27 focus[nav-search]: Select to speak your search query
-17:18:30 focus[nav-search]: Select to speak your search query
-17:18:33 focus[nav-search]: Select to speak your search query
-17:18:37 focus[nav-search]: Select to speak your search query
-17:18:40 focus[nav-search]: Select to speak your search query
-17:18:43 focus[nav-search]: Select to speak your search query
-17:18:46 focus[nav-search]: Select to speak your search query
-17:18:49 focus[nav-search]: Select to speak your search query
-17:18:52 focus[nav-search]: Select to speak your search query
-17:18:55 focus[nav-search]: Select to speak your search query
-17:18:58 focus[nav-search]: Select to speak your search query
-17:19:02 focus[nav-search]: Select to speak your search query
-17:19:05 focus[nav-search]: Select to speak your search query
-17:19:08 focus[nav-search]: Select to speak your search query
-17:19:11 focus[nav-search]: Select to speak your search query
-17:19:14 focus[nav-search]: Select to speak your search query
-17:19:17 focus[nav-search]: Select to speak your search query
-17:19:21 focus[nav-search]: Select to speak your search query
-17:19:24 focus[nav-search]: Select to speak your search query
-17:19:27 focus[nav-search]: Select to speak your search query
-17:19:30 focus[nav-search]: Select to speak your search query
-17:19:33 focus[nav-search]: Select to speak your search query
-17:19:36 focus[nav-start]: Select to speak your search query
-17:19:37 screenshot 35-stuck-before-حسابي.png 1920x1080
-17:19:37 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
-17:19:37 screenshot 36-fail-settings-deep.png 1920x1080
-17:19:37 == enhance
-17:19:39 focus[nav-search]: Select to speak your search query
-17:19:42 focus[nav-search]: Select to speak your search query
-17:19:45 focus[nav-search]: Select to speak your search query
-17:19:48 focus[nav-search]: Select to speak your search query
-17:19:51 focus[nav-search]: Select to speak your search query
-17:19:55 focus[nav-search]: Select to speak your search query
-17:19:58 focus[nav-search]: Select to speak your search query
-17:20:01 focus[nav-search]: Select to speak your search query
-17:20:04 focus[nav-search]: Select to speak your search query
-17:20:08 focus[nav-search]: Select to speak your search query
-17:20:11 focus[nav-search]: Select to speak your search query
-17:20:14 focus[nav-search]: Select to speak your search query
-17:20:17 focus[nav-search]: Select to speak your search query
-17:20:20 focus[nav-search]: Select to speak your search query
-17:20:23 focus[nav-search]: Select to speak your search query
-17:20:26 focus[nav-search]: Select to speak your search query
-17:20:30 focus[nav-search]: Select to speak your search query
-17:20:33 focus[nav-search]: Select to speak your search query
-17:20:36 focus[nav-search]: Select to speak your search query
-17:20:39 focus[nav-search]: Select to speak your search query
-17:20:42 focus[nav-search]: Select to speak your search query
-17:20:45 focus[nav-search]: Select to speak your search query
-17:20:48 focus[nav-search]: Select to speak your search query
-17:20:52 focus[nav-search]: Select to speak your search query
-17:20:55 focus[nav-search]: Select to speak your search query
-17:20:58 focus[nav-search]: Select to speak your search query
-17:21:01 focus[nav-search]: Select to speak your search query
-17:21:04 focus[nav-search]: Select to speak your search query
-17:21:08 focus[nav-search]: Select to speak your search query
-17:21:11 focus[nav-search]: Select to speak your search query
-17:21:14 focus[nav-start]: Select to speak your search query
-17:21:14 screenshot 37-stuck-before-حسابي.png 1920x1080
-17:21:48 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
-17:21:49 screenshot 38-fail-enhance.png 1920x1080
-17:21:49 == languages
-17:22:40 screenshot 39-home-en.png 1920x1080
-17:23:27 !! RuntimeError('en: the top bar shows no Home')
-17:23:28 screenshot 40-fail-languages.png 1920x1080
+16:56:37 screenshot 25-match-link.png 1920x1080
+16:56:39 focus[match-link]: Sport 1 4K | الحين: الدوري الإسباني: ريال مدريد × برشلونة
+16:56:47 screenshot 26-match-link-play.png 1920x1080
+16:56:54 == scoreboard
+16:56:56 focus[nav-search]: بث مباشر
+16:56:59 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:02 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:05 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:08 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:11 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:14 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:17 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:20 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:23 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:26 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:29 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:32 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:35 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:38 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:41 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:45 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:48 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:51 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:54 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:57:57 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:58:00 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:58:03 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:58:06 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:58:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:58:12 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:58:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:58:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:58:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:58:24 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:58:27 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+16:58:28 screenshot 27-stuck-before-الرئيسية.png 1920x1080
+16:59:01 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+16:59:01 screenshot 28-fail-scoreboard.png 1920x1080
+16:59:01 == sports-guide
+16:59:03 focus[nav-search]: Add app to favorites | Add app to favorites
+16:59:07 focus[nav-search]: Pluto TV | Star Trek: The Next Generation | Remembering actor Sir Patrick Stewart in his iconic role as Captain Jean-Luc Picard | IN MEMORIAM | Watch on Pluto TV
+16:59:10 focus[nav-search]: Select to speak your search query
+16:59:13 focus[nav-search]: Select to speak your search query
+16:59:16 focus[nav-search]: Select to speak your search query
+16:59:19 focus[nav-search]: Select to speak your search query
+16:59:23 focus[nav-search]: Select to speak your search query
+16:59:26 focus[nav-search]: Select to speak your search query
+16:59:29 focus[nav-search]: Select to speak your search query
+16:59:32 focus[nav-search]: Select to speak your search query
+16:59:35 focus[nav-search]: Select to speak your search query
+16:59:39 focus[nav-search]: Select to speak your search query
+16:59:42 focus[nav-search]: Select to speak your search query
+16:59:45 focus[nav-search]: Select to speak your search query
+16:59:48 focus[nav-search]: Select to speak your search query
+16:59:51 focus[nav-search]: Select to speak your search query
+16:59:55 focus[nav-search]: Select to speak your search query
+16:59:58 focus[nav-search]: Select to speak your search query
+17:00:02 focus[nav-search]: Select to speak your search query
+17:00:05 focus[nav-search]: Select to speak your search query
+17:00:08 focus[nav-search]: Select to speak your search query
+17:00:11 focus[nav-search]: Select to speak your search query
+17:00:14 focus[nav-search]: Select to speak your search query
+17:00:18 focus[nav-search]: Select to speak your search query
+17:00:21 focus[nav-search]: Select to speak your search query
+17:00:24 focus[nav-search]: Select to speak your search query
+17:00:27 focus[nav-search]: Select to speak your search query
+17:00:30 focus[nav-search]: Select to speak your search query
+17:00:33 focus[nav-search]: Select to speak your search query
+17:00:37 focus[nav-search]: Select to speak your search query
+17:00:40 focus[nav-start]: Select to speak your search query
+17:00:41 screenshot 29-stuck-before-الرئيسية.png 1920x1080
+17:01:15 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
+17:01:15 screenshot 30-fail-sports-guide.png 1920x1080
+17:01:15 == intro
+17:01:17 focus[nav-search]: Add app to favorites | Add app to favorites
+17:01:21 focus[nav-search]: Pluto TV | Star Trek: The Next Generation | Remembering actor Sir Patrick Stewart in his iconic role as Captain Jean-Luc Picard | IN MEMORIAM | Watch on Pluto TV
+17:01:24 focus[nav-search]: Select to speak your search query
+17:01:27 focus[nav-search]: Select to speak your search query
+17:01:30 focus[nav-search]: Select to speak your search query
+17:01:33 focus[nav-search]: Select to speak your search query
+17:01:37 focus[nav-search]: Select to speak your search query
+17:01:40 focus[nav-search]: Select to speak your search query
+17:01:43 focus[nav-search]: Select to speak your search query
+17:01:46 focus[nav-search]: Select to speak your search query
+17:01:49 focus[nav-search]: Select to speak your search query
+17:01:53 focus[nav-search]: Select to speak your search query
+17:01:56 focus[nav-search]: Select to speak your search query
+17:01:59 focus[nav-search]: Select to speak your search query
+17:02:02 focus[nav-search]: Select to speak your search query
+17:02:05 focus[nav-search]: Select to speak your search query
+17:02:09 focus[nav-search]: Select to speak your search query
+17:02:12 focus[nav-search]: Select to speak your search query
+17:02:15 focus[nav-search]: Select to speak your search query
+17:02:18 focus[nav-search]: Select to speak your search query
+17:02:21 focus[nav-search]: Select to speak your search query
+17:02:24 focus[nav-search]: Select to speak your search query
+17:02:28 focus[nav-search]: Select to speak your search query
+17:02:31 focus[nav-search]: Select to speak your search query
+17:02:34 focus[nav-search]: Select to speak your search query
+17:02:37 focus[nav-search]: Select to speak your search query
+17:02:40 focus[nav-search]: Select to speak your search query
+17:02:44 focus[nav-search]: Select to speak your search query
+17:02:47 focus[nav-search]: Select to speak your search query
+17:02:50 focus[nav-search]: Select to speak your search query
+17:02:53 focus[nav-start]: Select to speak your search query
+17:02:54 screenshot 31-stuck-before-مسلسلات.png 1920x1080
+17:03:28 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
+17:03:29 screenshot 32-fail-intro.png 1920x1080
+17:03:29 == settings
+17:03:31 focus[nav-search]: Add app to favorites | Add app to favorites
+17:03:34 focus[nav-search]: Pluto TV | Star Trek: The Next Generation | Remembering actor Sir Patrick Stewart in his iconic role as Captain Jean-Luc Picard | IN MEMORIAM | Watch on Pluto TV
+17:03:37 focus[nav-search]: Select to speak your search query
+17:03:41 focus[nav-search]: Select to speak your search query
+17:03:44 focus[nav-search]: Select to speak your search query
+17:03:47 focus[nav-search]: Select to speak your search query
+17:03:50 focus[nav-search]: Select to speak your search query
+17:03:53 focus[nav-search]: Select to speak your search query
+17:03:57 focus[nav-search]: Select to speak your search query
+17:04:00 focus[nav-search]: Select to speak your search query
+17:04:03 focus[nav-search]: Select to speak your search query
+17:04:06 focus[nav-search]: Select to speak your search query
+17:04:09 focus[nav-search]: Select to speak your search query
+17:04:12 focus[nav-search]: Select to speak your search query
+17:04:16 focus[nav-search]: Select to speak your search query
+17:04:19 focus[nav-search]: Select to speak your search query
+17:04:22 focus[nav-search]: Select to speak your search query
+17:04:25 focus[nav-search]: Select to speak your search query
+17:04:28 focus[nav-search]: Select to speak your search query
+17:04:32 focus[nav-search]: Select to speak your search query
+17:04:35 focus[nav-search]: Select to speak your search query
+17:04:38 focus[nav-search]: Select to speak your search query
+17:04:41 focus[nav-search]: Select to speak your search query
+17:04:44 focus[nav-search]: Select to speak your search query
+17:04:48 focus[nav-search]: Select to speak your search query
+17:04:51 focus[nav-search]: Select to speak your search query
+17:04:54 focus[nav-search]: Select to speak your search query
+17:04:57 focus[nav-search]: Select to speak your search query
+17:05:00 focus[nav-search]: Select to speak your search query
+17:05:03 focus[nav-search]: Select to speak your search query
+17:05:07 focus[nav-start]: Select to speak your search query
+17:05:07 screenshot 33-stuck-before-حسابي.png 1920x1080
+17:05:07 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
+17:05:08 screenshot 34-fail-settings.png 1920x1080
+17:05:08 == settings-deep
+17:05:10 focus[nav-search]: Select to speak your search query
+17:05:13 focus[nav-search]: Select to speak your search query
+17:05:16 focus[nav-search]: Select to speak your search query
+17:05:19 focus[nav-search]: Select to speak your search query
+17:05:23 focus[nav-search]: Select to speak your search query
+17:05:26 focus[nav-search]: Select to speak your search query
+17:05:29 focus[nav-search]: Select to speak your search query
+17:05:32 focus[nav-search]: Select to speak your search query
+17:05:35 focus[nav-search]: Select to speak your search query
+17:05:39 focus[nav-search]: Select to speak your search query
+17:05:42 focus[nav-search]: Select to speak your search query
+17:05:45 focus[nav-search]: Select to speak your search query
+17:05:48 focus[nav-search]: Select to speak your search query
+17:05:51 focus[nav-search]: Select to speak your search query
+17:05:55 focus[nav-search]: Select to speak your search query
+17:05:58 focus[nav-search]: Select to speak your search query
+17:06:02 focus[nav-search]: Select to speak your search query
+17:06:05 focus[nav-search]: Select to speak your search query
+17:06:08 focus[nav-search]: Select to speak your search query
+17:06:11 focus[nav-search]: Select to speak your search query
+17:06:15 focus[nav-search]: Select to speak your search query
+17:06:18 focus[nav-search]: Select to speak your search query
+17:06:21 focus[nav-search]: Select to speak your search query
+17:06:24 focus[nav-search]: Select to speak your search query
+17:06:27 focus[nav-search]: Select to speak your search query
+17:06:30 focus[nav-search]: Select to speak your search query
+17:06:34 focus[nav-search]: Select to speak your search query
+17:06:37 focus[nav-search]: Select to speak your search query
+17:06:40 focus[nav-search]: Select to speak your search query
+17:06:43 focus[nav-search]: Select to speak your search query
+17:06:46 focus[nav-start]: Select to speak your search query
+17:06:47 screenshot 35-stuck-before-حسابي.png 1920x1080
+17:06:47 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
+17:06:48 screenshot 36-fail-settings-deep.png 1920x1080
+17:06:48 == enhance
+17:06:49 focus[nav-search]: Select to speak your search query
+17:06:53 focus[nav-search]: Select to speak your search query
+17:06:56 focus[nav-search]: Select to speak your search query
+17:06:59 focus[nav-search]: Select to speak your search query
+17:07:02 focus[nav-search]: Select to speak your search query
+17:07:05 focus[nav-search]: Select to speak your search query
+17:07:09 focus[nav-search]: Select to speak your search query
+17:07:12 focus[nav-search]: Select to speak your search query
+17:07:15 focus[nav-search]: Select to speak your search query
+17:07:18 focus[nav-search]: Select to speak your search query
+17:07:21 focus[nav-search]: Select to speak your search query
+17:07:25 focus[nav-search]: Select to speak your search query
+17:07:28 focus[nav-search]: Select to speak your search query
+17:07:31 focus[nav-search]: Select to speak your search query
+17:07:34 focus[nav-search]: Select to speak your search query
+17:07:37 focus[nav-search]: Select to speak your search query
+17:07:40 focus[nav-search]: Select to speak your search query
+17:07:44 focus[nav-search]: Select to speak your search query
+17:07:47 focus[nav-search]: Select to speak your search query
+17:07:50 focus[nav-search]: Select to speak your search query
+17:07:53 focus[nav-search]: Select to speak your search query
+17:07:56 focus[nav-search]: Select to speak your search query
+17:08:00 focus[nav-search]: Select to speak your search query
+17:08:03 focus[nav-search]: Select to speak your search query
+17:08:06 focus[nav-search]: Select to speak your search query
+17:08:09 focus[nav-search]: Select to speak your search query
+17:08:12 focus[nav-search]: Select to speak your search query
+17:08:16 focus[nav-search]: Select to speak your search query
+17:08:19 focus[nav-search]: Select to speak your search query
+17:08:22 focus[nav-search]: Select to speak your search query
+17:08:25 focus[nav-start]: Select to speak your search query
+17:08:26 screenshot 37-stuck-before-حسابي.png 1920x1080
+17:09:00 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
+17:09:01 screenshot 38-fail-enhance.png 1920x1080
+17:09:01 == languages
+17:09:53 screenshot 39-home-en.png 1920x1080
+17:10:41 !! RuntimeError('en: the top bar shows no Home')
+17:10:41 screenshot 40-fail-languages.png 1920x1080
+17:28:44 == launch
+17:29:29 debug.ratv.subs=http://10.0.2.2:8000
+17:29:30 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 896
+WaitTime: 902
+Complete
+17:29:32 screenshot 01-splash.png 1920x1080
+17:29:32 == login-screen
+17:29:38 focus[login-initial]: http://server.example:8080
+17:29:38 screenshot 02-login.png 1920x1080
+17:29:38 == keyboard-on-ok
+17:29:42 screenshot 03-login-keyboard.png 1920x1080
+17:29:45 == fill-with-remote
+17:29:56 focus[login-user]: username
+17:30:12 focus[login-name]: مثال: اشتراك المنزل
+17:30:15 focus[login-submit]: دخول
+17:30:15 screenshot 04-login-filled.png 1920x1080
+17:31:50 !! RuntimeError('home not reached')
+17:31:50 screenshot 05-fail-fill-with-remote.png 1920x1080
+17:31:50 == home-focus
+17:31:52 focus[home-focus]: بث مباشر
+17:31:52 screenshot 06-home-focus.png 1920x1080
+17:31:52 !! RuntimeError('hero not focused (focus: بث مباشر)')
+17:31:52 screenshot 07-fail-home-focus.png 1920x1080
+17:31:52 == player-remote
+17:32:03 screenshot 08-player.png 1920x1080
+17:32:06 screenshot 09-player-zap.png 1920x1080
+17:32:08 screenshot 10-player-controls.png 1920x1080
+17:32:10 screenshot 11-player-controls-moved.png 1920x1080
+17:32:14 screenshot 12-player-controls-hidden.png 1920x1080
+17:32:21 screenshot 13-home-after-player.png 1920x1080
+17:32:21 == player-numbers
+17:32:22 focus[nav-search]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+17:32:26 focus[nav-search]: 1 | RATV News HD | وثائقي الطبيعة | HD
+17:32:29 focus[nav-search]: تعديل القوائم
+17:32:32 focus[nav-search]: أفلام
+17:32:33 focus[nav-start]: أفلام
+17:32:40 focus[nav-target]: الرئيسية
+17:32:46 focus[numbers-hero]: بث مباشر
+17:32:48 focus[numbers-hero]: بث مباشر
+17:32:51 focus[numbers-hero]: بث مباشر
+17:32:54 focus[numbers-hero]: بث مباشر
+17:32:57 focus[numbers-hero]: بث مباشر
+17:33:00 focus[numbers-hero]: بث مباشر
+17:33:00 !! RuntimeError('watch-now not focused (focus: بث مباشر)')
+17:33:00 screenshot 14-fail-player-numbers.png 1920x1080
+17:33:00 == update-notes
+17:33:02 focus[nav-search]: بث مباشر
+17:33:05 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:08 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:11 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:14 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:17 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:20 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:23 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:26 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:29 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:32 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:35 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:38 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:41 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:44 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:47 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:50 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:53 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:56 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:33:59 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:02 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:05 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:08 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:11 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:14 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:17 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:20 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:23 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:26 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:29 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:32 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:32 screenshot 15-stuck-before-الرئيسية.png 1920x1080
+17:34:32 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+17:34:33 screenshot 16-fail-update-notes.png 1920x1080
+17:34:33 == movies
+17:34:34 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:52 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:55 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:34:58 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:04 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:07 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:10 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:13 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:16 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:19 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:22 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:25 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:28 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:31 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:34 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:37 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:40 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:43 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:46 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:49 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:52 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:55 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:35:58 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:01 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:04 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:04 screenshot 17-stuck-before-أفلام.png 1920x1080
+17:36:04 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+17:36:05 screenshot 18-fail-movies.png 1920x1080
+17:36:05 == live
+17:36:06 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:12 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:24 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:27 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:30 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:33 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:36 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:39 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:42 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:45 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:48 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:51 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:54 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:36:57 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:00 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:03 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:06 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:12 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:24 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:27 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:30 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:33 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:36 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:37 screenshot 19-stuck-before-مباشر.png 1920x1080
+17:37:37 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+17:37:37 screenshot 20-fail-live.png 1920x1080
+17:37:37 == series
+17:37:38 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:41 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:44 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:47 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:50 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:53 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:56 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:37:59 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:02 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:05 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:08 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:11 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:14 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:17 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:20 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:23 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:26 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:30 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:33 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:36 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:39 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:42 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:45 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:48 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:51 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:54 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:38:57 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:00 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:03 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:06 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:09 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:09 screenshot 21-stuck-before-مسلسلات.png 1920x1080
+17:39:09 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+17:39:09 screenshot 22-fail-series.png 1920x1080
+17:39:09 == matches
+17:39:11 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:14 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:17 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:20 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:23 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:26 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:29 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:32 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:35 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:38 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:41 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:44 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:47 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:50 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:53 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:56 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:39:59 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:40:02 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:40:05 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:40:08 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:40:11 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:40:14 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:40:17 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:40:20 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:40:23 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:40:26 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:40:29 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:40:32 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:40:35 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:40:38 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:40:41 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:40:41 screenshot 23-stuck-before-المباريات.png 1920x1080
+17:40:41 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+17:40:41 screenshot 24-fail-matches.png 1920x1080
+17:40:41 == match-link
+17:40:41 Starting: Intent { act=android.intent.action.VIEW dat=ratv://match?home=Real Madrid&away=Barcelona&homeAr=ريال مدريد&awayAr=برشلونة&start=1793467541893&league=الدوري الإسباني pkg=com.ratv.app }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+Status: o
+17:40:45 screenshot 25-match-link.png 1920x1080
+17:40:46 focus[match-link]: Sport 1 4K | الحين: الدوري الإسباني: ريال مدريد × برشلونة
+17:40:54 screenshot 26-match-link-play.png 1920x1080
+17:41:01 == scoreboard
+17:41:02 focus[nav-search]: بث مباشر
+17:41:05 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:08 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:11 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:14 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:17 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:24 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:27 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:30 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:33 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:36 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:39 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:42 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:45 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:48 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:51 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:54 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:41:57 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:42:00 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:42:03 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:42:06 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:42:09 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:42:12 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:42:15 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:42:18 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:42:21 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:42:24 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:42:27 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:42:30 focus[nav-search]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:42:33 focus[nav-start]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+17:42:33 screenshot 27-stuck-before-الرئيسية.png 1920x1080
+17:43:05 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
+17:43:05 screenshot 28-fail-scoreboard.png 1920x1080
+17:43:05 == sports-guide
+17:43:07 focus[nav-search]: Add app to favorites | Add app to favorites
+17:43:10 focus[nav-search]: Pluto TV | Star Trek: The Next Generation | Remembering actor Sir Patrick Stewart in his iconic role as Captain Jean-Luc Picard | IN MEMORIAM | Watch on Pluto TV
+17:43:13 focus[nav-search]: Select to speak your search query
+17:43:17 focus[nav-search]: Select to speak your search query
+17:43:20 focus[nav-search]: Select to speak your search query
+17:43:23 focus[nav-search]: Select to speak your search query
+17:43:26 focus[nav-search]: Select to speak your search query
+17:43:29 focus[nav-search]: Select to speak your search query
+17:43:32 focus[nav-search]: Select to speak your search query
+17:43:35 focus[nav-search]: Select to speak your search query
+17:43:39 focus[nav-search]: Select to speak your search query
+17:43:42 focus[nav-search]: Select to speak your search query
+17:43:45 focus[nav-search]: Select to speak your search query
+17:43:48 focus[nav-search]: Select to speak your search query
+17:43:51 focus[nav-search]: Select to speak your search query
+17:43:54 focus[nav-search]: Select to speak your search query
+17:43:57 focus[nav-search]: Select to speak your search query
+17:44:00 focus[nav-search]: Select to speak your search query
+17:44:04 focus[nav-search]: Select to speak your search query
+17:44:07 focus[nav-search]: Select to speak your search query
+17:44:10 focus[nav-search]: Select to speak your search query
+17:44:13 focus[nav-search]: Select to speak your search query
+17:44:16 focus[nav-search]: Select to speak your search query
+17:44:19 focus[nav-search]: Select to speak your search query
+17:44:22 focus[nav-search]: Select to speak your search query
+17:44:26 focus[nav-search]: Select to speak your search query
+17:44:29 focus[nav-search]: Select to speak your search query
+17:44:32 focus[nav-search]: Select to speak your search query
+17:44:35 focus[nav-search]: Select to speak your search query
+17:44:38 focus[nav-search]: Select to speak your search query
+17:44:41 focus[nav-start]: Select to speak your search query
+17:44:42 screenshot 29-stuck-before-الرئيسية.png 1920x1080
+17:45:15 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
+17:45:16 screenshot 30-fail-sports-guide.png 1920x1080
+17:45:16 == intro
+17:45:17 focus[nav-search]: Add app to favorites | Add app to favorites
+17:45:21 focus[nav-search]: Pluto TV | Star Trek: The Next Generation | Remembering actor Sir Patrick Stewart in his iconic role as Captain Jean-Luc Picard | IN MEMORIAM | Watch on Pluto TV
+17:45:24 focus[nav-search]: Select to speak your search query
+17:45:27 focus[nav-search]: Select to speak your search query
+17:45:30 focus[nav-search]: Select to speak your search query
+17:45:33 focus[nav-search]: Select to speak your search query
+17:45:37 focus[nav-search]: Select to speak your search query
+17:45:40 focus[nav-search]: Select to speak your search query
+17:45:43 focus[nav-search]: Select to speak your search query
+17:45:46 focus[nav-search]: Select to speak your search query
+17:45:49 focus[nav-search]: Select to speak your search query
+17:45:52 focus[nav-search]: Select to speak your search query
+17:45:55 focus[nav-search]: Select to speak your search query
+17:45:58 focus[nav-search]: Select to speak your search query
+17:46:02 focus[nav-search]: Select to speak your search query
+17:46:05 focus[nav-search]: Select to speak your search query
+17:46:08 focus[nav-search]: Select to speak your search query
+17:46:11 focus[nav-search]: Select to speak your search query
+17:46:14 focus[nav-search]: Select to speak your search query
+17:46:17 focus[nav-search]: Select to speak your search query
+17:46:20 focus[nav-search]: Select to speak your search query
+17:46:23 focus[nav-search]: Select to speak your search query
+17:46:27 focus[nav-search]: Select to speak your search query
+17:46:30 focus[nav-search]: Select to speak your search query
+17:46:33 focus[nav-search]: Select to speak your search query
+17:46:36 focus[nav-search]: Select to speak your search query
+17:46:39 focus[nav-search]: Select to speak your search query
+17:46:42 focus[nav-search]: Select to speak your search query
+17:46:45 focus[nav-search]: Select to speak your search query
+17:46:49 focus[nav-search]: Select to speak your search query
+17:46:52 focus[nav-start]: Select to speak your search query
+17:46:52 screenshot 31-stuck-before-مسلسلات.png 1920x1080
+17:47:26 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
+17:47:26 screenshot 32-fail-intro.png 1920x1080
+17:47:26 == settings
+17:47:28 focus[nav-search]: Add app to favorites | Add app to favorites
+17:47:31 focus[nav-search]: Pluto TV | Star Trek: The Next Generation | Remembering actor Sir Patrick Stewart in his iconic role as Captain Jean-Luc Picard | IN MEMORIAM | Watch on Pluto TV
+17:47:35 focus[nav-search]: Select to speak your search query
+17:47:38 focus[nav-search]: Select to speak your search query
+17:47:41 focus[nav-search]: Select to speak your search query
+17:47:44 focus[nav-search]: Select to speak your search query
+17:47:47 focus[nav-search]: Select to speak your search query
+17:47:50 focus[nav-search]: Select to speak your search query
+17:47:53 focus[nav-search]: Select to speak your search query
+17:47:57 focus[nav-search]: Select to speak your search query
+17:48:00 focus[nav-search]: Select to speak your search query
+17:48:03 focus[nav-search]: Select to speak your search query
+17:48:06 focus[nav-search]: Select to speak your search query
+17:48:09 focus[nav-search]: Select to speak your search query
+17:48:12 focus[nav-search]: Select to speak your search query
+17:48:15 focus[nav-search]: Select to speak your search query
+17:48:19 focus[nav-search]: Select to speak your search query
+17:48:22 focus[nav-search]: Select to speak your search query
+17:48:25 focus[nav-search]: Select to speak your search query
+17:48:28 focus[nav-search]: Select to speak your search query
+17:48:31 focus[nav-search]: Select to speak your search query
+17:48:34 focus[nav-search]: Select to speak your search query
+17:48:37 focus[nav-search]: Select to speak your search query
+17:48:40 focus[nav-search]: Select to speak your search query
+17:48:43 focus[nav-search]: Select to speak your search query
+17:48:47 focus[nav-search]: Select to speak your search query
+17:48:50 focus[nav-search]: Select to speak your search query
+17:48:53 focus[nav-search]: Select to speak your search query
+17:48:56 focus[nav-search]: Select to speak your search query
+17:48:59 focus[nav-search]: Select to speak your search query
+17:49:02 focus[nav-start]: Select to speak your search query
+17:49:03 screenshot 33-stuck-before-حسابي.png 1920x1080
+17:49:03 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
+17:49:03 screenshot 34-fail-settings.png 1920x1080
+17:49:03 == settings-deep
+17:49:05 focus[nav-search]: Select to speak your search query
+17:49:08 focus[nav-search]: Select to speak your search query
+17:49:11 focus[nav-search]: Select to speak your search query
+17:49:15 focus[nav-search]: Select to speak your search query
+17:49:18 focus[nav-search]: Select to speak your search query
+17:49:21 focus[nav-search]: Select to speak your search query
+17:49:24 focus[nav-search]: Select to speak your search query
+17:49:27 focus[nav-search]: Select to speak your search query
+17:49:30 focus[nav-search]: Select to speak your search query
+17:49:33 focus[nav-search]: Select to speak your search query
+17:49:37 focus[nav-search]: Select to speak your search query
+17:49:40 focus[nav-search]: Select to speak your search query
+17:49:43 focus[nav-search]: Select to speak your search query
+17:49:46 focus[nav-search]: Select to speak your search query
+17:49:49 focus[nav-search]: Select to speak your search query
+17:49:52 focus[nav-search]: Select to speak your search query
+17:49:55 focus[nav-search]: Select to speak your search query
+17:49:59 focus[nav-search]: Select to speak your search query
+17:50:02 focus[nav-search]: Select to speak your search query
+17:50:05 focus[nav-search]: Select to speak your search query
+17:50:08 focus[nav-search]: Select to speak your search query
+17:50:11 focus[nav-search]: Select to speak your search query
+17:50:14 focus[nav-search]: Select to speak your search query
+17:50:17 focus[nav-search]: Select to speak your search query
+17:50:20 focus[nav-search]: Select to speak your search query
+17:50:24 focus[nav-search]: Select to speak your search query
+17:50:27 focus[nav-search]: Select to speak your search query
+17:50:30 focus[nav-search]: Select to speak your search query
+17:50:33 focus[nav-search]: Select to speak your search query
+17:50:36 focus[nav-search]: Select to speak your search query
+17:50:39 focus[nav-start]: Select to speak your search query
+17:50:40 screenshot 35-stuck-before-حسابي.png 1920x1080
+17:50:40 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
+17:50:40 screenshot 36-fail-settings-deep.png 1920x1080
+17:50:40 == enhance
+17:50:42 focus[nav-search]: Select to speak your search query
+17:50:45 focus[nav-search]: Select to speak your search query
+17:50:48 focus[nav-search]: Select to speak your search query
+17:50:51 focus[nav-search]: Select to speak your search query
+17:50:54 focus[nav-search]: Select to speak your search query
+17:50:58 focus[nav-search]: Select to speak your search query
+17:51:02 focus[nav-search]: Select to speak your search query
+17:51:05 focus[nav-search]: Select to speak your search query
+17:51:08 focus[nav-search]: Select to speak your search query
+17:51:11 focus[nav-search]: Select to speak your search query
+17:51:14 focus[nav-search]: Select to speak your search query
+17:51:17 focus[nav-search]: Select to speak your search query
+17:51:21 focus[nav-search]: Select to speak your search query
+17:51:24 focus[nav-search]: Select to speak your search query
+17:51:27 focus[nav-search]: Select to speak your search query
+17:51:30 focus[nav-search]: Select to speak your search query
+17:51:33 focus[nav-search]: Select to speak your search query
+17:51:36 focus[nav-search]: Select to speak your search query
+17:51:39 focus[nav-search]: Select to speak your search query
+17:51:42 focus[nav-search]: Select to speak your search query
+17:51:46 focus[nav-search]: Select to speak your search query
+17:51:49 focus[nav-search]: Select to speak your search query
+17:51:52 focus[nav-search]: Select to speak your search query
+17:51:55 focus[nav-search]: Select to speak your search query
+17:51:58 focus[nav-search]: Select to speak your search query
+17:52:02 focus[nav-search]: Select to speak your search query
+17:52:05 focus[nav-search]: Select to speak your search query
+17:52:08 focus[nav-search]: Select to speak your search query
+17:52:11 focus[nav-search]: Select to speak your search query
+17:52:14 focus[nav-search]: Select to speak your search query
+17:52:17 focus[nav-start]: Select to speak your search query
+17:52:18 screenshot 37-stuck-before-حسابي.png 1920x1080
+17:52:52 !! RuntimeError('top bar not reached (focus: Select to speak your search query)')
+17:52:52 screenshot 38-fail-enhance.png 1920x1080
+17:52:52 == languages
+17:53:43 screenshot 39-home-en.png 1920x1080
+17:54:30 !! RuntimeError('en: the top bar shows no Home')
+17:54:31 screenshot 40-fail-languages.png 1920x1080
