@@ -498,7 +498,7 @@ private fun UpdateBanner(versionName: String, modifier: Modifier, onClick: () ->
 
 /**
  * The TV start screen, as a menu only: the live channels as one big tile on the left, four tiles in a
- * square in the middle, three buttons on the right. The logo is at the top, the expiry date at the top
+ * square in the middle, three tiles on the right. The logo is at the top, the expiry date at the top
  * right and the version at the bottom right. Arabic reads right to left, so the first item of a row is
  * the rightmost.
  */
@@ -553,8 +553,8 @@ private fun TvHome(
         ) {
             Column(Modifier.weight(1.1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 PictureTile(R.drawable.menu_settings, tr("الإعدادات"), Modifier.weight(1f), onSettings)
-                MenuButton(RIcons.Refresh, tr("تحديث المحتوى"), Modifier.weight(1f), onRefresh)
-                MenuButton(RIcons.Logout, tr("خروج"), Modifier.weight(1f), onExit)
+                PictureTile(R.drawable.menu_refresh, tr("تحديث المحتوى"), Modifier.weight(1f), onRefresh)
+                PictureTile(R.drawable.menu_exit, tr("خروج"), Modifier.weight(1f), onExit)
             }
             // Arabic reads right to left: the first tile of a row is the rightmost, as in the reference.
             Column(Modifier.weight(1.3f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -563,8 +563,8 @@ private fun TvHome(
                     PictureTile(R.drawable.menu_movies, tr("أفلام"), Modifier.weight(1f), onMovies)
                 }
                 Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                    MenuTile(RIcons.User, tr("حسابي"), Modifier.weight(1f), onAccount)
-                    MenuTile(RIcons.Trophy, tr("المباريات"), Modifier.weight(1f), onMatches)
+                    PictureTile(R.drawable.menu_user, tr("حسابي"), Modifier.weight(1f), onAccount)
+                    PictureTile(R.drawable.menu_matches, tr("المباريات"), Modifier.weight(1f), onMatches)
                 }
             }
             LiveTile(Modifier.weight(1f).fillMaxHeight().focusRequester(liveFocus), onLive)
@@ -601,46 +601,6 @@ private fun PictureTile(picture: Int, label: String, modifier: Modifier, onClick
             modifier = Modifier.fillMaxSize().clip(shape)
         )
         Text(label, modifier = Modifier.alpha(0f), maxLines = 1)
-    }
-}
-
-/** A tile of the start screen: its icon above its name, both in the middle. */
-@Composable
-private fun MenuTile(icon: ImageVector, label: String, modifier: Modifier, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(20.dp)
-    Column(
-        modifier
-            .clip(shape)
-            .background(Brush.verticalGradient(listOf(RColors.Surface2, RColors.Surface)))
-            .border(1.dp, RColors.Line, shape)
-            .tvClickable(shape, onClick = onClick)
-            .padding(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Icon(icon, contentDescription = null, tint = RColors.Saffron, modifier = Modifier.size(44.dp))
-        Spacer(Modifier.height(12.dp))
-        Text(label, style = T.title.copy(fontSize = 20.sp), maxLines = 1)
-    }
-}
-
-/** One of the three buttons on the right of the start screen: its name, and its icon on the left of it. */
-@Composable
-private fun MenuButton(icon: ImageVector, label: String, modifier: Modifier, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(20.dp)
-    Row(
-        modifier
-            .clip(shape)
-            .background(RColors.Surface)
-            .border(1.dp, RColors.Line, shape)
-            .tvClickable(shape, onClick = onClick)
-            .padding(horizontal = 20.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(label, style = T.body(20.sp, FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
-        Spacer(Modifier.width(14.dp))
-        Icon(icon, contentDescription = null, tint = RColors.Saffron, modifier = Modifier.size(28.dp))
     }
 }
 
