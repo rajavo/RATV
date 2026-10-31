@@ -44,7 +44,6 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.ratv.app.data.Channel
 import com.ratv.app.data.CommentaryGroup
-import com.ratv.app.data.foldText
 import com.ratv.app.ui.components.ChannelLogo
 import com.ratv.app.ui.components.CircleIconButton
 import com.ratv.app.ui.components.QualityBadge
@@ -298,9 +297,9 @@ internal fun SourcesPanel(
                     groups.isEmpty() -> item { PanelNote(tr("لم نجد قنوات في اشتراك المعلق.")) }
                     else -> {
                         item(key = "q-search") { CommentarySearch(otherQuery) { otherQuery = it } }
-                        val q = foldText(otherQuery.trim())
+                        val q = otherQuery.trim().lowercase()
                         val shown = if (q.isEmpty()) groups else groups.mapNotNull { g ->
-                            val hits = g.channels.filter { foldText(it.name).contains(q) }
+                            val hits = g.channels.filter { it.name.lowercase().contains(q) }
                             if (hits.isEmpty()) null else CommentaryGroup(g.name, hits)
                         }
                         if (shown.isEmpty()) item { PanelNote(tr("لا توجد قناة بهذا الاسم في اشتراك المعلق.")) }
