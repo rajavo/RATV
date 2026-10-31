@@ -1,34 +1,158 @@
 mock IPTV server on port 8000
-11:23:18 GET /player_api.php?username=test&password=test
-11:26:18 GET /player_api.php?username=test&password=test
-11:26:18 GET /player_api.php?username=test&password=test
-11:26:18 GET /player_api.php?username=test&password=test&action=get_live_categories
-11:26:18 GET /player_api.php?username=test&password=test&action=get_live_streams
-11:26:18 EVENT kora {}
-11:26:18 GET /kora/fixtures.json
-11:26:18 GET /player_api.php?username=test&password=test&action=get_series_categories
-11:26:18 GET /player_api.php?username=test&password=test&action=get_series
-11:26:18 GET /player_api.php?username=test&password=test&action=get_vod_categories
-11:26:18 GET /player_api.php?username=test&password=test&action=get_vod_streams
-11:26:18 GET /xmltv.php?username=test&password=test
-11:26:18 GET /update/version.json
-11:26:50 GET /
-11:26:50 GET /
-11:27:30 GET /
-11:27:30 GET /
-11:28:10 GET /
-11:28:10 GET /
-11:28:50 GET /
-11:28:50 GET /
-11:29:30 GET /
-11:29:30 GET /
-11:30:10 GET /
-11:30:10 GET /
-11:30:50 GET /
-11:30:50 GET /
-11:31:30 GET /
-11:31:30 GET /
-11:32:10 GET /
-11:32:10 GET /
-11:32:50 GET /
-11:32:50 GET /
+11:38:44 GET /player_api.php?username=test&password=test
+11:41:38 GET /player_api.php?username=test&password=test
+11:41:38 GET /player_api.php?username=test&password=test
+11:41:38 GET /player_api.php?username=test&password=test&action=get_live_categories
+11:41:38 GET /player_api.php?username=test&password=test&action=get_live_streams
+11:41:38 EVENT kora {}
+11:41:38 GET /kora/fixtures.json
+11:41:38 GET /player_api.php?username=test&password=test&action=get_vod_categories
+11:41:38 GET /player_api.php?username=test&password=test&action=get_vod_streams
+11:41:38 GET /player_api.php?username=test&password=test&action=get_series_categories
+11:41:38 GET /player_api.php?username=test&password=test&action=get_series
+11:41:38 GET /xmltv.php?username=test&password=test
+11:41:38 GET /update/version.json
+11:42:14 GET /
+11:42:14 GET /
+11:42:54 GET /
+11:42:54 GET /
+11:43:34 GET /
+11:43:34 GET /
+11:44:14 GET /
+11:44:14 GET /
+11:44:54 GET /
+11:44:54 GET /
+11:45:34 GET /
+11:45:34 GET /
+11:46:14 GET /
+11:46:14 GET /
+11:46:54 GET /
+11:46:54 GET /
+11:47:34 GET /
+11:47:34 GET /
+11:48:14 GET /
+11:48:14 GET /
+11:48:54 GET /
+11:48:54 GET /
+11:49:34 GET /
+11:49:34 GET /
+11:50:14 GET /
+11:50:14 GET /
+11:50:54 GET /
+11:50:54 GET /
+11:51:34 GET /
+11:51:34 GET /
+11:52:14 GET /
+11:52:14 GET /
+11:52:54 GET /
+11:52:54 GET /
+11:53:34 GET /
+11:53:34 GET /
+11:54:14 GET /
+11:54:14 GET /
+11:54:54 GET /
+11:54:54 GET /
+11:55:34 GET /
+11:55:34 GET /
+11:55:50 GET /live/test/test/204.ts
+11:55:50 GET /logo/l3.png
+11:55:50 GET /live/test/test/204.ts
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 32796)
+11:55:50 GET /live/test/test/204.ts
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 498, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 464, in handle_one_request
+    self.raw_requestline = self.rfile.readline(65537)
+                           ~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/usr/lib/python3.14/socket.py", line 725, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+----------------------------------------
+11:55:50 GET /logo/l4.png
+11:55:50 EVENT espn {"league": "esp.1", "dates": "20261031"}
+11:55:50 GET /espn/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=20261031
+11:55:50 GET /live/test/test/204.ts
+11:55:50 GET /live/test/test/204.ts
+11:55:51 GET /
+11:55:51 GET /
+11:55:52 GET /
+11:55:52 GET /
+11:55:52 GET /
+11:55:52 GET /
+11:55:52 GET /
+11:55:52 GET /
+11:55:52 GET /
+11:55:52 GET /
+11:55:52 GET /
+11:55:52 GET /
+11:55:52 GET /
+11:55:52 GET /
+11:56:14 GET /
+11:56:14 GET /
+11:56:54 GET /
+11:56:54 GET /
+11:57:34 GET /
+11:57:34 GET /
+11:58:14 GET /
+11:58:14 GET /
+11:58:54 GET /
+11:58:54 GET /
+11:59:34 GET /
+11:59:34 GET /
+12:00:29 GET /
+12:00:29 GET /
+12:01:09 GET /
+12:01:09 GET /
+12:01:49 GET /
+12:01:49 GET /
+12:02:39 GET /
+12:02:39 GET /
+12:03:19 GET /
+12:03:19 GET /
+12:03:59 GET /
+12:03:59 GET /
+12:04:39 GET /
+12:04:39 GET /
+12:05:19 GET /
+12:05:19 GET /
+12:05:59 GET /
+12:05:59 GET /
+12:06:39 GET /
+12:06:39 GET /
+12:07:19 GET /
+12:07:19 GET /
+12:07:54 GET /
+12:07:54 GET /
+12:07:57 GET /player_api.php?username=test&password=test
+12:07:58 GET /
+12:07:58 GET /
+12:07:58 GET /update/version.json
+12:08:38 GET /
+12:08:38 GET /
+12:08:47 GET /player_api.php?username=test&password=test
+12:08:47 GET /
+12:08:47 GET /
+12:08:47 GET /update/version.json
+12:09:27 GET /
+12:09:27 GET /
+12:10:07 GET /
+12:10:07 GET /
+12:10:47 GET /
+12:10:47 GET /
+12:11:27 GET /
+12:11:27 GET /
+12:12:07 GET /
+12:12:07 GET /
