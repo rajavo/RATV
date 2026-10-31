@@ -14,8 +14,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,7 +43,10 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.ratv.app.data.Channel
+import com.ratv.app.data.CommentaryGroup
+import com.ratv.app.data.foldText
 import com.ratv.app.ui.components.ChannelLogo
+import com.ratv.app.ui.components.CircleIconButton
 import com.ratv.app.ui.components.QualityBadge
 import com.ratv.app.ui.components.RIcons
 import com.ratv.app.ui.theme.RColors
@@ -185,11 +193,13 @@ internal fun SourcesPanel(
     tv: Boolean,
     canMix: Boolean,
     otherName: String?,
-    other: List<Channel>?,
+    otherGroups: List<CommentaryGroup>?,
     otherError: String?,
     onMixOther: (Channel) -> Unit
 ) {
     val firstFocus = remember { FocusRequester() }
+    // The search box of the commentators' list (the other subscription's channels).
+    var otherQuery by remember { mutableStateOf("") }
     LaunchedEffect(Unit) {
         if (tv) {
             delay(150L)
@@ -272,10 +282,10 @@ internal fun SourcesPanel(
             // The commentators of another saved subscription: that subscription has its own connection for them.
             if (otherName != null) {
                 item { PanelHeader(tr("معلقو {0}", otherName)) }
-                val otherList = other
+                val groups = otherGroups
                 when {
                     otherError != null -> item { PanelNote(otherError, RColors.Danger) }
-                    otherList == null -> item {
+                    groups == null -> item {
                         Row(
                             Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
                             verticalAlignment = Alignment.CenterVertically,
@@ -285,17 +295,29 @@ internal fun SourcesPanel(
                             Text(tr("جارٍ تحميل قنوات اشتراك المعلق…"), style = T.caption)
                         }
                     }
-                    otherList.isEmpty() -> item { PanelNote(tr("لم نجد قنوات رياضية في اشتراك المعلق.")) }
-                    else -> items(otherList.take(200), key = { "o" + it.id }) { ch ->
-                        SourceRow(
-                            title = ch.name,
-                            subtitle = null,
-                            badge = null,
-                            selected = mixing?.url == ch.url,
-                            icon = RIcons.Mic,
-                            modifier = Modifier,
-                            onClick = { onMixOther(ch) }
-                        )
+                    groups.isEmpty() -> item { PanelNote(tr("لم نجد قنوات في اشتراك المعلق.")) }
+                    else -> {
+                        item(key = "q-search") { CommentarySearch(otherQuery) { otherQuery = it } }
+                        val q = foldText(otherQuery.trim())
+                        val shown = if (q.isEmpty()) groups else groups.mapNotNull { g ->
+                            val hits = g.channels.filter { foldText(it.name).contains(q) }
+                            if (hits.isEmpty()) null else CommentaryGroup(g.name, hits)
+                        }
+                        if (shown.isEmpty()) item { PanelNote(tr("لا توجد قناة بهذا الاسم في اشتراك المعلق.")) }
+                        shown.forEachIndexed { gi, g ->
+                            item(key = "g$gi") { PanelHeader(g.name.ifBlank { tr("قنوات أخرى") }) }
+                            items(g.channels, key = { "o" + it.id }) { ch ->
+                                SourceRow(
+                                    title = ch.name,
+                                    subtitle = null,
+                                    badge = null,
+                                    selected = mixing?.url == ch.url,
+                                    icon = RIcons.Mic,
+                                    modifier = Modifier,
+                                    onClick = { onMixOther(ch) }
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -335,6 +357,40 @@ internal fun SourcesPanel(
             }
         }
     }
+}
+
+/** The search box above the commentators' list: it narrows the channels by name. */
+@Composable
+private fun CommentarySearch(query: String, onQuery: (String) -> Unit) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQuery,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 4.dp, vertical = 6.dp),
+        placeholder = { Text(tr("ابحث عن قناة"), style = T.body(14.sp, color = RColors.Text3)) },
+        leadingIcon = { Icon(RIcons.Search, contentDescription = null, tint = RColors.Text3, modifier = Modifier.size(20.dp)) },
+        trailingIcon = if (query.isNotEmpty()) {
+            {
+                CircleIconButton(RIcons.Close, tr("مسح"), { onQuery("") }, background = RColors.Surface2, size = 32.dp, iconSize = 16.dp)
+            }
+        } else {
+            null
+        },
+        singleLine = true,
+        textStyle = T.body(15.sp),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        shape = RoundedCornerShape(22.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = RColors.Saffron,
+            unfocusedBorderColor = RColors.Surface3,
+            focusedContainerColor = RColors.Surface,
+            unfocusedContainerColor = RColors.Surface,
+            cursorColor = RColors.Saffron,
+            focusedTextColor = RColors.Text,
+            unfocusedTextColor = RColors.Text
+        )
+    )
 }
 
 @Composable

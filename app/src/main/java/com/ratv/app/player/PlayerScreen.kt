@@ -194,7 +194,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     val channels by repo.channels.collectAsStateWithLifecycle()
     val favorites by repo.favorites.collectAsStateWithLifecycle()
     val commentarySource by repo.commentarySource.collectAsStateWithLifecycle()
-    val commentaryChannels by repo.commentaryChannels.collectAsStateWithLifecycle()
+    val commentaryGroups by repo.commentaryGroups.collectAsStateWithLifecycle()
     val commentaryError by repo.commentaryError.collectAsStateWithLifecycle()
     val now = rememberNow(15_000L)
 
@@ -380,9 +380,12 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         // The channel left behind, for the remote's "previous channel" key.
         current?.channel?.let { old -> if (old.id != item.channel?.id) previousChannel = old }
         saveProgress()
-        mix.stop()
+        // A version the player moves to by itself (the same channel, the same game) keeps the commentary going;
+        // a channel the viewer picks by hand ends it.
+        val keepCommentary = auto && mix.active
+        if (!keepCommentary) mix.stop()
         current = item
-        enhanceFor = if (wantsEnhance(item)) enhanceKey(item) else null
+        enhanceFor = if (!keepCommentary && wantsEnhance(item)) enhanceKey(item) else null
         fastPicture = fastPictureKnown(item)
         panelOpen = false
         sourcesOpen = false
@@ -837,7 +840,9 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                     EnhanceMemory.put(context, enhanceKey(item), video.height, video.frameRate)
                     if (!pictureShown && !player.isPlaying) {
                         if (video.frameRate >= ENHANCE_FAST_FPS) fastPicture = true
-                        val want = wantsEnhance(item, seenHeight = video.height)
+                        // A commentary from another channel stays on this picture: building the enhanced picture again would end it.
+                        val commentaryOn = mix.active || mixAfterRebuild != null
+                        val want = !commentaryOn && wantsEnhance(item, seenHeight = video.height)
                         if (want != pipeline) {
                             Log.i("RATVEnhance", "picture ${video.width}x${video.height}: enhancement " + if (want) "on" else "off")
                             enhanceFor = if (want) enhanceKey(item) else null
@@ -2145,7 +2150,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                         mix = mix,
                         canMix = (repo.account.value?.maxCons ?: 2) >= 2,
                         otherName = commentarySource?.name,
-                        other = commentaryChannels,
+                        otherGroups = commentaryGroups,
                         otherError = commentaryError,
                         onMixOther = { ch ->
                             if (enhanceWanted) {
