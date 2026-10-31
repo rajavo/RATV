@@ -328,6 +328,8 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
     var videoWidth by remember { mutableIntStateOf(0) }
     val scope = rememberCoroutineScope()
     val mix = remember(player) { MixController(context, scope, player, repo.prefs.bufferMode) }
+    // A commentary from another channel that waits for its new picture (the enhancement going off, see onMix).
+    var mixAfterRebuild by remember { mutableStateOf<Channel?>(null) }
     val subs = remember { SubtitleController(scope, repo.prefs) }
     val inPip = rememberIsInPictureInPicture(activity)
     val canPip = remember {
@@ -506,6 +508,13 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         player.prepare()
         player.playWhenReady = true
         if (item.isLive) repo.noteChannelPlayed(item.id)
+    }
+
+    // The commentary asked for while the enhancement had to go off: it starts on the new picture.
+    LaunchedEffect(mix) {
+        val ch = mixAfterRebuild ?: return@LaunchedEffect
+        mixAfterRebuild = null
+        mix.start(ch, repo.account.value?.maxCons)
     }
 
     // ------------------------------------- subtitles and 4K copies of films and episodes
@@ -1447,12 +1456,19 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             repo.prefs.enhance = false
             enhanceSetting = false
         }
+        // The enhancement builds the picture again, which ends a commentary from another channel.
+        val endsCommentary = on && mix.active
+        if (endsCommentary) mix.stop()
         val next = if (on && wantsEnhance(item, seenHeight = videoHeight.takeIf { it > 0 })) enhanceKey(item) else null
         if (next != enhanceFor) {
             if (!item.isLive) resumeAt = item.id to player.currentPosition
             enhanceFor = next
         }
-        streamNotice = if (on) tr("تحسين الصورة الذكي: يشتغل") else tr("تحسين الصورة الذكي: مطفي")
+        streamNotice = when {
+            endsCommentary -> tr("شغّلنا تحسين الصورة، فأوقفنا معلق القناة الثانية.")
+            on -> tr("تحسين الصورة الذكي: يشتغل")
+            else -> tr("تحسين الصورة الذكي: مطفي")
+        }
     }
 
     /** TV remote: OK shows the controls, up/down change channel, left/right seek, media keys work anywhere. */
@@ -2106,13 +2122,23 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                         siblings = siblings,
                         sports = sportsChoices,
                         mix = mix,
+                        canMix = (repo.account.value?.maxCons ?: 2) >= 2,
                         epgLookup = { ch -> epg.forChannel(ch).current(now)?.title },
                         onPickAudio = { option ->
                             mix.stop()
                             selectTrack(player, C.TRACK_TYPE_AUDIO, option)
                             audioVersion++
                         },
-                        onMix = { ch -> mix.start(ch, repo.account.value?.maxCons) },
+                        onMix = { ch ->
+                            if (enhanceWanted) {
+                                // The enhancement builds the picture again, which would end this commentary: it goes off
+                                // for this picture first, and the commentary starts on the new one (see mixAfterRebuild).
+                                mixAfterRebuild = ch
+                                enhanceFor = null
+                            } else {
+                                mix.start(ch, repo.account.value?.maxCons)
+                            }
+                        },
                         onSwitch = { ch ->
                             keepVersionFor = ch.id
                             play(liveToPlayable(ch))

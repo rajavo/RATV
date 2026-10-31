@@ -182,7 +182,8 @@ internal fun SourcesPanel(
     onMix: (Channel) -> Unit,
     onSwitch: (Channel) -> Unit,
     onClose: () -> Unit,
-    tv: Boolean
+    tv: Boolean,
+    canMix: Boolean
 ) {
     val firstFocus = remember { FocusRequester() }
     LaunchedEffect(Unit) {
@@ -210,7 +211,7 @@ internal fun SourcesPanel(
 
     SidePanel(
         title = tr("المعلق والجودة"),
-        subtitle = tr("اختر المعلق، أو اسمع معلق قناة أخرى على هذه الصورة"),
+        subtitle = if (canMix) tr("اختر المعلق، أو اسمع معلق قناة أخرى على هذه الصورة") else tr("اختر المعلق من هذا البث، أو انتقل لقناة أخرى على نفس المباراة"),
         onClose = onClose,
         width = 430.dp
     ) {
@@ -280,21 +281,21 @@ internal fun SourcesPanel(
                     PanelNote(tr("لم نجد في دليل البرامج قناة أخرى تعرض نفس المباراة الآن. اختر من القنوات الرياضية بالأسفل."))
                 }
                 else -> items(event, key = { "e" + it.id }) { ch ->
-                    ChannelChoiceRow(ch, epgLookup(ch), mixing?.id == ch.id, focusIf("e" + ch.id), onMix, onSwitch)
+                    ChannelChoiceRow(ch, epgLookup(ch), mixing?.id == ch.id, focusIf("e" + ch.id), onMix, onSwitch, canMix)
                 }
             }
 
             if (versions.isNotEmpty()) {
                 item { PanelHeader(tr("نسخ أخرى من القناة")) }
                 items(versions, key = { "v" + it.id }) { ch ->
-                    ChannelChoiceRow(ch, epgLookup(ch), mixing?.id == ch.id, focusIf("v" + ch.id), onMix, onSwitch)
+                    ChannelChoiceRow(ch, epgLookup(ch), mixing?.id == ch.id, focusIf("v" + ch.id), onMix, onSwitch, canMix)
                 }
             }
 
             if (others.isNotEmpty()) {
                 item { PanelHeader(tr("قنوات رياضية أخرى")) }
                 items(others, key = { "s" + it.id }) { ch ->
-                    ChannelChoiceRow(ch, epgLookup(ch), mixing?.id == ch.id, focusIf("s" + ch.id), onMix, onSwitch)
+                    ChannelChoiceRow(ch, epgLookup(ch), mixing?.id == ch.id, focusIf("s" + ch.id), onMix, onSwitch, canMix)
                 }
             }
         }
@@ -308,7 +309,8 @@ private fun ChannelChoiceRow(
     mixing: Boolean,
     actionModifier: Modifier,
     onMix: (Channel) -> Unit,
-    onSwitch: (Channel) -> Unit
+    onSwitch: (Channel) -> Unit,
+    canMix: Boolean
 ) {
     Row(
         Modifier
@@ -332,8 +334,13 @@ private fun ChannelChoiceRow(
             }
             if (programme != null) Text(programme, style = T.caption, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
-        ActionChip(if (mixing) tr("تسمعه الآن") else tr("سماع معلقها"), { onMix(ch) }, modifier = actionModifier, selected = mixing, icon = RIcons.Mic)
-        ActionChip(tr("انتقال"), { onSwitch(ch) }, icon = RIcons.Tv)
+        if (canMix) {
+            ActionChip(if (mixing) tr("تسمعه الآن") else tr("سماع معلقها"), { onMix(ch) }, modifier = actionModifier, selected = mixing, icon = RIcons.Mic)
+            ActionChip(tr("انتقال"), { onSwitch(ch) }, icon = RIcons.Tv)
+        } else {
+            // One connection: a second channel cannot play beside this one, so its commentator is heard by switching to it.
+            ActionChip(tr("انتقال"), { onSwitch(ch) }, modifier = actionModifier, icon = RIcons.Tv)
+        }
     }
     Spacer(Modifier.size(2.dp))
 }
