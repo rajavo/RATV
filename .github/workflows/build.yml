@@ -7,6 +7,7 @@ on:
     # changing them must not publish a new RATV for the customers. Edits of this file alone do not
     # publish either; run it by hand (workflow_dispatch) if needed.
     # README.md is only text: a change to it does not publish either.
+    # A commit whose message has [silent] publishes a silent build (see "Silent or announced" below).
     paths-ignore:
       - 'net/**'
       - 'kora/**'
@@ -21,6 +22,11 @@ on:
       - '.github/workflows/build.yml'
       - 'README.md'
   workflow_dispatch:
+    inputs:
+      silent:
+        description: 'Silent: the APK at the download link is replaced, and the update notice stays as it is'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -31,6 +37,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # A silent build replaces the APK at the download link and nothing else: the version file and the
+      # release notes stay as they were, so the app shows no update notice to anyone. Whoever downloads
+      # the APK from the link gets it.
+      - name: Silent or announced
+        id: mode
+        env:
+          COMMIT: ${{ github.event.head_commit.message }}
+          SILENT_INPUT: ${{ inputs.silent }}
+        run: |
+          if [ "$SILENT_INPUT" = "true" ] || printf '%s' "$COMMIT" | grep -qF '[silent]'; then
+            echo "silent=true" >> "$GITHUB_OUTPUT"
+            echo "Silent build: the update notice stays as it is."
+          else
+            echo "silent=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Set up Java 17
         uses: actions/setup-java@v4
@@ -62,6 +84,7 @@ jobs:
       - name: Publish to Releases
         env:
           GH_TOKEN: ${{ github.token }}
+          SILENT: ${{ steps.mode.outputs.silent }}
         run: |
           if [ -f app/build/outputs/apk/release/app-release.apk ]; then
             cp app/build/outputs/apk/release/app-release.apk RATV.apk
@@ -70,6 +93,16 @@ jobs:
           fi
           # Keep one release named "latest" and only swap its file, so the download link
           # (and the Downloader code) never changes and never disappears.
+          git push -f origin HEAD:refs/tags/latest
+          if gh release view latest >/dev/null 2>&1; then
+            gh release upload latest RATV.apk --clobber
+          else
+            gh release create latest RATV.apk --title "RATV" --notes "أحدث نسخة من تطبيق RATV — نزّل ملف RATV.apk وثبّته على جوالك."
+          fi
+          if [ "$SILENT" = "true" ]; then
+            echo "Silent build: only the APK is replaced. The version file and the release notes stay as they are."
+            exit 0
+          fi
           # Read by the app's "update" button to know a newer version is out.
           # With what the version fixes (release-notes.json), which the app shows before updating.
           notes='{}'
@@ -77,12 +110,6 @@ jobs:
           jq -n --argjson code ${{ github.run_number }} --argjson notes "$notes" \
             '{versionCode: $code, versionName: ("1.0." + ($code | tostring)), apk: "RATV.apk", notes: $notes}' > version.json
           cat version.json
-          git push -f origin HEAD:refs/tags/latest
-          if gh release view latest >/dev/null 2>&1; then
-            gh release upload latest RATV.apk --clobber
-          else
-            gh release create latest RATV.apk --title "RATV" --notes "أحدث نسخة من تطبيق RATV — نزّل ملف RATV.apk وثبّته على جوالك."
-          fi
           # The version file goes up last, so the app never offers a version whose APK is not there yet.
           gh release upload latest version.json --clobber
           gh release edit latest --draft=false --prerelease=false --title "RATV"
@@ -93,11 +120,12 @@ jobs:
       - name: Check the public download link
         env:
           GH_TOKEN: ${{ github.token }}
+          SILENT: ${{ steps.mode.outputs.silent }}
         run: |
           url="https://github.com/${{ github.repository }}/releases/download/latest/RATV.apk"
           for i in 1 2 3 4 5 6; do
-            if curl -fsIL -o /dev/null "$url" && curl -fsL "${url%/*}/version.json" | grep -q '"versionCode": ${{ github.run_number }}'; then
-              echo "Download link and version file work: $url"; exit 0
+            if curl -fsIL -o /dev/null "$url" && { [ "$SILENT" = "true" ] || curl -fsL "${url%/*}/version.json" | grep -q '"versionCode": ${{ github.run_number }}'; }; then
+              echo "Download link works: $url"; exit 0
             fi
             echo "Link not public yet, publishing the release again"
             gh release edit latest --draft=false --prerelease=false || true

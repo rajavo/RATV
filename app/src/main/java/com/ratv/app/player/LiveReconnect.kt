@@ -374,10 +374,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         } else {
             (p.longest() * 3).coerceIn(STALL_MIN_MS, STALL_MAX_MS)
         }
-        // With a big store there is time for the server to carry on by itself (and send what it
-        // owes, which a new connection would skip); with a small one, a new connection is better.
-        // Not past 4.5 s: a line stuck for good costs the store every second it is waited for.
-        val limit = maxOf(learned, minOf(STALL_EXTEND_MS, Steadiness.reserveMs - 2_000L))
+        val limit = stallWaitMs(learned, Steadiness.reserveMs)
         if (now - since > limit) {
             receiving = false
             Log.i(TAG, "no data for ${now - since} ms (limit $limit ms): reconnecting")
@@ -435,6 +432,7 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
         private const val STALL_MIN_MS = 3_000L
         private const val STALL_MAX_MS = 8_000L
         private const val STALL_EXTEND_MS = 4_500L
+        private const val STORE_KEEP_MS = 2_000L
         private const val LEARN_MS = 12_000L
         private const val KEY_WAIT_MS = 1_500L
         private const val CONTINUOUS_GAP = 45_000L // 0.5 s in 90 kHz ticks
@@ -483,6 +481,20 @@ class LiveReconnectingDataSource(context: Context, client: OkHttpClient, userAge
 
         fun clearEnded(uri: String) {
             ENDED.remove(uri)
+        }
+
+        /**
+         * How long a connection that delivers nothing is waited for (ms), given the usual wait [learnedMs]
+         * and the store [storeMs] the player has left. With a big store the server may carry on by itself
+         * (and send what it owes, which a new connection would skip), so the usual wait stands, stretched
+         * to 4.5 s when the store has that much to spare. With a small store the wait ends before the store
+         * runs out, because a store that runs out is a stall and a new connection's burst refills it: the
+         * store less [STORE_KEEP_MS], and never less than [STALL_MIN_MS].
+         */
+        fun stallWaitMs(learnedMs: Long, storeMs: Long): Long {
+            val spare = storeMs - STORE_KEEP_MS
+            if (spare >= learnedMs) return maxOf(learnedMs, minOf(STALL_EXTEND_MS, spare))
+            return maxOf(STALL_MIN_MS, spare)
         }
 
         /** Distance between two 33-bit time stamps, whichever comes first. */
