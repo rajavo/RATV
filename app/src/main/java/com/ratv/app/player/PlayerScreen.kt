@@ -579,6 +579,12 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         }
     }
 
+    // A commentary from another channel is announced once, like the other notices, and then goes away.
+    LaunchedEffect(mix.channel) {
+        val heard = mix.channel ?: return@LaunchedEffect
+        streamNotice = "${tr("تسمع الآن معلق")} ${heard.name}"
+    }
+
     LaunchedEffect(resizeNotice) {
         if (resizeNotice != null) {
             delay(1_600L)
@@ -1817,15 +1823,11 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
         }
 
         if (!inPip) {
-            // At a corner the board makes way only for what shares that corner: the commentary label (at
-            // the end side); the notices along the top centre. The info bar is along the bottom.
-            val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+            // While a notice shows along the top centre, the board moves down past it. The info bar is along the bottom.
             val centred = scorePlace == BoardPlace.CENTER
-            val atLeft = scorePlace == BoardPlace.CORNER
             val boardTop = when {
                 controlsVisible && !locked -> if (centred) 112.dp else 76.dp
                 resizeNotice != null || streamNotice != null || reconnecting || (reconnectAttempts > 0 && buffering) || netTrouble -> 70.dp
-                !centred && mix.channel != null && atLeft == rtl -> 62.dp
                 centred -> if (isTv) 18.dp else 12.dp
                 else -> if (isTv) 14.dp else 10.dp
             }
@@ -1901,23 +1903,6 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                     },
                     okHint = isTv
                 ) { if (w.kind == IntroWindow.CREDITS) nextFromCredits(w) else skipIntro(w) }
-            }
-        }
-
-        val mixing = mix.channel
-        if (mixing != null && !inPip && !controlsVisible) {
-            Row(
-                Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(20.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(Color(0xB30B0C10))
-                    .padding(horizontal = 12.dp, vertical = 7.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                Icon(RIcons.Mic, contentDescription = null, tint = RColors.Saffron, modifier = Modifier.size(15.dp))
-                Text(tr("معلق {0}", mixing.name), style = T.body(12.sp, FontWeight.Medium), maxLines = 1)
             }
         }
 
@@ -2034,7 +2019,7 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
                                     }
                                 }
                             },
-                            showSources = item.isLive && (audioTracks > 1 || siblings.isNotEmpty() || isSports || !sameEvent.isNullOrEmpty() || mixing != null),
+                            showSources = item.isLive && (audioTracks > 1 || siblings.isNotEmpty() || isSports || !sameEvent.isNullOrEmpty() || mix.channel != null),
                             subtitlesOn = subs.isOn,
                             onSubtitles = {
                                 touch()
