@@ -41,6 +41,9 @@ const val ENHANCE_BELOW_HEIGHT = 1440
 /** Pictures with this many lines or more are HD: sharpened at their own size, and given up first if the TV falls behind. */
 const val ENHANCE_HD_LINES = 720
 
+/** Pictures at 50 or 60 frames a second are sharpened only (the full strength enlarges every frame). */
+const val ENHANCE_FAST_FPS = 45f
+
 /** Pictures under this many lines may be enlarged (full strength); 1080p is only sharpened. */
 private const val ENLARGE_BELOW_HEIGHT = 1080
 

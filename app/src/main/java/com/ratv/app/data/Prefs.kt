@@ -282,6 +282,11 @@ class Prefs(context: Context) {
         get() = sp.getString("scorePlace", "corner") ?: "corner"
         set(value) = sp.edit().putString("scorePlace", value).apply()
 
+    /** The saved subscription whose sports channels give the commentators heard over the picture of the one in use (its id), or null. */
+    var commentaryPlaylistId: String?
+        get() = sp.getString("commentaryPlaylistId", null)
+        set(value) = sp.edit().putString("commentaryPlaylistId", value).apply()
+
     /** The openings of episodes and films (IntroSkip.kt): "button" shows «تخطي المقدمة», "auto" skips them, "off". */
     var introSkip: String
         get() = sp.getString("introSkip", "button") ?: "button"

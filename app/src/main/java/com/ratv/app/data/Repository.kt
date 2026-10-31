@@ -227,6 +227,8 @@ class Repository(private val context: Context, val prefs: Prefs) {
         loadJob?.cancel()
         clearData()
         prefs.savePlaylist(p)
+        // A subscription in use is not also the one whose commentators are heard.
+        if (prefs.commentaryPlaylistId == p.id) setCommentarySource(null)
         reloadUserData()
         _playlist.value = p
         _state.value = LoadState.Loading(tr("جارٍ تحميل القنوات…"))
@@ -237,6 +239,7 @@ class Repository(private val context: Context, val prefs: Prefs) {
     fun removePlaylist(id: String): Playlist? {
         val wasCurrent = _playlist.value?.id == id
         prefs.removePlaylist(id)
+        if (prefs.commentaryPlaylistId == id) setCommentarySource(null)
         cacheDir.listFiles()?.filter { it.name.startsWith(id + "_") }?.forEach { it.delete() }
         _playlists.value = prefs.playlists
         if (!wasCurrent) return _playlist.value
@@ -467,6 +470,86 @@ class Repository(private val context: Context, val prefs: Prefs) {
         siblingIndex = unique.groupBy { channelKey(it.name) }.filterValues { it.size > 1 }
         _channels.value = unique
         if (unique.isNotEmpty()) refreshSportsGuide() else rebuildSportsGuide()
+    }
+
+    // ------------------------------------------------ commentators of another saved subscription
+
+    /**
+     * The saved subscription whose sports channels give the commentators heard over the picture of the one in use,
+     * or null. It has a connection of its own, so the picture keeps the subscription in use.
+     */
+    private val _commentarySource = MutableStateFlow(
+        prefs.commentaryPlaylistId?.let { id ->
+            prefs.playlists.firstOrNull { it.id == id && it.id != prefs.loadPlaylist()?.id }
+        }
+    )
+    val commentarySource: StateFlow<Playlist?> = _commentarySource.asStateFlow()
+
+    /** Its sports channels; null while they load. */
+    private val _commentaryChannels = MutableStateFlow<List<Channel>?>(null)
+    val commentaryChannels: StateFlow<List<Channel>?> = _commentaryChannels.asStateFlow()
+
+    /** Why its channels could not be read, if they could not. */
+    private val _commentaryError = MutableStateFlow<String?>(null)
+    val commentaryError: StateFlow<String?> = _commentaryError.asStateFlow()
+
+    private var commentaryJob: Job? = null
+
+    /** Chooses the saved subscription that gives the commentators (null: none). */
+    fun setCommentarySource(p: Playlist?) {
+        val chosen = p?.takeIf { it.id != _playlist.value?.id }
+        prefs.commentaryPlaylistId = chosen?.id
+        commentaryJob?.cancel()
+        _commentarySource.value = chosen
+        _commentaryChannels.value = null
+        _commentaryError.value = null
+        if (chosen != null) loadCommentary()
+    }
+
+    /** Reads the sports channels of the commentators' subscription; its list comes from the cache while that is fresh. */
+    fun loadCommentary(force: Boolean = false) {
+        val p = _commentarySource.value ?: return
+        if (p.id == _playlist.value?.id) {
+            // Signed in with the same subscription again: it is the one in use now, not a second one.
+            setCommentarySource(null)
+            return
+        }
+        if (_commentaryChannels.value != null && _commentaryError.value == null && !force) return
+        commentaryJob?.cancel()
+        commentaryJob = scope.launch {
+            try {
+                val list = when (p.type) {
+                    PlaylistType.XTREAM -> {
+                        val x = XtreamClient(p)
+                        val cats = x.parseCategories(fetch(p, "live_cats.json", x.apiUrl("get_live_categories"), force))
+                        sportsOnly(x.parseLive(fetch(p, "live.json", x.apiUrl("get_live_streams"), force)), cats)
+                    }
+                    PlaylistType.M3U -> {
+                        val file = if (p.m3uUrl.startsWith("content://")) copyContent(p, force)
+                        else fetch(p, "playlist.m3u", p.m3uUrl, force)
+                        val result = Http.openMaybeGzip(file).bufferedReader(Charsets.UTF_8).use { M3uParser.parse(it) }
+                        sportsOnly(result.channels, result.liveCategories)
+                    }
+                }
+                if (_commentarySource.value?.id == p.id) {
+                    _commentaryError.value = null
+                    _commentaryChannels.value = list
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                if (_commentarySource.value?.id == p.id) {
+                    _commentaryError.value = friendlyError(e)
+                    _commentaryChannels.value = emptyList()
+                }
+            }
+        }
+    }
+
+    /** The sports channels among a subscription's channels: those in its sports categories, or whose names read as sports. */
+    private fun sportsOnly(list: List<Channel>, cats: List<Category>): List<Channel> {
+        val sportCats = cats.filter { looksSports(it.name) }.mapTo(HashSet()) { it.id }
+        return list.filter { it.categoryId in sportCats || looksSports(it.name) }.distinctBy { it.id }
     }
 
     // ------------------------------------------------ RA TV's guide of the sports channels

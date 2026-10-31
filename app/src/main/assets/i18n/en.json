@@ -260,6 +260,7 @@
 "إذا سمعت معلق قناة ثانية، يتوقف التحسين، لأن الاثنين ما يشتغلان مع بعض.": "If you hear another channel's commentator, the enhancement stops, because the two cannot run together.",
 "شغّلنا تحسين الصورة، فأوقفنا معلق القناة الثانية.": "Picture enhancement is on, so the other channel's commentator has stopped.",
 "اختر المعلق من هذا البث، أو انتقل لقناة أخرى على نفس المباراة": "Choose the commentator of this stream, or switch to another channel showing the same match.",
+"هذه القناة 50 أو 60 فريم، والتلفزيون ما لحق على تحسينها، فأوقفناه لها بس": "This channel runs at 50 or 60 fps, and the TV could not keep up with the enhancement, so it is off for this channel only.",
 "المعلق في هذا البث": "Commentary in this stream",
 "المعلق والجودة": "Commentary & quality",
 "المفضلة": "Favorites",
@@ -680,5 +681,12 @@
 "الاشتراك والمستخدمون": "Subscription and users",
 "مباريات اليوم: {0}": "Matches today: {0}",
 "لا توجد مباريات اليوم": "No matches today",
-"اختر إعداداً لتقرأ شرحه هنا.": "Choose a setting to read its explanation here."
+"اختر إعداداً لتقرأ شرحه هنا.": "Choose a setting to read its explanation here.",
+"معلقو {0}": "Commentators of {0}",
+"جارٍ تحميل قنوات اشتراك المعلق…": "Loading the commentary subscription's channels…",
+"لم نجد قنوات رياضية في اشتراك المعلق.": "No sports channels found in the commentary subscription.",
+"المعلق": "Commentary",
+"اشتراك المعلق": "Commentary subscription",
+"بدون": "None",
+"يسمع العميل معلق قناة رياضية من اشتراك ثاني وهو يشوف المباراة من اشتراكه الحالي، والصورة تبقى كما هي. كل اشتراك يبقى على اتصاله.": "The customer hears a sports commentator from a second subscription while watching the match on the subscription in use. The picture stays the same, and each subscription keeps its own connection."
 }

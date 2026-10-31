@@ -260,6 +260,7 @@
 "إذا سمعت معلق قناة ثانية، يتوقف التحسين، لأن الاثنين ما يشتغلان مع بعض.": "Si escuchas el comentarista de otro canal, la mejora se detiene, porque ambas cosas no funcionan juntas.",
 "شغّلنا تحسين الصورة، فأوقفنا معلق القناة الثانية.": "Se activó la mejora de imagen, así que se detuvo el comentarista del otro canal.",
 "اختر المعلق من هذا البث، أو انتقل لقناة أخرى على نفس المباراة": "Elige el comentarista de esta emisión, o cambia a otro canal con el mismo partido.",
+"هذه القناة 50 أو 60 فريم، والتلفزيون ما لحق على تحسينها، فأوقفناه لها بس": "Este canal va a 50 o 60 fps y el televisor no dio abasto con la mejora, así que queda apagada solo en este canal.",
 "المعلق في هذا البث": "Comentarios en esta emisión",
 "المعلق والجودة": "Comentarios y calidad",
 "المفضلة": "Favoritos",
@@ -680,5 +681,12 @@
 "الاشتراك والمستخدمون": "Suscripción y usuarios",
 "مباريات اليوم: {0}": "Partidos hoy: {0}",
 "لا توجد مباريات اليوم": "No hay partidos hoy",
-"اختر إعداداً لتقرأ شرحه هنا.": "Elige un ajuste para leer aquí su explicación."
+"اختر إعداداً لتقرأ شرحه هنا.": "Elige un ajuste para leer aquí su explicación.",
+"معلقو {0}": "Comentaristas de {0}",
+"جارٍ تحميل قنوات اشتراك المعلق…": "Cargando los canales de la suscripción del comentarista…",
+"لم نجد قنوات رياضية في اشتراك المعلق.": "No encontramos canales deportivos en la suscripción del comentarista.",
+"المعلق": "Comentarista",
+"اشتراك المعلق": "Suscripción del comentarista",
+"بدون": "Ninguna",
+"يسمع العميل معلق قناة رياضية من اشتراك ثاني وهو يشوف المباراة من اشتراكه الحالي، والصورة تبقى كما هي. كل اشتراك يبقى على اتصاله.": "El cliente escucha a un comentarista de un canal deportivo de una segunda suscripción mientras ve el partido con la suscripción en uso. La imagen no cambia y cada suscripción mantiene su propia conexión."
 }
