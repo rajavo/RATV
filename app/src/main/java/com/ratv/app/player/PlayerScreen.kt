@@ -57,6 +57,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -1672,26 +1673,31 @@ fun PlayerScreen(kind: String, id: String, seriesId: String?, navigator: Navigat
             .focusable()
     ) {
         val exoPlayer = player
-        AndroidView(
-            factory = { ctx ->
-                PlayerView(ctx).apply {
-                    useController = false
-                    setShowBuffering(PlayerView.SHOW_BUFFERING_NEVER)
-                    setKeepContentOnPlayerReset(true)
-                    setBackgroundColor(android.graphics.Color.BLACK)
-                    isFocusable = false
-                    isFocusableInTouchMode = false
-                    descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
-                    setPlayer(exoPlayer)
-                    playerViewRef[0] = this
-                }
-            },
-            update = {
-                it.resizeMode = resizeModes[resizeIndex].resize
-                if (it.player !== exoPlayer) it.player = exoPlayer
-            },
-            modifier = resizeModes[resizeIndex].ratio?.let { Modifier.align(Alignment.Center).aspectRatio(it) } ?: Modifier.fillMaxSize()
-        )
+        // A new player (the enhancement turned on, off or to another strength) gets a new screen surface.
+        // The enhanced picture is drawn into the surface through the graphics chip, and on some TVs a
+        // picture the decoder then sends to that same surface stays black.
+        key(exoPlayer) {
+            AndroidView(
+                factory = { ctx ->
+                    PlayerView(ctx).apply {
+                        useController = false
+                        setShowBuffering(PlayerView.SHOW_BUFFERING_NEVER)
+                        setKeepContentOnPlayerReset(true)
+                        setBackgroundColor(android.graphics.Color.BLACK)
+                        isFocusable = false
+                        isFocusableInTouchMode = false
+                        descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
+                        setPlayer(exoPlayer)
+                        playerViewRef[0] = this
+                    }
+                },
+                update = {
+                    it.resizeMode = resizeModes[resizeIndex].resize
+                    if (it.player !== exoPlayer) it.player = exoPlayer
+                },
+                modifier = resizeModes[resizeIndex].ratio?.let { Modifier.align(Alignment.Center).aspectRatio(it) } ?: Modifier.fillMaxSize()
+            )
+        }
 
         // RA TV's mark in the corner of the picture, as channels show theirs (hidden with the controls up,
         // and while the scoreboard has that corner).
