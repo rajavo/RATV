@@ -15297,3 +15297,427 @@ Status: o
 12:12:41 screenshot 44-stuck-before-حسابي.png 1920x1080
 12:12:41 !! RuntimeError('top bar not reached (focus: تحديث جديد متاح (9.9.9) — اضغط للتحديث)')
 12:12:41 screenshot 45-fail-phone-subscription.png 1920x1080
+12:23:00 == launch
+12:23:47 debug.ratv.subs=http://10.0.2.2:8000
+12:23:48 Starting: Intent { cmp=com.ratv.app/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.ratv.app/.MainActivity
+TotalTime: 873
+WaitTime: 875
+Complete
+12:23:50 screenshot 01-splash.png 1920x1080
+12:23:50 == login-screen
+12:23:57 focus[login-initial]: http://server.example:8080
+12:23:57 screenshot 02-login.png 1920x1080
+12:23:57 == keyboard-on-ok
+12:24:01 screenshot 03-login-keyboard.png 1920x1080
+12:24:04 == fill-with-remote
+12:24:14 focus[login-user]: username
+12:24:32 focus[login-name]: مثال: اشتراك المنزل
+12:24:35 focus[login-submit]: دخول
+12:24:35 screenshot 04-login-filled.png 1920x1080
+12:24:46 screenshot 05-home.png 1920x1080
+12:24:46 == home-focus
+12:24:47 focus[home-focus]: بث مباشر
+12:24:48 screenshot 06-home-focus.png 1920x1080
+12:24:48 == tv-menu
+12:24:50 screenshot 07-tv-menu.png 1920x1080
+12:24:50 == low-latency
+12:24:50   10-31 12:23:47.685  4088  4088 I RATVNet : Wi-Fi low latency on (low latency)
+12:24:50   10-31 12:24:35.398  4088  4088 I RATVNet : keeping a connection ready to 10.0.2.2
+12:24:50 wifi locks: WifiLock{RATV:low-latency type=4 uid=1000 workSource=WorkSource{10076}}
+12:24:50 == player-remote
+12:24:53 focus[player-hero]: بث مباشر
+12:24:58 focus[player-hero-channels]: 1 | RATV News HD | وثائقي الطبيعة | HD
+12:25:10 screenshot 08-player.png 1920x1080
+12:25:13 screenshot 09-player-zap.png 1920x1080
+12:25:16 screenshot 10-player-controls.png 1920x1080
+12:25:18 screenshot 11-player-controls-moved.png 1920x1080
+12:25:22 screenshot 12-player-controls-hidden.png 1920x1080
+12:25:29 screenshot 13-home-after-player.png 1920x1080
+12:25:29 == player-numbers
+12:25:33 focus[nav-search]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+12:25:36 focus[nav-search]: 1 | RATV News HD | وثائقي الطبيعة | HD
+12:25:40 focus[nav-search]: تعديل القوائم
+12:25:43 focus[nav-search]: أفلام
+12:25:45 focus[nav-start]: أفلام
+12:25:51 focus[nav-target]: الرئيسية
+12:25:57 focus[numbers-hero]: بث مباشر
+12:26:02 focus[numbers-hero-channels]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+12:26:14 screenshot 14-player-number-typed.png 1920x1080
+12:26:19 screenshot 15-player-number.png 1920x1080
+12:26:26 screenshot 16-player-last-channel.png 1920x1080
+12:26:36 == update-notes
+12:26:39 focus[nav-search]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+12:26:43 focus[nav-search]: 1 | RATV News HD | وثائقي الطبيعة | HD
+12:26:46 focus[nav-search]: تعديل القوائم
+12:26:50 focus[nav-search]: أفلام
+12:26:51 focus[nav-start]: أفلام
+12:26:58 focus[nav-target]: الرئيسية
+12:27:04 focus[update-banner]: بث مباشر
+12:27:07 focus[update-banner]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+12:27:12 screenshot 17-update-notes.png 1920x1080
+12:27:17 screenshot 18-update-notes-scrolled.png 1920x1080
+12:27:19 focus[update-notes-scrolled]: لاحقاً
+12:27:21 == movies
+12:27:25 focus[tile-أفلام]: تحديث جديد متاح (9.9.9) — اضغط للتحديث
+12:27:28 focus[tile-أفلام]: مسلسلات
+12:27:31 focus[tile-أفلام]: أفلام
+12:27:37 focus[movies]: Desert Night (2023) | 7.4 | Desert Night (2023)
+12:27:38 screenshot 19-movies.png 1920x1080
+12:27:43 focus[movie-detail]: تشغيل
+12:27:43 screenshot 20-movie-detail.png 1920x1080
+12:27:57 screenshot 21-player-movie-seek.png 1920x1080
+12:28:01 screenshot 22-movie-detail-after.png 1920x1080
+12:28:04 == guess-movie
+12:28:05 focus[nav-search]: Desert Night (2023) | 7.4 | Desert Night (2023)
+12:28:08 focus[nav-search]: بحث
+12:28:11 focus[nav-search]: مباشر
+12:28:13 focus[nav-start]: مباشر
+12:28:18 focus[nav-target]: أفلام
+12:28:23 focus[guess-grid]: أفلام
+12:28:26 focus[guess-grid]: الترتيب: الأحدث إضافة
+12:28:29 focus[guess-grid]: Silent Sea (2019) | 7.0 | Silent Sea (2019)
+12:28:32 focus[guess-grid]: Fast Track 4K | 4K | 5.9 | Fast Track 4K
+12:28:35 focus[guess-grid]: ليالي الصحراء | 8.2 | ليالي الصحراء
+12:28:38 focus[guess-grid]: The Long Road 2021 | 6.8 | The Long Road 2021
+12:28:43 focus[guess-detail]: تشغيل
+12:28:55 screenshot 23-guess-movie.png 1920x1080
+12:28:58 screenshot 24-guess-movie-skipped.png 1920x1080
+12:29:14 == live
+12:29:15 focus[nav-search]: Desert Night (2023) | 7.4 | Desert Night (2023)
+12:29:18 focus[nav-search]: بحث
+12:29:22 focus[nav-search]: مباشر
+12:29:23 focus[nav-start]: مباشر
+12:29:25 focus[nav-target]: مباشر
+12:29:32 focus[live]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+12:29:32 screenshot 25-live.png 1920x1080
+12:29:38 focus[live-moved]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+12:29:38 screenshot 26-live-moved.png 1920x1080
+12:29:38 == series
+12:29:40 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+12:29:44 focus[nav-search]: 3 | قناة الأخبار | Weekly Review
+12:29:47 focus[nav-search]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+12:29:51 focus[nav-search]: 1 | RATV News HD | وثائقي الطبيعة | HD
+12:29:54 focus[nav-search]: تعديل القوائم
+12:29:57 focus[nav-search]: أفلام
+12:29:59 focus[nav-start]: أفلام
+12:30:02 focus[nav-target]: مسلسلات
+12:30:08 focus[series]: Sands of Time | 8.1 | Sands of Time
+12:30:14 focus[series-detail]: تشغيل الحلقة 1
+12:30:14 screenshot 27-series-detail.png 1920x1080
+12:30:17 == matches
+12:30:18 focus[nav-search]: Sands of Time | 8.1 | Sands of Time
+12:30:22 focus[nav-search]: بحث
+12:30:25 focus[nav-search]: مباشر
+12:30:26 focus[nav-start]: مباشر
+12:30:29 focus[nav-target]: المباريات
+12:30:35 screenshot 28-matches.png 1920x1080
+12:30:37 == match-link
+12:30:37 Starting: Intent { act=android.intent.action.VIEW dat=ratv://match?home=Real Madrid&away=Barcelona&homeAr=ريال مدريد&awayAr=برشلونة&start=1793448937237&league=الدوري الإسباني pkg=com.ratv.app }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+Status: o
+12:30:40 screenshot 29-match-link.png 1920x1080
+12:30:42 focus[match-link]: Sport 1 4K | الحين: الدوري الإسباني: ريال مدريد × برشلونة
+12:30:50 screenshot 30-match-link-play.png 1920x1080
+12:30:57 == scoreboard
+12:31:01 focus[nav-search]: الآن
+12:31:04 focus[nav-search]: جدول 30 يوم
+12:31:07 focus[nav-search]: ابحث | ابحث
+12:31:10 focus[nav-search]: حسابي
+12:31:11 focus[nav-start]: حسابي
+12:31:21 focus[nav-target]: الرئيسية
+12:31:27 focus[board-hero]: بث مباشر
+12:31:32 focus[board-hero-channels]: 11 | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة | 4K
+12:31:44 screenshot 31-board.png 1920x1080
+12:31:44   --------- beginning of main
+12:31:44   --------- beginning of system
+12:31:44   10-31 12:31:32.394  4088  4088 I RATVScore: board on Sport 1 4K: 900001 (link)
+12:31:44 board: لوحة النتيجة: ريال مدريد 2 - 1 برشلونة، 23:50
+12:32:38 screenshot 32-board-goal.png 1920x1080
+12:32:45 screenshot 33-board-corner.png 1920x1080
+12:32:45 board alone at (60, 28, 638, 154)
+12:32:48 screenshot 34-board-controls.png 1920x1080
+12:33:00 focus[board-pill]: تحسين الصورة
+12:33:03 focus[board-pill]: لوحة النتيجة
+12:33:10 screenshot 35-board-pick.png 1920x1080
+12:33:13 focus[board-pick-yk]: ريال مدريد × برشلونة | الدوري الإسباني · بدأت 11:58 · من دليل البرامج | المختار
+12:33:17 focus[board-pick-yk]: ن | الشمال × نادي قطر | دوري نجوم قطر · بدأت 12:06
+12:33:24 screenshot 36-board-yk.png 1920x1080
+12:33:24 board: لوحة النتيجة: الشمال 1 - 0 نادي قطر، مباشر
+12:33:34 focus[board-pill2]: تحسين الصورة
+12:33:37 focus[board-pill2]: لوحة النتيجة
+12:33:43 focus[board-hide]: ن | الشمال × نادي قطر | دوري نجوم قطر · بدأت 12:06 | المختار
+12:33:46 focus[board-hide]: ا | ا | الهلال × النصر | دوري روشن السعودي · بدأت 12:11
+12:33:49 focus[board-hide]: ا | ا | الاتحاد × الدرعية | دوري روشن السعودي · بدأت 12:01
+12:33:53 focus[board-hide]: بدون لوحة | تختفي من هذي القناة لين تخلص المباراة
+12:33:58 screenshot 37-board-hidden.png 1920x1080
+12:34:07 == sports-guide
+12:34:10 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+12:34:14 focus[nav-search]: 3 | قناة الأخبار | Weekly Review
+12:34:18 focus[nav-search]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+12:34:22 focus[nav-search]: 1 | RATV News HD | وثائقي الطبيعة | HD
+12:34:25 focus[nav-search]: تعديل القوائم
+12:34:28 focus[nav-search]: أفلام
+12:34:30 focus[nav-start]: أفلام
+12:34:36 focus[nav-target]: الرئيسية
+12:34:42 focus[guide-hero]: بث مباشر
+12:34:47 focus[guide-hero-channels]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+12:35:08 screenshot 38-guide-bein3.png 1920x1080
+12:35:08   --------- beginning of system
+12:35:08   10-31 12:31:32.394  4088  4088 I RATVScore: board on Sport 1 4K: 900001 (link)
+12:35:08   10-31 12:33:17.034  4088  4088 I RATVScore: board on Sport 1 HD: y112832 (hand)
+12:35:08   10-31 12:33:53.044  4088  4088 I RATVScore: board on Sport 1 HD: none (-)
+12:35:08   10-31 12:34:56.792  4088  4088 I RATVScore: board on AR| beIN SPORTS 3 HD: 900004 (guide)
+12:35:13 screenshot 39-guide-bein3-controls.png 1920x1080
+12:35:32 screenshot 40-guide-bein1.png 1920x1080
+12:35:49 screenshot 41-guide-bein2-controls.png 1920x1080
+12:36:10 screenshot 42-guide-thmanyah3.png 1920x1080
+12:36:26 screenshot 43-guide-ask.png 1920x1080
+12:36:35 screenshot 44-guide-ask-pick.png 1920x1080
+12:36:46 == intro
+12:36:48 focus[nav-search]: 28 | SSC 2 HD | HD
+12:36:51 focus[nav-search]: 27 | ثمانية 3 HD | دوري روشن السعودي: الاتحاد × الدرعية | HD
+12:36:55 focus[nav-search]: 26 | BEIN SPORT 2 | الدوري الإنجليزي الدرجة الأولى: بولتون واندررز × ميدلزبره
+12:36:59 focus[nav-search]: 25 | beIN SPORTS 1 FHD | الدوري الإسباني: إشبيلية × فالنسيا | FHD
+12:37:02 focus[nav-search]: 24 | AR| beIN SPORTS 3 HD | الدوري الإنجليزي الممتاز: ليفربول × أرسنال | HD
+12:37:06 focus[nav-search]: 23 | Stutter TV SD | SD
+12:37:10 focus[nav-search]: 22 | Stutter TV HD | HD
+12:37:14 focus[nav-search]: 21 | Shaky TS
+12:37:17 focus[nav-search]: 20 | Busy Server
+12:37:21 focus[nav-search]: 19 | Weak Server
+12:37:25 focus[nav-search]: 17 | Overlap Live
+12:37:29 focus[nav-search]: 16 | Chunky Live
+12:37:32 focus[nav-search]: 15 | Frozen Live
+12:37:35 focus[nav-search]: 14 | Unstable Live
+12:37:39 focus[nav-search]: 13 | Sky Sports Main | LaLiga: Real Madrid v Barcelona
+12:37:43 focus[nav-search]: 12 | Sport 1 EN | الدوري الإسباني: ريال مدريد × برشلونة
+12:37:46 focus[nav-search]: 11 | Sport 1 4K | الدوري الإسباني: ريال مدريد × برشلونة | 4K
+12:37:50 focus[nav-search]: 10 | History FHD | Cartoon Hour | FHD
+12:37:54 focus[nav-search]: 9 | Nature Docs | وثائقي الطبيعة
+12:37:57 focus[nav-search]: 8 | Cartoon Time HD | Live Match | HD
+12:38:01 focus[nav-search]: 7 | Kids Fun | حوار مفتوح
+12:38:05 focus[nav-search]: 6 | Racing SD | SD
+12:38:08 focus[nav-search]: 5 | Sport 2 4K | نشرة الأخبار | 4K
+12:38:12 focus[nav-search]: 4 | Sport 1 HD | الدوري الإسباني: ريال مدريد × برشلونة | HD
+12:38:16 focus[nav-search]: 3 | قناة الأخبار | Weekly Review
+12:38:20 focus[nav-search]: 2 | Gulf 24 FHD | Cartoon Hour | FHD
+12:38:23 focus[nav-search]: 1 | RATV News HD | وثائقي الطبيعة | HD
+12:38:26 focus[nav-search]: تعديل القوائم
+12:38:30 focus[nav-search]: أفلام
+12:38:31 focus[nav-start]: أفلام
+12:38:35 focus[nav-target]: مسلسلات
+12:38:40 focus[intro-series]: Sands of Time | 8.1 | Sands of Time
+12:38:47 focus[intro-detail]: تشغيل الحلقة 1
+12:38:50   10-31 12:38:47.074  4088  9760 I RATVIntro: Sands of Time الموسم 1 · الحلقة 1: printing its sound (audio/mp4a-latm with OMX.google.aac.decoder)
+12:38:57 screenshot 45-intro-guess.png 1920x1080
+12:39:05   10-31 12:39:04.102  4088 10333 I RATVIntro: Sands of Time الموسم 1 · الحلقة 1: listened ahead: 99 s of its start, 39 s of its end
+12:39:05   10-31 12:39:04.858  4088  9760 I RATVIntro: Sands of Time الموسم 1 · الحلقة 1: opening learnt at 19.9-60.1 s (shared with an episode before)
+12:39:12 screenshot 46-intro-button.png 1920x1080
+12:39:15   10-31 12:39:12.340  4088  4088 I RATVIntro: skipped from 24726 to 60050 ms (sound)
+12:39:15 screenshot 47-intro-skipped.png 1920x1080
+12:39:15   10-31 12:39:04.853  4088  9760 I RATVIntro: Sands of Time الموسم 1 · الحلقة 1: the end credits at 79.9 s (shared with another episode)
+12:39:38 screenshot 48-intro-next.png 1920x1080
+12:39:41   10-31 12:39:38.281  4088  4088 I RATVIntro: next episode from the credits at 85803 ms (sound)
+12:39:46   10-31 12:39:44.561  4088 12773 I RATVIntro: Sands of Time الموسم 1 · الحلقة 2: the opening found again at 14.9-55.0 s
+12:40:01 screenshot 49-intro-skipped2.png 1920x1080
+12:40:10   10-31 12:40:08.663  4088  4088 I RATVIntro: TheIntroDB: 1:1000-7000
+12:40:15   10-31 12:40:14.209  4088 14774 I RATVIntro: Sands of Time الموسم 1 · الحلقة 3: the opening found again at 7.9-48.0 s
+12:40:22 screenshot 50-intro-button3.png 1920x1080
+12:40:24   10-31 12:39:58.795  4088  4088 I RATVIntro: skipped from 20035 to 55000 ms (sound)
+12:40:24 TheIntroDB asked: ['tmdb_id=550', 'tmdb_id=1399&season=1&episode=1&duration_ms=120000', 'tmdb_id=1399&season=1&episode=2&duration_ms=120000', 'tmdb_id=1399&season=1&episode=3&duration_ms=120000']
+12:40:40 == settings
+12:40:41 focus[nav-search]: Sands of Time | 8.1 | Sands of Time
+12:40:44 focus[nav-search]: بحث
+12:40:47 focus[nav-search]: مباشر
+12:40:49 focus[nav-start]: مباشر
+12:40:57 focus[nav-target]: حسابي
+12:41:02 focus[settings]: إضافة مستخدم
+12:41:02 screenshot 51-settings.png 1920x1080
+12:41:04 == settings-deep
+12:41:05 focus[nav-search]: إضافة مستخدم
+12:41:09 focus[nav-search]: الرئيسية
+12:41:10 focus[nav-start]: الرئيسية
+12:41:19 focus[nav-target]: حسابي
+12:41:25 focus[deep-ar]: حسابي
+12:41:28 focus[deep-ar]: تحديث المحتوى
+12:41:31 focus[deep-ar]: إضافة مستخدم | يبقى المستخدمون الآخرون كما هم
+12:41:33 focus[deep-ar]: الاحتياطي ضد انقطاع النت | يكمل 10 دقائق بدون إنترنت (موصى به)
+12:41:36 focus[deep-ar]: نسخة بديلة للقناة لما تقطّع | متوقف
+12:41:39 focus[deep-ar]: تحسين الصورة الذكي | متوقف
+12:41:42 focus[deep-ar]: معاينة القناة في قائمة المباشر | مفعّل
+12:41:44 focus[deep-ar]: مكان لوحة النتيجة | فوق يسار: مكان نتيجة القناة (موصى به)
+12:41:47 focus[deep-ar]: تخطي المقدمة | يطلع زر «تخطي المقدمة» (موصى به)
+12:41:50 focus[deep-ar]: لغة الترجمة | العربية
+12:41:52 focus[deep-ar]: تحديث الدليل تلقائياً | مفعّل
+12:41:55 focus[deep-ar]: حجب محتوى البالغين | متوقف
+12:41:58 focus[deep-ar]: لغة التطبيق · Language | العربية
+12:41:59 focus[up-ar]: لغة التطبيق · Language | العربية
+12:42:02 focus[up-ar]: حجب محتوى البالغين | متوقف
+12:42:05 focus[up-ar]: تحديث الدليل تلقائياً | مفعّل
+12:42:07 focus[up-ar]: لغة الترجمة | العربية
+12:42:10 focus[up-ar]: تخطي المقدمة | يطلع زر «تخطي المقدمة» (موصى به)
+12:42:13 focus[up-ar]: لوحة النتيجة في المباريات | مفعّل
+12:42:15 focus[up-ar]: فتح آخر قناة عند التشغيل | متوقف
+12:42:16 screenshot 52-up-ar-6.png 1920x1080
+12:42:18 focus[up-ar]: تشغيل الصورة بعتاد التلفزيون (تجريبي) | متوقف
+12:42:21 focus[up-ar]: ثبات البث المباشر | تلقائي (موصى به)
+12:42:24 focus[up-ar]: قياس سرعة النت
+12:42:26 focus[up-ar]: اشتراكي | test · 10.0.2.2:8000
+12:42:29 focus[up-ar]: حذف اشتراكي
+12:42:32 focus[up-ar]: تحديث المحتوى
+12:42:32 screenshot 53-up-ar-12.png 1920x1080
+12:42:35 focus[up-ar]: حسابي
+12:42:35 == enhance
+12:42:36 focus[nav-search]: حسابي
+12:42:38 focus[nav-start]: حسابي
+12:42:39 focus[nav-target]: حسابي
+12:42:45 focus[enhance-setting]: حسابي
+12:42:48 focus[enhance-setting]: تحديث المحتوى
+12:42:51 focus[enhance-setting]: إضافة مستخدم | يبقى المستخدمون الآخرون كما هم
+12:42:54 focus[enhance-setting]: الاحتياطي ضد انقطاع النت | يكمل 10 دقائق بدون إنترنت (موصى به)
+12:42:56 focus[enhance-setting]: نسخة بديلة للقناة لما تقطّع | متوقف
+12:42:59 focus[enhance-setting]: تحسين الصورة الذكي | متوقف
+12:43:03 screenshot 54-enhance-setting.png 1920x1080
+12:43:04 focus[nav-search]: تحسين الصورة الذكي | مفعّل
+12:43:07 focus[nav-search]: نسخة بديلة للقناة لما تقطّع | متوقف
+12:43:10 focus[nav-search]: الاحتياطي ضد انقطاع النت | يكمل 10 دقائق بدون إنترنت (موصى به)
+12:43:13 focus[nav-search]: إضافة مستخدم | يبقى المستخدمون الآخرون كما هم
+12:43:17 focus[nav-search]: تحديث المحتوى
+12:43:20 focus[nav-search]: حسابي
+12:43:21 focus[nav-start]: حسابي
+12:43:30 focus[nav-target]: الرئيسية
+12:43:36 focus[enhance-hero]: بث مباشر
+12:43:41 focus[enhance-hero-channels]: 28 | SSC 2 HD | HD
+12:44:03 screenshot 55-enhance-kids.png 1920x1080
+12:44:08 screenshot 56-enhance-kids-controls.png 1920x1080
+12:44:25 screenshot 57-enhance-racing.png 1920x1080
+12:44:30 screenshot 58-enhance-racing-controls.png 1920x1080
+12:44:30   10-31 12:44:12.688  4088  4088 I RATVEnhance: stall with 221687 ms stored: the TV falls behind the enhancement
+12:44:30   10-31 12:44:14.764  4088  4088 I RATVEnhance: stall with 219635 ms stored: the TV falls behind the enhancement
+12:44:30   10-31 12:44:18.402  4088  4088 I RATVEnhance: stall with 130610 ms stored: the TV falls behind the enhancement
+12:44:30   10-31 12:44:20.180  4088  4088 I RATVEnhance: stall with 235739 ms stored: the TV falls behind the enhancement
+12:44:30   10-31 12:44:22.169  4088  4088 I RATVEnhance: stall with 233741 ms stored: the TV falls behind the enhancement
+12:44:30   10-31 12:44:24.199  4088  4088 I RATVEnhance: stall with 231727 ms stored: the TV falls behind the enhancement
+12:44:30   10-31 12:44:26.247  4088  4088 I RATVEnhance: stall with 229669 ms stored: the TV falls behind the enhancement
+12:44:30   10-31 12:44:28.338  4088  4088 I RATVEnhance: stall with 227590 ms stored: the TV falls behind the enhancement
+12:44:40 focus[enhance-pill]: تحسين الصورة: يعمل
+12:44:53 screenshot 59-enhance-off.png 1920x1080
+12:45:07 focus[enhance-pill-light]: تحسين الصورة
+12:45:20 screenshot 60-enhance-light.png 1920x1080
+12:45:25 screenshot 61-enhance-light-controls.png 1920x1080
+12:45:25   10-31 12:44:22.169  4088  4088 I RATVEnhance: stall with 233741 ms stored: the TV falls behind the enhancement
+12:45:25   10-31 12:44:24.199  4088  4088 I RATVEnhance: stall with 231727 ms stored: the TV falls behind the enhancement
+12:45:25   10-31 12:44:26.247  4088  4088 I RATVEnhance: stall with 229669 ms stored: the TV falls behind the enhancement
+12:45:25   10-31 12:44:28.338  4088  4088 I RATVEnhance: stall with 227590 ms stored: the TV falls behind the enhancement
+12:45:25   10-31 12:44:30.366  4088  4088 I RATVEnhance: stall with 225598 ms stored: the TV falls behind the enhancement
+12:45:25   10-31 12:44:32.261  4088  4088 I RATVEnhance: stall with 223721 ms stored: the TV falls behind the enhancement
+12:45:25   10-31 12:44:34.369  4088  4088 I RATVEnhance: stall with 221609 ms stored: the TV falls behind the enhancement
+12:45:25   10-31 12:45:09.090  4088 21594 I RATVEnhance: picture 1024x576 -> 1024x576 (light)
+12:45:36 focus[enhance-pill-off2]: تحسين الصورة
+12:45:54 focus[enhance-pill-on2]: تحسين الصورة: يعمل
+12:46:24 screenshot 62-enhance-auto.png 1920x1080
+12:46:24   10-31 12:44:34.369  4088  4088 I RATVEnhance: stall with 221609 ms stored: the TV falls behind the enhancement
+12:46:24   10-31 12:45:09.090  4088 21594 I RATVEnhance: picture 1024x576 -> 1024x576 (light)
+12:46:24   10-31 12:45:31.387  4088  4088 I RATVEnhance: the enhancement does not work out (109 of 271 pictures dropped): off on this device
+12:46:24   10-31 12:45:38.028  4088 23079 I RATVEnhance: picture 1024x576 -> 1920x1080 (enhanced)
+12:46:24   10-31 12:45:40.727  4088  4088 I RATVEnhance: stall with 179284 ms stored: the TV falls behind the enhancement
+12:46:24   10-31 12:45:42.855  4088  4088 I RATVEnhance: stall with 235649 ms stored: the TV falls behind the enhancement
+12:46:24   10-31 12:45:42.855  4088  4088 I RATVEnhance: full enhancement does not work out (stalls with the store full): light enhancement from now on
+12:46:24   10-31 12:45:44.479  4088 23246 I RATVEnhance: picture 1024x576 -> 1024x576 (light)
+12:46:29 screenshot 63-enhance-auto-controls.png 1920x1080
+12:46:29 after stepping down: off
+12:46:38 == languages
+12:46:44 screenshot 64-home-en.png 1920x1080
+12:46:45 focus[home-account-en]: Live
+12:46:48 focus[home-account-en]: Movies
+12:46:51 focus[home-account-en]: Matches
+12:46:54 focus[home-account-en]: My account
+12:46:58 screenshot 65-settings-en.png 1920x1080
+12:47:00 focus[settings-en]: Add user
+12:47:03 focus[settings-en]: Delete اشتراكي
+12:47:05 focus[settings-en]: اشتراكي | test · 10.0.2.2:8000
+12:47:08 focus[settings-en]: Internet speed test
+12:47:11 focus[settings-en]: Live stream steadiness | Automatic (recommended)
+12:47:13 focus[settings-en]: Play the picture with the TV's hardware (experimental) | Off
+12:47:16 focus[settings-en]: Open the last channel on start | Off
+12:47:19 focus[settings-en]: Scoreboard during matches | On
+12:47:21 focus[settings-en]: Skip intro | Show a “Skip intro” button (recommended)
+12:47:24 focus[settings-en]: Subtitle language | Arabic
+12:47:27 focus[settings-en]: Update the guide automatically | On
+12:47:30 focus[settings-en]: Block adult content | Off
+12:47:32 focus[settings-en]: Language | English
+12:47:37 screenshot 66-language-en.png 1920x1080
+12:47:40 focus[nav-search]: Language | English
+12:47:43 focus[nav-search]: Block adult content | Off
+12:47:46 focus[nav-search]: Update the guide automatically | On
+12:47:49 focus[nav-search]: Subtitle language | Arabic
+12:47:52 focus[nav-search]: Skip intro | Show a “Skip intro” button (recommended)
+12:47:56 focus[nav-search]: Scoreboard during matches | On
+12:47:59 focus[nav-search]: Open the last channel on start | Off
+12:48:02 focus[nav-search]: Play the picture with the TV's hardware (experimental) | Off
+12:48:05 focus[nav-search]: Live stream steadiness | Automatic (recommended)
+12:48:08 focus[nav-search]: Internet speed test
+12:48:11 focus[nav-search]: اشتراكي | test · 10.0.2.2:8000
+12:48:14 focus[nav-search]: Delete اشتراكي
+12:48:17 focus[nav-search]: Add user
+12:48:20 focus[nav-search]: Home
+12:48:22 focus[nav-start]: Home
+12:48:25 focus[nav-target]: Live
+12:48:31 screenshot 67-live-en.png 1920x1080
+12:48:36 screenshot 68-home-es.png 1920x1080
+12:48:38 focus[home-account-es]: En vivo
+12:48:41 focus[home-account-es]: Películas
+12:48:43 focus[home-account-es]: Partidos
+12:48:46 focus[home-account-es]: Mi cuenta
+12:48:51 screenshot 69-settings-es.png 1920x1080
+12:48:52 focus[settings-es]: Añadir usuario
+12:48:55 focus[settings-es]: Eliminar اشتراكي
+12:48:58 focus[settings-es]: اشتراكي | test · 10.0.2.2:8000
+12:49:00 focus[settings-es]: Test de velocidad
+12:49:03 focus[settings-es]: Estabilidad en vivo | Automático (recomendado)
+12:49:06 focus[settings-es]: Reproducir la imagen con el hardware de la TV (experimental) | Desactivado
+12:49:09 focus[settings-es]: Abrir el último canal al iniciar | Desactivado
+12:49:11 focus[settings-es]: Marcador durante los partidos | Activado
+12:49:14 focus[settings-es]: Saltar intro | Mostrar un botón «Saltar intro» (recomendado)
+12:49:17 focus[settings-es]: Idioma de subtítulos | Árabe
+12:49:19 focus[settings-es]: Actualizar la guía automáticamente | Activado
+12:49:22 focus[settings-es]: Bloquear contenido para adultos | Desactivado
+12:49:25 focus[settings-es]: Idioma de la app · Language | Español
+12:49:29 screenshot 70-language-es.png 1920x1080
+12:49:33 focus[nav-search]: Idioma de la app · Language | Español
+12:49:36 focus[nav-search]: Bloquear contenido para adultos | Desactivado
+12:49:39 focus[nav-search]: Actualizar la guía automáticamente | Activado
+12:49:42 focus[nav-search]: Idioma de subtítulos | Árabe
+12:49:45 focus[nav-search]: Saltar intro | Mostrar un botón «Saltar intro» (recomendado)
+12:49:48 focus[nav-search]: Marcador durante los partidos | Activado
+12:49:51 focus[nav-search]: Abrir el último canal al iniciar | Desactivado
+12:49:54 focus[nav-search]: Reproducir la imagen con el hardware de la TV (experimental) | Desactivado
+12:49:57 focus[nav-search]: Estabilidad en vivo | Automático (recomendado)
+12:50:01 focus[nav-search]: Test de velocidad
+12:50:04 focus[nav-search]: اشتراكي | test · 10.0.2.2:8000
+12:50:07 focus[nav-search]: Eliminar اشتراكي
+12:50:10 focus[nav-search]: Añadir usuario
+12:50:13 focus[nav-search]: Partidos
+12:50:15 focus[nav-start]: Partidos
+12:50:18 focus[nav-target]: En vivo
+12:50:23 screenshot 71-live-es.png 1920x1080
+12:50:27 == phone-link
+12:50:31 focus[tile-حسابي]: بث مباشر
+12:50:34 focus[tile-حسابي]: أفلام
+12:50:37 focus[tile-حسابي]: المباريات
+12:50:40 focus[tile-حسابي]: حسابي
+12:50:45 focus[phone-settings]: إضافة مستخدم
+12:50:55 screenshot 72-phone-settings-qr.png 1920x1080
+12:50:55 phone page on port 8686
+12:50:57 screenshot 73-phone-home.png 1920x1080
+12:50:58 == phone-subscription
+12:51:02 focus[tile-حسابي]: بث مباشر
+12:51:05 focus[tile-حسابي]: أفلام
+12:51:08 focus[tile-حسابي]: المباريات
+12:51:11 focus[tile-حسابي]: حسابي
+12:51:16 focus[phone-settings-2]: إضافة مستخدم
+12:51:26 screenshot 74-phone-settings-2-qr.png 1920x1080
+12:51:26 phone page on port 8686
+12:51:28 screenshot 75-phone-home-subscription.png 1920x1080
