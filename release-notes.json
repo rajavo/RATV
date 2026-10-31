@@ -1,18 +1,21 @@
 {
   "ar": [
     "المعلق من قناة ثانية: إذا اشتراكك فيه اتصال واحد، زر «سماع معلقها» صار «انتقال»، فتنتقل للقناة الثانية بالصورة والصوت.",
+    "معلق القناة الثانية: صار إشعاره يظهر مرة واحدة في أعلى الشاشة ثم يختفي، بدل ما تبقى شارته على الصورة طول الوقت.",
     "إذا سمعت معلق قناة ثانية، يتوقف تحسين الصورة لهذه القناة، لأن الاثنين ما يشتغلان مع بعض.",
     "أصلحنا الشاشة السوداء اللي كانت تطلع على بعض التلفزيونات بعد إطفاء تحسين الصورة.",
     "حذفنا الإعداد التجريبي «تشغيل الصورة بعتاد التلفزيون»، لأنه كان سبب المشكلة."
   ],
   "en": [
     "Another channel's commentator: if your subscription has one connection, the commentator button is now \"Switch\", which moves you to that channel with its picture and sound.",
+    "The other channel's commentary shows a notice once at the top of the screen, then it disappears instead of a label staying on the picture.",
     "When you hear another channel's commentator, the picture enhancement stops for that channel, because the two cannot run together.",
     "We fixed the black screen that some TVs showed after the picture enhancement was turned off.",
     "We removed the experimental setting \"Play the picture with the TV's hardware\", which was the cause."
   ],
   "es": [
     "Comentarista de otro canal: si tu suscripción tiene una sola conexión, el botón de comentarista ahora es «Cambiar», que te lleva a ese canal con su imagen y sonido.",
+    "El comentarista de otro canal: ahora su aviso aparece una sola vez arriba en la pantalla y luego desaparece, en vez de quedarse sobre la imagen.",
     "Al escuchar el comentarista de otro canal, la mejora de imagen se detiene en ese canal, porque ambas cosas no funcionan juntas.",
     "Corregimos la pantalla negra que algunos televisores mostraban al apagar la mejora de imagen.",
     "Eliminamos el ajuste experimental «Reproducir la imagen con el hardware de la TV», que era la causa."
