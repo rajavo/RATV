@@ -24,6 +24,22 @@ import java.io.File
 import java.io.IOException
 import java.util.concurrent.ConcurrentHashMap
 
+/** The channels of one category, in a subscription's commentators' list. */
+data class CommentaryGroup(val name: String, val channels: List<Channel>)
+
+/**
+ * A subscription's channels by category, for the commentators' list: the sports categories (or those whose
+ * names read as sports) come first, and each keeps the subscription's own order. A channel whose category
+ * the subscription does not list goes in a group with no name.
+ */
+fun categoryGroups(list: List<Channel>, cats: List<Category>): List<CommentaryGroup> {
+    val names = cats.associate { it.id to it.name }
+    return list.distinctBy { it.id }
+        .groupBy { it.categoryId }
+        .map { (catId, chans) -> CommentaryGroup(names[catId].orEmpty(), chans) }
+        .sortedBy { if (looksSports(it.name)) 0 else 1 }
+}
+
 /** Single source of truth for the playlist, its content, the EPG and user data. */
 class Repository(private val context: Context, val prefs: Prefs) {
 
@@ -485,9 +501,9 @@ class Repository(private val context: Context, val prefs: Prefs) {
     )
     val commentarySource: StateFlow<Playlist?> = _commentarySource.asStateFlow()
 
-    /** Its sports channels; null while they load. */
-    private val _commentaryChannels = MutableStateFlow<List<Channel>?>(null)
-    val commentaryChannels: StateFlow<List<Channel>?> = _commentaryChannels.asStateFlow()
+    /** Its channels by category, sports first; null while they load. */
+    private val _commentaryGroups = MutableStateFlow<List<CommentaryGroup>?>(null)
+    val commentaryGroups: StateFlow<List<CommentaryGroup>?> = _commentaryGroups.asStateFlow()
 
     /** Why its channels could not be read, if they could not. */
     private val _commentaryError = MutableStateFlow<String?>(null)
@@ -501,12 +517,12 @@ class Repository(private val context: Context, val prefs: Prefs) {
         prefs.commentaryPlaylistId = chosen?.id
         commentaryJob?.cancel()
         _commentarySource.value = chosen
-        _commentaryChannels.value = null
+        _commentaryGroups.value = null
         _commentaryError.value = null
         if (chosen != null) loadCommentary()
     }
 
-    /** Reads the sports channels of the commentators' subscription; its list comes from the cache while that is fresh. */
+    /** Reads the channels of the commentators' subscription, by category; its list comes from the cache while that is fresh. */
     fun loadCommentary(force: Boolean = false) {
         val p = _commentarySource.value ?: return
         if (p.id == _playlist.value?.id) {
@@ -514,42 +530,36 @@ class Repository(private val context: Context, val prefs: Prefs) {
             setCommentarySource(null)
             return
         }
-        if (_commentaryChannels.value != null && _commentaryError.value == null && !force) return
+        if (_commentaryGroups.value != null && _commentaryError.value == null && !force) return
         commentaryJob?.cancel()
         commentaryJob = scope.launch {
             try {
-                val list = when (p.type) {
+                val groups = when (p.type) {
                     PlaylistType.XTREAM -> {
                         val x = XtreamClient(p)
                         val cats = x.parseCategories(fetch(p, "live_cats.json", x.apiUrl("get_live_categories"), force))
-                        sportsOnly(x.parseLive(fetch(p, "live.json", x.apiUrl("get_live_streams"), force)), cats)
+                        categoryGroups(x.parseLive(fetch(p, "live.json", x.apiUrl("get_live_streams"), force)), cats)
                     }
                     PlaylistType.M3U -> {
                         val file = if (p.m3uUrl.startsWith("content://")) copyContent(p, force)
                         else fetch(p, "playlist.m3u", p.m3uUrl, force)
                         val result = Http.openMaybeGzip(file).bufferedReader(Charsets.UTF_8).use { M3uParser.parse(it) }
-                        sportsOnly(result.channels, result.liveCategories)
+                        categoryGroups(result.channels, result.liveCategories)
                     }
                 }
                 if (_commentarySource.value?.id == p.id) {
                     _commentaryError.value = null
-                    _commentaryChannels.value = list
+                    _commentaryGroups.value = groups
                 }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
                 if (_commentarySource.value?.id == p.id) {
                     _commentaryError.value = friendlyError(e)
-                    _commentaryChannels.value = emptyList()
+                    _commentaryGroups.value = emptyList()
                 }
             }
         }
-    }
-
-    /** The sports channels among a subscription's channels: those in its sports categories, or whose names read as sports. */
-    private fun sportsOnly(list: List<Channel>, cats: List<Category>): List<Channel> {
-        val sportCats = cats.filter { looksSports(it.name) }.mapTo(HashSet()) { it.id }
-        return list.filter { it.categoryId in sportCats || looksSports(it.name) }.distinctBy { it.id }
     }
 
     // ------------------------------------------------ RA TV's guide of the sports channels
